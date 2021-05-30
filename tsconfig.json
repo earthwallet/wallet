@@ -1,0 +1,23 @@
+{
+  "extends": "@polkadot/dev/config/tsconfig.json",
+  "exclude": ["build/**/*", "**/build/*", "**/build/**/*"],
+  "compilerOptions": {
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@earthwallet/extension": ["packages/extension/src"],
+      "@earthwallet/extension/*": ["packages/extension/src/*"],
+      "@earthwallet/extension-base": ["packages/extension-base/src"],
+      "@earthwallet/extension-base/*": ["packages/extension-base/src/*"],
+      "@earthwallet/extension-chains": ["packages/extension-chains/src"],
+      "@earthwallet/extension-chains/*": ["packages/extension-chains/src/*"],
+      "@earthwallet/extension-dapp": ["packages/extension-dapp/src"],
+      "@earthwallet/extension-dapp/*": ["packages/extension-dapp/src/*"],
+      "@earthwallet/extension-inject": ["packages/extension-inject/src"],
+      "@earthwallet/extension-inject/*": ["packages/extension-inject/src/*"],
+      "@earthwallet/extension-ui": ["packages/extension-ui/src"],
+      "@earthwallet/extension-ui/*": ["packages/extension-ui/src/*"]
+    },
+    "skipLibCheck": true
+  }
+}
