@@ -8,10 +8,9 @@ import { ThemeProps } from '@earthwallet/extension-ui/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { Address, Dropdown, Link, MenuDivider } from '../../components';
-import useGenesisHashOptions from '../../hooks/useGenesisHashOptions';
+import { Address, Link, MenuDivider } from '../../components';
 import useTranslation from '../../hooks/useTranslation';
-import { editAccount, tieAccount } from '../../messaging';
+import { editAccount } from '../../messaging';
 import { Name } from '../../partials';
 
 interface Props extends AccountJson {
@@ -24,19 +23,10 @@ interface EditState {
   toggleActions: number;
 }
 
-function Account ({ address, className, genesisHash, isExternal, isHardware, isHidden, name, parentName, suri, type }: Props): React.ReactElement<Props> {
+function Account ({ address, className, genesisHash, isExternal, isHidden, name, parentName, suri, type }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const [{ isEditing, toggleActions }, setEditing] = useState<EditState>({ isEditing: false, toggleActions: 0 });
   const [editedName, setName] = useState<string | undefined | null>(name);
-  const genesisOptions = useGenesisHashOptions();
-
-  const _onChangeGenesis = useCallback(
-    (genesisHash?: string | null): void => {
-      tieAccount(address, genesisHash || null)
-        .catch(console.error);
-    },
-    [address]
-  );
 
   const _toggleEdit = useCallback(
     (): void => setEditing(({ toggleActions }) => ({ isEditing: !isEditing, toggleActions: ++toggleActions })),
