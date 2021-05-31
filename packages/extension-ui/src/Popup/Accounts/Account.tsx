@@ -119,7 +119,7 @@ export default styled(Account)(({ theme }: ThemeProps) => `
     flex: 1;
     left: 70px;
     top: 10px;
-    width: 350px;
+    width: 200px;
 
     .danger {
       background-color: ${theme.bodyColor};
@@ -129,7 +129,7 @@ export default styled(Account)(({ theme }: ThemeProps) => `
 
     input {
       height : 30px;
-      width: 350px;
+    width: 200px;
     }
 
     &.withParent {
