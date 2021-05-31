@@ -319,7 +319,7 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     display: flex;
     justify-content: space-between;
     position: relative;
-    max-width: 248px;
+    max-width: 220px;
 
     .svg-inline--fa {
       width: 14px;
@@ -363,7 +363,7 @@ export default styled(Address)(({ theme }: ThemeProps) => `
   }
 
   .info {
-    width: 100%;
+    max-width: 248px;
   }
 
   .infoRow {
@@ -387,7 +387,7 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     margin: 2px 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 300px;
+    max-width: 194px;
     white-space: nowrap;
 
     &.displaced {
