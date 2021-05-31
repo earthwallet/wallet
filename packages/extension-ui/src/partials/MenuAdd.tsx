@@ -83,42 +83,6 @@ function MenuAdd ({ className, reference }: Props): React.ReactElement<Props> {
           <span>{t<string>('Restore account from backup JSON file')}</span>
         </Link>
       </MenuItem>
-      <MenuDivider />
-      <MenuItem className='menuItem'>
-        <Link
-          isDisabled={!mediaAllowed}
-          title={ !mediaAllowed
-            ? t<string>('Camera access must be first enabled in the settings')
-            : ''
-          }
-          to='/account/import-qr'
-        >
-          <FontAwesomeIcon icon={faQrcode} />
-          <span>{t<string>('Attach external QR-signer account')}</span>
-        </Link>
-      </MenuItem>
-      <MenuItem className='menuItem ledger'>
-        {isLedgerEnabled
-          ? <Link
-            isDisabled={!isLedgerCapable}
-            title={ (!isLedgerCapable && t<string>('Ledger devices can only be connected with Chrome browser')) || ''}
-            to={ledgerPath}
-          >
-            <FontAwesomeIcon
-              icon={faUsb}
-              rotation={270}
-            />
-            <span>{ t<string>('Attach ledger account')}</span>
-          </Link>
-          : <Link onClick={_onOpenLedgerConnect}>
-            <FontAwesomeIcon
-              icon={faUsb}
-              rotation={270}
-            />
-            <span>{ t<string>('Connect Ledger device')}</span>
-          </Link>
-        }
-      </MenuItem>
     </Menu>
   );
 }
