@@ -31,7 +31,7 @@ const AddressSelector = function ({ className }: Props): React.ReactElement<Prop
 
   const _onChangePrefix = (text: string, value: number, symbol: string) => {
     setSelectedAddressText(text);
-    setSelectedToken({ text, value, symbol });
+    setSelectedToken({ symbol, text, value });
     setShowDropDown(false);
   };
 

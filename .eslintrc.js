@@ -23,10 +23,11 @@ module.exports = {
     // this seems very broken atm, false positives
     '@typescript-eslint/unbound-method': 'off',
     'space-before-function-paren': 'off',
-      'jsx-quotes': 'off',
-    
-      "header/header": [2, "line", [{
-			"pattern": " Copyright \\d{4}(-\\d{4})? @earthwallet/"
-		}, " SPDX-License-Identifier: Apache-2.0"], 2],
+    '@typescript-eslint/no-empty-function': 'off',
+    'jsx-quotes': 'off',
+    'sort-keys': 'warn',
+    "header/header": [2, "line", [{
+      "pattern": " Copyright \\d{4}(-\\d{4})? @earthwallet/"
+    }, " SPDX-License-Identifier: Apache-2.0"], 2],
   },
 };

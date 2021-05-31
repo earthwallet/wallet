@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccountJson, AccountsContext, AuthorizeRequest, MetadataRequest, SigningRequest } from '@earthwallet/extension-base/background/types';
+import type { AccountJson, AccountsContext, AuthorizeRequest, MetadataRequest, SigningRequest, TokenJson } from '@earthwallet/extension-base/background/types';
 import type { SettingsStruct } from '@polkadot/ui-settings/types';
 
 import { PHISHING_PAGE_REDIRECT } from '@earthwallet/extension-base/defaults';
@@ -77,7 +77,7 @@ export default function Popup (): React.ReactElement {
   const [signRequests, setSignRequests] = useState<null | SigningRequest[]>(null);
   const [isWelcomeDone, setWelcomeDone] = useState(false);
   const [settingsCtx, setSettingsCtx] = useState<SettingsStruct>(startSettings);
-  const [selectedToken, setSelectedToken] = useState(defaultTokenContext.selectedToken);
+  const [selectedToken, setSelectedToken] = useState<TokenJson>(defaultTokenContext.selectedToken);
   const selectedTokenValue = { selectedToken, setSelectedToken };
 
   const _onAction = (to?: string): void => {

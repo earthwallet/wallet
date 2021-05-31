@@ -63,7 +63,7 @@ export type TokensContext = {
 
 export type SelectedTokensContext = {
   selectedToken: TokenJson;
-  setSelectedToken: any;
+  setSelectedToken: TokenJson;
 }
 export interface AuthorizeRequest {
   id: string;
