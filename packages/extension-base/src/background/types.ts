@@ -51,7 +51,20 @@ export type AccountsContext = {
   hierarchy: AccountWithChildren[];
   master?: AccountJson;
 }
+export interface TokenJson {
+  text: string;
+  symbol: string;
+  value: number;
+}
 
+export type TokensContext = {
+  tokens: TokenJson[];
+}
+
+export type SelectedTokensContext = {
+  selectedToken: TokenJson;
+  setSelectedToken: any;
+}
 export interface AuthorizeRequest {
   id: string;
   request: RequestAuthorizeTab;

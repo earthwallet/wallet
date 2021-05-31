@@ -1,6 +1,6 @@
 /* eslint-disable header/header */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-// [object Object]
+// Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 const randomColorArray = [

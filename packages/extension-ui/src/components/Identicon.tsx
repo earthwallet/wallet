@@ -4,11 +4,9 @@
 import type { IconTheme } from '@polkadot/react-identicon/types';
 import type { ThemeProps } from '../types';
 
+import { toSvg } from 'jdenticon';
 import React from 'react';
 import styled from 'styled-components';
-import { toSvg } from "jdenticon";
-
-
 
 interface Props {
   className?: string;
@@ -20,18 +18,15 @@ interface Props {
 }
 
 function Identicon({ className, onCopy, value }: Props): React.ReactElement<Props> {
-    
-    const blob = new Blob([toSvg(value, 100)], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    console.log('Identicon: ', value)
-    
-    
+  const blob = new Blob([toSvg(value, 100)], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+
   return (
-      <div className={className}>
-           <img
-                className='icon'
-                src={url}
-          />
+    <div className={className}>
+      <img
+        className='icon'
+        src={url}
+      />
     </div>
   );
 }

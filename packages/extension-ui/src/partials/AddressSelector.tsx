@@ -5,11 +5,10 @@ import type { ThemeProps } from '../types';
 
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import settings from '@polkadot/ui-settings';
-
+import { SelectedTokenContext, TokenContext } from '../components';
 import useOutsideClick from '../hooks/useOutsideClick';
 import generateRandomColor from '../Popup/Utils/CommonUtils';
 
@@ -19,6 +18,9 @@ interface Props extends ThemeProps {
 
 const AddressSelector = function ({ className }: Props): React.ReactElement<Props> {
   const [showDropDown, setShowDropDown] = useState(false);
+  const { tokens } = useContext(TokenContext);
+  const { selectedToken, setSelectedToken } = useContext(SelectedTokenContext);
+
   const dropDownRef = useRef(null);
 
   useOutsideClick(dropDownRef, (): void => {
@@ -27,25 +29,15 @@ const AddressSelector = function ({ className }: Props): React.ReactElement<Prop
 
   const [selectedAddressText, setSelectedAddressText] = useState<string>();
 
-  const prefixOptions = settings.availablePrefixes
-    .filter(({ value }) => value !== -1);
-
-  const _onChangePrefix = (text: string, value: string) => {
+  const _onChangePrefix = (text: string, value: number, symbol: string) => {
     setSelectedAddressText(text);
-    settings.set({ prefix: parseInt(value, 10) });
+    setSelectedToken({ text, value, symbol });
+    setShowDropDown(false);
   };
 
   useEffect(() => {
-    if (settings.prefix === -1) {
-      settings.set({ prefix: parseInt('42', 10) });
-    }
-
-    settings.availablePrefixes.forEach(({ text, value }) => {
-      console.log('filter', text, value);
-
-      if (value === settings.prefix) { setSelectedAddressText(text); }
-    });
-  }, []);
+    setSelectedAddressText(selectedToken.text);
+  }, [selectedToken]);
 
   return (<div className={className}
     ref={dropDownRef}
@@ -66,10 +58,10 @@ const AddressSelector = function ({ className }: Props): React.ReactElement<Prop
     </div>}
     {showDropDown && <div className='addressSelector'>
       {
-        prefixOptions.map(({ text, value }) => {
+        tokens.map(({ symbol, text, value }) => {
           return (<div className='addressItem'
             key={value}
-            onClick={() => _onChangePrefix(text, `${value}`)}>
+            onClick={() => _onChangePrefix(text, value, symbol)}>
             <div className='addressColor'
               style={{ backgroundColor: generateRandomColor(text) }}/>
             {text}
