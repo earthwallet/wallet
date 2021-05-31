@@ -87,22 +87,8 @@ function Account ({ address, className, genesisHash, isExternal, isHardware, isH
       >
         {t<string>('Forget Account')}
       </Link>
-      {!isHardware && (
-        <>
-          <MenuDivider />
-          <div className='menuItem'>
-            <Dropdown
-              className='genesisSelection'
-              label=''
-              onChange={_onChangeGenesis}
-              options={genesisOptions}
-              value={genesisHash || ''}
-            />
-          </div>
-        </>
-      )}
     </>
-  ), [_onChangeGenesis, _toggleEdit, address, genesisHash, genesisOptions, isExternal, isHardware, t, type]);
+  ), [_toggleEdit, address, isExternal, t, type]);
 
   return (
     <div className={className}>
