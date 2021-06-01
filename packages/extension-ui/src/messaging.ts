@@ -128,6 +128,7 @@ export async function createAccountHardware (address: string, hardwareType: stri
 }
 
 export async function createAccountSuri (name: string, password: string, suri: string, type?: KeypairType, genesisHash?: string): Promise<boolean> {
+//   console.log('createAccountSuri', genesisHash, name, password, suri, type);
   return sendMessage('pri(accounts.create.suri)', { genesisHash, name, password, suri, type });
 }
 
@@ -135,7 +136,7 @@ export async function createSeed (length?: SeedLengths, type?: KeypairType): Pro
   return sendMessage('pri(seed.create)', { length, type });
 }
 
-export async function getAllMetatdata (): Promise<MetadataDef[]> {
+export async function getAllMetadata (): Promise<MetadataDef[]> {
   return sendMessage('pri(metadata.list)');
 }
 

@@ -3,7 +3,7 @@
 
 import type { AccountWithChildren } from '@earthwallet/extension-base/background/types';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import Account from './Account';
 
@@ -12,12 +12,6 @@ interface Props extends AccountWithChildren {
 }
 
 export default function AccountsTree({ parentName, suri, ...account }: Props): React.ReactElement<Props> {
-  useEffect(() => {
-    console.log('account', account);
-    console.log('suri', suri);
-    console.log('parentName', parentName);
-  }, [account, parentName, suri]);
-
   return (
     <>
       <Account
