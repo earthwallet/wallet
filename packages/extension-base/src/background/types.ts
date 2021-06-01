@@ -55,6 +55,7 @@ export interface TokenJson {
   text: string;
   symbol: string;
   value: number;
+  genesisHash: string;
 }
 
 export type TokensContext = {

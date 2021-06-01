@@ -3,6 +3,7 @@
 
 import type { ThemeProps } from '../types';
 
+import { TokenJson } from '@earthwallet/extension-base/background/types';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useRef, useState } from 'react';
@@ -29,9 +30,9 @@ const AddressSelector = function ({ className }: Props): React.ReactElement<Prop
 
   const [selectedAddressText, setSelectedAddressText] = useState<string>();
 
-  const _onChangePrefix = (text: string, value: number, symbol: string) => {
-    setSelectedAddressText(text);
-    setSelectedToken({ symbol, text, value });
+  const _onChangePrefix = (token: TokenJson) => {
+    setSelectedAddressText(token.text);
+    setSelectedToken(token);
     setShowDropDown(false);
   };
 
@@ -58,13 +59,13 @@ const AddressSelector = function ({ className }: Props): React.ReactElement<Prop
     </div>}
     {showDropDown && <div className='addressSelector'>
       {
-        tokens.map(({ symbol, text, value }) => {
+        tokens.map((token) => {
           return (<div className='addressItem'
-            key={value}
-            onClick={() => _onChangePrefix(text, value, symbol)}>
+            key={token.value}
+            onClick={() => _onChangePrefix(token)}>
             <div className='addressColor'
-              style={{ backgroundColor: generateRandomColor(text) }}/>
-            {text}
+              style={{ backgroundColor: generateRandomColor(token.text) }}/>
+            {token.text}
           </div>);
         })
       }

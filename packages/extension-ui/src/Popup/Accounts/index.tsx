@@ -7,7 +7,7 @@ import { Header } from '@earthwallet/extension-ui/partials';
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 
-import { AccountContext } from '../../components';
+import { AccountContext, SelectedTokenContext } from '../../components';
 import AccountsTree from './AccountsTree';
 import AddAccount from './AddAccount';
 
@@ -17,6 +17,7 @@ interface Props extends ThemeProps {
 
 function Accounts ({ className }: Props): React.ReactElement {
   const { hierarchy } = useContext(AccountContext);
+  const { selectedToken } = useContext(SelectedTokenContext);
 
   return (
     <>
@@ -29,12 +30,18 @@ function Accounts ({ className }: Props): React.ReactElement {
               showAddressDropdown
             />
             <div className={className}>
-              {hierarchy.map((json, index): React.ReactNode => (
-                <AccountsTree
-                  {...json}
-                  key={`${index}:${json.address}`}
-                />
-              ))}
+              {hierarchy
+                .filter(({ genesisHash }) => selectedToken.genesisHash.length ? genesisHash === selectedToken.genesisHash : true)
+                .map((json, index): React.ReactNode => {
+                  console.log('hierarchy', json);
+
+                  return (
+                    <AccountsTree
+                      {...json}
+                      key={`${index}:${json.address}`}
+                    />
+                  );
+                })}
             </div>
           </>
         )
