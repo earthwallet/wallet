@@ -51,20 +51,20 @@ export type AccountsContext = {
   hierarchy: AccountWithChildren[];
   master?: AccountJson;
 }
-export interface TokenJson {
+export interface NetworkJson {
   text: string;
   symbol: string;
   value: number;
   genesisHash: string;
 }
 
-export type TokensContext = {
-  tokens: TokenJson[];
+export type NetworksContext = {
+  tokens: NetworkJson[];
 }
 
-export type SelectedTokensContext = {
-  selectedToken: TokenJson;
-  setSelectedToken: any;
+export type SelectedNetworkStruct = {
+  selectedNetwork: NetworkJson;
+  setSelectedNetwork: any;
 }
 export interface AuthorizeRequest {
   id: string;

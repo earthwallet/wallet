@@ -3,13 +3,13 @@
 
 import type { ThemeProps } from '../types';
 
-import { TokenJson } from '@earthwallet/extension-base/background/types';
+import { NetworkJson } from '@earthwallet/extension-base/background/types';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import { SelectedTokenContext, TokenContext } from '../components';
+import { NetworkContext, SelectedNetworkContext } from '../components';
 import useOutsideClick from '../hooks/useOutsideClick';
 import generateRandomColor from '../Popup/Utils/CommonUtils';
 
@@ -19,8 +19,8 @@ interface Props extends ThemeProps {
 
 const AddressSelector = function ({ className }: Props): React.ReactElement<Props> {
   const [showDropDown, setShowDropDown] = useState(false);
-  const { tokens } = useContext(TokenContext);
-  const { selectedToken, setSelectedToken } = useContext(SelectedTokenContext);
+  const { tokens } = useContext(NetworkContext);
+  const { selectedNetwork, setSelectedNetwork } = useContext(SelectedNetworkContext);
 
   const dropDownRef = useRef(null);
 
@@ -30,15 +30,15 @@ const AddressSelector = function ({ className }: Props): React.ReactElement<Prop
 
   const [selectedAddressText, setSelectedAddressText] = useState<string>();
 
-  const _onChangePrefix = (token: TokenJson) => {
+  const _onChangePrefix = (token: NetworkJson) => {
     setSelectedAddressText(token.text);
-    setSelectedToken(token);
+    setSelectedNetwork(token);
     setShowDropDown(false);
   };
 
   useEffect(() => {
-    setSelectedAddressText(selectedToken.text);
-  }, [selectedToken]);
+    setSelectedAddressText(selectedNetwork.text);
+  }, [selectedNetwork]);
 
   return (<div className={className}
     ref={dropDownRef}

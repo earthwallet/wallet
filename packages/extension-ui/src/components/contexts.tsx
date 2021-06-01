@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccountsContext, AuthorizeRequest, MetadataRequest, SelectedTokensContext, SigningRequest, TokensContext } from '@earthwallet/extension-base/background/types';
+import type { AccountsContext, AuthorizeRequest, MetadataRequest, NetworksContext, SelectedNetworkStruct, SigningRequest } from '@earthwallet/extension-base/background/types';
 import type { SettingsStruct } from '@polkadot/ui-settings/types';
 import type { AvailableThemes } from './themes';
 
@@ -9,7 +9,7 @@ import React from 'react';
 
 import settings from '@polkadot/ui-settings';
 
-import { defaultTokenContext } from '../Popup/Utils/Consts';
+import { defaultNetworkContext } from '../Popup/Utils/Consts';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const noop = (): void => undefined;
@@ -23,8 +23,8 @@ const SettingsContext = React.createContext<SettingsStruct>(settings.get());
 const SigningReqContext = React.createContext<SigningRequest[]>([]);
 const ThemeSwitchContext = React.createContext<(theme: AvailableThemes) => void>(noop);
 const ToastContext = React.createContext<({show: (message: string) => void})>({ show: noop });
-const TokenContext = React.createContext<TokensContext>(defaultTokenContext);
-const SelectedTokenContext = React.createContext<SelectedTokensContext>(defaultTokenContext);
+const NetworkContext = React.createContext<NetworksContext>(defaultNetworkContext);
+const SelectedNetworkContext = React.createContext<SelectedNetworkStruct>(defaultNetworkContext);
 
 export {
   AccountContext,
@@ -36,6 +36,6 @@ export {
   SigningReqContext,
   ThemeSwitchContext,
   ToastContext,
-  TokenContext,
-  SelectedTokenContext
+  NetworkContext,
+  SelectedNetworkContext
 };

@@ -15,5 +15,5 @@ const hashes: MetadataDefBase[] = networks
     ss58Format: network.prefix
   }));
 
-hashes.push({ chain: 'Internet Computer Protocol', genesisHash: 'the_icp', icon: 'icp', ss58Format: 1234 });
+hashes.push({ chain: 'The Internet Computer', genesisHash: 'the_icp', icon: 'icp', ss58Format: 1234 });
 export default hashes;

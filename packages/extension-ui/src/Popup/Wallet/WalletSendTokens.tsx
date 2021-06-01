@@ -21,7 +21,7 @@ interface Props extends ThemeProps {
 // eslint-disable-next-line space-before-function-paren
 const WalletSendTokens = function ({ className }: Props): React.ReactElement<Props> {
   const [showTokenDropDown, setShowTokenDropDown] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<string>('DOT');
+  const [selectedNetwork, setSelectedNetwork] = useState<string>('DOT');
   const dropDownRef = useRef(null);
   const { t } = useTranslation();
 
@@ -30,7 +30,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
   });
 
   const onTokenSelected = (token: string) => {
-    setSelectedToken(token);
+    setSelectedNetwork(token);
   };
 
   return (
@@ -73,8 +73,8 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
                 src={logo}
               />
               <div className='tokenSelectionLabelDiv'>
-                <div className='tokenLabel'>{selectedToken}</div>
-                <div className='tokenBalance'>{`Balance: 100${selectedToken}`}</div>
+                <div className='tokenLabel'>{selectedNetwork}</div>
+                <div className='tokenBalance'>{`Balance: 100${selectedNetwork}`}</div>
               </div>
               <FontAwesomeIcon
                 className='dropDownIcon'

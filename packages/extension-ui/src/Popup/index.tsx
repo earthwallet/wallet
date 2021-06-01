@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccountJson, AccountsContext, AuthorizeRequest, MetadataRequest, SigningRequest, TokenJson } from '@earthwallet/extension-base/background/types';
+import type { AccountJson, AccountsContext, AuthorizeRequest, MetadataRequest, NetworkJson, SigningRequest } from '@earthwallet/extension-base/background/types';
 import type { SettingsStruct } from '@polkadot/ui-settings/types';
 
 import { PHISHING_PAGE_REDIRECT } from '@earthwallet/extension-base/defaults';
@@ -12,11 +12,11 @@ import { Route, Switch } from 'react-router';
 import uiSettings from '@polkadot/ui-settings';
 
 import { ErrorBoundary, Loading } from '../components';
-import { AccountContext, ActionContext, AuthorizeReqContext, MediaContext, MetadataReqContext, SelectedTokenContext, SettingsContext, SigningReqContext, TokenContext } from '../components/contexts';
+import { AccountContext, ActionContext, AuthorizeReqContext, MediaContext, MetadataReqContext, NetworkContext, SelectedNetworkContext, SettingsContext, SigningReqContext } from '../components/contexts';
 import ToastProvider from '../components/Toast/ToastProvider';
 import { subscribeAccounts, subscribeAuthorizeRequests, subscribeMetadataRequests, subscribeSigningRequests } from '../messaging';
 import { buildHierarchy } from '../util/buildHierarchy';
-import { defaultTokenContext } from './Utils/Consts';
+import { defaultNetworkContext } from './Utils/Consts';
 import Wallet from './Wallet/Wallet';
 import WalletReceiveTokens from './Wallet/WalletReceiveTokens';
 import WalletSendTokens from './Wallet/WalletSendTokens';
@@ -77,8 +77,8 @@ export default function Popup (): React.ReactElement {
   const [signRequests, setSignRequests] = useState<null | SigningRequest[]>(null);
   const [isWelcomeDone, setWelcomeDone] = useState(false);
   const [settingsCtx, setSettingsCtx] = useState<SettingsStruct>(startSettings);
-  const [selectedToken, setSelectedToken] = useState<TokenJson>(defaultTokenContext.selectedToken);
-  const selectedTokenValue = { selectedToken, setSelectedToken };
+  const [selectedNetwork, setSelectedNetwork] = useState<NetworkJson>(defaultNetworkContext.selectedNetwork);
+  const selectedTokenValue = { selectedNetwork, setSelectedNetwork };
 
   const _onAction = (to?: string): void => {
     setWelcomeDone(window.localStorage.getItem('welcome_read') === 'ok');
@@ -140,8 +140,8 @@ export default function Popup (): React.ReactElement {
               <MediaContext.Provider value={cameraOn && mediaAllowed}>
                 <MetadataReqContext.Provider value={metaRequests}>
                   <SigningReqContext.Provider value={signRequests}>
-                    <TokenContext.Provider value={{ tokens: defaultTokenContext.tokens }}>
-                      <SelectedTokenContext.Provider value={selectedTokenValue}>
+                    <NetworkContext.Provider value={{ tokens: defaultNetworkContext.tokens }}>
+                      <SelectedNetworkContext.Provider value={selectedTokenValue}>
                         <ToastProvider>
                           <Switch>
                             <Route path='/auth-list'>{wrapWithErrorBoundary(<AuthList />, 'auth-list')}</Route>
@@ -167,8 +167,8 @@ export default function Popup (): React.ReactElement {
                             </Route>
                           </Switch>
                         </ToastProvider>
-                      </SelectedTokenContext.Provider>
-                    </TokenContext.Provider>
+                      </SelectedNetworkContext.Provider>
+                    </NetworkContext.Provider>
                   </SigningReqContext.Provider>
                 </MetadataReqContext.Provider>
               </MediaContext.Provider>
