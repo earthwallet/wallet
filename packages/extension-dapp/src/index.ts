@@ -12,11 +12,11 @@ import { documentReadyPromise } from './util';
 const win = window as Window & InjectedWindow;
 
 // don't clobber the existing object, but ensure non-undefined
-win.injectedWeb3 = win.injectedWeb3 || {};
+win.initWeb3 = win.initWeb3 || {};
 
 // true when anything has been injected and is available
 function web3IsInjected (): boolean {
-  return Object.keys(win.injectedWeb3).length !== 0;
+  return Object.keys(win.initWeb3).length !== 0;
 }
 
 // helper to throw a consistent error when not enabled
@@ -36,7 +36,7 @@ function mapAccounts (source: string, list: InjectedAccount[], ss58Format?: numb
   });
 }
 
-// have we found a properly constructed window.injectedWeb3
+// have we found a properly constructed window.initWeb3
 let isWeb3Injected = web3IsInjected();
 
 // we keep the last promise created around (for queries)
@@ -46,7 +46,7 @@ export { isWeb3Injected, web3EnablePromise };
 
 function getWindowExtensions (originName: string): Promise<[InjectedExtensionInfo, Injected | void][]> {
   return Promise.all(
-    Object.entries(win.injectedWeb3).map(([name, { enable, version }]): Promise<[InjectedExtensionInfo, Injected | void]> =>
+    Object.entries(win.initWeb3).map(([name, { enable, version }]): Promise<[InjectedExtensionInfo, Injected | void]> =>
       Promise.all([
         Promise.resolve({ name, version }),
         enable(originName).catch((error: Error): void => {

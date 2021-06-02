@@ -105,10 +105,10 @@ interface Signer extends SignerInterface {
 
 The information contained in this section may change and evolve. It is therefore recommended that all access is done via the [@earthwallet/extension-dapp](packages/extension-dapp/) (for dapps) and [extension-inject](packages/extension-inject/) (for extensions) packages, which removes the need to work with the lower-level targets.
 
-The extension injects `injectedWeb3` into the global `window` object, exposing the following: (This is meant to be generic across extensions, allowing any dapp to utilize multiple signers, and pull accounts from multiples, as they are available.)
+The extension initializes web3 accounts by `initWeb3` into the global `window` object, exposing the following: (This is meant to be generic across extensions, allowing any dapp to utilize multiple signers, and pull accounts from multiples, as they are available.)
 
 ```js
-window.injectedWeb3 = {
+window.initWeb3 = {
   // this is the name for this extension, there could be multiples injected,
   // each with their own keys, here `earthwallet` is for this extension
   'earthwallet': {
