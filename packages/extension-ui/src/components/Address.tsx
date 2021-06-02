@@ -18,7 +18,7 @@ import styled from 'styled-components';
 
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 
-import details from '../assets/details.svg';
+//import details from '../assets/details.svg';
 import { Link } from '../components';
 import useMetadata from '../hooks/useMetadata';
 import useOutsideClick from '../hooks/useOutsideClick';
@@ -28,8 +28,8 @@ import { DEFAULT_TYPE } from '../util/defaultType';
 import getParentNameSuri from '../util/getParentNameSuri';
 import { AccountContext, SettingsContext } from './contexts';
 import Identicon from './Identicon';
-import Menu from './Menu';
-import Svg from './Svg';
+//import Menu from './Menu';
+//import Svg from './Svg';
 
 export interface Props {
   actions?: React.ReactNode;
@@ -103,7 +103,7 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
   const [moveMenuUp, setIsMovedMenu] = useState(false);
   const actionsRef = useRef<HTMLDivElement>(null);
   const { show } = useToast();
-
+  console.log(moveMenuUp);
   useOutsideClick(actionsRef, () => (showActionsMenu && setShowActionsMenu(!showActionsMenu)));
 
   useEffect((): void => {
@@ -145,7 +145,7 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
         : 'polkadot'
   ) as IconTheme;
 
-  const _onClick = useCallback((): void => setShowActionsMenu(!showActionsMenu), [showActionsMenu]);
+//  const _onClick = useCallback((): void => setShowActionsMenu(!showActionsMenu), [showActionsMenu]);
   const _onCopy = useCallback((): void => show(t('Copied')), [show, t]);
 
   const Name = () => {
