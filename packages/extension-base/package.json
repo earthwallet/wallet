@@ -13,6 +13,6 @@
     "@polkadot/api": "^4.9.3-11",
     "@polkadot/keyring": "^6.3.2-10",
     "@polkadot/phishing": "^0.6.137",
-    "@polkadot/ui-keyring": "^0.75.2-1"
+    "@earthwallet/ui-keyring": "^0.75.2-1"
   }
 }

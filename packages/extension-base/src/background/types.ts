@@ -7,7 +7,7 @@ import type { InjectedAccount, InjectedMetadataKnown, MetadataDef, ProviderList,
 import type { KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@polkadot/keyring/types';
 import type { JsonRpcResponse } from '@polkadot/rpc-provider/types';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
-import type { KeyringPairs$Json } from '@polkadot/ui-keyring/types';
+import type { KeyringPairs$Json } from '@earthwallet/ui-keyring/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 
 import { TypeRegistry } from '@polkadot/types';

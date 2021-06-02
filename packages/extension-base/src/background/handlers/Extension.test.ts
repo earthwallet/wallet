@@ -11,7 +11,7 @@ import { MetadataDef } from '@earthwallet/extension-inject/types';
 
 import { KeyringPair } from '@polkadot/keyring/types';
 import { TypeRegistry } from '@polkadot/types';
-import keyring from '@polkadot/ui-keyring';
+import keyring from '@earthwallet/ui-keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 import { AccountsStore } from '../../stores';

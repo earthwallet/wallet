@@ -5,7 +5,7 @@ import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, MessageT
 import type { Message } from '@earthwallet/extension-base/types';
 import type { Chain } from '@earthwallet/extension-chains/types';
 import type { KeyringPair$Json } from '@polkadot/keyring/types';
-import type { KeyringPairs$Json } from '@polkadot/ui-keyring/types';
+import type { KeyringPairs$Json } from '@earthwallet/ui-keyring/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 
 import { PORT_EXTENSION } from '@earthwallet/extension-base/defaults';

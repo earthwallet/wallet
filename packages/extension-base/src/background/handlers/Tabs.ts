@@ -5,15 +5,15 @@ import type { InjectedAccount, InjectedMetadataKnown, MetadataDef, ProviderMeta 
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { JsonRpcResponse } from '@polkadot/rpc-provider/types';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
-import type { SubjectInfo } from '@polkadot/ui-keyring/observable/types';
+import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
 import type { MessageTypes, RequestAccountList, RequestAuthorizeTab, RequestRpcSend, RequestRpcSubscribe, RequestRpcUnsubscribe, RequestTypes, ResponseRpcListProviders, ResponseSigning, ResponseTypes, SubscriptionMessageTypes } from '../types';
 
 import { PHISHING_PAGE_REDIRECT } from '@earthwallet/extension-base/defaults';
 import { canDerive } from '@earthwallet/extension-base/utils';
 
 import { checkIfDenied } from '@polkadot/phishing';
-import keyring from '@polkadot/ui-keyring';
-import { accounts as accountsObservable } from '@polkadot/ui-keyring/observable/accounts';
+import keyring from '@earthwallet/ui-keyring';
+import { accounts as accountsObservable } from '@earthwallet/ui-keyring/observable/accounts';
 import { assert, isNumber } from '@polkadot/util';
 
 import RequestBytesSign from '../RequestBytesSign';
