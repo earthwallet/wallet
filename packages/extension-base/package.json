@@ -12,7 +12,9 @@
     "@earthwallet/extension-inject": "^0.37.3-19",
     "@polkadot/api": "^4.9.3-11",
     "@polkadot/keyring": "^6.3.2-10",
-    "@polkadot/phishing": "^0.6.137",
-    "@earthwallet/ui-keyring": "^0.75.2-1"
+    "@polkadot/phishing": "^0.6.137"
+  },
+  "peerDependencies": {
+    "@earthwallet/ui-keyring": "*"
   }
 }
