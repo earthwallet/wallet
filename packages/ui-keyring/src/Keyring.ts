@@ -64,7 +64,7 @@ export class Keyring extends Base implements KeyringStruct {
     };
   }
 
-  public addUri (suri: string, password?: string, meta: KeyringPair$Meta = {}, type?: KeypairType): CreateResult {
+  public addUri (suri: string, password?: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol? : string): CreateResult {
     const pair = this.keyring.addFromUri(suri, meta, type);
 
     return {

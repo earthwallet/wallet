@@ -193,6 +193,7 @@ export interface RequestAccountCreateSuri {
   password: string;
   suri: string;
   type?: KeypairType;
+  symbol?: string;
 }
 
 export interface RequestAccountCreateHardware {

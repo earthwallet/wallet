@@ -127,9 +127,9 @@ export async function createAccountHardware (address: string, hardwareType: stri
   return sendMessage('pri(accounts.create.hardware)', { accountIndex, address, addressOffset, genesisHash, hardwareType, name });
 }
 
-export async function createAccountSuri (name: string, password: string, suri: string, type?: KeypairType, genesisHash?: string): Promise<boolean> {
+export async function createAccountSuri (name: string, password: string, suri: string, type?: KeypairType, genesisHash?: string, symbol?:string): Promise<boolean> {
 //   console.log('createAccountSuri', genesisHash, name, password, suri, type);
-  return sendMessage('pri(accounts.create.suri)', { genesisHash, name, password, suri, type });
+  return sendMessage('pri(accounts.create.suri)', { genesisHash, name, password, suri, type, symbol });
 }
 
 export async function createSeed (length?: SeedLengths, type?: KeypairType): Promise<{ address: string; seed: string }> {
