@@ -143,6 +143,10 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
   position: relative;
   margin-bottom: 25px;
 
+  background: linear-gradient(101.54deg, #000204 10.81%, #1B63A6 139.52%);
+  box-shadow: 0px 0px 8px #236EFF, 0px 0px 13px rgba(43, 115, 255, 0.8), 0px 0px 54px rgba(71, 134, 255, 0.8);
+  border-radius: 0px 0px 20px 20px;
+
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
@@ -158,7 +162,6 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
     display: flex;
     justify-content: space-between;
     width: 100%;
-    border-bottom: 1px solid ${theme.inputBorderColor};
     min-height: 70px;
 
     .branding {
@@ -170,17 +173,17 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
       text-align: center;
       margin-left: 24px;
 
-      .header-logo {
-        height: 28px;
-        width: 28px;
-      }
-
       .logoText {
         color: ${theme.textColor};
         font-family: ${theme.fontFamily};
         font-size: 18px;
         margin-left: 12px;
       }
+
+      .header-logo {
+        height: 28px;
+        width: 28px;
+        }
     }
 
     .addressDropdown select{
