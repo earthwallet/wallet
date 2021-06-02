@@ -3,7 +3,6 @@
 
 import type { AccountJson } from '@earthwallet/extension-base/background/types';
 
-import { canDerive } from '@earthwallet/extension-base/utils';
 import { ThemeProps } from '@earthwallet/extension-ui/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
@@ -52,14 +51,6 @@ function Account ({ address, className, genesisHash, isExternal, isHidden, name,
       >
         {t<string>('Rename')}
       </Link>
-      {!isExternal && canDerive(type) && (
-        <Link
-          className='menuItem'
-          to={`/account/derive/${address}/locked`}
-        >
-          {t<string>('Derive New Account')}
-        </Link>
-      )}
       <MenuDivider />
       {!isExternal && (
         <Link
@@ -78,7 +69,7 @@ function Account ({ address, className, genesisHash, isExternal, isHidden, name,
         {t<string>('Forget Account')}
       </Link>
     </>
-  ), [_toggleEdit, address, isExternal, t, type]);
+  ), [_toggleEdit, address, isExternal, t]);
 
   return (
     <div className={className}>

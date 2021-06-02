@@ -3,7 +3,7 @@
 
 import type { ThemeProps } from '../types';
 
-import { faArrowLeft, faCog, faEllipsisV, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCog, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -91,7 +91,7 @@ function Header ({ children, className = '', showAdd, showAddressDropdown, showB
             >
               <FontAwesomeIcon
                 className={`plusIcon ${isAddOpen ? 'selected' : ''}`}
-                icon={faPlusCircle}
+                icon={faEllipsisV}
                 size='lg'
               />
             </div>

@@ -3,12 +3,12 @@
 
 import type { ThemeProps } from '../types';
 
-import { faCodeBranch, faFileExport, faFileUpload, faKey, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faFileExport, faFileUpload, faKey, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 
-import { AccountContext, Link, Menu, MenuDivider, MenuItem } from '../components';
+import { Link, Menu, MenuDivider, MenuItem } from '../components';
 import useIsPopup from '../hooks/useIsPopup';
 import useTranslation from '../hooks/useTranslation';
 import { windowOpen } from '../messaging';
@@ -22,7 +22,6 @@ const jsonPath = '/account/restore-json';
 
 function MenuAdd ({ className, reference }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { master } = useContext(AccountContext);
   const isPopup = useIsPopup();
 
   const _openJson = useCallback(
@@ -41,17 +40,6 @@ function MenuAdd ({ className, reference }: Props): React.ReactElement<Props> {
         </Link>
       </MenuItem>
       <MenuDivider />
-      {!!master && (
-        <>
-          <MenuItem className='menuItem'>
-            <Link to={`/account/derive/${master.address}`}>
-              <FontAwesomeIcon icon={faCodeBranch} />
-              <span>{t('Derive from an account')}</span>
-            </Link>
-          </MenuItem>
-          <MenuDivider />
-        </>
-      )}
       <MenuItem className='menuItem'>
         <Link to={'/account/export-all'}>
           <FontAwesomeIcon icon={faFileExport} />

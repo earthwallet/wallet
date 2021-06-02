@@ -19,6 +19,7 @@ import styled from 'styled-components';
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 
 import details from '../assets/details.svg';
+import { Link } from '../components';
 import useMetadata from '../hooks/useMetadata';
 import useOutsideClick from '../hooks/useOutsideClick';
 import useToast from '../hooks/useToast';
@@ -175,100 +176,83 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
 
   return (
     <div className={className}>
-      <div className='infoRow'>
-        <Identicon
-          className='identityIcon'
-          iconTheme={theme}
-          isExternal={isExternal}
-          onCopy={_onCopy}
-          prefix={prefix}
-          value={formatted || address}
-        />
-        <div className='info'>
-          {parentName
-            ? (
-              <>
-                <div className='banner'>
-                  <FontAwesomeIcon
-                    className='deriveIcon'
-                    icon={faCodeBranch}
-                  />
-                  <div
-                    className='parentName'
-                    data-field='parent'
-                    title = {parentNameSuri}
-                  >
-                    {parentNameSuri}
+
+      <Link to='/wallet/home'>
+        <div className='infoRow'>
+          <Identicon
+            className='identityIcon'
+            iconTheme={theme}
+            isExternal={isExternal}
+            onCopy={_onCopy}
+            prefix={prefix}
+            value={formatted || address}
+          />
+          <div className='info'>
+            {parentName
+              ? (
+                <>
+                  <div className='banner'>
+                    <FontAwesomeIcon
+                      className='deriveIcon'
+                      icon={faCodeBranch}
+                    />
+                    <div
+                      className='parentName'
+                      data-field='parent'
+                      title = {parentNameSuri}
+                    >
+                      {parentNameSuri}
+                    </div>
                   </div>
-                </div>
-                <div className='name displaced'>
+                  <div className='name displaced'>
+                    <Name/>
+                  </div>
+                </>
+              )
+              : (
+                <div
+                  className='name'
+                  data-field='name'
+                >
                   <Name/>
                 </div>
-              </>
-            )
-            : (
+              )
+            }
+            {chain?.genesisHash && (
               <div
-                className='name'
-                data-field='name'
+                className='banner chain'
+                data-field='chain'
+                style={
+                  chain.definition.color
+                    ? { backgroundColor: chain.definition.color }
+                    : undefined
+                }
               >
-                <Name/>
+                {chain.name.replace(' Relay Chain', '')}
               </div>
-            )
-          }
-          {chain?.genesisHash && (
-            <div
-              className='banner chain'
-              data-field='chain'
-              style={
-                chain.definition.color
-                  ? { backgroundColor: chain.definition.color }
-                  : undefined
-              }
-            >
-              {chain.name.replace(' Relay Chain', '')}
+            )}
+            <div className='addressDisplay'>
+              <div
+                className='fullAddress'
+                data-field='address'
+              >
+                {formatted || address || t('<unknown>')}
+              </div>
+              <CopyToClipboard
+                text={(formatted && formatted) || ''} >
+                <FontAwesomeIcon
+                  className='copyIcon'
+                  icon={faCopy}
+                  onClick={_onCopy}
+                  size='sm'
+                  title={t('copy address')}
+                />
+              </CopyToClipboard>
             </div>
-          )}
-          <div className='addressDisplay'>
-            <div
-              className='fullAddress'
-              data-field='address'
-            >
-              {formatted || address || t('<unknown>')}
-            </div>
-            <CopyToClipboard
-              text={(formatted && formatted) || ''} >
-              <FontAwesomeIcon
-                className='copyIcon'
-                icon={faCopy}
-                onClick={_onCopy}
-                size='sm'
-                title={t('copy address')}
-              />
-            </CopyToClipboard>
           </div>
         </div>
-        {actions && (
-          <>
-            <div
-              className='settings'
-              onClick={_onClick}
-            >
-              <Svg
-                className={`detailsIcon ${showActionsMenu ? 'active' : ''}`}
-                src={details}
-              />
-            </div>
-            {showActionsMenu && (
-              <Menu
-                className={`movableMenu ${moveMenuUp ? 'isMoved' : ''}`}
-                reference={actionsRef}
-              >
-                {actions}
-              </Menu>
-            )}
-          </>
-        )}
-      </div>
+      </Link>
+
       {children}
     </div>
   );
@@ -302,12 +286,11 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     display: flex;
     justify-content: space-between;
     position: relative;
-    max-width: 220px;
+    max-width: 300px;
 
     .svg-inline--fa {
       width: 14px;
       height: 14px;
-      margin-right: 10px;
       color: ${theme.accountDotsIconColor};
       &:hover {
         color: ${theme.labelColor};
@@ -356,6 +339,11 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     align-items: center;
     height: 72px;
     border-radius: 4px;
+    cursor: pointer;
+    &:hover {
+        background-color: ${theme.buttonBackgroundHover};
+        cursor: pointer;
+    }
   }
 
   img {
@@ -370,7 +358,7 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     margin: 2px 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 194px;
+    max-width: 244px;
     white-space: nowrap;
 
     &.displaced {
@@ -423,30 +411,6 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     &.isMoved {
       top: auto;
       bottom: 0;
-    }
-  }
-
-  .settings {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 40px;
-
-    &:before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 25%;
-      bottom: 25%;
-      width: 1px;
-      background: ${theme.boxBorderColor};
-    }
-
-    &:hover {
-      cursor: pointer;
-      background: ${theme.readonlyInputBackground};
     }
   }
 `);
