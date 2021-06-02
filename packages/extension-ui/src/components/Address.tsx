@@ -4,7 +4,7 @@
 import type { AccountJson, AccountWithChildren } from '@earthwallet/extension-base/background/types';
 import type { Chain } from '@earthwallet/extension-chains/types';
 import type { IconTheme } from '@polkadot/react-identicon/types';
-import type { SettingsStruct } from '@polkadot/ui-settings/types';
+import type { SettingsStruct } from '@earthwallet/ui-settings/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { ThemeProps } from '../types';
 

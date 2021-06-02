@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { AccountsContext, AuthorizeRequest, MetadataRequest, NetworksContext, SelectedNetworkStruct, SigningRequest } from '@earthwallet/extension-base/background/types';
-import type { SettingsStruct } from '@polkadot/ui-settings/types';
+import type { SettingsStruct } from '@earthwallet/ui-settings/types';
 import type { AvailableThemes } from './themes';
 
 import React from 'react';
 
-import settings from '@polkadot/ui-settings';
+import settings from '@earthwallet/ui-settings';
 
 import { defaultNetworkContext } from '../Popup/Utils/Consts';
 

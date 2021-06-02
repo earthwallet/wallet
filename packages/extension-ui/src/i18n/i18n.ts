@@ -4,7 +4,7 @@
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import uiSettings from '@polkadot/ui-settings';
+import uiSettings from '@earthwallet/ui-settings';
 
 import Backend from './Backend';
 

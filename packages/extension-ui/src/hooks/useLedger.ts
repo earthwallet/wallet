@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Ledger } from '@polkadot/hw-ledger';
 import { Network } from '@polkadot/networks/types';
-import uiSettings from '@polkadot/ui-settings';
+import uiSettings from '@earthwallet/ui-settings';
 import { assert } from '@polkadot/util';
 
 import ledgerChains from '../util/legerChains';

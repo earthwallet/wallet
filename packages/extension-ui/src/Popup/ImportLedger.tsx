@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import settings from '@polkadot/ui-settings';
+import settings from '@earthwallet/ui-settings';
 
 import { ActionContext, Address, Button, ButtonArea, Dropdown, VerticalSpace, Warning } from '../components';
 import { useLedger } from '../hooks/useLedger';
