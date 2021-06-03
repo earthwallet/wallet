@@ -59,9 +59,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
           <div className='topBarDivCenterItem'>Add Recipient</div>
           <div className='topBarDivSideItem topBarDivCancelItem'>
             <Link className='topBarDivCancelItem'
-              to='/'>
-                          Cancel
-            </Link>
+              to='/wallet/home'>Cancel</Link>
           </div>
         </div>
 

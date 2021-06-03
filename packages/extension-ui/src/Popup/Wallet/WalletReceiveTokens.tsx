@@ -36,7 +36,7 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
           <div className='topBarDivCenterItem'>Receive Tokens</div>
           <div className='topBarDivSideItem topBarDivCancelItem'>
             <Link className='topBarDivCancelItem'
-              to='/'>Cancel</Link>
+              to='/wallet/home'>Cancel</Link>
           </div>
         </div>
         <div className='accountDetail'>
