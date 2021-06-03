@@ -88,7 +88,7 @@ function recodeAddress (address: string, accounts: AccountWithChildren[], chain:
 const ACCOUNTS_SCREEN_HEIGHT = 550;
 const defaultRecoded = { account: null, formatted: null, prefix: 42, type: DEFAULT_TYPE };
 
-function Address ({ address, children, className, genesisHash, isExternal, isHardware, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
+function Address ({ address, children, className, genesisHash, isExternal, isFromAccount, isHardware, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
   const settings = useContext(SettingsContext);
@@ -232,7 +232,7 @@ function Address ({ address, children, className, genesisHash, isExternal, isHar
 
   return (
     <div className={className}>
-      {name &&
+      {isFromAccount &&
               (<Link
                 className='addressLink'
                 onClick={() => address
@@ -253,7 +253,7 @@ function Address ({ address, children, className, genesisHash, isExternal, isHar
       }
 
       {
-        !name && getAddressComponent()
+        !isFromAccount && getAddressComponent()
       }
 
       {children}
@@ -350,7 +350,6 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     align-items: center;
     height: 72px;
     border-radius: 4px;
-    cursor: pointer;
   }
 
   img {

@@ -79,6 +79,7 @@ function Account ({ address, className, genesisHash, isExternal, isHidden, name,
         className='address'
         genesisHash={genesisHash}
         isExternal={isExternal}
+        isFromAccount
         isHidden={isHidden}
         name={editedName}
         parentName={parentName}
