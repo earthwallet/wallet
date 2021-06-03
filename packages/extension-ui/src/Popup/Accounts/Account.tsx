@@ -22,7 +22,7 @@ interface EditState {
   toggleActions: number;
 }
 
-function Account ({ address, className, genesisHash, isExternal, isHidden, name, parentName, suri, type }: Props): React.ReactElement<Props> {
+function Account ({ address, className, genesisHash, isExternal, isHidden, name, parentName, suri }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const [{ isEditing, toggleActions }, setEditing] = useState<EditState>({ isEditing: false, toggleActions: 0 });
   const [editedName, setName] = useState<string | undefined | null>(name);

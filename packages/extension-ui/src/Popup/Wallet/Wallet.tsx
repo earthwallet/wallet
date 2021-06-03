@@ -25,11 +25,13 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const { selectedAccount } = useContext(SelectedAccountContext);
 
   const getNetworkLogo = () => {
-    if (selectedAccount?.genesisHash == null) { return; }
+    if (selectedAccount?.genesisHash == null) { return icpLogo; }
 
     if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'ICP') return icpLogo;
     if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'DOT') return dotLogo;
     if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'KSM') return ksmLogo;
+
+    return icpLogo;
   };
 
   return (

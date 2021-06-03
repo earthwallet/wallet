@@ -3,7 +3,6 @@
 
 import type { AccountJson, AccountWithChildren } from '@earthwallet/extension-base/background/types';
 import type { Chain } from '@earthwallet/extension-chains/types';
-import type { IconTheme } from '@polkadot/react-identicon/types';
 import type { SettingsStruct } from '@polkadot/ui-settings/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { ThemeProps } from '../types';
@@ -26,7 +25,6 @@ import useTranslation from '../hooks/useTranslation';
 import { DEFAULT_TYPE } from '../util/defaultType';
 import getParentNameSuri from '../util/getParentNameSuri';
 import { AccountContext, SelectedAccountContext, SettingsContext } from './contexts';
-import Identicon from './Identicon';
 
 export interface Props {
   actions?: React.ReactNode;
@@ -94,10 +92,10 @@ function Address ({ address, children, className, genesisHash, isExternal, isHar
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
   const settings = useContext(SettingsContext);
-  const [{ account, formatted, genesisHash: recodedGenesis, prefix, type }, setRecoded] = useState<Recoded>(defaultRecoded);
+  const [{ account, formatted, genesisHash: recodedGenesis, type }, setRecoded] = useState<Recoded>(defaultRecoded);
   const chain = useMetadata(genesisHash || recodedGenesis, true);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
-  const [moveMenuUp, setIsMovedMenu] = useState(false);
+  const [, setIsMovedMenu] = useState(false);
   const actionsRef = useRef<HTMLDivElement>(null);
   const { show } = useToast();
 
@@ -136,14 +134,6 @@ function Address ({ address, children, className, genesisHash, isExternal, isHar
     setShowActionsMenu(false);
   }, [toggleActions]);
 
-  const theme = (
-    chain?.icon
-      ? chain.icon
-      : type === 'ethereum'
-        ? 'ethereum'
-        : 'polkadot'
-  ) as IconTheme;
-
   const _onCopy = useCallback((): void => show(t('Copied')), [show, t]);
 
   const Name = () => {
@@ -174,14 +164,6 @@ function Address ({ address, children, className, genesisHash, isExternal, isHar
 
   const getAddressComponent = () => {
     return (<div className='infoRow'>
-      <Identicon
-        className='identityIcon'
-        iconTheme={theme}
-        isExternal={isExternal}
-        onCopy={_onCopy}
-        prefix={prefix}
-        value={formatted || address}
-      />
       <div className='info'>
         {parentName
           ? (
@@ -357,7 +339,8 @@ export default styled(Address)(({ theme }: ThemeProps) => `
   }
 
   .info {
-    max-width: 248px;
+    max-width: 348px;
+    padding-left: 16px;
   }
 
   .infoRow {

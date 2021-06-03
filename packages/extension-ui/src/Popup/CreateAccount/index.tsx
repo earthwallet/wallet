@@ -1,6 +1,7 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { genesisSymbolMap } from '@earthwallet/extension-ui/util/chains';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -26,7 +27,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
   const type = DEFAULT_TYPE;
   const [name, setName] = useState('');
   const options = useGenesisHashOptions();
-  const [genesis, setGenesis] = useState('');
+  const [genesis, setGenesis] = useState(genesisSymbolMap.ICP);
 
   useEffect((): void => {
     createSeed(undefined, type)
