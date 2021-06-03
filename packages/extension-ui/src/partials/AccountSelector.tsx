@@ -11,6 +11,7 @@ import styled from 'styled-components';
 
 import { AccountContext, SelectedAccountContext } from '../components';
 import useOutsideClick from '../hooks/useOutsideClick';
+import generateRandomColor from '../Popup/Utils/CommonUtils';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -48,6 +49,8 @@ const AccountSelector = function ({ className }: Props): React.ReactElement<Prop
     {selectedAccountText && <div className='selectedAccountDiv'>
       <div className='selectedAccount'
         onClick={() => accounts.length > 1 ? setShowDropDown((status) => !status) : {}}>
+        {selectedAccount?.genesisHash && <div className='networkColor'
+          style={{ backgroundColor: generateRandomColor(selectedAccount?.genesisHash) }}/>}
         {getShortAddress(selectedAccountText)}
         {accounts.length > 1 && (<FontAwesomeIcon
           className='dropDownIcon'
@@ -63,6 +66,8 @@ const AccountSelector = function ({ className }: Props): React.ReactElement<Prop
           return (<div className='addressItem'
             key={account.address}
             onClick={() => _onChangePrefix(account)}>
+            {account?.genesisHash && <div className='networkColor'
+              style={{ backgroundColor: generateRandomColor(account?.genesisHash) }}/>}
             {getShortAddress(account.address)}
           </div>);
         })
@@ -82,6 +87,14 @@ export default styled(AccountSelector)(({ theme }: Props) => `
     justify-content: center;
     align-items: center;
   }
+
+    .networkColor {
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+  }
+
 
   .dropDownIcon {
     margin-left: 6px;
