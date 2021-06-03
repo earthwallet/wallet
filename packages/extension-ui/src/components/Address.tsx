@@ -18,7 +18,6 @@ import styled from 'styled-components';
 
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 
-import details from '../assets/details.svg';
 import { Link } from '../components';
 import useMetadata from '../hooks/useMetadata';
 import useOutsideClick from '../hooks/useOutsideClick';
@@ -26,10 +25,8 @@ import useToast from '../hooks/useToast';
 import useTranslation from '../hooks/useTranslation';
 import { DEFAULT_TYPE } from '../util/defaultType';
 import getParentNameSuri from '../util/getParentNameSuri';
-import { AccountContext, SettingsContext } from './contexts';
+import { AccountContext, SelectedAccountContext, SettingsContext } from './contexts';
 import Identicon from './Identicon';
-import Menu from './Menu';
-import Svg from './Svg';
 
 export interface Props {
   actions?: React.ReactNode;
@@ -93,7 +90,7 @@ function recodeAddress (address: string, accounts: AccountWithChildren[], chain:
 const ACCOUNTS_SCREEN_HEIGHT = 550;
 const defaultRecoded = { account: null, formatted: null, prefix: 42, type: DEFAULT_TYPE };
 
-function Address ({ actions, address, children, className, genesisHash, isExternal, isHardware, isHidden, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
+function Address ({ address, children, className, genesisHash, isExternal, isHardware, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
   const settings = useContext(SettingsContext);
@@ -103,6 +100,8 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
   const [moveMenuUp, setIsMovedMenu] = useState(false);
   const actionsRef = useRef<HTMLDivElement>(null);
   const { show } = useToast();
+
+  const { setSelectedAccount } = useContext(SelectedAccountContext);
 
   useOutsideClick(actionsRef, () => (showActionsMenu && setShowActionsMenu(!showActionsMenu)));
 
@@ -145,7 +144,6 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
         : 'polkadot'
   ) as IconTheme;
 
-  const _onClick = useCallback((): void => setShowActionsMenu(!showActionsMenu), [showActionsMenu]);
   const _onCopy = useCallback((): void => show(t('Copied')), [show, t]);
 
   const Name = () => {
@@ -174,84 +172,107 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
 
   const parentNameSuri = getParentNameSuri(parentName, suri);
 
+  const getAddressComponent = () => {
+    return (<div className='infoRow'>
+      <Identicon
+        className='identityIcon'
+        iconTheme={theme}
+        isExternal={isExternal}
+        onCopy={_onCopy}
+        prefix={prefix}
+        value={formatted || address}
+      />
+      <div className='info'>
+        {parentName
+          ? (
+            <>
+              <div className='banner'>
+                <FontAwesomeIcon
+                  className='deriveIcon'
+                  icon={faCodeBranch}
+                />
+                <div
+                  className='parentName'
+                  data-field='parent'
+                  title={parentNameSuri}
+                >
+                  {parentNameSuri}
+                </div>
+              </div>
+              <div className='name displaced'>
+                <Name />
+              </div>
+            </>
+          )
+          : (
+            <div
+              className='name'
+              data-field='name'
+            >
+              <Name />
+            </div>
+          )
+        }
+        {chain?.genesisHash && (
+          <div
+            className='banner chain'
+            data-field='chain'
+            style={
+              chain.definition.color
+                ? { backgroundColor: chain.definition.color }
+                : undefined
+            }
+          >
+            {chain.name.replace(' Relay Chain', '')}
+          </div>
+        )}
+        <div className='addressDisplay'>
+          <div
+            className='fullAddress'
+            data-field='address'
+          >
+            {formatted || address || t('<unknown>')}
+          </div>
+          <CopyToClipboard
+            text={(formatted && formatted) || ''} >
+            <FontAwesomeIcon
+              className='copyIcon'
+              icon={faCopy}
+              onClick={_onCopy}
+              size='sm'
+              title={t('copy address')}
+            />
+          </CopyToClipboard>
+        </div>
+      </div>
+    </div>);
+  };
+
   return (
     <div className={className}>
+      {name &&
+              (<Link
+                className='addressLink'
+                onClick={() => address
+                  ? setSelectedAccount({
+                    address,
+                    genesisHash,
+                    isExternal: isExternal || undefined,
+                    isHardware: isHardware || undefined,
+                    name: name || undefined,
+                    suri,
+                    type
+                  })
+                  : {}}
+                to={address ? `/wallet/home/${address}` : '/wallet/home'}>
+                { getAddressComponent()}
+              </Link>
+              )
+      }
 
-      <Link to='/wallet/home'>
-        <div className='infoRow'>
-          <Identicon
-            className='identityIcon'
-            iconTheme={theme}
-            isExternal={isExternal}
-            onCopy={_onCopy}
-            prefix={prefix}
-            value={formatted || address}
-          />
-          <div className='info'>
-            {parentName
-              ? (
-                <>
-                  <div className='banner'>
-                    <FontAwesomeIcon
-                      className='deriveIcon'
-                      icon={faCodeBranch}
-                    />
-                    <div
-                      className='parentName'
-                      data-field='parent'
-                      title = {parentNameSuri}
-                    >
-                      {parentNameSuri}
-                    </div>
-                  </div>
-                  <div className='name displaced'>
-                    <Name/>
-                  </div>
-                </>
-              )
-              : (
-                <div
-                  className='name'
-                  data-field='name'
-                >
-                  <Name/>
-                </div>
-              )
-            }
-            {chain?.genesisHash && (
-              <div
-                className='banner chain'
-                data-field='chain'
-                style={
-                  chain.definition.color
-                    ? { backgroundColor: chain.definition.color }
-                    : undefined
-                }
-              >
-                {chain.name.replace(' Relay Chain', '')}
-              </div>
-            )}
-            <div className='addressDisplay'>
-              <div
-                className='fullAddress'
-                data-field='address'
-              >
-                {formatted || address || t('<unknown>')}
-              </div>
-              <CopyToClipboard
-                text={(formatted && formatted) || ''} >
-                <FontAwesomeIcon
-                  className='copyIcon'
-                  icon={faCopy}
-                  onClick={_onCopy}
-                  size='sm'
-                  title={t('copy address')}
-                />
-              </CopyToClipboard>
-            </div>
-          </div>
-        </div>
-      </Link>
+      {
+        !name && getAddressComponent()
+      }
 
       {children}
     </div>
@@ -279,6 +300,13 @@ export default styled(Address)(({ theme }: ThemeProps) => `
       padding: 0.1rem 0.5rem 0.1rem 0.75rem;
       right: 0;
       z-index: 1;
+    }
+  }
+
+  .addressLink {
+      &:hover {
+        background-color: ${theme.buttonBackgroundHover};
+        cursor: pointer;
     }
   }
 
@@ -340,10 +368,6 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     height: 72px;
     border-radius: 4px;
     cursor: pointer;
-    &:hover {
-        background-color: ${theme.buttonBackgroundHover};
-        cursor: pointer;
-    }
   }
 
   img {

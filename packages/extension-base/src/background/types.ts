@@ -51,6 +51,13 @@ export type AccountsContext = {
   hierarchy: AccountWithChildren[];
   master?: AccountJson;
 }
+
+type SelectedAccountSetter = (selectedAccount: AccountJson) => void;
+
+export type SelectedAccountStruct = {
+  selectedAccount?: AccountJson;
+  setSelectedAccount: SelectedAccountSetter;
+}
 export interface NetworkJson {
   text: string;
   symbol: string;
@@ -59,12 +66,14 @@ export interface NetworkJson {
 }
 
 export type NetworksContext = {
-  tokens: NetworkJson[];
+  networks: NetworkJson[];
 }
+
+type SelectedNetworkSetter = (selectedNetwork: NetworkJson) => void;
 
 export type SelectedNetworkStruct = {
   selectedNetwork: NetworkJson;
-  setSelectedNetwork: any;
+  setSelectedNetwork: SelectedNetworkSetter;
 }
 export interface AuthorizeRequest {
   id: string;

@@ -11,9 +11,10 @@ import styled from 'styled-components';
 import logo from '../assets/icon.png';
 import Link from '../components/Link';
 import useOutsideClick from '../hooks/useOutsideClick';
-import AddressSelector from './AddressSelector';
+import AccountSelector from './AccountSelector';
 import MenuAdd from './MenuAdd';
 import MenuSettings from './MenuSettings';
+import NetworkSelector from './NetworkSelector';
 
 interface Props extends ThemeProps {
   children?: React.ReactNode;
@@ -23,11 +24,12 @@ interface Props extends ThemeProps {
   showBackArrow?: boolean;
   showSettings?: boolean;
   smallMargin?: boolean;
-  showAddressDropdown?: boolean;
+  showNetworkDropdown?: boolean;
   text?: React.ReactNode;
+  showAccountsDropdown?: boolean;
 }
 
-function Header ({ children, className = '', showAdd, showAddressDropdown, showBackArrow, showMenu, showSettings, smallMargin = false, text }: Props): React.ReactElement<Props> {
+function Header ({ children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text }: Props): React.ReactElement<Props> {
   const [isAddOpen, setShowAdd] = useState(false);
   const [isSettingsOpen, setShowSettings] = useState(false);
   const addRef = useRef(null);
@@ -81,7 +83,8 @@ function Header ({ children, className = '', showAdd, showAddressDropdown, showB
           {text && <span className='logoText'>{text || 'Earth Wallet'}</span>}
         </div>
 
-        {showAddressDropdown && (<AddressSelector/>)}
+        {showNetworkDropdown && (<NetworkSelector/>)}
+        {showAccountsDropdown && (<AccountSelector/>)}
 
         <div className='popupMenus'>
           {showAdd && (
@@ -183,6 +186,14 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
       .header-logo {
         height: 28px;
         width: 28px;
+        border-radius: 50%;
+        background-color: #1B63A6;
+        &:hover {
+            cursor: pointer;
+            -moz-box-shadow: 0 0 5px 5px rgba(43, 115, 255, 0.7);
+            -webkit-box-shadow: 0 0 5px 5px rgba(43, 115, 255, 0.7);
+            box-shadow: 0 0 5px 5px rgba(43, 115, 255, 0.7);
+        }
         }
     }
 

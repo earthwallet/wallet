@@ -4,13 +4,16 @@
 import type { ThemeProps } from '../../types';
 
 import { Header } from '@earthwallet/extension-ui/partials';
+import { symbolGenesisMap } from '@earthwallet/extension-ui/util/chains';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 
-import logo from '../../assets/polkadot-new-dot-logo.svg';
-import { Link } from '../../components';
+import icpLogo from '../../assets/icp-logo.png';
+import ksmLogo from '../../assets/kusama-ksm-logo.svg';
+import dotLogo from '../../assets/polkadot-new-dot-logo.svg';
+import { Link, SelectedAccountContext } from '../../components';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -19,16 +22,27 @@ interface Props extends ThemeProps {
 // eslint-disable-next-line space-before-function-paren
 const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const [selectedTab, setSelectedTab] = useState('Assets');
+  const { selectedAccount } = useContext(SelectedAccountContext);
+
+  const getNetworkLogo = () => {
+    if (selectedAccount?.genesisHash == null) { return; }
+
+    if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'ICP') return icpLogo;
+    if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'DOT') return dotLogo;
+    if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'KSM') return ksmLogo;
+  };
 
   return (
     <>
       <Header
-        showAddressDropdown
+        showAccountsDropdown
         showMenu />
       <div className={className}>
+        <Link className='topCancelButton'
+          to='/'>Cancel</Link>
         <img
-          className='tokenLogo'
-          src={logo}
+          className='network-logo'
+          src={getNetworkLogo()}
         />
         <div className='primaryBalanceLabel'>$56,8812.98 USD</div>
         <div className='secondaryBalanceLabel'>12.32 DOT</div>
@@ -87,8 +101,19 @@ export default styled(Wallet)(({ theme }: Props) => `
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .topCancelButton {
+        cursor: pointer;
+        color: ${theme.buttonBackground};
+        font-family: ${theme.fontFamily};
+        font-size: 12px;
+        align-self: flex-end;
+        &:hover {
+            color: ${theme.buttonBackgroundHover};
+        }
+    }
     
-    .tokenLogo {
+    .network-logo {
     height: 28px;
     width: 28px;
     margin-bottom: 16px;
@@ -96,6 +121,8 @@ export default styled(Wallet)(({ theme }: Props) => `
     border: 1px solid ${theme.subTextColor};
     padding: 4px;
     background-color: ${theme.tokenLogoBackground};
+    object-fit: contain;
+    object-position: center;
     }
 
     .primaryBalanceLabel {
