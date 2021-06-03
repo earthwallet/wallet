@@ -96,6 +96,7 @@ const defaultRecoded = { account: null, formatted: null, prefix: 42, type: DEFAU
 function Address ({ actions, address, children, className, genesisHash, isExternal, isHardware, isHidden, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
+  console.log(accounts, 'accounts')
   const settings = useContext(SettingsContext);
   const [{ account, formatted, genesisHash: recodedGenesis, prefix, type }, setRecoded] = useState<Recoded>(defaultRecoded);
   const chain = useMetadata(genesisHash || recodedGenesis, true);
@@ -114,9 +115,9 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
     }
 
     const accountByAddress = findAccountByAddress(accounts, address);
-    const recoded = (accountByAddress?.type === 'ethereum' || (!accountByAddress && givenType === 'ethereum'))
+    const recoded = (accountByAddress?.genesisHash === 'the_icp' || accountByAddress?.type === 'ethereum' || (!accountByAddress && givenType === 'ethereum'))
       ? { account: accountByAddress, formatted: address, type: 'ethereum' } as Recoded
-      : recodeAddress(address, accounts, chain, settings);
+      : { account: accountByAddress, formatted: address, type: 'sr25519' } as Recoded;
 
     setRecoded(recoded || defaultRecoded);
   }, [accounts, address, chain, givenType, settings]);
@@ -179,14 +180,14 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
 
       <Link to='/wallet/home'>
         <div className='infoRow'>
-          <Identicon
+   {/*        <Identicon
             className='identityIcon'
             iconTheme={theme}
-            isExternal={isExternal}
+            isExternal={true}
             onCopy={_onCopy}
             prefix={prefix}
             value={formatted || address}
-          />
+          />  */}
           <div className='info'>
             {parentName
               ? (
@@ -238,7 +239,7 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
               >
                 {formatted || address || t('<unknown>')}
               </div>
-              <CopyToClipboard
+             {/*  <CopyToClipboard
                 text={(formatted && formatted) || ''} >
                 <FontAwesomeIcon
                   className='copyIcon'
@@ -247,7 +248,7 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
                   size='sm'
                   title={t('copy address')}
                 />
-              </CopyToClipboard>
+              </CopyToClipboard> */}
             </div>
           </div>
         </div>
@@ -339,6 +340,8 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     align-items: center;
     height: 72px;
     border-radius: 4px;
+    padding-left: 10px;
+    width: 100%;
     cursor: pointer;
     &:hover {
         background-color: ${theme.buttonBackgroundHover};

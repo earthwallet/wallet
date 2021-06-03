@@ -27,6 +27,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
   const [name, setName] = useState('');
   const options = useGenesisHashOptions();
   const [genesis, setGenesis] = useState('');
+  console.log(genesis, 'genesis');
 
   useEffect((): void => {
     createSeed(undefined, type)
@@ -40,7 +41,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
       if (name && password && account) {
         setIsBusy(true);
 
-        createAccountSuri(name, password, account.seed, undefined, genesis)
+        createAccountSuri(name, password, account.seed, undefined, genesis, genesis == 'the_icp' ? 'ICP' : undefined)
           .then(() => onAction('/'))
           .catch((error: Error): void => {
             setIsBusy(false);
@@ -51,43 +52,37 @@ function CreateAccount({ className }: Props): React.ReactElement {
     [account, genesis, onAction]
   );
 
-  const _onNextStep = useCallback(() => setStep((step) => step + 1), []);
-  const _onPreviousStep = useCallback(() => setStep((step) => step - 1), []);
+  const _onNextStep = useCallback(() => setStep(step => step + 1), []);
+  const _onPreviousStep = useCallback(() => setStep(step => step - 1), []);
 
   return (
     <>
-      <HeaderWithSteps step={step}
-        text={t<string>('Create an account')} />
+      <HeaderWithSteps step={step} text={t<string>('Create an account')} />
       <Loading>
         <div>
-          <Address address={account?.address}
-            genesisHash={genesis}
-            name={name} />
+          <Address address={account?.address} genesisHash={genesis} name={name} />
         </div>
         {account &&
-          (step === 1
-            ? (
-              <Mnemonic onNextStep={_onNextStep}
-                seed={account.seed} />
-            )
-            : (
-              <>
-                <Dropdown
-                  className={className}
-                  label={t<string>('Network')}
-                  onChange={setGenesis}
-                  options={options}
-                  value={genesis}
-                />
-                <AccountNamePasswordCreation
-                  buttonLabel={t<string>('Add Account')}
-                  isBusy={isBusy}
-                  onBackClick={_onPreviousStep}
-                  onCreate={_onCreate}
-                  onNameChange={setName}
-                />
-              </>
-            ))}
+          (step === 1 ? (
+            <Mnemonic onNextStep={_onNextStep} seed={account.seed} />
+          ) : (
+            <>
+              <Dropdown
+                className={className}
+                label={t<string>('Network')}
+                onChange={setGenesis}
+                options={options}
+                value={genesis}
+              />
+              <AccountNamePasswordCreation
+                buttonLabel={t<string>('Add Account')}
+                isBusy={isBusy}
+                onBackClick={_onPreviousStep}
+                onCreate={_onCreate}
+                onNameChange={setName}
+              />
+            </>
+          ))}
       </Loading>
     </>
   );

@@ -16,7 +16,7 @@ function toHex (address: string): string {
 }
 
 const accountKey = (address: string): string =>
-  `${ACCOUNT_PREFIX}${toHex(address)}`;
+  `${ACCOUNT_PREFIX}${address}`;
 
 const addressKey = (address: string): string =>
   `${ADDRESS_PREFIX}${toHex(address)}`;

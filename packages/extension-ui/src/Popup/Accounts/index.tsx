@@ -17,6 +17,7 @@ interface Props extends ThemeProps {
 
 function Accounts ({ className }: Props): React.ReactElement {
   const { hierarchy } = useContext(AccountContext);
+  console.log('hierarchy', hierarchy)
   const { selectedNetwork } = useContext(SelectedNetworkContext);
 
   return (
