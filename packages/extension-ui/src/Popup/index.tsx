@@ -157,9 +157,9 @@ export default function Popup (): React.ReactElement {
                               <Route path='/account/restore-json'>{wrapWithErrorBoundary(<RestoreJson />, 'restore-json')}</Route>
                               <Route path='/account/derive/:address/locked'>{wrapWithErrorBoundary(<Derive isLocked />, 'derived-address-locked')}</Route>
                               <Route path='/account/derive/:address'>{wrapWithErrorBoundary(<Derive />, 'derive-address')}</Route>
-                              <Route path='/wallet/home/:address'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
-                              <Route path='/wallet/send/:address'>{wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}</Route>
-                              <Route path='/wallet/receive/:address'>{wrapWithErrorBoundary(<WalletReceiveTokens />, 'wallet-receive-token')}</Route>
+                              <Route path='/wallet/home'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
+                              <Route path='/wallet/send'>{wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}</Route>
+                              <Route path='/wallet/receive'>{wrapWithErrorBoundary(<WalletReceiveTokens />, 'wallet-receive-token')}</Route>
                               <Route path={`${PHISHING_PAGE_REDIRECT}/:website`}>{wrapWithErrorBoundary(<PhishingDetected />, 'phishing-page-redirect')}</Route>
                               <Route
                                 exact

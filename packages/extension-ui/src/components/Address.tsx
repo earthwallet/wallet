@@ -40,6 +40,7 @@ export interface Props {
   suri?: string;
   toggleActions?: number;
   type?: KeypairType;
+  isFromAccount?: boolean;
 }
 
 interface Recoded {
@@ -248,7 +249,7 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
                     type
                   })
                   : {}}
-                to={address ? `/wallet/home/${address}` : '/wallet/home'}>
+                to={'/wallet/home'}>
                 { getAddressComponent()}
               </Link>
               )
