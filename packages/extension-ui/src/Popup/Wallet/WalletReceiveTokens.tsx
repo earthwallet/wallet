@@ -3,11 +3,16 @@
 
 import type { ThemeProps } from '../../types';
 
+import useToast from '@earthwallet/extension-ui/hooks/useToast';
 import { Header } from '@earthwallet/extension-ui/partials';
-import React from 'react';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import QRCode from 'qrcode.react';
+import React, { useCallback, useContext } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 
-import { Link } from '../../components';
+import { Link, SelectedAccountContext } from '../../components';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -15,6 +20,12 @@ interface Props extends ThemeProps {
 
 // eslint-disable-next-line space-before-function-paren
 const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<Props> {
+  const { show } = useToast();
+
+  const { selectedAccount } = useContext(SelectedAccountContext);
+  const getShortAddress = (address: string) => address.substring(0, 8) + '.....' + address.substring(address.length - 8);
+  const _onCopy = useCallback((): void => show('Copied'), [show]);
+
   return (
     <>
       <Header showAccountsDropdown
@@ -25,10 +36,30 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
           <div className='topBarDivCenterItem'>Receive Tokens</div>
           <div className='topBarDivSideItem topBarDivCancelItem'>
             <Link className='topBarDivCancelItem'
-              to='/'>
-                          Cancel
-            </Link>
+              to='/wallet/home'>Cancel</Link>
           </div>
+        </div>
+        <div className='accountDetail'>
+
+          {selectedAccount?.address && <div className='addressDisplay'>
+            {getShortAddress(selectedAccount?.address)}
+            <CopyToClipboard
+              text={selectedAccount?.address} >
+              <FontAwesomeIcon
+                className='copyIcon'
+                icon={faCopy}
+                onClick={_onCopy}
+                size='sm'
+
+                title={'copy address'}
+              />
+            </CopyToClipboard> </div>}
+
+          <QRCode bgColor='#1A1B20'
+            fgColor='#DDD'
+            size={220}
+            value={selectedAccount?.address} />
+
         </div>
 
       </div>
@@ -51,6 +82,7 @@ export default styled(WalletReceiveTokens)(({ theme }: Props) => `
         flex-direction: rows;
         align-items: center;
         justify-content: center;
+        margin: 16px 0;
     }
 
     .topBarDivCenterItem {
@@ -80,5 +112,24 @@ export default styled(WalletReceiveTokens)(({ theme }: Props) => `
         &:hover {
             color: ${theme.buttonBackgroundHover};
             }
+    }
+
+     .accountDetail {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        height: 420px;
+        width: 100%;
+        padding: 16px;
+         align-items: center;
+        justify-content: center;
+        background: ${theme.addAccountImageBackground};
+    }
+
+    .addressDisplay{
+        margin-bottom:16px;
+    }
+    .copyIcon{
+        margin-left: 4px;
     }
 `);

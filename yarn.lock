@@ -1557,6 +1557,7 @@ __metadata:
     file-saver: ^2.0.5
     i18next: ^19.9.2
     jdenticon: ^3.1.0
+    qrcode.react: ^1.0.1
     react: ^17.0.2
     react-dom: ^17.0.2
     react-dropzone: ^11.3.2
@@ -13149,7 +13150,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.8, prop-types@npm:^15.6.2, prop-types@npm:^15.7.0, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.0, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -13246,10 +13247,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"qr.js@npm:0.0.0":
+  version: 0.0.0
+  resolution: "qr.js@npm:0.0.0"
+  checksum: 83e1d6140ec8781d0def39a70d7ef9e7a7ff455697d8e078b86aeeb773dd33fd5235d4f94710b871fc3cfdefb806165503b8241cd4cd9b18a4b9b4160f48db43
+  languageName: node
+  linkType: hard
+
 "qrcode-generator@npm:^1.4.4":
   version: 1.4.4
   resolution: "qrcode-generator@npm:1.4.4"
   checksum: 13b610e17882ed9f7b2f33b5347b454097a4cfa76929f9f9318293fd5dc50b0654fa6eb797f24507266cd4c558d07842014a3fe1073ce9a64f97fee0ed354f54
+  languageName: node
+  linkType: hard
+
+"qrcode.react@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "qrcode.react@npm:1.0.1"
+  dependencies:
+    loose-envify: ^1.4.0
+    prop-types: ^15.6.0
+    qr.js: 0.0.0
+  peerDependencies:
+    react: ^15.5.3 || ^16.0.0 || ^17.0.0
+  checksum: add74eb8a1a6967054bdcc090c0e858338be5e89c5cf6659827037e9bf297c0fafff5e47371288fa7ec863ee9620ed291b1564e3cd978d22e8be5d502a759d68
   languageName: node
   linkType: hard
 

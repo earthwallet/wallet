@@ -59,9 +59,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
           <div className='topBarDivCenterItem'>Add Recipient</div>
           <div className='topBarDivSideItem topBarDivCancelItem'>
             <Link className='topBarDivCancelItem'
-              to='/'>
-                          Cancel
-            </Link>
+              to='/wallet/home'>Cancel</Link>
           </div>
         </div>
 
@@ -180,9 +178,8 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
 
     .transactionDetail {
         display: flex;
-        flex-direction: column:
-        flex: 1;
-        height: 283px;
+        flex-direction: column;
+        height: 420px;
         width: 100%;
         padding: 16px;
         background: ${theme.addAccountImageBackground};
