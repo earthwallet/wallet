@@ -11,9 +11,10 @@ import styled from 'styled-components';
 import logo from '../assets/icon.png';
 import Link from '../components/Link';
 import useOutsideClick from '../hooks/useOutsideClick';
-import AddressSelector from './AddressSelector';
+import AccountSelector from './AccountSelector';
 import MenuAdd from './MenuAdd';
 import MenuSettings from './MenuSettings';
+import NetworkSelector from './NetworkSelector';
 
 interface Props extends ThemeProps {
   children?: React.ReactNode;
@@ -23,11 +24,12 @@ interface Props extends ThemeProps {
   showBackArrow?: boolean;
   showSettings?: boolean;
   smallMargin?: boolean;
-  showAddressDropdown?: boolean;
+  showNetworkDropdown?: boolean;
   text?: React.ReactNode;
+  showAccountsDropdown?: boolean;
 }
 
-function Header ({ children, className = '', showAdd, showAddressDropdown, showBackArrow, showMenu, showSettings, smallMargin = false, text }: Props): React.ReactElement<Props> {
+function Header ({ children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text }: Props): React.ReactElement<Props> {
   const [isAddOpen, setShowAdd] = useState(false);
   const [isSettingsOpen, setShowSettings] = useState(false);
   const addRef = useRef(null);
@@ -81,7 +83,8 @@ function Header ({ children, className = '', showAdd, showAddressDropdown, showB
           {text && <span className='logoText'>{text || 'Earth Wallet'}</span>}
         </div>
 
-        {showAddressDropdown && (<AddressSelector/>)}
+        {showNetworkDropdown && (<NetworkSelector/>)}
+        {showAccountsDropdown && (<AccountSelector/>)}
 
         <div className='popupMenus'>
           {showAdd && (
@@ -143,6 +146,10 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
   position: relative;
   margin-bottom: 25px;
 
+  background: linear-gradient(101.54deg, #000204 10.81%, #1B63A6 139.52%);
+  box-shadow: 0px 0px 8px #236EFF, 0px 0px 13px rgba(43, 115, 255, 0.8), 0px 0px 54px rgba(71, 134, 255, 0.8);
+  border-radius: 0px 0px 20px 20px;
+
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
@@ -158,7 +165,6 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
     display: flex;
     justify-content: space-between;
     width: 100%;
-    border-bottom: 1px solid ${theme.inputBorderColor};
     min-height: 70px;
 
     .branding {
@@ -170,17 +176,25 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
       text-align: center;
       margin-left: 24px;
 
-      .header-logo {
-        height: 28px;
-        width: 28px;
-      }
-
       .logoText {
         color: ${theme.textColor};
         font-family: ${theme.fontFamily};
         font-size: 18px;
         margin-left: 12px;
       }
+
+      .header-logo {
+        height: 28px;
+        width: 28px;
+        border-radius: 50%;
+        background-color: #1B63A6;
+        &:hover {
+            cursor: pointer;
+            -moz-box-shadow: 0 0 5px 5px rgba(43, 115, 255, 0.7);
+            -webkit-box-shadow: 0 0 5px 5px rgba(43, 115, 255, 0.7);
+            box-shadow: 0 0 5px 5px rgba(43, 115, 255, 0.7);
+        }
+        }
     }
 
     .addressDropdown select{

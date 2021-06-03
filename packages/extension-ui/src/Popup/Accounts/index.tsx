@@ -28,7 +28,7 @@ function Accounts ({ className }: Props): React.ReactElement {
           <>
             <Header
               showAdd
-              showAddressDropdown
+              showNetworkDropdown
             />
             <div className={className}>
               {hierarchy

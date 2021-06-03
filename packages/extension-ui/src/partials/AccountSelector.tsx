@@ -3,69 +3,67 @@
 
 import type { ThemeProps } from '../types';
 
-import { NetworkJson } from '@earthwallet/extension-base/background/types';
+import { AccountJson } from '@earthwallet/extension-base/background/types';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import { NetworkContext, SelectedNetworkContext } from '../components';
+import { AccountContext, SelectedAccountContext } from '../components';
 import useOutsideClick from '../hooks/useOutsideClick';
-import generateRandomColor from '../Popup/Utils/CommonUtils';
 
 interface Props extends ThemeProps {
   className?: string;
 }
 
-const AddressSelector = function ({ className }: Props): React.ReactElement<Props> {
+const AccountSelector = function ({ className }: Props): React.ReactElement<Props> {
+  const { selectedAccount, setSelectedAccount } = useContext(SelectedAccountContext);
   const [showDropDown, setShowDropDown] = useState(false);
-  const { tokens } = useContext(NetworkContext);
-  const { selectedNetwork, setSelectedNetwork } = useContext(SelectedNetworkContext);
-
+  const { accounts } = useContext(AccountContext);
   const dropDownRef = useRef(null);
+
+  console.log('accounts', accounts);
 
   useOutsideClick(dropDownRef, (): void => {
     showDropDown && setShowDropDown(!showDropDown);
   });
 
-  const [selectedAddressText, setSelectedAddressText] = useState<string>();
+  const [selectedAccountText, setSelectedAccountText] = useState<string>();
 
-  const _onChangePrefix = (token: NetworkJson) => {
-    setSelectedAddressText(token.text);
-    setSelectedNetwork(token);
+  const _onChangePrefix = (account: AccountJson) => {
+    setSelectedAccountText(account.address);
+    setSelectedAccount(account);
     setShowDropDown(false);
   };
 
   useEffect(() => {
-    setSelectedAddressText(selectedNetwork.text);
-  }, [selectedNetwork]);
+    setSelectedAccountText(selectedAccount?.address);
+  }, [selectedAccount]);
+
+  const getShortAddress = (address: string) => address.substring(0, 6) + '...' + address.substring(address.length - 5);
 
   return (<div className={className}
     ref={dropDownRef}
   >
-    {selectedAddressText && <div className='selectedAddressDiv'>
-      <div className='selectedAddress'
-        onClick={() => setShowDropDown((status) => !status)}>
-        <div className='addressColor'
-          style={{ backgroundColor: generateRandomColor(selectedAddressText) }} />
-        {selectedAddressText}
-        <FontAwesomeIcon
+    {selectedAccountText && <div className='selectedAccountDiv'>
+      <div className='selectedAccount'
+        onClick={() => accounts.length > 1 ? setShowDropDown((status) => !status) : {}}>
+        {getShortAddress(selectedAccountText)}
+        {accounts.length > 1 && (<FontAwesomeIcon
           className='dropDownIcon'
-          color='#303030'
+          color='#F4F5F8'
           icon={showDropDown ? faAngleDown : faAngleUp}
           size='sm'
-        />
+        />)}
       </div>
     </div>}
     {showDropDown && <div className='addressSelector'>
       {
-        tokens.map((token) => {
+        accounts.map((account) => {
           return (<div className='addressItem'
-            key={token.value}
-            onClick={() => _onChangePrefix(token)}>
-            <div className='addressColor'
-              style={{ backgroundColor: generateRandomColor(token.text) }}/>
-            {token.text}
+            key={account.address}
+            onClick={() => _onChangePrefix(account)}>
+            {getShortAddress(account.address)}
           </div>);
         })
       }
@@ -74,29 +72,22 @@ const AddressSelector = function ({ className }: Props): React.ReactElement<Prop
   </div>);
 };
 
-export default styled(AddressSelector)(({ theme }: Props) => `
+export default styled(AccountSelector)(({ theme }: Props) => `
   width: 100%;
   display: flex;
   justify-content: center;
 
-  .selectedAddressDiv {
+  .selectedAccountDiv {
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  .addressColor {
-      height: 10px;
-      width: 10px;
-      border-radius: 50%;
-      margin-right: 6px;
   }
 
   .dropDownIcon {
     margin-left: 6px;
   }
   
-  .selectedAddress {
+  .selectedAccount {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -105,7 +96,8 @@ export default styled(AddressSelector)(({ theme }: Props) => `
     text-align: center;
     padding: 2px 8px;
     border-radius: 18px;
-    border: 1px solid ${theme.boxBorderColor};
+    border: 1px solid ${theme.identiconBackground};
+    font-size: 12px;
     &:hover {
         cursor: pointer;
     }
@@ -128,6 +120,7 @@ export default styled(AddressSelector)(({ theme }: Props) => `
     align-items: center;
     padding: 8px 16px;
     background: ${theme.popupBackground};
+    font-size: 12px;
     &:hover {
             background-color: ${theme.buttonBackgroundHover};
             cursor: pointer;

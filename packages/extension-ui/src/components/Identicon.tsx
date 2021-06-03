@@ -17,7 +17,7 @@ interface Props {
   value?: string | null;
 }
 
-function Identicon({ className, onCopy, value }: Props): React.ReactElement<Props> {
+function Identicon({ className, value }: Props): React.ReactElement<Props> {
   const blob = new Blob([toSvg(value, 100)], { type: 'image/svg+xml' });
   const url = URL.createObjectURL(blob);
 

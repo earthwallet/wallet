@@ -1,6 +1,7 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { genesisSymbolMap } from '@earthwallet/extension-ui/util/chains';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -26,8 +27,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
   const type = DEFAULT_TYPE;
   const [name, setName] = useState('');
   const options = useGenesisHashOptions();
-  const [genesis, setGenesis] = useState('');
-  console.log(genesis, 'genesis');
+  const [genesis, setGenesis] = useState(genesisSymbolMap.ICP);
 
   useEffect((): void => {
     createSeed(undefined, type)
@@ -52,37 +52,43 @@ function CreateAccount({ className }: Props): React.ReactElement {
     [account, genesis, onAction]
   );
 
-  const _onNextStep = useCallback(() => setStep(step => step + 1), []);
-  const _onPreviousStep = useCallback(() => setStep(step => step - 1), []);
+  const _onNextStep = useCallback(() => setStep((step) => step + 1), []);
+  const _onPreviousStep = useCallback(() => setStep((step) => step - 1), []);
 
   return (
     <>
-      <HeaderWithSteps step={step} text={t<string>('Create an account')} />
+      <HeaderWithSteps step={step}
+        text={t<string>('Create an account')} />
       <Loading>
         <div>
-          <Address address={account?.address} genesisHash={genesis} name={name} />
+          <Address address={account?.address}
+            genesisHash={genesis}
+            name={name} />
         </div>
         {account &&
-          (step === 1 ? (
-            <Mnemonic onNextStep={_onNextStep} seed={account.seed} />
-          ) : (
-            <>
-              <Dropdown
-                className={className}
-                label={t<string>('Network')}
-                onChange={setGenesis}
-                options={options}
-                value={genesis}
-              />
-              <AccountNamePasswordCreation
-                buttonLabel={t<string>('Add Account')}
-                isBusy={isBusy}
-                onBackClick={_onPreviousStep}
-                onCreate={_onCreate}
-                onNameChange={setName}
-              />
-            </>
-          ))}
+          (step === 1
+            ? (
+              <Mnemonic onNextStep={_onNextStep}
+                seed={account.seed} />
+            )
+            : (
+              <>
+                <Dropdown
+                  className={className}
+                  label={t<string>('Network')}
+                  onChange={setGenesis}
+                  options={options}
+                  value={genesis}
+                />
+                <AccountNamePasswordCreation
+                  buttonLabel={t<string>('Add Account')}
+                  isBusy={isBusy}
+                  onBackClick={_onPreviousStep}
+                  onCreate={_onCreate}
+                  onNameChange={setName}
+                />
+              </>
+            ))}
       </Loading>
     </>
   );

@@ -1,13 +1,12 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccountsContext, AuthorizeRequest, MetadataRequest, NetworksContext, SelectedNetworkStruct, SigningRequest } from '@earthwallet/extension-base/background/types';
-import type { SettingsStruct } from '@earthwallet/ui-settings/types';
+import type { AccountsContext, AuthorizeRequest, MetadataRequest, NetworksContext, SelectedAccountStruct, SelectedNetworkStruct, SigningRequest } from '@earthwallet/extension-base/background/types';
+import type { SettingsStruct } from '@polkadot/ui-settings/types';
 import type { AvailableThemes } from './themes';
 
-import React from 'react';
-
 import settings from '@earthwallet/ui-settings';
+import React from 'react';
 
 import { defaultNetworkContext } from '../Popup/Utils/Consts';
 
@@ -25,6 +24,7 @@ const ThemeSwitchContext = React.createContext<(theme: AvailableThemes) => void>
 const ToastContext = React.createContext<({show: (message: string) => void})>({ show: noop });
 const NetworkContext = React.createContext<NetworksContext>(defaultNetworkContext);
 const SelectedNetworkContext = React.createContext<SelectedNetworkStruct>(defaultNetworkContext);
+const SelectedAccountContext = React.createContext<SelectedAccountStruct>({ selectedAccount: undefined, setSelectedAccount: () => {} });
 
 export {
   AccountContext,
@@ -37,5 +37,6 @@ export {
   ThemeSwitchContext,
   ToastContext,
   NetworkContext,
-  SelectedNetworkContext
+  SelectedNetworkContext,
+  SelectedAccountContext
 };

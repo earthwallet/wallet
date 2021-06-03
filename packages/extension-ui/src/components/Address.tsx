@@ -3,8 +3,7 @@
 
 import type { AccountJson, AccountWithChildren } from '@earthwallet/extension-base/background/types';
 import type { Chain } from '@earthwallet/extension-chains/types';
-import type { IconTheme } from '@polkadot/react-identicon/types';
-import type { SettingsStruct } from '@earthwallet/ui-settings/types';
+import type { SettingsStruct } from '@polkadot/ui-settings/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { ThemeProps } from '../types';
 
@@ -18,7 +17,6 @@ import styled from 'styled-components';
 
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
 
-//import details from '../assets/details.svg';
 import { Link } from '../components';
 import useMetadata from '../hooks/useMetadata';
 import useOutsideClick from '../hooks/useOutsideClick';
@@ -26,10 +24,7 @@ import useToast from '../hooks/useToast';
 import useTranslation from '../hooks/useTranslation';
 import { DEFAULT_TYPE } from '../util/defaultType';
 import getParentNameSuri from '../util/getParentNameSuri';
-import { AccountContext, SettingsContext } from './contexts';
-import Identicon from './Identicon';
-//import Menu from './Menu';
-//import Svg from './Svg';
+import { AccountContext, SelectedAccountContext, SettingsContext } from './contexts';
 
 export interface Props {
   actions?: React.ReactNode;
@@ -93,18 +88,21 @@ function recodeAddress (address: string, accounts: AccountWithChildren[], chain:
 const ACCOUNTS_SCREEN_HEIGHT = 550;
 const defaultRecoded = { account: null, formatted: null, prefix: 42, type: DEFAULT_TYPE };
 
-function Address ({ actions, address, children, className, genesisHash, isExternal, isHardware, isHidden, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
+function Address ({ address, children, className, genesisHash, isExternal, isFromAccount, isHardware, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
-  console.log(accounts, 'accounts')
+
+  console.log(accounts, 'accounts');
   const settings = useContext(SettingsContext);
-  const [{ account, formatted, genesisHash: recodedGenesis, prefix, type }, setRecoded] = useState<Recoded>(defaultRecoded);
+  const [{ account, formatted, genesisHash: recodedGenesis, type }, setRecoded] = useState<Recoded>(defaultRecoded);
   const chain = useMetadata(genesisHash || recodedGenesis, true);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
-  const [moveMenuUp, setIsMovedMenu] = useState(false);
+  const [, setIsMovedMenu] = useState(false);
   const actionsRef = useRef<HTMLDivElement>(null);
   const { show } = useToast();
-  console.log(moveMenuUp);
+
+  const { setSelectedAccount } = useContext(SelectedAccountContext);
+
   useOutsideClick(actionsRef, () => (showActionsMenu && setShowActionsMenu(!showActionsMenu)));
 
   useEffect((): void => {
@@ -138,15 +136,6 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
     setShowActionsMenu(false);
   }, [toggleActions]);
 
-  const theme = (
-    chain?.icon
-      ? chain.icon
-      : type === 'ethereum'
-        ? 'ethereum'
-        : 'polkadot'
-  ) as IconTheme;
-
-//  const _onClick = useCallback((): void => setShowActionsMenu(!showActionsMenu), [showActionsMenu]);
   const _onCopy = useCallback((): void => show(t('Copied')), [show, t]);
 
   const Name = () => {
@@ -175,84 +164,99 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
 
   const parentNameSuri = getParentNameSuri(parentName, suri);
 
+  const getAddressComponent = () => {
+    return (<div className='infoRow'>
+      <div className='info'>
+        {parentName
+          ? (
+            <>
+              <div className='banner'>
+                <FontAwesomeIcon
+                  className='deriveIcon'
+                  icon={faCodeBranch}
+                />
+                <div
+                  className='parentName'
+                  data-field='parent'
+                  title={parentNameSuri}
+                >
+                  {parentNameSuri}
+                </div>
+              </div>
+              <div className='name displaced'>
+                <Name />
+              </div>
+            </>
+          )
+          : (
+            <div
+              className='name'
+              data-field='name'
+            >
+              <Name />
+            </div>
+          )
+        }
+        {chain?.genesisHash && (
+          <div
+            className='banner chain'
+            data-field='chain'
+            style={
+              chain.definition.color
+                ? { backgroundColor: chain.definition.color }
+                : undefined
+            }
+          >
+            {chain.name.replace(' Relay Chain', '')}
+          </div>
+        )}
+        <div className='addressDisplay'>
+          <div
+            className='fullAddress'
+            data-field='address'
+          >
+            {formatted || address || t('<unknown>')}
+          </div>
+          <CopyToClipboard
+            text={(formatted && formatted) || ''} >
+            <FontAwesomeIcon
+              className='copyIcon'
+              icon={faCopy}
+              onClick={_onCopy}
+              size='sm'
+              title={t('copy address')}
+            />
+          </CopyToClipboard>
+        </div>
+      </div>
+    </div>);
+  };
+
   return (
     <div className={className}>
+      {isFromAccount &&
+              (<Link
+                className='addressLink'
+                onClick={() => address
+                  ? setSelectedAccount({
+                    address,
+                    genesisHash,
+                    isExternal: isExternal || undefined,
+                    isHardware: isHardware || undefined,
+                    name: name || undefined,
+                    suri,
+                    type
+                  })
+                  : {}}
+                to={address ? `/wallet/home/${address}` : '/wallet/home'}>
+                { getAddressComponent()}
+              </Link>
+              )
+      }
 
-      <Link to='/wallet/home'>
-        <div className='infoRow'>
-   {/*        <Identicon
-            className='identityIcon'
-            iconTheme={theme}
-            isExternal={true}
-            onCopy={_onCopy}
-            prefix={prefix}
-            value={formatted || address}
-          />  */}
-          <div className='info'>
-            {parentName
-              ? (
-                <>
-                  <div className='banner'>
-                    <FontAwesomeIcon
-                      className='deriveIcon'
-                      icon={faCodeBranch}
-                    />
-                    <div
-                      className='parentName'
-                      data-field='parent'
-                      title = {parentNameSuri}
-                    >
-                      {parentNameSuri}
-                    </div>
-                  </div>
-                  <div className='name displaced'>
-                    <Name/>
-                  </div>
-                </>
-              )
-              : (
-                <div
-                  className='name'
-                  data-field='name'
-                >
-                  <Name/>
-                </div>
-              )
-            }
-            {chain?.genesisHash && (
-              <div
-                className='banner chain'
-                data-field='chain'
-                style={
-                  chain.definition.color
-                    ? { backgroundColor: chain.definition.color }
-                    : undefined
-                }
-              >
-                {chain.name.replace(' Relay Chain', '')}
-              </div>
-            )}
-            <div className='addressDisplay'>
-              <div
-                className='fullAddress'
-                data-field='address'
-              >
-                {formatted || address || t('<unknown>')}
-              </div>
-             {/*  <CopyToClipboard
-                text={(formatted && formatted) || ''} >
-                <FontAwesomeIcon
-                  className='copyIcon'
-                  icon={faCopy}
-                  onClick={_onCopy}
-                  size='sm'
-                  title={t('copy address')}
-                />
-              </CopyToClipboard> */}
-            </div>
-          </div>
-        </div>
-      </Link>
+      {
+        !isFromAccount && getAddressComponent()
+      }
 
       {children}
     </div>
@@ -280,6 +284,13 @@ export default styled(Address)(({ theme }: ThemeProps) => `
       padding: 0.1rem 0.5rem 0.1rem 0.75rem;
       right: 0;
       z-index: 1;
+    }
+  }
+
+  .addressLink {
+      &:hover {
+        background-color: ${theme.buttonBackgroundHover};
+        cursor: pointer;
     }
   }
 
@@ -330,7 +341,8 @@ export default styled(Address)(({ theme }: ThemeProps) => `
   }
 
   .info {
-    max-width: 248px;
+    max-width: 348px;
+    padding-left: 16px;
   }
 
   .infoRow {
@@ -340,13 +352,6 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     align-items: center;
     height: 72px;
     border-radius: 4px;
-    padding-left: 10px;
-    width: 100%;
-    cursor: pointer;
-    &:hover {
-        background-color: ${theme.buttonBackgroundHover};
-        cursor: pointer;
-    }
   }
 
   img {
