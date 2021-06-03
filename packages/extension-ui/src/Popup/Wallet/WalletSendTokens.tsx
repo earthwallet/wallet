@@ -21,7 +21,7 @@ interface Props extends ThemeProps {
 // eslint-disable-next-line space-before-function-paren
 const WalletSendTokens = function ({ className }: Props): React.ReactElement<Props> {
   const [showTokenDropDown, setShowTokenDropDown] = useState(false);
-  const [selectedNetwork, setSelectedNetwork] = useState<string>('DOT');
+  const [selectedNetwork, setSelectedNetwork] = useState<string>('ICP');
   const dropDownRef = useRef(null);
   const { t } = useTranslation();
 
@@ -33,10 +33,24 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
     setSelectedNetwork(token);
   };
 
+  const getTokenSelectionDropDownItem = (tokenSymbol: string) => {
+    return (<div className='tokenSelectionDropDownItem'
+      onClick={() => onTokenSelected(tokenSymbol)}>
+      <img
+        className='tokenLogo'
+        src={logo}
+      />
+      <div className='tokenSelectionLabelDiv'>
+        <div className='tokenLabel'>{tokenSymbol}</div>
+        <div className='tokenBalance'>{`Balance: 100 ${tokenSymbol}`}</div>
+      </div>
+    </div>);
+  };
+
   return (
     <>
-      <Header showMenu
-        showNetworkDropdown />
+      <Header showAccountsDropdown
+        showMenu />
       <div className={className}
         ref={dropDownRef}
       >
@@ -68,46 +82,26 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
             <div className='tokenSelectionDiv'
               onClick={() => setShowTokenDropDown((status) => !status)}
             >
-              <img
-                className='tokenLogo'
-                src={logo}
-              />
-              <div className='tokenSelectionLabelDiv'>
-                <div className='tokenLabel'>{selectedNetwork}</div>
-                <div className='tokenBalance'>{`Balance: 100${selectedNetwork}`}</div>
+              <div className='selectedNetworkDiv'>
+                <img
+                  className='tokenLogo'
+                  src={logo}
+                />
+                <div className='tokenSelectionLabelDiv'>
+                  <div className='tokenLabel'>{selectedNetwork}</div>
+                  <div className='tokenBalance'>{`Balance: 100 ${selectedNetwork}`}</div>
+                </div>
+                <FontAwesomeIcon
+                  className='dropDownIcon'
+                  color='#303030'
+                  icon={faAngleUp}
+                  size='lg'
+                />
               </div>
-              <FontAwesomeIcon
-                className='dropDownIcon'
-                color='#303030'
-                icon={faAngleUp}
-                size='lg'
-              />
               {showTokenDropDown && <div className='tokenSelectionDropDown'>
-
-                <div className='tokenSelectionDropDownItem'
-                  onClick={() => onTokenSelected('DOT')}>
-                  <img
-                    className='tokenLogo'
-                    src={logo}
-                  />
-                  <div className='tokenSelectionLabelDiv'>
-                    <div className='tokenLabel'>DOT</div>
-                    <div className='tokenBalance'>Balance: 100DOT</div>
-                  </div>
-                </div>
-
-                <div className='tokenSelectionDropDownItem'
-                  onClick={() => onTokenSelected('ICP')}>
-                  <img
-                    className='tokenLogo'
-                    src={logo}
-                  />
-                  <div className='tokenSelectionLabelDiv'>
-                    <div className='tokenLabel'>ICP</div>
-                    <div className='tokenBalance'>Balance: 100ICP</div>
-                  </div>
-                </div>
-
+                {getTokenSelectionDropDownItem('ICP')}
+                {getTokenSelectionDropDownItem('DOT')}
+                {getTokenSelectionDropDownItem('KSM')}
               </div>}
             </div>
           </div>
@@ -215,19 +209,24 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
     .tokenSelectionDiv {
         display: flex;
         flex-direction: row;
-        border-radius: 4px;
-        border: 1px solid rgb(67, 68, 75);
-        padding: 4px;
-        flex: 1;
-        height: 52px;
         margin-right: 24px;
         align-items: center;
-        padding: 0 6px;
 
          &:hover {
             background-color: ${theme.buttonBackgroundHover};
             cursor: pointer;
         }
+    }
+
+    .selectedNetworkDiv {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width:240px;
+        border-radius: 4px;
+        border: 1px solid rgb(67, 68, 75);
+        padding: 0 6px;
+        height: 52px;
     }
 
     .tokenLogo {
@@ -277,7 +276,7 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
     border: 1px solid ${theme.boxBorderColor};
     box-sizing: border-box;
     box-shadow: 0 0 10px ${theme.boxShadow};
-    margin-top: 170px;
+    margin-top: 260px;
     position: absolute;
     max-height: 300px;
     overflow: auto;
@@ -290,7 +289,7 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
         display: flex;
         flex-direction: row;
         padding: 4px;
-        flex: 1;
+        width:240px;
         height: 52px;
         align-items: center;
         padding: 6px;
