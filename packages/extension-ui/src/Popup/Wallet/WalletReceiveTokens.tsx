@@ -4,6 +4,7 @@
 import type { ThemeProps } from '../../types';
 
 import { Header } from '@earthwallet/extension-ui/partials';
+import QRCode from 'qrcode.react';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -29,6 +30,8 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
                           Cancel
             </Link>
           </div>
+
+          <QRCode value="http://facebook.github.io/react/" />,
         </div>
 
       </div>
