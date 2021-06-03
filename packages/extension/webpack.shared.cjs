@@ -65,7 +65,7 @@ module.exports = (entry, alias = {}) => ({
       Buffer: ['buffer', 'Buffer'],
       assert: 'assert',
       process: 'process/browser.js',
-      nodeinspectextracted: 'node-inspect-extracted',
+      nodeinspectextracted: 'node-inspect-extracted'
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.DefinePlugin({

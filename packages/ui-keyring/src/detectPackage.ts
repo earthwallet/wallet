@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { packageInfo as settingsInfo } from '@earthwallet/ui-settings/packageInfo';
+
 import { detectPackage } from '@polkadot/util';
 
 import { packageInfo } from './packageInfo';

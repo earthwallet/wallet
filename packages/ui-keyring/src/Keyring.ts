@@ -7,10 +7,11 @@ import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { AddressSubject, SingleAddress } from './observable/types';
 import type { CreateResult, KeyringAddress, KeyringAddressType, KeyringItemType, KeyringJson, KeyringJson$Meta, KeyringOptions, KeyringPairs$Json, KeyringStruct } from './types';
 
+import { createWallet } from '@earthwallet/sdk';
+import { chains } from '@earthwallet/ui-settings/defaults/chains';
 import BN from 'bn.js';
 
 import { createPair } from '@polkadot/keyring/pair';
-import { chains } from '@earthwallet/ui-settings/defaults/chains';
 import { bnToBn, hexToU8a, isHex, isString, stringToU8a, u8aSorted, u8aToString } from '@polkadot/util';
 import { base64Decode, createKeyMulti, jsonDecrypt, jsonEncrypt } from '@polkadot/util-crypto';
 
@@ -18,7 +19,6 @@ import { env } from './observable/env';
 import { Base } from './Base';
 import { accountKey, accountRegex, addressKey, addressRegex, contractKey, contractRegex } from './defaults';
 import { KeyringOption } from './options';
-import { createWallet } from '@earthwallet/sdk';
 
 const RECENT_EXPIRY = 24 * 60 * 60;
 
@@ -65,39 +65,34 @@ export class Keyring extends Base implements KeyringStruct {
     };
   }
 
-  public async addUri (suri: string, password?: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol? : string): CreateResult {
-   
-    console.log(suri, password, symbol, "icp", meta);
+  public async addUri (suri: string, password?: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol?: string): CreateResult {
+    console.log(suri, password, symbol, 'icp', meta);
 
     /*
     {"publicKey":"04348dad3fa4aa09558cf67e2e4d2aaddfafb928953191b7eeb43d7710ce2797b0f485ca7d7eb193f991159c62094ee82e9a9586a0607c02e84e8dc3d54d3b33f5","address":"e5e7fe5e5cdb102eb74b2092f517eeb2622315f6a9f71838a76dcc0390aabd63","type":"ecdsa"}
      wallet v1 -{"suri":"canvas loan mention shrimp happy width card above endless tunnel tooth feature","password":"12345678","symbol":"ICP","meta":{"genesisHash":"the_icp","name":"12345678"}}
    */
-   let wallet;
-   let newPair = {};
+    let wallet;
+    let newPair = {};
 
-    if(symbol === 'ICP') {
-       wallet = await createWallet(suri, symbol);
-      alert(JSON.stringify(wallet))
+    if (symbol === 'ICP') {
+      wallet = await createWallet(suri, symbol);
+      alert(JSON.stringify(wallet));
     }
 
     const pair = this.keyring.addFromUri(suri, meta, type);
 
-    alert('wallet v6 -'+ JSON.stringify({suri, password, symbol, meta, }));
-    
+    alert('wallet v6 -' + JSON.stringify({ suri, password, symbol, meta }));
 
-    if(symbol === 'ICP') {
-      newPair = {...pair, type:'ethereum', address : wallet?.address}
+    if (symbol === 'ICP') {
+      newPair = { ...pair, type: 'ethereum', address: wallet?.address };
+    } else {
+      newPair = { ...pair };
     }
-    else {
-      newPair = { ...pair}
-    }
-
-    
 
     return {
       json: this.saveAccount(pair, password, wallet?.address),
-      pair,
+      pair
     };
   }
 

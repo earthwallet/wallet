@@ -2,17 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { MetadataDef } from '@earthwallet/extension-inject/types';
+import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
 import type { KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@polkadot/keyring/types';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
-import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
 import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, MetadataRequest, RequestAccountBatchExport, RequestAccountChangePassword, RequestAccountCreateExternal, RequestAccountCreateHardware, RequestAccountCreateSuri, RequestAccountEdit, RequestAccountExport, RequestAccountForget, RequestAccountShow, RequestAccountTie, RequestAccountValidate, RequestAuthorizeApprove, RequestAuthorizeReject, RequestBatchRestore, RequestDeriveCreate, RequestDeriveValidate, RequestJsonRestore, RequestMetadataApprove, RequestMetadataReject, RequestSeedCreate, RequestSeedValidate, RequestSigningApprovePassword, RequestSigningApproveSignature, RequestSigningCancel, RequestSigningIsLocked, RequestTypes, ResponseAccountExport, ResponseAccountsExport, ResponseAuthorizeList, ResponseDeriveValidate, ResponseJsonGetAccountInfo, ResponseSeedCreate, ResponseSeedValidate, ResponseSigningIsLocked, ResponseType, SigningRequest } from '../types';
 
 import { ALLOWED_PATH, PASSWORD_EXPIRY_MS } from '@earthwallet/extension-base/defaults';
 import chrome from '@earthwallet/extension-inject/chrome';
-
-import { TypeRegistry } from '@polkadot/types';
 import keyring from '@earthwallet/ui-keyring';
 import { accounts as accountsObservable } from '@earthwallet/ui-keyring/observable/accounts';
+
+import { TypeRegistry } from '@polkadot/types';
 import { assert, isHex } from '@polkadot/util';
 import { keyExtractSuri, mnemonicGenerate, mnemonicValidate } from '@polkadot/util-crypto';
 
@@ -61,7 +61,7 @@ export default class Extension {
     return true;
   }
 
-  private accountsCreateSuri ({ genesisHash, name, password, suri, type, symbol }: RequestAccountCreateSuri): boolean {
+  private accountsCreateSuri ({ genesisHash, name, password, suri, symbol, type }: RequestAccountCreateSuri): boolean {
     keyring.addUri(suri, password, { genesisHash, name }, type, symbol);
 
     return true;

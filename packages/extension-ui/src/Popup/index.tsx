@@ -6,10 +6,9 @@ import type { SettingsStruct } from '@earthwallet/ui-settings/types';
 
 import { PHISHING_PAGE_REDIRECT } from '@earthwallet/extension-base/defaults';
 import { canDerive } from '@earthwallet/extension-base/utils';
+import uiSettings from '@earthwallet/ui-settings';
 import React, { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router';
-
-import uiSettings from '@earthwallet/ui-settings';
 
 import { ErrorBoundary, Loading } from '../components';
 import { AccountContext, ActionContext, AuthorizeReqContext, MediaContext, MetadataReqContext, NetworkContext, SelectedAccountContext, SelectedNetworkContext, SettingsContext, SigningReqContext } from '../components/contexts';
