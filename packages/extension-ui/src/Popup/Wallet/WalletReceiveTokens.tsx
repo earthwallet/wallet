@@ -17,8 +17,8 @@ interface Props extends ThemeProps {
 const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<Props> {
   return (
     <>
-      <Header showMenu
-        showNetworkDropdown />
+      <Header showAccountsDropdown
+        showMenu />
       <div className={className}>
         <div className='topBarDiv'>
           <div className='topBarDivSideItem'/>

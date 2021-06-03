@@ -35,8 +35,8 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
 
   return (
     <>
-      <Header showMenu
-        showNetworkDropdown />
+      <Header showAccountsDropdown
+        showMenu />
       <div className={className}
         ref={dropDownRef}
       >
