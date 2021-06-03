@@ -7,7 +7,7 @@ import { Header } from '@earthwallet/extension-ui/partials';
 import { symbolGenesisMap } from '@earthwallet/extension-ui/util/chains';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import icpLogo from '../../assets/icp-logo.png';
@@ -21,8 +21,15 @@ interface Props extends ThemeProps {
 
 // eslint-disable-next-line space-before-function-paren
 const Wallet = function ({ className }: Props): React.ReactElement<Props> {
+  const [selectedAccountSymbol, setSelectedAccountSymbol] = useState<undefined | string>(undefined);
   const [selectedTab, setSelectedTab] = useState('Assets');
   const { selectedAccount } = useContext(SelectedAccountContext);
+
+  useEffect(() => {
+    if (selectedAccount?.genesisHash == null) { return; }
+
+    setSelectedAccountSymbol(symbolGenesisMap().get(selectedAccount.genesisHash));
+  }, [selectedAccount]);
 
   const getNetworkLogo = () => {
     if (selectedAccount?.genesisHash == null) { return icpLogo; }
@@ -41,13 +48,13 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
         showMenu />
       <div className={className}>
         <Link className='topCancelButton'
-          to='/'>Cancel</Link>
+          to='/'>BACK</Link>
         <img
           className='network-logo'
           src={getNetworkLogo()}
         />
         <div className='primaryBalanceLabel'>$56,8812.98 USD</div>
-        <div className='secondaryBalanceLabel'>12.32 DOT</div>
+        <div className='secondaryBalanceLabel'>{selectedAccountSymbol ? `54 ${selectedAccountSymbol}` : ''}</div>
         <div className='walletActionsView'>
 
           <div
@@ -79,18 +86,20 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
           </div>
         </div>
 
-        <div className='tabsView'>
-          <div
-            className={'tabView ' + (selectedTab === 'Assets' ? 'selectedTabView' : '') }
-            onClick={() => setSelectedTab('Assets')}
-          >
+        <div className='assetsAndActivityDiv'>
+          <div className='tabsView'>
+            <div
+              className={'tabView ' + (selectedTab === 'Assets' ? 'selectedTabView' : '') }
+              onClick={() => setSelectedTab('Assets')}
+            >
                   Assets
-          </div>
-          <div
-            className={'tabView ' + (selectedTab === 'Transactions' ? 'selectedTabView' : '') }
-            onClick={() => setSelectedTab('Transactions')}
-          >
+            </div>
+            <div
+              className={'tabView ' + (selectedTab === 'Transactions' ? 'selectedTabView' : '') }
+              onClick={() => setSelectedTab('Transactions')}
+            >
          Transactions
+            </div>
           </div>
         </div>
       </div>
@@ -103,6 +112,7 @@ export default styled(Wallet)(({ theme }: Props) => `
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: -webkit-fill-available;
 
     .topCancelButton {
         cursor: pointer;
@@ -182,14 +192,26 @@ export default styled(Wallet)(({ theme }: Props) => `
         margin-left: 18px;
     }
 
+    .assetsAndActivityDiv{
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+    height: 100%;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), rgba(36, 150, 255, 0.32);
+    border: 1px solid #2496FF;
+    box-sizing: border-box;
+    border-top-left-radius: 32px;
+    border-top-right-radius: 32px;
+    }
+
     .tabsView {
     height: 46px;
-    width: 382px;
+    width: 340px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-top: 16px;
     }
 
     .tabView {
@@ -204,6 +226,8 @@ export default styled(Wallet)(({ theme }: Props) => `
         background-color: ${theme.buttonBackgroundHover};
         cursor: pointer;
     }
+    border-top-left-radius: 32px;
+    border-top-right-radius: 32px;
     }
 
     .selectedTabView {
