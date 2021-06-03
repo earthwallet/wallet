@@ -23,8 +23,6 @@ const AccountSelector = function ({ className }: Props): React.ReactElement<Prop
   const { accounts } = useContext(AccountContext);
   const dropDownRef = useRef(null);
 
-  console.log('accounts', accounts);
-
   useOutsideClick(dropDownRef, (): void => {
     showDropDown && setShowDropDown(!showDropDown);
   });

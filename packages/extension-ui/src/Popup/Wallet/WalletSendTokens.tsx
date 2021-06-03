@@ -180,9 +180,8 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
 
     .transactionDetail {
         display: flex;
-        flex-direction: column:
-        flex: 1;
-        height: 283px;
+        flex-direction: column;
+        height: 420px;
         width: 100%;
         padding: 16px;
         background: ${theme.addAccountImageBackground};
