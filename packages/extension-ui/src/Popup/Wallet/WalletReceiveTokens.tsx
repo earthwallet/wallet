@@ -55,7 +55,7 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
               />
             </CopyToClipboard> </div>}
 
-          <QRCode bgColor='#1A1B20'
+          <QRCode bgColor='#0000'
             fgColor='#DDD'
             size={220}
             value={selectedAccount?.address} />
@@ -82,7 +82,8 @@ export default styled(WalletReceiveTokens)(({ theme }: Props) => `
         flex-direction: rows;
         align-items: center;
         justify-content: center;
-        margin: 16px 0;
+        padding: 16px 0;
+        border-bottom: 1px solid ${theme.addAccountImageBackground}
     }
 
     .topBarDivCenterItem {
@@ -123,7 +124,6 @@ export default styled(WalletReceiveTokens)(({ theme }: Props) => `
         padding: 16px;
          align-items: center;
         justify-content: center;
-        background: ${theme.addAccountImageBackground};
     }
 
     .addressDisplay{
