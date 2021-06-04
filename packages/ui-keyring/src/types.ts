@@ -70,10 +70,10 @@ export interface KeyringStruct {
   readonly contracts: AddressSubject;
   readonly keyring: BaseKeyringInstance | undefined;
   readonly genesisHash?: string;
-
+  symbol?: string;
   addExternal: (publicKey: Uint8Array, meta?: KeyringPair$Meta) => CreateResult;
   addPair: (pair: KeyringPair, password: string) => CreateResult;
-  addUri: (suri: string, password?: string, meta?: KeyringPair$Meta, type?: KeypairType, symbol?: string) => CreateResult;
+  addUri: (suri: string, password?: string, meta?: KeyringPair$Meta, type?: KeypairType, symbol?: string) => Promise<CreateResult>;
   backupAccount: (pair: KeyringPair, password: string) => KeyringPair$Json;
   backupAccounts: (addresses: string[], password: string) => Promise<KeyringPairs$Json>
   createFromUri (suri: string, meta?: KeyringPair$Meta, type?: KeypairType): KeyringPair;

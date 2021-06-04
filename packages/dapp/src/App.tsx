@@ -2,17 +2,21 @@ import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { web3Accounts, web3Enable } from '@earthwallet/extension-dapp';
+import { InjectedAccountWithMeta } from '@earthwallet/extension-inject/types';
+
 import styles from './styles.module.scss';
 
 function App() {
-  const [accounts, setaccounts] = useState([{ meta: { name: '' }, address: '' }]);
+  const [accounts, setaccounts] = useState<InjectedAccountWithMeta[]>([
+    { meta: { name: '', source: '' }, address: '' },
+  ]);
 
   useEffect(() => {
     loadWeb3Accounts();
   }, []);
 
   const loadWeb3Accounts = async () => {
-    await web3Enable('social.network');
+    await web3Enable('my.site.com');
     const allAccounts = await web3Accounts();
     setaccounts(allAccounts);
   };

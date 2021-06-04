@@ -1,9 +1,9 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccountJson, AccountWithChildren } from '@earthwallet/extension-base/background/types';
-import type { Chain } from '@earthwallet/extension-chains/types';
-import type { SettingsStruct } from '@polkadot/ui-settings/types';
+import type { AccountJson } from '@earthwallet/extension-base/background/types';
+//import type { Chain } from '@earthwallet/extension-chains/types';
+//import type { SettingsStruct } from '@polkadot/ui-settings/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { ThemeProps } from '../types';
 
@@ -15,7 +15,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 
-import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
+//import { decodeAddress } from '@polkadot/util-crypto';
 
 import { Link } from '../components';
 import useMetadata from '../hooks/useMetadata';
@@ -52,13 +52,13 @@ interface Recoded {
 }
 
 // find an account in our list
-function findSubstrateAccount (accounts: AccountJson[], publicKey: Uint8Array): AccountJson | null {
+/* function findSubstrateAccount (accounts: AccountJson[], publicKey: Uint8Array): AccountJson | null {
   const pkStr = publicKey.toString();
 
   return accounts.find(({ address }): boolean =>
     decodeAddress(address).toString() === pkStr
   ) || null;
-}
+} */
 
 // find an account in our list
 function findAccountByAddress (accounts: AccountJson[], _address: string): AccountJson | null {

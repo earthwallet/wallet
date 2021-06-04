@@ -65,7 +65,7 @@ export class Keyring extends Base implements KeyringStruct {
     };
   }
 
-  public async addUri (suri: string, password?: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol?: string): CreateResult {
+  public async addUri (suri: string, password?: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol?: string): Promise<CreateResult> {
     console.log(suri, password, symbol, 'icp', meta);
 
     /*
@@ -89,7 +89,7 @@ export class Keyring extends Base implements KeyringStruct {
     } else {
       newPair = { ...pair };
     }
-
+    console.log(newPair)
     return {
       json: this.saveAccount(pair, password, wallet?.address),
       pair

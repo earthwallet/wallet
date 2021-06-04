@@ -64,7 +64,7 @@ describe('Extension', () => {
   });
 
   test('exports account from keyring', async () => {
-    const { pair: { address } } = keyring.addUri(suri, password);
+    const { pair: { address } } = await keyring.addUri(suri, password);
     const result = await extension.handle('id', 'pri(accounts.export)', {
       address,
       password

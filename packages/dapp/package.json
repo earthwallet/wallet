@@ -23,6 +23,12 @@
     "@earthwallet/extension-dapp": "*",
     "@earthwallet/extension-inject": "*"
   },
+  "workspaces": {
+    "nohoist": [
+      "react-scripts",
+      "react-scripts/**"
+    ]
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
