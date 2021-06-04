@@ -4,7 +4,7 @@
 import type { Injected, InjectedAccount, InjectedAccountWithMeta, InjectedExtension, InjectedExtensionInfo, InjectedProviderWithMeta, InjectedWindow, ProviderList, Unsubcall, Web3AccountsOptions } from '@earthwallet/extension-inject/types';
 
 import { u8aEq } from '@polkadot/util';
-import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
+import { decodeAddress } from '@polkadot/util-crypto';
 
 import { documentReadyPromise } from './util';
 
@@ -27,10 +27,9 @@ function throwError (method: string): never {
 // internal helper to map from Array<InjectedAccount> -> Array<InjectedAccountWithMeta>
 function mapAccounts (source: string, list: InjectedAccount[], ss58Format?: number): InjectedAccountWithMeta[] {
   return list.map(({ address, genesisHash, name }): InjectedAccountWithMeta => {
-    const encodedAddress = encodeAddress(decodeAddress(address), ss58Format);
-
+  //  const encodedAddress = encodeAddress(decodeAddress(address), ss58Format);
     return ({
-      address: encodedAddress,
+      address: address,
       meta: { genesisHash, name, source }
     });
   });

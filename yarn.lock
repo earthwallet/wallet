@@ -2413,6 +2413,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@earthwallet/sdk@npm:^0.1.6":
+  version: 0.1.6
+  resolution: "@earthwallet/sdk@npm:0.1.6"
+  dependencies:
+    "@dfinity/agent": ^0.8.9
+    "@dfinity/rosetta-client": ^0.5.1
+    "@metamask/slip44": ^1.0.0
+    "@polkadot/api": ^4.12.1
+    "@polkadot/keyring": ^6.6.1
+    "@polkadot/util": ^6.6.1
+    "@polkadot/util-crypto": ^6.6.1
+    bip39: ^3.0.4
+    crc-32: ^1.2.0
+    elliptic: ^6.5.4
+    ethereumjs-util: ^7.0.10
+    hdkey: ^2.0.1
+    tweetnacl: ^1.0.3
+  peerDependencies:
+    "@polkadot/api": "*"
+    "@polkadot/util": "*"
+    "@polkadot/util-crypto": "*"
+  checksum: 7378c2678948f26f48663adf26e82c1dadb4799c790beac60dfd33a5d6796ca6104bd882d2e7e7bc82b1bc64d4fb1cb6c5e702aaecdeb618bd8fdbc8a41512da
+  languageName: node
+  linkType: hard
+
 "@earthwallet/ui-keyring@workspace:packages/ui-keyring":
   version: 0.0.0-use.local
   resolution: "@earthwallet/ui-keyring@workspace:packages/ui-keyring"
@@ -9215,6 +9240,7 @@ __metadata:
   dependencies:
     "@earthwallet/extension-dapp": ^0.1.0
     "@earthwallet/extension-inject": ^0.1.0
+    "@earthwallet/sdk": ^0.1.6
     "@testing-library/jest-dom": ^5.11.4
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10
