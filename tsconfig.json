@@ -20,7 +20,9 @@
       "@earthwallet/ui-keyring": ["packages/ui-keyring/src"],
       "@earthwallet/ui-keyring/*": ["packages/ui-keyring/src/*"],
       "@earthwallet/ui-settings": ["packages/ui-settings/src"],
-      "@earthwallet/ui-settings/*": ["packages/ui-settings/src/*"]
+      "@earthwallet/ui-settings/*": ["packages/ui-settings/src/*"],
+      "@earthwallet/dapp": ["packages/dapp/src"],
+      "@earthwallet/dapp/*": ["packages/dapp/src/*"]
     },
     "skipLibCheck": true
   }

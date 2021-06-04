@@ -17,7 +17,8 @@ const packages = [
   'extension-inject',
   'extension-ui',
   'ui-keyring',
-  'ui-settings'
+  'ui-settings',
+  'dapp'
 ];
 
 module.exports = (entry, alias = {}) => ({
