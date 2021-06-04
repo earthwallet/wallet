@@ -155,3 +155,7 @@ The path will be added to the mnemonic phrase of the parent account.
 To Add a new package
 1) Add package to /tsconfig.json
 2) Add package to /packages/extension/webpack.shared.cjs
+
+
+To Run Dapp
+yarn build && yarn dapp

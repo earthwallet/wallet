@@ -68,7 +68,7 @@ function findAccountByAddress (accounts: AccountJson[], _address: string): Accou
 }
 
 // recodes an supplied address using the prefix/genesisHash, include the actual saved account & chain
-function recodeAddress (address: string, accounts: AccountWithChildren[], chain: Chain | null, settings: SettingsStruct): Recoded {
+/* function recodeAddress (address: string, accounts: AccountWithChildren[], chain: Chain | null, settings: SettingsStruct): Recoded {
   // decode and create a shortcut for the encoded address
   const publicKey = decodeAddress(address);
 
@@ -84,7 +84,7 @@ function recodeAddress (address: string, accounts: AccountWithChildren[], chain:
     prefix,
     type: account?.type || DEFAULT_TYPE
   };
-}
+} */
 
 const ACCOUNTS_SCREEN_HEIGHT = 550;
 const defaultRecoded = { account: null, formatted: null, prefix: 42, type: DEFAULT_TYPE };
