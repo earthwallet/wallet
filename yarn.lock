@@ -2263,12 +2263,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@earthwallet/extension-base@^0.37.3-19, @earthwallet/extension-base@workspace:packages/extension-base":
+"@earthwallet/extension-base@^0.1.0, @earthwallet/extension-base@workspace:packages/extension-base":
   version: 0.0.0-use.local
   resolution: "@earthwallet/extension-base@workspace:packages/extension-base"
   dependencies:
     "@babel/runtime": ^7.14.0
-    "@earthwallet/extension-inject": ^0.37.3-19
+    "@earthwallet/extension-inject": ^0.1.0
     "@polkadot/api": ^4.9.3-11
     "@polkadot/keyring": ^6.3.2-10
     "@polkadot/phishing": ^0.6.137
@@ -2293,7 +2293,7 @@ __metadata:
   resolution: "@earthwallet/extension-dapp@workspace:packages/extension-dapp"
   dependencies:
     "@babel/runtime": ^7.14.0
-    "@earthwallet/extension-inject": ^0.37.3-19
+    "@earthwallet/extension-inject": ^0.1.0
     "@polkadot/util": ^6.3.2-10
     "@polkadot/util-crypto": ^6.3.2-10
   peerDependencies:
@@ -2303,7 +2303,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@earthwallet/extension-inject@^0.37.3-19, @earthwallet/extension-inject@workspace:packages/extension-inject":
+"@earthwallet/extension-inject@^0.1.0, @earthwallet/extension-inject@workspace:packages/extension-inject":
   version: 0.0.0-use.local
   resolution: "@earthwallet/extension-inject@workspace:packages/extension-inject"
   dependencies:
@@ -2315,13 +2315,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@earthwallet/extension-ui@^0.37.3-19, @earthwallet/extension-ui@workspace:packages/extension-ui":
+"@earthwallet/extension-ui@^0.1.0, @earthwallet/extension-ui@workspace:packages/extension-ui":
   version: 0.0.0-use.local
   resolution: "@earthwallet/extension-ui@workspace:packages/extension-ui"
   dependencies:
     "@babel/runtime": ^7.14.0
-    "@earthwallet/extension-base": ^0.37.3-19
-    "@earthwallet/extension-inject": ^0.37.3-19
+    "@earthwallet/extension-base": ^0.1.0
+    "@earthwallet/extension-inject": ^0.1.0
     "@fortawesome/fontawesome-svg-core": ^1.2.35
     "@fortawesome/free-brands-svg-icons": ^5.15.3
     "@fortawesome/free-regular-svg-icons": ^5.15.3
@@ -2368,9 +2368,9 @@ __metadata:
   resolution: "@earthwallet/extension@workspace:packages/extension"
   dependencies:
     "@babel/runtime": ^7.14.0
-    "@earthwallet/extension-base": ^0.37.3-19
-    "@earthwallet/extension-inject": ^0.37.3-19
-    "@earthwallet/extension-ui": ^0.37.3-19
+    "@earthwallet/extension-base": ^0.1.0
+    "@earthwallet/extension-inject": ^0.1.0
+    "@earthwallet/extension-ui": ^0.1.0
     "@polkadot/dev": ^0.62.13
     assert: ^2.0.0
     babel-loader: ^8.2.2
@@ -2419,7 +2419,7 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.12.5
     "@earthwallet/sdk": ^0.1.1
-    "@earthwallet/ui-settings": ^0.37.3-19
+    "@earthwallet/ui-settings": ^0.1.0
     "@polkadot/keyring": ^5.0.1
     "@polkadot/ledger": ^0.63.1
     "@polkadot/types": ^3.0.1
@@ -2436,7 +2436,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@earthwallet/ui-settings@^0.37.3-19, @earthwallet/ui-settings@workspace:packages/ui-settings":
+"@earthwallet/ui-settings@^0.1.0, @earthwallet/ui-settings@workspace:packages/ui-settings":
   version: 0.0.0-use.local
   resolution: "@earthwallet/ui-settings@workspace:packages/ui-settings"
   dependencies:
@@ -9213,7 +9213,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dapp@workspace:packages/dapp"
   dependencies:
-    "@earthwallet/extension-inject": ^0.37.3-19
+    "@earthwallet/extension-inject": ^0.1.0
     "@testing-library/jest-dom": ^5.11.4
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10
@@ -9227,6 +9227,7 @@ __metadata:
     typescript: ^4.1.2
     web-vitals: ^1.0.1
   peerDependencies:
+    "@earthwallet/extension-dapp": "*"
     "@earthwallet/extension-inject": "*"
   languageName: unknown
   linkType: soft

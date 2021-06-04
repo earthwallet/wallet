@@ -1,6 +1,6 @@
 {
   "name": "@earthwallet/ui-settings",
-  "version": "0.37.3-19",
+  "version": "0.1.0",
   "description": "Manages app settings",
   "main": "index.js",
   "sideEffects": false,

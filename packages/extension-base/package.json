@@ -1,7 +1,7 @@
 {
   "name": "@earthwallet/extension-base",
   "description": "Functions, classes and other utilities used in @earthwallet/extension",
-  "version": "0.37.3-19",
+  "version": "0.1.0",
   "type": "module",
   "author": "Earth Wallet <hello@earthwallet.io>",
   "license": "Apache-2",
@@ -9,7 +9,7 @@
   "sideEffects": false,
   "dependencies": {
     "@babel/runtime": "^7.14.0",
-    "@earthwallet/extension-inject": "^0.37.3-19",
+    "@earthwallet/extension-inject": "^0.1.0",
     "@polkadot/api": "^4.9.3-11",
     "@polkadot/keyring": "^6.3.2-10",
     "@polkadot/phishing": "^0.6.137"

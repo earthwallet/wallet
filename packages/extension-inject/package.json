@@ -1,7 +1,7 @@
 {
   "name": "@earthwallet/extension-inject",
   "description": "A generic injector (usable to any extension), that populates the base exposed interfaces to be used by dapps.",
-  "version": "0.37.3-19",
+  "version": "0.1.0",
   "type": "module",
   "author": "Earth Wallet <hello@earthwallet.io>",
   "license": "Apache-2",
