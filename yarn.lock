@@ -2288,7 +2288,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@earthwallet/extension-dapp@workspace:packages/extension-dapp":
+"@earthwallet/extension-dapp@^0.1.0, @earthwallet/extension-dapp@workspace:packages/extension-dapp":
   version: 0.0.0-use.local
   resolution: "@earthwallet/extension-dapp@workspace:packages/extension-dapp"
   dependencies:
@@ -9213,6 +9213,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dapp@workspace:packages/dapp"
   dependencies:
+    "@earthwallet/extension-dapp": ^0.1.0
     "@earthwallet/extension-inject": ^0.1.0
     "@testing-library/jest-dom": ^5.11.4
     "@testing-library/react": ^11.1.0
