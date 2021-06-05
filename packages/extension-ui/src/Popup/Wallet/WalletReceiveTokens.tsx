@@ -7,6 +7,7 @@ import useToast from '@earthwallet/extension-ui/hooks/useToast';
 import { Header } from '@earthwallet/extension-ui/partials';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//@ts-ignore
 import QRCode from 'qrcode.react';
 import React, { useCallback, useContext } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
