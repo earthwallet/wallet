@@ -1,11 +1,11 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import uiSettings from '@earthwallet/ui-settings';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Ledger } from '@polkadot/hw-ledger';
 import { Network } from '@polkadot/networks/types';
-import uiSettings from '@polkadot/ui-settings';
 import { assert } from '@polkadot/util';
 
 import ledgerChains from '../util/legerChains';

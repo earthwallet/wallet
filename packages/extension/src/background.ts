@@ -7,8 +7,8 @@ import handlers from '@earthwallet/extension-base/background/handlers';
 import { PORT_CONTENT, PORT_EXTENSION } from '@earthwallet/extension-base/defaults';
 import { AccountsStore } from '@earthwallet/extension-base/stores';
 import chrome from '@earthwallet/extension-inject/chrome';
+import keyring from '@earthwallet/ui-keyring';
 
-import keyring from '@polkadot/ui-keyring';
 import { assert } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 

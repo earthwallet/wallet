@@ -1,10 +1,9 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import uiSettings from '@earthwallet/ui-settings';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
-
-import uiSettings from '@polkadot/ui-settings';
 
 import Backend from './Backend';
 

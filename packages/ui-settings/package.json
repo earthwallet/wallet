@@ -1,0 +1,25 @@
+{
+  "name": "@earthwallet/ui-settings",
+  "version": "0.1.0",
+  "description": "Manages app settings",
+  "main": "index.js",
+  "sideEffects": false,
+  "author": "Earth Wallet <hello@earthwallet.io>",
+  "maintainers": [],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@polkadot/networks": "^5.0.1",
+    "@polkadot/util": "^5.0.1",
+    "eventemitter3": "^4.0.7",
+    "store": "^2.0.12"
+  },
+  "devDependencies": {
+    "@types/store": "^2.0.2"
+  },
+  "peerDependencies": {
+    "@earthwallet/ui-keyring": "*",
+    "@polkadot/networks": "*",
+    "@polkadot/util": "*"
+  }
+}

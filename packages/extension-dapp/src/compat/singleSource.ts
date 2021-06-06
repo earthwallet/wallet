@@ -35,7 +35,7 @@ function transformAccounts (accounts: SingleSourceAccount[]): InjectedAccount[] 
   }));
 }
 
-// add a compat interface of SingleSource to window.injectedWeb3
+// add a compat interface of SingleSource to window.initWeb3
 function injectSingleSource (win: SingleWindow): void {
   let accounts: InjectedAccount[] = [];
 
@@ -46,7 +46,7 @@ function injectSingleSource (win: SingleWindow): void {
   });
 
   // decorate the compat interface
-  win.injectedWeb3.SingleSource = {
+  win.initWeb3.SingleSource = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/require-await
     enable: async (origin: string): Promise<Injected> => ({
       accounts: {

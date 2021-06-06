@@ -2,7 +2,7 @@
   "repository": "https://github.com/polkadot-js/extension",
   "author": "Earth Wallet <hello@earthwallet.io>",
   "license": "Apache-2",
-  "version": "0.1",
+  "version": "0.1.0",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -34,7 +34,8 @@
     "postinstall": "polkadot-dev-yarn-only",
     "start": "yarn watch",
     "test": "polkadot-dev-run-test",
-    "watch": "cd packages/extension && yarn polkadot-exec-webpack --config webpack.watch.cjs --mode development --watch"
+    "watch": "cd packages/extension && yarn polkadot-exec-webpack --config webpack.watch.cjs --mode development --watch",
+    "dapp": "cd packages/dapp && yarn start"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",

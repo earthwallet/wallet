@@ -1,0 +1,14 @@
+.setting {
+  display: grid;
+  /* flex: 1; */
+  grid-template-columns: 15% 20% 65%;
+  width: calc(100vw - 40px);
+  /* justify-content: space-around; */
+  text-align: left;
+  padding: 20px;
+}
+
+.heading{
+    font-size: 18px;
+    text-transform: uppercase;
+}

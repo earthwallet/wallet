@@ -8,10 +8,10 @@ import type { SignerPayloadJSON } from '@polkadot/types/types';
 
 import { ResponseSigning } from '@earthwallet/extension-base/background/types';
 import { MetadataDef } from '@earthwallet/extension-inject/types';
+import keyring from '@earthwallet/ui-keyring';
 
 import { KeyringPair } from '@polkadot/keyring/types';
 import { TypeRegistry } from '@polkadot/types';
-import keyring from '@polkadot/ui-keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 import { AccountsStore } from '../../stores';
@@ -64,7 +64,7 @@ describe('Extension', () => {
   });
 
   test('exports account from keyring', async () => {
-    const { pair: { address } } = keyring.addUri(suri, password);
+    const { pair: { address } } = await keyring.addUri(suri, password);
     const result = await extension.handle('id', 'pri(accounts.export)', {
       address,
       password

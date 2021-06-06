@@ -1,18 +1,19 @@
 {
   "name": "@earthwallet/extension",
   "description": "A sample signer extension for the @earthwallet/api",
-  "version": "0.37.3-19",
+  "version": "0.1.0",
   "type": "module",
   "author": "Earth Wallet <hello@earthwallet.io>",
   "license": "Apache-2",
   "dependencies": {
     "@babel/runtime": "^7.14.0",
-    "@earthwallet/extension-base": "^0.37.3-19",
-    "@earthwallet/extension-inject": "^0.37.3-19",
-    "@earthwallet/extension-ui": "^0.37.3-19"
+    "@earthwallet/extension-base": "^0.1.0",
+    "@earthwallet/extension-inject": "^0.1.0",
+    "@earthwallet/extension-ui": "^0.1.0"
   },
   "devDependencies": {
     "@polkadot/dev": "^0.62.13",
+    "assert": "^2.0.0",
     "babel-loader": "^8.2.2",
     "browser-resolve": "^2.0.0",
     "buffer": "^6.0.3",
@@ -21,6 +22,7 @@
     "extract-loader": "^5.1.0",
     "file-loader": "^6.2.0",
     "html-loader": "^2.1.2",
+    "node-inspect-extracted": "^1.0.7",
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
     "stream-browserify": "^3.0.0",

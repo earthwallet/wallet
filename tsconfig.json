@@ -16,7 +16,13 @@
       "@earthwallet/extension-inject": ["packages/extension-inject/src"],
       "@earthwallet/extension-inject/*": ["packages/extension-inject/src/*"],
       "@earthwallet/extension-ui": ["packages/extension-ui/src"],
-      "@earthwallet/extension-ui/*": ["packages/extension-ui/src/*"]
+      "@earthwallet/extension-ui/*": ["packages/extension-ui/src/*"],
+      "@earthwallet/ui-keyring": ["packages/ui-keyring/src"],
+      "@earthwallet/ui-keyring/*": ["packages/ui-keyring/src/*"],
+      "@earthwallet/ui-settings": ["packages/ui-settings/src"],
+      "@earthwallet/ui-settings/*": ["packages/ui-settings/src/*"],
+      "@earthwallet/dapp": ["packages/dapp/src"],
+      "@earthwallet/dapp/*": ["packages/dapp/src/*"]
     },
     "skipLibCheck": true
   }

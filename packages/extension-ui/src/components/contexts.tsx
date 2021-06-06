@@ -5,9 +5,8 @@ import type { AccountsContext, AuthorizeRequest, MetadataRequest, NetworksContex
 import type { SettingsStruct } from '@polkadot/ui-settings/types';
 import type { AvailableThemes } from './themes';
 
+import settings from '@earthwallet/ui-settings';
 import React from 'react';
-
-import settings from '@polkadot/ui-settings';
 
 import { defaultNetworkContext } from '../Popup/Utils/Consts';
 

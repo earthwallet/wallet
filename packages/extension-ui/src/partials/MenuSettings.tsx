@@ -3,11 +3,10 @@
 
 import type { ThemeProps } from '../types';
 
+import settings from '@earthwallet/ui-settings';
 import { faExpand, faTasks } from '@fortawesome/free-solid-svg-icons';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-import settings from '@polkadot/ui-settings';
 
 import { ActionContext, ActionText, Checkbox, Menu, MenuDivider, MenuItem, Svg } from '../components';
 import useIsPopup from '../hooks/useIsPopup';
