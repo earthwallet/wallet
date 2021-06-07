@@ -44,24 +44,27 @@ function App() {
 
       <div className="App-Body">
         <div className="App-header">
-          <div className="App-header-title">EARTH WALLET DApp</div>
-          <div
-            className="selectedAccount"
-            onClick={() => (accounts && accounts?.length > 1 ? setShowDropDown(status => !status) : {})}
-          >
-            {selectedAccount && getShortAddress(selectedAccount?.address)}
-          </div>
-          {showDropDown && (
-            <div className="addressSelector">
-              {accounts?.map(account => {
-                return (
-                  <div className="addressItem" key={account.address} onClick={() => _onChangePrefix(account)}>
-                    {getShortAddress(account.address)}
-                  </div>
-                );
-              })}
+          <div className="App-header-title">Sample DApp</div>
+          <div className="selectedAccountHeader">
+            <div
+              className="selectedAccount"
+              onClick={() => (accounts && accounts?.length > 1 ? setShowDropDown(status => !status) : {})}
+            >
+              {selectedAccount && getShortAddress(selectedAccount?.address)}
             </div>
-          )}
+
+            {showDropDown && (
+              <div className="addressSelector">
+                {accounts?.map(account => {
+                  return (
+                    <div className="addressItem" key={account.address} onClick={() => _onChangePrefix(account)}>
+                      {getShortAddress(account.address)}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
