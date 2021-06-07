@@ -1,48 +1,69 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { web3Accounts, web3Enable } from '@earthwallet/sdk';
 import { InjectedAccountWithMeta } from '@earthwallet/sdk/build/main/inject/types';
+import logo from './icon.png';
 
 import styles from './styles.module.scss';
 
 function App() {
-  const [accounts, setaccounts] = useState<InjectedAccountWithMeta[]>([
-    { meta: { name: '', source: '' }, address: '' },
-  ]);
+  const [accounts, setAccounts] = useState<null | InjectedAccountWithMeta[]>(null);
+  const [selectedAccount, setSelectedAccount] = useState<null | InjectedAccountWithMeta>(null);
+  const [showDropDown, setShowDropDown] = useState(false);
 
   useEffect(() => {
     loadWeb3Accounts();
   }, []);
 
   const loadWeb3Accounts = async () => {
-    await web3Enable('social.network');
-    const allAccounts = await web3Accounts();
+    if (accounts != null) return;
+    await web3Enable('social.network').catch(err => console.log('web3Enable', err));
+    const allAccounts = await web3Accounts().catch(err => console.log('web3Accounts', err));
     console.log(allAccounts, 'InjectedAccountWithMeta', web3Enable);
-    setaccounts(allAccounts);
+    if (allAccounts && allAccounts.length) setAccounts(allAccounts);
   };
+
+  useEffect(() => {
+    console.log('accounts', accounts);
+    console.log('selectedAccount', selectedAccount);
+    if (selectedAccount == null && accounts && accounts.length) setSelectedAccount(accounts[0]);
+  }, [accounts, selectedAccount]);
+
+  const _onChangePrefix = (account: InjectedAccountWithMeta) => {
+    setSelectedAccount(account);
+    setShowDropDown(false);
+  };
+
+  const getShortAddress = (address: string) => address.substring(0, 6) + '...' + address.substring(address.length - 5);
 
   return (
     <div className="App">
-      <header className="App-header">
-        <p className={styles.heading}>List of Accounts from earthwallet</p>
+      <div className="stars"></div>
+      <div className="twinkling"></div>
+      <img src={logo} className={'App-logo' + (accounts?.length ? ' App-logo-connected' : '')} alt="logo" />
 
-        {accounts.map((account, index) => (
-          <div key={index} className={styles.checkboxcont}>
-            <div className={styles.identicont}></div>
-
-            <div className={styles.setting}>
-              <div className={styles.selectlabel}>{account?.meta?.name}</div>
-              <div className={styles.selectaddresslabel}>
-                {account?.meta?.genesisHash === '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3'
-                  ? 'Polkadot'
-                  : 'ICP'}
-              </div>
-              <div className={styles.selectaddresslabel}>{account?.address}</div>
-            </div>
+      <div className="App-Body">
+        <div className="App-header">
+          <div className="App-header-title">EARTH WALLET DApp</div>
+          <div
+            className="selectedAccount"
+            onClick={() => (accounts && accounts?.length > 1 ? setShowDropDown(status => !status) : {})}
+          >
+            {selectedAccount && getShortAddress(selectedAccount?.address)}
           </div>
-        ))}
-      </header>
+          {showDropDown && (
+            <div className="addressSelector">
+              {accounts?.map(account => {
+                return (
+                  <div className="addressItem" key={account.address} onClick={() => _onChangePrefix(account)}>
+                    {getShortAddress(account.address)}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
