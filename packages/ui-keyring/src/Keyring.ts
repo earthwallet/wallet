@@ -77,12 +77,10 @@ export class Keyring extends Base implements KeyringStruct {
 
     if (symbol === 'ICP') {
       wallet = await createWallet(suri, symbol);
-      alert(JSON.stringify(wallet));
     }
 
     const pair = this.keyring.addFromUri(suri, meta, type);
 
-    alert('wallet v6 -' + JSON.stringify({ suri, password, symbol, meta }));
 
     if (symbol === 'ICP') {
       newPair = { ...pair, type: 'ethereum', address: wallet?.address };
@@ -366,7 +364,6 @@ export class Keyring extends Base implements KeyringStruct {
     const json = pair.toJson(password);
 
     this.keyring.addFromJson(json);
-    alert('saveAccount: ' + icp_Address);
 
     this.accounts.add(this._store, icp_Address || pair.address, json, pair.type);
 

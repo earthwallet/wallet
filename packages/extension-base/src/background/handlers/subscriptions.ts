@@ -13,7 +13,7 @@ export function createSubscription<TMessageType extends MessageTypesWithSubscrip
 
   return (subscription: unknown): void => {
     if (subscriptions[id]) {
-      port.postMessage({ id, subscription });
+      port.postMessage({ id, subscription, origin: 'earthwallet' });
     }
   };
 }

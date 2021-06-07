@@ -50,14 +50,14 @@ export function sendMessage<TMessageType extends MessageTypes> (message: TMessag
 
 // the enable function, called by the dapp to allow access
 export async function enable (origin: string): Promise<Injected> {
-  await sendMessage('pub(authorize.tab)', { origin });
+  await sendMessage('ewpub(authorize.tab)', { origin });
 
   return new Injected(sendMessage);
 }
 
 // redirect users if this page is considered as phishing, otherwise return false
 export async function redirectIfPhishing (): Promise<boolean> {
-  const res = await sendMessage('pub(phishing.redirectIfDenied)');
+  const res = await sendMessage('ewpub(phishing.redirectIfDenied)');
 
   return res;
 }
@@ -66,7 +66,7 @@ export function handleResponse<TMessageType extends MessageTypes> (data: Transpo
   const handler = handlers[data.id];
 
   if (!handler) {
-    console.error(`Unknown response: ${JSON.stringify(data)}`);
+    console.log(`Unknown response: ${JSON.stringify(data)}`);
 
     return;
   }

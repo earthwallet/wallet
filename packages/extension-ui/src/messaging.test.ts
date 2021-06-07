@@ -21,7 +21,7 @@ describe('messaging sends message to background via extension port for', () => {
 
     expect(callback).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'pri(accounts.export)',
+        message: 'ewpri(accounts.export)',
         request: { address: 'HjoBp62cvsWDA3vtNMWxz6c9q13ReEHi9UGHK7JbZweH5g5', password: 'passw0rd' }
       })
     );
