@@ -1,38 +1,183 @@
+body {
+  font-family: Poppins;
+}
 .App {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.App-Body {
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(540deg);
   }
 }
 
+.App-logo {
+  height: 460px;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+  top: -230px;
+  right: -100px;
+  border-radius: 50%;
+}
+
+.App-logo {
+  animation: spin infinite 250s linear;
+}
+
+.App-logo-connected {
+  -moz-box-shadow: 0 0 15px 15px rgba(43, 115, 255, 0.5);
+  -webkit-box-shadow: 0 0 15px 15px rgba(43, 115, 255, 0.5);
+  box-shadow: 0 0 15px 15px rgba(43, 115, 255, 0.5);
+}
+
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  height: 68px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
+  padding: 4px 24px;
+}
+
+.App-header-title {
+  flex: 1;
+  font-size: 26px;
 }
 
 .App-link {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
+@keyframes move-twink-back {
   from {
-    transform: rotate(0deg);
+    background-position: 0 0;
   }
   to {
-    transform: rotate(360deg);
+    background-position: -10000px 5000px;
   }
+}
+
+@-webkit-keyframes move-twink-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 5000px;
+  }
+}
+
+@-moz-keyframes move-twink-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 5000px;
+  }
+}
+
+@-ms-keyframes move-twink-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 5000px;
+  }
+}
+
+.stars,
+.twinkling {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.stars {
+  background: #000 url('./stars.png') repeat top center;
+  z-index: 0;
+}
+
+.twinkling {
+  background: transparent url('./twinkling.png') repeat top center;
+  z-index: 1;
+
+  -moz-animation: move-twink-back 200s linear infinite;
+  -ms-animation: move-twink-back 200s linear infinite;
+  -o-animation: move-twink-back 200s linear infinite;
+  -webkit-animation: move-twink-back 200s linear infinite;
+  animation: move-twink-back 200s linear infinite;
+}
+
+.selectedAccountHeader {
+  display: flex;
+}
+
+.selectedAccount {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2px 10px;
+  border-radius: 18px;
+  border: 1px solid #1b63a6;
+  font-size: 14px;
+  background: rgb(43, 115, 255);
+  min-width: 132px;
+}
+
+.selectedAccount:hover {
+  cursor: pointer;
+}
+
+.addressSelector {
+  border-radius: 4px;
+  border: 1px solid #303030;
+  box-sizing: border-box;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.86);
+  margin-top: 30px;
+  position: absolute;
+  max-height: 300px;
+  overflow: auto;
+  z-index: 2;
+}
+
+.addressItem {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: #38393fee;
+  font-size: 12px;
+}
+
+.addressItem:hover {
+  background-color: #1b63a6;
+  cursor: pointer;
 }
