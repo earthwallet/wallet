@@ -62,7 +62,8 @@ export default class Extension {
   }
 
   private accountsCreateSuri ({ genesisHash, name, password, suri, symbol, type }: RequestAccountCreateSuri): boolean {
-    keyring.addUri(suri, password, { genesisHash, name }, type, symbol);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    keyring.addUri(suri, password, { genesisHash, name }, type, symbol).then(() => true);
 
     return true;
   }
@@ -608,7 +609,7 @@ export default class Extension {
         return this.windowOpen(request as AllowedPath);
 
       default:
-      return console.log(`Unable to handle message of type ${type}`);
+        return console.log(`Unable to handle message of type ${type}`);
     }
   }
 }

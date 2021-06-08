@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { AccountJson } from '@earthwallet/extension-base/background/types';
-//import type { Chain } from '@earthwallet/extension-chains/types';
-//import type { SettingsStruct } from '@polkadot/ui-settings/types';
+// import type { Chain } from '@earthwallet/extension-chains/types';
+// import type { SettingsStruct } from '@polkadot/ui-settings/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { ThemeProps } from '../types';
 
@@ -15,8 +15,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 
-//import { decodeAddress } from '@polkadot/util-crypto';
-
+// import { decodeAddress } from '@polkadot/util-crypto';
 import { Link } from '../components';
 import useMetadata from '../hooks/useMetadata';
 import useOutsideClick from '../hooks/useOutsideClick';

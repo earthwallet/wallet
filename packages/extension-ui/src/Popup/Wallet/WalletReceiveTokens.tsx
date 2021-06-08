@@ -7,7 +7,7 @@ import useToast from '@earthwallet/extension-ui/hooks/useToast';
 import { Header } from '@earthwallet/extension-ui/partials';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//@ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 import QRCode from 'qrcode.react';
 import React, { useCallback, useContext } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -59,7 +59,7 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
           <QRCode bgColor='#0000'
             fgColor='#DDD'
             size={220}
-            value={selectedAccount?.address} />
+            value={selectedAccount?.address || ''} />
 
         </div>
 

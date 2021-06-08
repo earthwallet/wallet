@@ -41,7 +41,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
       if (name && password && account) {
         setIsBusy(true);
 
-        createAccountSuri(name, password, account.seed, undefined, genesis, genesis == 'the_icp' ? 'ICP' : undefined)
+        createAccountSuri(name, password, account.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined)
           .then(() => onAction('/'))
           .catch((error: Error): void => {
             setIsBusy(false);

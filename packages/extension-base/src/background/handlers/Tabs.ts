@@ -216,7 +216,7 @@ export default class Tabs {
         return this.rpcUnsubscribe(request as RequestRpcUnsubscribe, port);
 
       default:
-      return console.log(`Unable to handle message of type ${type}`);
+        return console.log(`Unable to handle message of type ${type}`);
     }
   }
 }

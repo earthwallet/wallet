@@ -32,10 +32,11 @@ let idCounter = 0;
 
 // setup a listener for messages, any incoming resolves the promise
 port.onMessage.addListener((data: Message['data']): void => {
-  if(data.origin !== 'earthwallet'){
+  if (data.origin !== 'earthwallet') {
     console.warn('Unknown origin: ' + data.origin);
+
     return;
-  } 
+  }
 
   const handler = handlers[data.id];
 
