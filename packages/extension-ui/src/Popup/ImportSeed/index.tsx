@@ -34,7 +34,7 @@ function ImportSeed (): React.ReactElement {
     if (name && password && account) {
       setIsBusy(true);
 
-      createAccountSuri(name, password, account.suri, undefined, account.genesis)
+      createAccountSuri(name, password, account.suri, undefined, account.genesis, account.genesis === 'the_icp' ? 'ICP' : undefined)
         .then(() => onAction('/'))
         .catch((error): void => {
           setIsBusy(false);
