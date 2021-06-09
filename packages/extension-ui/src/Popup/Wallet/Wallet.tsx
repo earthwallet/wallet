@@ -21,6 +21,7 @@ import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 import icpLogo from '../../assets/icp-logo.png';
 import ksmLogo from '../../assets/kusama-ksm-logo.svg';
@@ -37,6 +38,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const { selectedAccount } = useContext(SelectedAccountContext);
   const [walletBalance, setWalletBalance] = useState<any|null>(null);
   const [walletTransactions, setWalletTransactions] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const getValueInUSD = (balance: number, decimals: number, symbol: string) => {
     if (symbol === 'ICP') return `${(balance / Math.pow(10, decimals)) * 80}`;
@@ -47,11 +49,9 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   };
 
   const loadBalance = async (address: string) => {
+    setLoading(true)
     const balance = await getBalance(address);
-
-    console.log('balance', balance);
-    console.log('balance?.balances', balance?.balances);
-
+    setLoading(false);
     if (balance?.balances != null) { setWalletBalance(balance); }
   };
 
@@ -114,15 +114,26 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
           className='network-logo'
           src={getNetworkLogo()}
         />
-        <div className='primaryBalanceLabel'>{walletBalance && walletBalance?.balances[0] &&
+        <div className='primaryBalanceLabel'>
+          { loading 
+          ?  <SkeletonTheme color="#222" highlightColor="#000">
+            <Skeleton width={150} />
+          </SkeletonTheme>
+         : <span>{walletBalance && walletBalance?.balances[0] &&
                   `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} ${walletBalance?.balances[0]?.currency?.symbol}`
+        }</span>
         }</div>
-        <div className='secondaryBalanceLabel'>{walletBalance && walletBalance?.balances[0] && ('$' +
+        <div className='secondaryBalanceLabel'>
+        { loading 
+          ?  <SkeletonTheme color="#222" highlightColor="#000">
+            <Skeleton width={100} />
+          </SkeletonTheme>
+         : <span>{walletBalance && walletBalance?.balances[0] && ('$' +
                 getValueInUSD(
                   walletBalance?.balances[0]?.value,
                   walletBalance?.balances[0]?.currency?.decimals,
                   walletBalance?.balances[0]?.currency?.symbol
-                ))}</div>
+                ))}</span>}</div>
         <div className='walletActionsView'>
 
           <div
