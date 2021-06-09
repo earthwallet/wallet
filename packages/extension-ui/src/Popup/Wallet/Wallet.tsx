@@ -1,11 +1,13 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-key */
 /* eslint-disable camelcase */
 
@@ -31,7 +33,6 @@ interface Props extends ThemeProps {
 
 // eslint-disable-next-line space-before-function-paren
 const Wallet = function ({ className }: Props): React.ReactElement<Props> {
-  const [selectedAccountSymbol, setSelectedAccountSymbol] = useState<undefined | string>(undefined);
   const [selectedTab, setSelectedTab] = useState('Transactions');
   const { selectedAccount } = useContext(SelectedAccountContext);
   const [walletBalance, setWalletBalance] = useState<any>();
@@ -54,17 +55,21 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const loadTransactions = async (address: string) => {
     const transactions = await getTransactions(address);
 
+    console.log('transactions', transactions);
     setWalletTransactions(transactions);
   };
 
-  const getShortAddress = (address: string) =>
-    address.substring(0, 6) + '...' + address.substring(address.length - 5);
+  const getTransactionDetail = (transaction: any): any => {
+    const operations = transaction.transaction.operations
+      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
+      .filter((operation: { account: any; }) => operation.account.address === selectedAccount?.address);
+
+    console.log('operations', operations);
+
+    return operations[0];
+  };
 
   useEffect(() => {
-    if (selectedAccount?.genesisHash == null) { return; }
-
-    setSelectedAccountSymbol(symbolGenesisMap().get(selectedAccount.genesisHash));
-
     if (selectedAccount && selectedAccount?.address) {
       loadBalance(selectedAccount?.address);
       loadTransactions(selectedAccount?.address);
@@ -149,7 +154,17 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
                     (transaction: { block_identifier: { hash: string } }) => {
                       return (
                         <div className="transaction-item-div">
-                          {getShortAddress(transaction.block_identifier.hash)}
+                          <FontAwesomeIcon
+                            className='transaction-type-icon'
+                            color='#fff'
+                            icon={getTransactionDetail(transaction).amount.value > 0 ? faArrowDown : faArrowUp }
+                            size='lg'
+                          />
+                          <div className='transaction-detail-div'>
+                            <div className='transaction-type'>{getTransactionDetail(transaction).amount.value > 0 ? 'Receive' : 'Send'}</div>
+                          </div>
+                          <div className='transaction-amount'>{`${getTransactionDetail(transaction).amount.value / Math.pow(10, getTransactionDetail(transaction).amount.currency.decimals)}` + ` ${getTransactionDetail(transaction).amount.currency.symbol}`}</div>
+
                         </div>
                       );
                     }
@@ -282,10 +297,6 @@ export default styled(Wallet)(({ theme }: Props) => `
     align-items: center;
     justify-content: center;
     box-shadow: inset 0 -1px 0 ${theme.buttonBackground};
-     &:hover {
-        background-color: ${theme.buttonBackgroundHover};
-        cursor: pointer;
-    }
     border-top-left-radius: 32px;
     border-top-right-radius: 32px;
     }
@@ -304,12 +315,40 @@ export default styled(Wallet)(({ theme }: Props) => `
     display: flex;
     flex-direction: column;
     flex: 1;
+    overflow: scroll;
+    height: 160px;
     }
 
     .transaction-item-div {
-    padding: 8px;
+    display: flex;
+    flex-direction: row;
+    padding: 8px 12px;
     font-size: 12px;
     border-bottom: 1px solid #1b63a677;
+    align-items: center;
+    }
+
+    .transaction-type-icon{
+    height: 16px;
+    width: 16px;
+    border: 1px solid #1b63a677;
+    padding: 10px;
+    border-radius: 50%;
+    margin-right: 12px;
+    }
+
+    .transaction-detail-div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    }
+
+    .transaction-type {
+        font-size: 16px;
+    }
+
+    .transaction-amount {
+        font-size: 18px;
     }
 
 `);
