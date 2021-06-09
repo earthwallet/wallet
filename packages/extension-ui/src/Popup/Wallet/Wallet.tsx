@@ -35,7 +35,7 @@ interface Props extends ThemeProps {
 const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const [selectedTab, setSelectedTab] = useState('Transactions');
   const { selectedAccount } = useContext(SelectedAccountContext);
-  const [walletBalance, setWalletBalance] = useState<any>();
+  const [walletBalance, setWalletBalance] = useState<any|null>(null);
   const [walletTransactions, setWalletTransactions] = useState<any>();
 
   const getValueInUSD = (balance: number, decimals: number, symbol: string) => {
@@ -49,7 +49,9 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const loadBalance = async (address: string) => {
     const balance = await getBalance(address);
 
-    setWalletBalance(balance);
+    console.log('balance', balance);
+
+    if (walletBalance?.balances && walletBalance?.balances?.length) { setWalletBalance(balance); }
   };
 
   const loadTransactions = async (address: string) => {
@@ -98,10 +100,10 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
           className='network-logo'
           src={getNetworkLogo()}
         />
-        <div className='primaryBalanceLabel'>{walletBalance?.balances[0] &&
+        <div className='primaryBalanceLabel'>{walletBalance && walletBalance?.balances[0] &&
                   `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} ${walletBalance?.balances[0]?.currency?.symbol}`
         }</div>
-        <div className='secondaryBalanceLabel'>{walletBalance?.balances[0] && ('$' +
+        <div className='secondaryBalanceLabel'>{walletBalance && walletBalance?.balances[0] && ('$' +
                 getValueInUSD(
                   walletBalance?.balances[0]?.value,
                   walletBalance?.balances[0]?.currency?.decimals,
