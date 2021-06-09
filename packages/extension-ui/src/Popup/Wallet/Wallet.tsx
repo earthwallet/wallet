@@ -99,7 +99,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
           src={getNetworkLogo()}
         />
         <div className='primaryBalanceLabel'>{walletBalance?.balances[0] &&
-                  `${walletBalance?.balances[0]?.value} ${walletBalance?.balances[0]?.currency?.symbol}`
+                  `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} ${walletBalance?.balances[0]?.currency?.symbol}`
         }</div>
         <div className='secondaryBalanceLabel'>{walletBalance?.balances[0] && ('$' +
                 getValueInUSD(
