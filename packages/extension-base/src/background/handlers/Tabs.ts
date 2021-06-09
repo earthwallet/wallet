@@ -53,7 +53,7 @@ export default class Tabs {
 
   // FIXME This looks very much like what we have in Extension
   private accountsSubscribe (url: string, id: string, port: chrome.runtime.Port): boolean {
-    const cb = createSubscription<'pub(accounts.subscribe)'>(id, port);
+    const cb = createSubscription<'ewpub(accounts.subscribe)'>(id, port);
     const subscription = accountsObservable.subject.subscribe((accounts: SubjectInfo): void =>
       cb(transformAccounts(accounts))
     );
@@ -113,8 +113,8 @@ export default class Tabs {
   }
 
   private async rpcSubscribe (request: RequestRpcSubscribe, id: string, port: chrome.runtime.Port): Promise<boolean> {
-    const innerCb = createSubscription<'pub(rpc.subscribe)'>(id, port);
-    const cb = (_error: Error | null, data: SubscriptionMessageTypes['pub(rpc.subscribe)']): void => innerCb(data);
+    const innerCb = createSubscription<'ewpub(rpc.subscribe)'>(id, port);
+    const cb = (_error: Error | null, data: SubscriptionMessageTypes['ewpub(rpc.subscribe)']): void => innerCb(data);
     const subscriptionId = await this.#state.rpcSubscribe(request, cb, port);
 
     port.onDisconnect.addListener((): void => {
@@ -126,8 +126,8 @@ export default class Tabs {
   }
 
   private rpcSubscribeConnected (request: null, id: string, port: chrome.runtime.Port): Promise<boolean> {
-    const innerCb = createSubscription<'pub(rpc.subscribeConnected)'>(id, port);
-    const cb = (_error: Error | null, data: SubscriptionMessageTypes['pub(rpc.subscribeConnected)']): void => innerCb(data);
+    const innerCb = createSubscription<'ewpub(rpc.subscribeConnected)'>(id, port);
+    const cb = (_error: Error | null, data: SubscriptionMessageTypes['ewpub(rpc.subscribeConnected)']): void => innerCb(data);
 
     this.#state.rpcSubscribeConnected(request, cb, port);
 
@@ -167,56 +167,56 @@ export default class Tabs {
   }
 
   public async handle<TMessageType extends MessageTypes> (id: string, type: TMessageType, request: RequestTypes[TMessageType], url: string, port: chrome.runtime.Port): Promise<ResponseTypes[keyof ResponseTypes]> {
-    if (type === 'pub(phishing.redirectIfDenied)') {
+    if (type === 'ewpub(phishing.redirectIfDenied)') {
       return this.redirectIfPhishing(url);
     }
 
-    if (type !== 'pub(authorize.tab)') {
+    if (type !== 'ewpub(authorize.tab)') {
       this.#state.ensureUrlAuthorized(url);
     }
 
     switch (type) {
-      case 'pub(authorize.tab)':
+      case 'ewpub(authorize.tab)':
         return this.authorize(url, request as RequestAuthorizeTab);
 
-      case 'pub(accounts.list)':
+      case 'ewpub(accounts.list)':
         return this.accountsList(url, request as RequestAccountList);
 
-      case 'pub(accounts.subscribe)':
+      case 'ewpub(accounts.subscribe)':
         return this.accountsSubscribe(url, id, port);
 
-      case 'pub(bytes.sign)':
+      case 'ewpub(bytes.sign)':
         return this.bytesSign(url, request as SignerPayloadRaw);
 
-      case 'pub(extrinsic.sign)':
+      case 'ewpub(extrinsic.sign)':
         return this.extrinsicSign(url, request as SignerPayloadJSON);
 
-      case 'pub(metadata.list)':
+      case 'ewpub(metadata.list)':
         return this.metadataList(url);
 
-      case 'pub(metadata.provide)':
+      case 'ewpub(metadata.provide)':
         return this.metadataProvide(url, request as MetadataDef);
 
-      case 'pub(rpc.listProviders)':
+      case 'ewpub(rpc.listProviders)':
         return this.rpcListProviders();
 
-      case 'pub(rpc.send)':
+      case 'ewpub(rpc.send)':
         return this.rpcSend(request as RequestRpcSend, port);
 
-      case 'pub(rpc.startProvider)':
+      case 'ewpub(rpc.startProvider)':
         return this.rpcStartProvider(request as string, port);
 
-      case 'pub(rpc.subscribe)':
+      case 'ewpub(rpc.subscribe)':
         return this.rpcSubscribe(request as RequestRpcSubscribe, id, port);
 
-      case 'pub(rpc.subscribeConnected)':
+      case 'ewpub(rpc.subscribeConnected)':
         return this.rpcSubscribeConnected(request as null, id, port);
 
-      case 'pub(rpc.unsubscribe)':
+      case 'ewpub(rpc.unsubscribe)':
         return this.rpcUnsubscribe(request as RequestRpcUnsubscribe, port);
 
       default:
-        throw new Error(`Unable to handle message of type ${type}`);
+        return console.log(`Unable to handle message of type ${type}`);
     }
   }
 }

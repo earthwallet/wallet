@@ -47,12 +47,12 @@ describe('Extension', () => {
   }
 
   const createAccount = async (): Promise<string> => {
-    await extension.handle('id', 'pri(accounts.create.suri)', {
+    await extension.handle('id', 'ewpri(accounts.create.suri)', {
       name: 'parent',
       password,
       suri
     }, {} as chrome.runtime.Port);
-    const { address } = await extension.handle('id', 'pri(seed.validate)', {
+    const { address } = await extension.handle('id', 'ewpri(seed.validate)', {
       suri
     }, {} as chrome.runtime.Port);
 
@@ -65,7 +65,7 @@ describe('Extension', () => {
 
   test('exports account from keyring', async () => {
     const { pair: { address } } = await keyring.addUri(suri, password);
-    const result = await extension.handle('id', 'pri(accounts.export)', {
+    const result = await extension.handle('id', 'ewpri(accounts.export)', {
       address,
       password
     }, {} as chrome.runtime.Port);
@@ -81,8 +81,8 @@ describe('Extension', () => {
       address = await createAccount();
     });
 
-    test('pri(derivation.validate) passes for valid suri', async () => {
-      const result = await extension.handle('id', 'pri(derivation.validate)', {
+    test('ewpri(derivation.validate) passes for valid suri', async () => {
+      const result = await extension.handle('id', 'ewpri(derivation.validate)', {
         parentAddress: address,
         parentPassword: password,
         suri: '//path'
@@ -94,24 +94,24 @@ describe('Extension', () => {
       });
     });
 
-    test('pri(derivation.validate) throws for invalid suri', async () => {
-      await expect(extension.handle('id', 'pri(derivation.validate)', {
+    test('ewpri(derivation.validate) throws for invalid suri', async () => {
+      await expect(extension.handle('id', 'ewpri(derivation.validate)', {
         parentAddress: address,
         parentPassword: password,
         suri: 'invalid-path'
       }, {} as chrome.runtime.Port)).rejects.toStrictEqual(new Error('"invalid-path" is not a valid derivation path'));
     });
 
-    test('pri(derivation.validate) throws for invalid password', async () => {
-      await expect(extension.handle('id', 'pri(derivation.validate)', {
+    test('ewpri(derivation.validate) throws for invalid password', async () => {
+      await expect(extension.handle('id', 'ewpri(derivation.validate)', {
         parentAddress: address,
         parentPassword: 'invalid-password',
         suri: '//path'
       }, {} as chrome.runtime.Port)).rejects.toStrictEqual(new Error('invalid password'));
     });
 
-    test('pri(derivation.create) adds a derived account', async () => {
-      await extension.handle('id', 'pri(derivation.create)', {
+    test('ewpri(derivation.create) adds a derived account', async () => {
+      await extension.handle('id', 'ewpri(derivation.create)', {
         name: 'child',
         parentAddress: address,
         parentPassword: password,
@@ -121,8 +121,8 @@ describe('Extension', () => {
       expect(keyring.getAccounts()).toHaveLength(2);
     });
 
-    test('pri(derivation.create) saves parent address in meta', async () => {
-      await extension.handle('id', 'pri(derivation.create)', {
+    test('ewpri(derivation.create) saves parent address in meta', async () => {
+      await extension.handle('id', 'ewpri(derivation.create)', {
         name: 'child',
         parentAddress: address,
         parentPassword: password,
@@ -140,17 +140,17 @@ describe('Extension', () => {
       address = await createAccount();
     });
 
-    test('pri(accounts.changePassword) changes account password', async () => {
+    test('ewpri(accounts.changePassword) changes account password', async () => {
       const newPass = 'pa55word';
       const wrongPass = 'ZZzzZZzz';
 
-      await expect(extension.handle('id', 'pri(accounts.changePassword)', {
+      await expect(extension.handle('id', 'ewpri(accounts.changePassword)', {
         address,
         newPass,
         oldPass: wrongPass
       }, {} as chrome.runtime.Port)).rejects.toStrictEqual(new Error('oldPass is invalid'));
 
-      await expect(extension.handle('id', 'pri(accounts.changePassword)', {
+      await expect(extension.handle('id', 'ewpri(accounts.changePassword)', {
         address,
         newPass,
         oldPass: password
@@ -197,12 +197,12 @@ describe('Extension', () => {
       const signatureExpected = registry
         .createType('ExtrinsicPayload', payload, { version: payload.version }).sign(pair);
 
-      tabs.handle('1615191860871.5', 'pub(extrinsic.sign)', payload, 'http://localhost:3000', {} as chrome.runtime.Port)
+      tabs.handle('1615191860871.5', 'ewpub(extrinsic.sign)', payload, 'http://localhost:3000', {} as chrome.runtime.Port)
         .then((result) => {
           expect((result as ResponseSigning)?.signature).toEqual(signatureExpected.signature);
         }).catch((err) => console.log(err));
 
-      await expect(extension.handle('1615192072290.7', 'pri(signing.approve.password)', {
+      await expect(extension.handle('1615192072290.7', 'ewpri(signing.approve.password)', {
         id: state.allSignRequests[0].id,
         password,
         savePass: false
@@ -259,12 +259,12 @@ describe('Extension', () => {
       const signatureExpected = registry
         .createType('ExtrinsicPayload', payload, { version: payload.version }).sign(pair);
 
-      tabs.handle('1615191860771.5', 'pub(extrinsic.sign)', payload, 'http://localhost:3000', {} as chrome.runtime.Port)
+      tabs.handle('1615191860771.5', 'ewpub(extrinsic.sign)', payload, 'http://localhost:3000', {} as chrome.runtime.Port)
         .then((result) => {
           expect((result as ResponseSigning)?.signature).toEqual(signatureExpected.signature);
         }).catch((err) => console.log(err));
 
-      await expect(extension.handle('1615192062290.7', 'pri(signing.approve.password)', {
+      await expect(extension.handle('1615192062290.7', 'ewpri(signing.approve.password)', {
         id: state.allSignRequests[0].id,
         password,
         savePass: false
@@ -315,12 +315,12 @@ describe('Extension', () => {
       const signatureExpected = registry
         .createType('ExtrinsicPayload', payload, { version: payload.version }).sign(pair);
 
-      tabs.handle('1615191860771.5', 'pub(extrinsic.sign)', payload, 'http://localhost:3000', {} as chrome.runtime.Port)
+      tabs.handle('1615191860771.5', 'ewpub(extrinsic.sign)', payload, 'http://localhost:3000', {} as chrome.runtime.Port)
         .then((result) => {
           expect((result as ResponseSigning)?.signature).toEqual(signatureExpected.signature);
         }).catch((err) => console.log(err));
 
-      await expect(extension.handle('1615192062290.7', 'pri(signing.approve.password)', {
+      await expect(extension.handle('1615192062290.7', 'ewpri(signing.approve.password)', {
         id: state.allSignRequests[0].id,
         password,
         savePass: false
@@ -382,12 +382,12 @@ describe('Extension', () => {
       const signatureExpected = registry
         .createType('ExtrinsicPayload', payload, { version: payload.version }).sign(pair);
 
-      tabs.handle('1615191860771.5', 'pub(extrinsic.sign)', payload, 'http://localhost:3000', {} as chrome.runtime.Port)
+      tabs.handle('1615191860771.5', 'ewpub(extrinsic.sign)', payload, 'http://localhost:3000', {} as chrome.runtime.Port)
         .then((result) => {
           expect((result as ResponseSigning)?.signature).toEqual(signatureExpected.signature);
         }).catch((err) => console.log(err));
 
-      await expect(extension.handle('1615192062290.7', 'pri(signing.approve.password)', {
+      await expect(extension.handle('1615192062290.7', 'ewpri(signing.approve.password)', {
         id: state.allSignRequests[0].id,
         password,
         savePass: false

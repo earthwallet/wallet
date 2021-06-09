@@ -62,7 +62,8 @@ export default class Extension {
   }
 
   private accountsCreateSuri ({ genesisHash, name, password, suri, symbol, type }: RequestAccountCreateSuri): boolean {
-    keyring.addUri(suri, password, { genesisHash, name }, type, symbol);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    keyring.addUri(suri, password, { genesisHash, name }, type, symbol).then(() => true);
 
     return true;
   }
@@ -161,7 +162,7 @@ export default class Extension {
 
   // FIXME This looks very much like what we have in Tabs
   private accountsSubscribe (id: string, port: chrome.runtime.Port): boolean {
-    const cb = createSubscription<'pri(accounts.subscribe)'>(id, port);
+    const cb = createSubscription<'ewpri(accounts.subscribe)'>(id, port);
     const subscription = accountsObservable.subject.subscribe((accounts: SubjectInfo): void =>
       cb(transformAccounts(accounts))
     );
@@ -204,7 +205,7 @@ export default class Extension {
 
   // FIXME This looks very much like what we have in accounts
   private authorizeSubscribe (id: string, port: chrome.runtime.Port): boolean {
-    const cb = createSubscription<'pri(authorize.requests)'>(id, port);
+    const cb = createSubscription<'ewpri(authorize.requests)'>(id, port);
     const subscription = this.#state.authSubject.subscribe((requests: AuthorizeRequest[]): void =>
       cb(requests)
     );
@@ -252,7 +253,7 @@ export default class Extension {
   }
 
   private metadataSubscribe (id: string, port: chrome.runtime.Port): boolean {
-    const cb = createSubscription<'pri(metadata.requests)'>(id, port);
+    const cb = createSubscription<'ewpri(metadata.requests)'>(id, port);
     const subscription = this.#state.metaSubject.subscribe((requests: MetadataRequest[]): void =>
       cb(requests)
     );
@@ -428,7 +429,7 @@ export default class Extension {
 
   // FIXME This looks very much like what we have in authorization
   private signingSubscribe (id: string, port: chrome.runtime.Port): boolean {
-    const cb = createSubscription<'pri(signing.requests)'>(id, port);
+    const cb = createSubscription<'ewpri(signing.requests)'>(id, port);
     const subscription = this.#state.signSubject.subscribe((requests: SigningRequest[]): void =>
       cb(requests)
     );
@@ -502,113 +503,113 @@ export default class Extension {
   // eslint-disable-next-line @typescript-eslint/require-await
   public async handle<TMessageType extends MessageTypes> (id: string, type: TMessageType, request: RequestTypes[TMessageType], port: chrome.runtime.Port): Promise<ResponseType<TMessageType>> {
     switch (type) {
-      case 'pri(authorize.approve)':
+      case 'ewpri(authorize.approve)':
         return this.authorizeApprove(request as RequestAuthorizeApprove);
 
-      case 'pri(authorize.list)':
+      case 'ewpri(authorize.list)':
         return this.getAuthList();
 
-      case 'pri(authorize.reject)':
+      case 'ewpri(authorize.reject)':
         return this.authorizeReject(request as RequestAuthorizeReject);
 
-      case 'pri(authorize.toggle)':
+      case 'ewpri(authorize.toggle)':
         return this.toggleAuthorization(request as string);
 
-      case 'pri(authorize.requests)':
+      case 'ewpri(authorize.requests)':
         return this.authorizeSubscribe(id, port);
 
-      case 'pri(accounts.create.external)':
+      case 'ewpri(accounts.create.external)':
         return this.accountsCreateExternal(request as RequestAccountCreateExternal);
 
-      case 'pri(accounts.create.hardware)':
+      case 'ewpri(accounts.create.hardware)':
         return this.accountsCreateHardware(request as RequestAccountCreateHardware);
 
-      case 'pri(accounts.create.suri)':
+      case 'ewpri(accounts.create.suri)':
         return this.accountsCreateSuri(request as RequestAccountCreateSuri);
 
-      case 'pri(accounts.changePassword)':
+      case 'ewpri(accounts.changePassword)':
         return this.accountsChangePassword(request as RequestAccountChangePassword);
 
-      case 'pri(accounts.edit)':
+      case 'ewpri(accounts.edit)':
         return this.accountsEdit(request as RequestAccountEdit);
 
-      case 'pri(accounts.export)':
+      case 'ewpri(accounts.export)':
         return this.accountsExport(request as RequestAccountExport);
 
-      case 'pri(accounts.batchExport)':
+      case 'ewpri(accounts.batchExport)':
         return this.accountsBatchExport(request as RequestAccountBatchExport);
 
-      case 'pri(accounts.forget)':
+      case 'ewpri(accounts.forget)':
         return this.accountsForget(request as RequestAccountForget);
 
-      case 'pri(accounts.show)':
+      case 'ewpri(accounts.show)':
         return this.accountsShow(request as RequestAccountShow);
 
-      case 'pri(accounts.subscribe)':
+      case 'ewpri(accounts.subscribe)':
         return this.accountsSubscribe(id, port);
 
-      case 'pri(accounts.tie)':
+      case 'ewpri(accounts.tie)':
         return this.accountsTie(request as RequestAccountTie);
 
-      case 'pri(accounts.validate)':
+      case 'ewpri(accounts.validate)':
         return this.accountsValidate(request as RequestAccountValidate);
 
-      case 'pri(metadata.approve)':
+      case 'ewpri(metadata.approve)':
         return this.metadataApprove(request as RequestMetadataApprove);
 
-      case 'pri(metadata.get)':
+      case 'ewpri(metadata.get)':
         return this.metadataGet(request as string);
 
-      case 'pri(metadata.list)':
+      case 'ewpri(metadata.list)':
         return this.metadataList();
 
-      case 'pri(metadata.reject)':
+      case 'ewpri(metadata.reject)':
         return this.metadataReject(request as RequestMetadataReject);
 
-      case 'pri(metadata.requests)':
+      case 'ewpri(metadata.requests)':
         return this.metadataSubscribe(id, port);
 
-      case 'pri(derivation.create)':
+      case 'ewpri(derivation.create)':
         return this.derivationCreate(request as RequestDeriveCreate);
 
-      case 'pri(derivation.validate)':
+      case 'ewpri(derivation.validate)':
         return this.derivationValidate(request as RequestDeriveValidate);
 
-      case 'pri(json.restore)':
+      case 'ewpri(json.restore)':
         return this.jsonRestore(request as RequestJsonRestore);
 
-      case 'pri(json.batchRestore)':
+      case 'ewpri(json.batchRestore)':
         return this.batchRestore(request as RequestBatchRestore);
 
-      case 'pri(json.account.info)':
+      case 'ewpri(json.account.info)':
         return this.jsonGetAccountInfo(request as KeyringPair$Json);
 
-      case 'pri(seed.create)':
+      case 'ewpri(seed.create)':
         return this.seedCreate(request as RequestSeedCreate);
 
-      case 'pri(seed.validate)':
+      case 'ewpri(seed.validate)':
         return this.seedValidate(request as RequestSeedValidate);
 
-      case 'pri(signing.approve.password)':
+      case 'ewpri(signing.approve.password)':
         return this.signingApprovePassword(request as RequestSigningApprovePassword);
 
-      case 'pri(signing.approve.signature)':
+      case 'ewpri(signing.approve.signature)':
         return this.signingApproveSignature(request as RequestSigningApproveSignature);
 
-      case 'pri(signing.cancel)':
+      case 'ewpri(signing.cancel)':
         return this.signingCancel(request as RequestSigningCancel);
 
-      case 'pri(signing.isLocked)':
+      case 'ewpri(signing.isLocked)':
         return this.signingIsLocked(request as RequestSigningIsLocked);
 
-      case 'pri(signing.requests)':
+      case 'ewpri(signing.requests)':
         return this.signingSubscribe(id, port);
 
-      case 'pri(window.open)':
+      case 'ewpri(window.open)':
         return this.windowOpen(request as AllowedPath);
 
       default:
-        throw new Error(`Unable to handle message of type ${type}`);
+        return console.log(`Unable to handle message of type ${type}`);
     }
   }
 }

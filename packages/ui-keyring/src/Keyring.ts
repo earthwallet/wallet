@@ -73,23 +73,23 @@ export class Keyring extends Base implements KeyringStruct {
      wallet v1 -{"suri":"canvas loan mention shrimp happy width card above endless tunnel tooth feature","password":"12345678","symbol":"ICP","meta":{"genesisHash":"the_icp","name":"12345678"}}
    */
     let wallet;
-    let newPair = {};
+    let newPair: any = {};
 
     if (symbol === 'ICP') {
       wallet = await createWallet(suri, symbol);
-      alert(JSON.stringify(wallet));
     }
 
     const pair = this.keyring.addFromUri(suri, meta, type);
 
-    alert('wallet v6 -' + JSON.stringify({ suri, password, symbol, meta }));
-
     if (symbol === 'ICP') {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       newPair = { ...pair, type: 'ethereum', address: wallet?.address };
     } else {
       newPair = { ...pair };
     }
-    console.log(newPair)
+
+    console.log(newPair);
+
     return {
       json: this.saveAccount(pair, password, wallet?.address),
       pair
@@ -360,15 +360,14 @@ export class Keyring extends Base implements KeyringStruct {
     });
   }
 
-  public saveAccount (pair: KeyringPair, password?: string, icp_Address?: string): KeyringPair$Json {
+  public saveAccount (pair: KeyringPair, password?: string, icpAddress?: string): KeyringPair$Json {
     this.addTimestamp(pair);
 
     const json = pair.toJson(password);
 
     this.keyring.addFromJson(json);
-    alert('saveAccount: ' + icp_Address);
 
-    this.accounts.add(this._store, icp_Address || pair.address, json, pair.type);
+    this.accounts.add(this._store, icpAddress || pair.address, json, pair.type);
 
     return json;
   }
