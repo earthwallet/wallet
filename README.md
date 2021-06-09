@@ -6,9 +6,17 @@
 [![beta](https://img.shields.io/npm/v/@earthwallet/extension/beta?label=beta&logo=npm&style=flat-square)](https://www.npmjs.com/package/@earthwallet/extension)
 [![maintainability](https://img.shields.io/codeclimate/maintainability-percentage/polkadot-js/extension?logo=code-climate&style=flat-square)](https://codeclimate.com/github/polkadot-js/extension)
 
-A very simple scaffolding browser extension that injects a [@earthwallet/sdk](https://github.com/earthwallet/sdk) Signer into a page, along with any associated accounts, allowing for use by any dapp. This is an extensible POC implementation of a Web3.0 browser signer.
+Earth Wallet is a next generation digital asset wallet built for next generation blockchains. It enables developers and users to access:
 
-As it stands, it does one thing: it _only_ manages accounts and allows the signing of transactions with those accounts. It does not inject providers for use by dapps at this early point, nor does it perform wallet functions where it constructs and submits txs to the network.
+- Lower transaction fees and faster settlement
+- Next generation protocols for DeFi, DAOs and more
+- Multi-chain interoperability within a single user experience
+
+Veteran crypto users will feel right as home, as Earth Wallet was designed to keep the user experience similar to the popular Ethereum key management tool, Metamask. However, it was also designed and developed from the ground up to make the transition to next generation blockchains/protocols as seamless as possible for both veteran and new users.
+
+Developers will also find a similar experience to what they are used to, with a very simple browser extension api, to delegate key management and transaction signing to Earth Wallet. To make it easier, we've also developed [@earthwallet/sdk](https://github.com/earthwallet/sdk) for additional helper functions.
+
+Earth Wallet is still in Beta, so please use it at your own risk. We are always hiring auditors and developers, contact us at gaurdians@earthwallet.io if interested.
 
 ## Installation
 
