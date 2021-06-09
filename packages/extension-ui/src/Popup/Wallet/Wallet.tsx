@@ -38,12 +38,12 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const [walletBalance, setWalletBalance] = useState<any>();
   const [walletTransactions, setWalletTransactions] = useState<any>();
 
-  const getValueInUSD = (balance: number, symbol: string): string => {
-    if (symbol === 'ICP') return `${balance * 80}`;
-    if (symbol === 'DOT') return `${balance * 20}`;
-    if (symbol === 'KSM') return `${balance * 120}`;
+  const getValueInUSD = (balance: number, decimals: number, symbol: string) => {
+    if (symbol === 'ICP') return `${(balance / Math.pow(10, decimals)) * 80}`;
+    if (symbol === 'DOT') return `${(balance / Math.pow(10, decimals)) * 20}`;
+    if (symbol === 'KSM') return `${(balance / Math.pow(10, decimals)) * 120}`;
 
-    return `${balance}`;
+    return `${balance / Math.pow(10, decimals)}`;
   };
 
   const loadBalance = async (address: string) => {
@@ -104,6 +104,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
         <div className='secondaryBalanceLabel'>{walletBalance?.balances[0] && ('$' +
                 getValueInUSD(
                   walletBalance?.balances[0]?.value,
+                  walletBalance?.balances[0]?.currency?.decimals,
                   walletBalance?.balances[0]?.currency?.symbol
                 ))}</div>
         <div className='walletActionsView'>
