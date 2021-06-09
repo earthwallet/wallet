@@ -50,8 +50,9 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
     const balance = await getBalance(address);
 
     console.log('balance', balance);
+    console.log('balance?.balances', balance?.balances);
 
-    if (walletBalance?.balances && walletBalance?.balances?.length) { setWalletBalance(balance); }
+    if (balance?.balances != null) { setWalletBalance(balance); }
   };
 
   const loadTransactions = async (address: string) => {
@@ -61,12 +62,25 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
     setWalletTransactions(transactions);
   };
 
+  const getShortAddress = (address: string) =>
+    address.substring(0, 6) + '...' + address.substring(address.length - 5);
+
   const getTransactionDetail = (transaction: any): any => {
     const operations = transaction.transaction.operations
       .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
       .filter((operation: { account: any; }) => operation.account.address === selectedAccount?.address);
 
-    console.log('operations', operations);
+    console.log('getTransactionDetail', operations);
+
+    return operations[0];
+  };
+
+  const getTransactionWithDetail = (transaction: any): any => {
+    const operations = transaction.transaction.operations
+      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
+      .filter((operation: { account: any; }) => operation.account.address !== selectedAccount?.address);
+
+    console.log('getTransactionWithDetail', operations);
 
     return operations[0];
   };
@@ -165,6 +179,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
                           />
                           <div className='transaction-detail-div'>
                             <div className='transaction-type'>{getTransactionDetail(transaction).amount.value > 0 ? 'Receive' : 'Send'}</div>
+                            <div className='transaction-detail'>{`${getTransactionWithDetail(transaction).amount.value > 0 ? 'To:' : 'From:'} ${getShortAddress(getTransactionWithDetail(transaction).account.address)}`}</div>
                           </div>
                           <div className='transaction-amount'>{`${getTransactionDetail(transaction).amount.value / Math.pow(10, getTransactionDetail(transaction).amount.currency.decimals)}` + ` ${getTransactionDetail(transaction).amount.currency.symbol}`}</div>
 
@@ -175,7 +190,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
             {walletTransactions &&
                   !walletTransactions?.transactions?.length && (
               <div className="transaction-item-div">
-                      No Transactions History
+                      No Transaction History
               </div>
             )}
           </div>
@@ -319,7 +334,7 @@ export default styled(Wallet)(({ theme }: Props) => `
     flex-direction: column;
     flex: 1;
     overflow: scroll;
-    height: 160px;
+    height: 220px;
     }
 
     .transaction-item-div {
