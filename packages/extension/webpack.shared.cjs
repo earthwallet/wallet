@@ -15,7 +15,9 @@ const packages = [
   'extension-base',
   'extension-chains',
   'extension-inject',
-  'extension-ui'
+  'extension-ui',
+  'ui-keyring',
+  'ui-settings'
 ];
 
 module.exports = (entry, alias = {}) => ({
@@ -61,7 +63,9 @@ module.exports = (entry, alias = {}) => ({
   plugins: [
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
-      process: 'process/browser.js'
+      assert: 'assert',
+      process: 'process/browser.js',
+      nodeinspectextracted: 'node-inspect-extracted'
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.DefinePlugin({

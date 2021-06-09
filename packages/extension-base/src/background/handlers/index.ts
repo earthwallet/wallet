@@ -36,7 +36,7 @@ export default function handler<TMessageType extends MessageTypes> ({ id, messag
       // the tab, in which case port will be undefined
       assert(port, 'Port has been disconnected');
 
-      port.postMessage({ id, response });
+      port.postMessage({ id, response, origin: 'earthwallet' });
     })
     .catch((error: Error): void => {
       console.log(`[err] ${source}:: ${error.message}`);

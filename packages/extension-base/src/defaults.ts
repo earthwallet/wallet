@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const ALLOWED_PATH = ['/', '/account/import-ledger', '/account/restore-json'] as const;
-const PORT_CONTENT = 'content';
+const PORT_CONTENT = 'earthwallet';
 const PHISHING_PAGE_REDIRECT = '/phishing-page-detected';
-const PORT_EXTENSION = 'extension';
+const PORT_EXTENSION = 'ew_extension';
 const PASSWORD_EXPIRY_MIN = 15;
 const PASSWORD_EXPIRY_MS = PASSWORD_EXPIRY_MIN * 60 * 1000;
 

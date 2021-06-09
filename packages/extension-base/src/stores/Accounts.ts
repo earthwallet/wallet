@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension-base authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { KeyringJson, KeyringStore } from '@polkadot/ui-keyring/types';
+import type { KeyringJson, KeyringStore } from '@earthwallet/ui-keyring/types';
 
 import BaseStore from './Base';
 

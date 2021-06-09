@@ -1,14 +1,27 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/jsx-key */
+/* eslint-disable camelcase */
+
 import type { ThemeProps } from '../../types';
 
 import { Header } from '@earthwallet/extension-ui/partials';
 import { symbolGenesisMap } from '@earthwallet/extension-ui/util/chains';
+import { getBalance,
+  getTransactions } from '@earthwallet/sdk/build/main/util/icp';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 import icpLogo from '../../assets/icp-logo.png';
 import ksmLogo from '../../assets/kusama-ksm-logo.svg';
@@ -21,14 +34,62 @@ interface Props extends ThemeProps {
 
 // eslint-disable-next-line space-before-function-paren
 const Wallet = function ({ className }: Props): React.ReactElement<Props> {
-  const [selectedAccountSymbol, setSelectedAccountSymbol] = useState<undefined | string>(undefined);
-  const [selectedTab, setSelectedTab] = useState('Assets');
+  const [selectedTab, setSelectedTab] = useState('Transactions');
   const { selectedAccount } = useContext(SelectedAccountContext);
+  const [walletBalance, setWalletBalance] = useState<any|null>(null);
+  const [walletTransactions, setWalletTransactions] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const getValueInUSD = (balance: number, decimals: number, symbol: string) => {
+    if (symbol === 'ICP') return `${(balance / Math.pow(10, decimals)) * 80}`;
+    if (symbol === 'DOT') return `${(balance / Math.pow(10, decimals)) * 20}`;
+    if (symbol === 'KSM') return `${(balance / Math.pow(10, decimals)) * 120}`;
+
+    return `${balance / Math.pow(10, decimals)}`;
+  };
+
+  const loadBalance = async (address: string) => {
+    setLoading(true)
+    const balance = await getBalance(address);
+    setLoading(false);
+    if (balance?.balances != null) { setWalletBalance(balance); }
+  };
+
+  const loadTransactions = async (address: string) => {
+    const transactions = await getTransactions(address);
+
+    console.log('transactions', transactions);
+    setWalletTransactions(transactions);
+  };
+
+  const getShortAddress = (address: string) =>
+    address.substring(0, 6) + '...' + address.substring(address.length - 5);
+
+  const getTransactionDetail = (transaction: any): any => {
+    const operations = transaction.transaction.operations
+      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
+      .filter((operation: { account: any; }) => operation.account.address === selectedAccount?.address);
+
+    console.log('getTransactionDetail', operations);
+
+    return operations[0];
+  };
+
+  const getTransactionWithDetail = (transaction: any): any => {
+    const operations = transaction.transaction.operations
+      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
+      .filter((operation: { account: any; }) => operation.account.address !== selectedAccount?.address);
+
+    console.log('getTransactionWithDetail', operations);
+
+    return operations[0];
+  };
 
   useEffect(() => {
-    if (selectedAccount?.genesisHash == null) { return; }
-
-    setSelectedAccountSymbol(symbolGenesisMap().get(selectedAccount.genesisHash));
+    if (selectedAccount && selectedAccount?.address) {
+      loadBalance(selectedAccount?.address);
+      loadTransactions(selectedAccount?.address);
+    }
   }, [selectedAccount]);
 
   const getNetworkLogo = () => {
@@ -53,8 +114,26 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
           className='network-logo'
           src={getNetworkLogo()}
         />
-        <div className='primaryBalanceLabel'>$56,8812.98 USD</div>
-        <div className='secondaryBalanceLabel'>{selectedAccountSymbol ? `54 ${selectedAccountSymbol}` : ''}</div>
+        <div className='primaryBalanceLabel'>
+          { loading 
+          ?  <SkeletonTheme color="#222" highlightColor="#000">
+            <Skeleton width={150} />
+          </SkeletonTheme>
+         : <span>{walletBalance && walletBalance?.balances[0] &&
+                  `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} ${walletBalance?.balances[0]?.currency?.symbol}`
+        }</span>
+        }</div>
+        <div className='secondaryBalanceLabel'>
+        { loading 
+          ?  <SkeletonTheme color="#222" highlightColor="#000">
+            <Skeleton width={100} />
+          </SkeletonTheme>
+         : <span>{walletBalance && walletBalance?.balances[0] && ('$' +
+                getValueInUSD(
+                  walletBalance?.balances[0]?.value,
+                  walletBalance?.balances[0]?.currency?.decimals,
+                  walletBalance?.balances[0]?.currency?.symbol
+                ))}</span>}</div>
         <div className='walletActionsView'>
 
           <div
@@ -89,17 +168,42 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
         <div className='assetsAndActivityDiv'>
           <div className='tabsView'>
             <div
-              className={'tabView ' + (selectedTab === 'Assets' ? 'selectedTabView' : '') }
-              onClick={() => setSelectedTab('Assets')}
-            >
-                  Assets
-            </div>
-            <div
               className={'tabView ' + (selectedTab === 'Transactions' ? 'selectedTabView' : '') }
               onClick={() => setSelectedTab('Transactions')}
             >
          Transactions
             </div>
+          </div>
+
+          <div className="transactions-div">
+            {walletTransactions &&
+                  walletTransactions?.transactions &&
+                  walletTransactions?.transactions?.map(
+                    (transaction: { block_identifier: { hash: string } }) => {
+                      return (
+                        <div className="transaction-item-div">
+                          <FontAwesomeIcon
+                            className='transaction-type-icon'
+                            color='#fff'
+                            icon={getTransactionDetail(transaction).amount.value > 0 ? faArrowDown : faArrowUp }
+                            size='lg'
+                          />
+                          <div className='transaction-detail-div'>
+                            <div className='transaction-type'>{getTransactionDetail(transaction).amount.value > 0 ? 'Receive' : 'Send'}</div>
+                            <div className='transaction-detail'>{`${getTransactionWithDetail(transaction).amount.value > 0 ? 'To:' : 'From:'} ${getShortAddress(getTransactionWithDetail(transaction).account.address)}`}</div>
+                          </div>
+                          <div className='transaction-amount'>{`${getTransactionDetail(transaction).amount.value / Math.pow(10, getTransactionDetail(transaction).amount.currency.decimals)}` + ` ${getTransactionDetail(transaction).amount.currency.symbol}`}</div>
+
+                        </div>
+                      );
+                    }
+                  )}
+            {walletTransactions &&
+                  !walletTransactions?.transactions?.length && (
+              <div className="transaction-item-div">
+                      No Transaction History
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -222,10 +326,6 @@ export default styled(Wallet)(({ theme }: Props) => `
     align-items: center;
     justify-content: center;
     box-shadow: inset 0 -1px 0 ${theme.buttonBackground};
-     &:hover {
-        background-color: ${theme.buttonBackgroundHover};
-        cursor: pointer;
-    }
     border-top-left-radius: 32px;
     border-top-right-radius: 32px;
     }
@@ -238,6 +338,46 @@ export default styled(Wallet)(({ theme }: Props) => `
     align-items: center;
     justify-content: center;
     box-shadow: inset 0 -3px 0 ${theme.buttonBackground};
+    }
+
+    .transactions-div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: scroll;
+    height: 220px;
+    }
+
+    .transaction-item-div {
+    display: flex;
+    flex-direction: row;
+    padding: 8px 12px;
+    font-size: 12px;
+    border-bottom: 1px solid #1b63a677;
+    align-items: center;
+    }
+
+    .transaction-type-icon{
+    height: 16px;
+    width: 16px;
+    border: 1px solid #1b63a677;
+    padding: 10px;
+    border-radius: 50%;
+    margin-right: 12px;
+    }
+
+    .transaction-detail-div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    }
+
+    .transaction-type {
+        font-size: 16px;
+    }
+
+    .transaction-amount {
+        font-size: 18px;
     }
 
 `);

@@ -4,8 +4,8 @@
 import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, MessageTypesWithNoSubscriptions, MessageTypesWithNullRequest, MessageTypesWithSubscriptions, MetadataRequest, RequestTypes, ResponseAuthorizeList, ResponseDeriveValidate, ResponseJsonGetAccountInfo, ResponseSigningIsLocked, ResponseTypes, SeedLengths, SigningRequest, SubscriptionMessageTypes } from '@earthwallet/extension-base/background/types';
 import type { Message } from '@earthwallet/extension-base/types';
 import type { Chain } from '@earthwallet/extension-chains/types';
+import type { KeyringPairs$Json } from '@earthwallet/ui-keyring/types';
 import type { KeyringPair$Json } from '@polkadot/keyring/types';
-import type { KeyringPairs$Json } from '@polkadot/ui-keyring/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 
 import { PORT_EXTENSION } from '@earthwallet/extension-base/defaults';
@@ -32,10 +32,16 @@ let idCounter = 0;
 
 // setup a listener for messages, any incoming resolves the promise
 port.onMessage.addListener((data: Message['data']): void => {
+  if (data.origin !== 'earthwallet') {
+    console.warn('Unknown origin: ' + data.origin);
+
+    return;
+  }
+
   const handler = handlers[data.id];
 
   if (!handler) {
-    console.error(`Unknown response: ${JSON.stringify(data)}`);
+    console.warn(`Unknown response: ${JSON.stringify(data)}`);
 
     return;
   }
@@ -63,81 +69,81 @@ function sendMessage<TMessageType extends MessageTypes> (message: TMessageType, 
 
     handlers[id] = { reject, resolve, subscriber };
 
-    port.postMessage({ id, message, request: request || {} });
+    port.postMessage({ id, message, request: request || {}, origin: 'earthwallet' });
   });
 }
 
 export async function editAccount (address: string, name: string): Promise<boolean> {
-  return sendMessage('pri(accounts.edit)', { address, name });
+  return sendMessage('ewpri(accounts.edit)', { address, name });
 }
 
 export async function showAccount (address: string, isShowing: boolean): Promise<boolean> {
-  return sendMessage('pri(accounts.show)', { address, isShowing });
+  return sendMessage('ewpri(accounts.show)', { address, isShowing });
 }
 
 export async function tieAccount (address: string, genesisHash: string | null): Promise<boolean> {
-  return sendMessage('pri(accounts.tie)', { address, genesisHash });
+  return sendMessage('ewpri(accounts.tie)', { address, genesisHash });
 }
 
 export async function exportAccount (address: string, password: string): Promise<{ exportedJson: KeyringPair$Json }> {
-  return sendMessage('pri(accounts.export)', { address, password });
+  return sendMessage('ewpri(accounts.export)', { address, password });
 }
 
 export async function exportAccounts (addresses: string[], password: string): Promise<{ exportedJson: KeyringPairs$Json }> {
-  return sendMessage('pri(accounts.batchExport)', { addresses, password });
+  return sendMessage('ewpri(accounts.batchExport)', { addresses, password });
 }
 
 export async function validateAccount (address: string, password: string): Promise<boolean> {
-  return sendMessage('pri(accounts.validate)', { address, password });
+  return sendMessage('ewpri(accounts.validate)', { address, password });
 }
 
 export async function forgetAccount (address: string): Promise<boolean> {
-  return sendMessage('pri(accounts.forget)', { address });
+  return sendMessage('ewpri(accounts.forget)', { address });
 }
 
 export async function approveAuthRequest (id: string): Promise<boolean> {
-  return sendMessage('pri(authorize.approve)', { id });
+  return sendMessage('ewpri(authorize.approve)', { id });
 }
 
 export async function approveMetaRequest (id: string): Promise<boolean> {
-  return sendMessage('pri(metadata.approve)', { id });
+  return sendMessage('ewpri(metadata.approve)', { id });
 }
 
 export async function cancelSignRequest (id: string): Promise<boolean> {
-  return sendMessage('pri(signing.cancel)', { id });
+  return sendMessage('ewpri(signing.cancel)', { id });
 }
 
 export async function isSignLocked (id: string): Promise<ResponseSigningIsLocked> {
-  return sendMessage('pri(signing.isLocked)', { id });
+  return sendMessage('ewpri(signing.isLocked)', { id });
 }
 
 export async function approveSignPassword (id: string, savePass: boolean, password?: string): Promise<boolean> {
-  return sendMessage('pri(signing.approve.password)', { id, password, savePass });
+  return sendMessage('ewpri(signing.approve.password)', { id, password, savePass });
 }
 
 export async function approveSignSignature (id: string, signature: string): Promise<boolean> {
-  return sendMessage('pri(signing.approve.signature)', { id, signature });
+  return sendMessage('ewpri(signing.approve.signature)', { id, signature });
 }
 
 export async function createAccountExternal (name: string, address: string, genesisHash: string): Promise<boolean> {
-  return sendMessage('pri(accounts.create.external)', { address, genesisHash, name });
+  return sendMessage('ewpri(accounts.create.external)', { address, genesisHash, name });
 }
 
 export async function createAccountHardware (address: string, hardwareType: string, accountIndex: number, addressOffset: number, name: string, genesisHash: string): Promise<boolean> {
-  return sendMessage('pri(accounts.create.hardware)', { accountIndex, address, addressOffset, genesisHash, hardwareType, name });
+  return sendMessage('ewpri(accounts.create.hardware)', { accountIndex, address, addressOffset, genesisHash, hardwareType, name });
 }
 
-export async function createAccountSuri (name: string, password: string, suri: string, type?: KeypairType, genesisHash?: string): Promise<boolean> {
+export async function createAccountSuri (name: string, password: string, suri: string, type?: KeypairType, genesisHash?: string, symbol?: string): Promise<boolean> {
 //   console.log('createAccountSuri', genesisHash, name, password, suri, type);
-  return sendMessage('pri(accounts.create.suri)', { genesisHash, name, password, suri, type });
+  return sendMessage('ewpri(accounts.create.suri)', { genesisHash, name, password, suri, type, symbol });
 }
 
 export async function createSeed (length?: SeedLengths, type?: KeypairType): Promise<{ address: string; seed: string }> {
-  return sendMessage('pri(seed.create)', { length, type });
+  return sendMessage('ewpri(seed.create)', { length, type });
 }
 
 export async function getAllMetadata (): Promise<MetadataDef[]> {
-  return sendMessage('pri(metadata.list)');
+  return sendMessage('ewpri(metadata.list)');
 }
 
 export async function getMetadata (genesisHash?: string | null, isPartial = false): Promise<Chain | null> {
@@ -148,7 +154,7 @@ export async function getMetadata (genesisHash?: string | null, isPartial = fals
   let request = getSavedMeta(genesisHash);
 
   if (!request) {
-    request = sendMessage('pri(metadata.get)', genesisHash || null);
+    request = sendMessage('ewpri(metadata.get)', genesisHash || null);
     setSavedMeta(genesisHash, request);
   }
 
@@ -174,61 +180,61 @@ export async function getMetadata (genesisHash?: string | null, isPartial = fals
 }
 
 export async function rejectAuthRequest (id: string): Promise<boolean> {
-  return sendMessage('pri(authorize.reject)', { id });
+  return sendMessage('ewpri(authorize.reject)', { id });
 }
 
 export async function rejectMetaRequest (id: string): Promise<boolean> {
-  return sendMessage('pri(metadata.reject)', { id });
+  return sendMessage('ewpri(metadata.reject)', { id });
 }
 
 export async function subscribeAccounts (cb: (accounts: AccountJson[]) => void): Promise<boolean> {
-  return sendMessage('pri(accounts.subscribe)', null, cb);
+  return sendMessage('ewpri(accounts.subscribe)', null, cb);
 }
 
 export async function subscribeAuthorizeRequests (cb: (accounts: AuthorizeRequest[]) => void): Promise<boolean> {
-  return sendMessage('pri(authorize.requests)', null, cb);
+  return sendMessage('ewpri(authorize.requests)', null, cb);
 }
 
 export async function getAuthList (): Promise<ResponseAuthorizeList> {
-  return sendMessage('pri(authorize.list)');
+  return sendMessage('ewpri(authorize.list)');
 }
 
 export async function toggleAuthorization (url: string): Promise<ResponseAuthorizeList> {
-  return sendMessage('pri(authorize.toggle)', url);
+  return sendMessage('ewpri(authorize.toggle)', url);
 }
 
 export async function subscribeMetadataRequests (cb: (accounts: MetadataRequest[]) => void): Promise<boolean> {
-  return sendMessage('pri(metadata.requests)', null, cb);
+  return sendMessage('ewpri(metadata.requests)', null, cb);
 }
 
 export async function subscribeSigningRequests (cb: (accounts: SigningRequest[]) => void): Promise<boolean> {
-  return sendMessage('pri(signing.requests)', null, cb);
+  return sendMessage('ewpri(signing.requests)', null, cb);
 }
 
 export async function validateSeed (suri: string, type?: KeypairType): Promise<{ address: string; suri: string }> {
-  return sendMessage('pri(seed.validate)', { suri, type });
+  return sendMessage('ewpri(seed.validate)', { suri, type });
 }
 
 export async function validateDerivationPath (parentAddress: string, suri: string, parentPassword: string): Promise<ResponseDeriveValidate> {
-  return sendMessage('pri(derivation.validate)', { parentAddress, parentPassword, suri });
+  return sendMessage('ewpri(derivation.validate)', { parentAddress, parentPassword, suri });
 }
 
 export async function deriveAccount (parentAddress: string, suri: string, parentPassword: string, name: string, password: string, genesisHash: string | null): Promise<boolean> {
-  return sendMessage('pri(derivation.create)', { genesisHash, name, parentAddress, parentPassword, password, suri });
+  return sendMessage('ewpri(derivation.create)', { genesisHash, name, parentAddress, parentPassword, password, suri });
 }
 
 export async function windowOpen (path: AllowedPath): Promise<boolean> {
-  return sendMessage('pri(window.open)', path);
+  return sendMessage('ewpri(window.open)', path);
 }
 
 export async function jsonGetAccountInfo (json: KeyringPair$Json): Promise<ResponseJsonGetAccountInfo> {
-  return sendMessage('pri(json.account.info)', json);
+  return sendMessage('ewpri(json.account.info)', json);
 }
 
 export async function jsonRestore (file: KeyringPair$Json, password: string): Promise<void> {
-  return sendMessage('pri(json.restore)', { file, password });
+  return sendMessage('ewpri(json.restore)', { file, password });
 }
 
 export async function batchRestore (file: KeyringPairs$Json, password: string): Promise<void> {
-  return sendMessage('pri(json.batchRestore)', { file, password });
+  return sendMessage('ewpri(json.batchRestore)', { file, password });
 }

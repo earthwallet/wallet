@@ -13,11 +13,11 @@ export default class Accounts implements InjectedAccounts {
   }
 
   public get (anyType?: boolean): Promise<InjectedAccount[]> {
-    return sendRequest('pub(accounts.list)', { anyType });
+    return sendRequest('ewpub(accounts.list)', { anyType });
   }
 
   public subscribe (cb: (accounts: InjectedAccount[]) => unknown): Unsubcall {
-    sendRequest('pub(accounts.subscribe)', null, cb)
+    sendRequest('ewpub(accounts.subscribe)', null, cb)
       .catch((error: Error) => console.error(error));
 
     return (): void => {

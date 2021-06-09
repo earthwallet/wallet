@@ -4,10 +4,10 @@
 /* eslint-disable no-use-before-define */
 
 import type { InjectedAccount, InjectedMetadataKnown, MetadataDef, ProviderList, ProviderMeta } from '@earthwallet/extension-inject/types';
+import type { KeyringPairs$Json } from '@earthwallet/ui-keyring/types';
 import type { KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@polkadot/keyring/types';
 import type { JsonRpcResponse } from '@polkadot/rpc-provider/types';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
-import type { KeyringPairs$Json } from '@polkadot/ui-keyring/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 
 import { TypeRegistry } from '@polkadot/types';
@@ -97,56 +97,56 @@ export interface SigningRequest {
 // [MessageType]: [RequestType, ResponseType, SubscriptionMessageType?]
 export interface RequestSignatures {
   // private/internal requests, i.e. from a popup
-  'pri(accounts.create.external)': [RequestAccountCreateExternal, boolean];
-  'pri(accounts.create.hardware)': [RequestAccountCreateHardware, boolean];
-  'pri(accounts.create.suri)': [RequestAccountCreateSuri, boolean];
-  'pri(accounts.edit)': [RequestAccountEdit, boolean];
-  'pri(accounts.export)': [RequestAccountExport, ResponseAccountExport];
-  'pri(accounts.batchExport)': [RequestAccountBatchExport, ResponseAccountsExport]
-  'pri(accounts.forget)': [RequestAccountForget, boolean];
-  'pri(accounts.show)': [RequestAccountShow, boolean];
-  'pri(accounts.tie)': [RequestAccountTie, boolean];
-  'pri(accounts.subscribe)': [RequestAccountSubscribe, boolean, AccountJson[]];
-  'pri(accounts.validate)': [RequestAccountValidate, boolean];
-  'pri(accounts.changePassword)': [RequestAccountChangePassword, boolean];
-  'pri(authorize.approve)': [RequestAuthorizeApprove, boolean];
-  'pri(authorize.list)': [null, ResponseAuthorizeList];
-  'pri(authorize.reject)': [RequestAuthorizeReject, boolean];
-  'pri(authorize.requests)': [RequestAuthorizeSubscribe, boolean, AuthorizeRequest[]];
-  'pri(authorize.toggle)': [string, ResponseAuthorizeList];
-  'pri(derivation.create)': [RequestDeriveCreate, boolean];
-  'pri(derivation.validate)': [RequestDeriveValidate, ResponseDeriveValidate];
-  'pri(json.restore)': [RequestJsonRestore, void];
-  'pri(json.batchRestore)': [RequestBatchRestore, void];
-  'pri(json.account.info)': [KeyringPair$Json, ResponseJsonGetAccountInfo];
-  'pri(metadata.approve)': [RequestMetadataApprove, boolean];
-  'pri(metadata.get)': [string | null, MetadataDef | null];
-  'pri(metadata.reject)': [RequestMetadataReject, boolean];
-  'pri(metadata.requests)': [RequestMetadataSubscribe, boolean, MetadataRequest[]];
-  'pri(metadata.list)': [null, MetadataDef[]];
-  'pri(seed.create)': [RequestSeedCreate, ResponseSeedCreate];
-  'pri(seed.validate)': [RequestSeedValidate, ResponseSeedValidate];
-  'pri(signing.approve.password)': [RequestSigningApprovePassword, boolean];
-  'pri(signing.approve.signature)': [RequestSigningApproveSignature, boolean];
-  'pri(signing.cancel)': [RequestSigningCancel, boolean];
-  'pri(signing.isLocked)': [RequestSigningIsLocked, ResponseSigningIsLocked];
-  'pri(signing.requests)': [RequestSigningSubscribe, boolean, SigningRequest[]];
-  'pri(window.open)': [AllowedPath, boolean];
+  'ewpri(accounts.create.external)': [RequestAccountCreateExternal, boolean];
+  'ewpri(accounts.create.hardware)': [RequestAccountCreateHardware, boolean];
+  'ewpri(accounts.create.suri)': [RequestAccountCreateSuri, boolean];
+  'ewpri(accounts.edit)': [RequestAccountEdit, boolean];
+  'ewpri(accounts.export)': [RequestAccountExport, ResponseAccountExport];
+  'ewpri(accounts.batchExport)': [RequestAccountBatchExport, ResponseAccountsExport]
+  'ewpri(accounts.forget)': [RequestAccountForget, boolean];
+  'ewpri(accounts.show)': [RequestAccountShow, boolean];
+  'ewpri(accounts.tie)': [RequestAccountTie, boolean];
+  'ewpri(accounts.subscribe)': [RequestAccountSubscribe, boolean, AccountJson[]];
+  'ewpri(accounts.validate)': [RequestAccountValidate, boolean];
+  'ewpri(accounts.changePassword)': [RequestAccountChangePassword, boolean];
+  'ewpri(authorize.approve)': [RequestAuthorizeApprove, boolean];
+  'ewpri(authorize.list)': [null, ResponseAuthorizeList];
+  'ewpri(authorize.reject)': [RequestAuthorizeReject, boolean];
+  'ewpri(authorize.requests)': [RequestAuthorizeSubscribe, boolean, AuthorizeRequest[]];
+  'ewpri(authorize.toggle)': [string, ResponseAuthorizeList];
+  'ewpri(derivation.create)': [RequestDeriveCreate, boolean];
+  'ewpri(derivation.validate)': [RequestDeriveValidate, ResponseDeriveValidate];
+  'ewpri(json.restore)': [RequestJsonRestore, void];
+  'ewpri(json.batchRestore)': [RequestBatchRestore, void];
+  'ewpri(json.account.info)': [KeyringPair$Json, ResponseJsonGetAccountInfo];
+  'ewpri(metadata.approve)': [RequestMetadataApprove, boolean];
+  'ewpri(metadata.get)': [string | null, MetadataDef | null];
+  'ewpri(metadata.reject)': [RequestMetadataReject, boolean];
+  'ewpri(metadata.requests)': [RequestMetadataSubscribe, boolean, MetadataRequest[]];
+  'ewpri(metadata.list)': [null, MetadataDef[]];
+  'ewpri(seed.create)': [RequestSeedCreate, ResponseSeedCreate];
+  'ewpri(seed.validate)': [RequestSeedValidate, ResponseSeedValidate];
+  'ewpri(signing.approve.password)': [RequestSigningApprovePassword, boolean];
+  'ewpri(signing.approve.signature)': [RequestSigningApproveSignature, boolean];
+  'ewpri(signing.cancel)': [RequestSigningCancel, boolean];
+  'ewpri(signing.isLocked)': [RequestSigningIsLocked, ResponseSigningIsLocked];
+  'ewpri(signing.requests)': [RequestSigningSubscribe, boolean, SigningRequest[]];
+  'ewpri(window.open)': [AllowedPath, boolean];
   // public/external requests, i.e. from a page
-  'pub(accounts.list)': [RequestAccountList, InjectedAccount[]];
-  'pub(accounts.subscribe)': [RequestAccountSubscribe, boolean, InjectedAccount[]];
-  'pub(authorize.tab)': [RequestAuthorizeTab, null];
-  'pub(bytes.sign)': [SignerPayloadRaw, ResponseSigning];
-  'pub(extrinsic.sign)': [SignerPayloadJSON, ResponseSigning];
-  'pub(metadata.list)': [null, InjectedMetadataKnown[]];
-  'pub(metadata.provide)': [MetadataDef, boolean];
-  'pub(phishing.redirectIfDenied)': [null, boolean];
-  'pub(rpc.listProviders)': [void, ResponseRpcListProviders];
-  'pub(rpc.send)': [RequestRpcSend, JsonRpcResponse];
-  'pub(rpc.startProvider)': [string, ProviderMeta];
-  'pub(rpc.subscribe)': [RequestRpcSubscribe, number, JsonRpcResponse];
-  'pub(rpc.subscribeConnected)': [null, boolean, boolean];
-  'pub(rpc.unsubscribe)': [RequestRpcUnsubscribe, boolean];
+  'ewpub(accounts.list)': [RequestAccountList, InjectedAccount[]];
+  'ewpub(accounts.subscribe)': [RequestAccountSubscribe, boolean, InjectedAccount[]];
+  'ewpub(authorize.tab)': [RequestAuthorizeTab, null];
+  'ewpub(bytes.sign)': [SignerPayloadRaw, ResponseSigning];
+  'ewpub(extrinsic.sign)': [SignerPayloadJSON, ResponseSigning];
+  'ewpub(metadata.list)': [null, InjectedMetadataKnown[]];
+  'ewpub(metadata.provide)': [MetadataDef, boolean];
+  'ewpub(phishing.redirectIfDenied)': [null, boolean];
+  'ewpub(rpc.listProviders)': [void, ResponseRpcListProviders];
+  'ewpub(rpc.send)': [RequestRpcSend, JsonRpcResponse];
+  'ewpub(rpc.startProvider)': [string, ProviderMeta];
+  'ewpub(rpc.subscribe)': [RequestRpcSubscribe, number, JsonRpcResponse];
+  'ewpub(rpc.subscribeConnected)': [null, boolean, boolean];
+  'ewpub(rpc.unsubscribe)': [RequestRpcUnsubscribe, boolean];
 }
 
 export type MessageTypes = keyof RequestSignatures;
@@ -202,6 +202,7 @@ export interface RequestAccountCreateSuri {
   password: string;
   suri: string;
   type?: KeypairType;
+  symbol?: string;
 }
 
 export interface RequestAccountCreateHardware {

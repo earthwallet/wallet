@@ -1,9 +1,9 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccountJson, AccountWithChildren } from '@earthwallet/extension-base/background/types';
-import type { Chain } from '@earthwallet/extension-chains/types';
-import type { SettingsStruct } from '@polkadot/ui-settings/types';
+import type { AccountJson } from '@earthwallet/extension-base/background/types';
+// import type { Chain } from '@earthwallet/extension-chains/types';
+// import type { SettingsStruct } from '@polkadot/ui-settings/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { ThemeProps } from '../types';
 
@@ -15,8 +15,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 
-import { decodeAddress, encodeAddress } from '@polkadot/util-crypto';
-
+// import { decodeAddress } from '@polkadot/util-crypto';
 import { Link } from '../components';
 import useMetadata from '../hooks/useMetadata';
 import useOutsideClick from '../hooks/useOutsideClick';
@@ -52,13 +51,13 @@ interface Recoded {
 }
 
 // find an account in our list
-function findSubstrateAccount (accounts: AccountJson[], publicKey: Uint8Array): AccountJson | null {
+/* function findSubstrateAccount (accounts: AccountJson[], publicKey: Uint8Array): AccountJson | null {
   const pkStr = publicKey.toString();
 
   return accounts.find(({ address }): boolean =>
     decodeAddress(address).toString() === pkStr
   ) || null;
-}
+} */
 
 // find an account in our list
 function findAccountByAddress (accounts: AccountJson[], _address: string): AccountJson | null {
@@ -68,7 +67,7 @@ function findAccountByAddress (accounts: AccountJson[], _address: string): Accou
 }
 
 // recodes an supplied address using the prefix/genesisHash, include the actual saved account & chain
-function recodeAddress (address: string, accounts: AccountWithChildren[], chain: Chain | null, settings: SettingsStruct): Recoded {
+/* function recodeAddress (address: string, accounts: AccountWithChildren[], chain: Chain | null, settings: SettingsStruct): Recoded {
   // decode and create a shortcut for the encoded address
   const publicKey = decodeAddress(address);
 
@@ -84,7 +83,7 @@ function recodeAddress (address: string, accounts: AccountWithChildren[], chain:
     prefix,
     type: account?.type || DEFAULT_TYPE
   };
-}
+} */
 
 const ACCOUNTS_SCREEN_HEIGHT = 550;
 const defaultRecoded = { account: null, formatted: null, prefix: 42, type: DEFAULT_TYPE };
@@ -92,6 +91,7 @@ const defaultRecoded = { account: null, formatted: null, prefix: 42, type: DEFAU
 function Address ({ address, children, className, genesisHash, isExternal, isFromAccount, isHardware, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
+
   const settings = useContext(SettingsContext);
   const [{ account, formatted, genesisHash: recodedGenesis, type }, setRecoded] = useState<Recoded>(defaultRecoded);
   const chain = useMetadata(genesisHash || recodedGenesis, true);
@@ -112,9 +112,9 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
     }
 
     const accountByAddress = findAccountByAddress(accounts, address);
-    const recoded = (accountByAddress?.type === 'ethereum' || (!accountByAddress && givenType === 'ethereum'))
+    const recoded = (accountByAddress?.genesisHash === 'the_icp' || accountByAddress?.type === 'ethereum' || (!accountByAddress && givenType === 'ethereum'))
       ? { account: accountByAddress, formatted: address, type: 'ethereum' } as Recoded
-      : recodeAddress(address, accounts, chain, settings);
+      : { account: accountByAddress, formatted: address, type: 'sr25519' } as Recoded;
 
     setRecoded(recoded || defaultRecoded);
   }, [accounts, address, chain, givenType, settings]);

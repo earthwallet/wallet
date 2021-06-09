@@ -1,0 +1,31 @@
+{
+  "name": "@earthwallet/ui-keyring",
+  "version": "0.1.0",
+  "main": "index.js",
+  "sideEffects": false,
+  "author": "Earth Wallet <hello@earthwallet.io>",
+  "maintainers": [],
+  "contributors": [],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@earthwallet/sdk": "^0.1.9",
+    "@earthwallet/ui-settings": "^0.1.0",
+    "@polkadot/keyring": "^5.0.1",
+    "@polkadot/ledger": "^0.63.1",
+    "@polkadot/util": "^5.0.1",
+    "@polkadot/x-rxjs": "^3.0.1",
+    "mkdirp": "^1.0.4",
+    "store": "^2.0.12"
+  },
+  "devDependencies": {
+    "@polkadot/types": "^3.0.1",
+    "@types/mkdirp": "^1.0.1",
+    "@types/store": "^2.0.2"
+  },
+  "peerDependencies": {
+    "@earthwallet/ui-settings": "*",
+    "@polkadot/keyring": "*",
+    "@polkadot/util": "*"
+  }
+}

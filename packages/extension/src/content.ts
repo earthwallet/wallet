@@ -11,7 +11,7 @@ const port = chrome.runtime.connect({ name: PORT_CONTENT });
 
 // send any messages from the extension back to the page
 port.onMessage.addListener((data): void => {
-  window.postMessage({ ...data, origin: 'content' }, '*');
+  window.postMessage({ ...data, origin: 'earthwallet' }, '*');
 });
 
 // all messages from the page, pass them to the extension

@@ -91,7 +91,7 @@ export default class PostMessageProvider implements InjectedProvider {
   }
 
   public listProviders (): Promise<ProviderList> {
-    return sendRequest('pub(rpc.listProviders)', undefined);
+    return sendRequest('ewpub(rpc.listProviders)', undefined);
   }
 
   /**
@@ -113,7 +113,7 @@ export default class PostMessageProvider implements InjectedProvider {
     if (subscription) {
       const { callback, type } = subscription;
 
-      const id = await sendRequest('pub(rpc.subscribe)', { method, params, type }, (res): void => {
+      const id = await sendRequest('ewpub(rpc.subscribe)', { method, params, type }, (res): void => {
         subscription.callback(null, res);
       });
 
@@ -122,7 +122,7 @@ export default class PostMessageProvider implements InjectedProvider {
       return id;
     }
 
-    return sendRequest('pub(rpc.send)', { method, params });
+    return sendRequest('ewpub(rpc.send)', { method, params });
   }
 
   /**
@@ -133,10 +133,10 @@ export default class PostMessageProvider implements InjectedProvider {
     this.#isConnected = false;
     this.#eventemitter.emit('disconnected');
 
-    const meta = await sendRequest('pub(rpc.startProvider)', key);
+    const meta = await sendRequest('ewpub(rpc.startProvider)', key);
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    sendRequest('pub(rpc.subscribeConnected)', null, (connected) => {
+    sendRequest('ewpub(rpc.subscribeConnected)', null, (connected) => {
       this.#isConnected = connected;
 
       if (connected) {
