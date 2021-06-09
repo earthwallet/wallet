@@ -1,10 +1,20 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable react/jsx-key */
+/* eslint-disable camelcase */
+
 import type { ThemeProps } from '../../types';
 
 import { Header } from '@earthwallet/extension-ui/partials';
 import { symbolGenesisMap } from '@earthwallet/extension-ui/util/chains';
+import { getBalance,
+  getTransactions } from '@earthwallet/sdk/build/main/util/icp';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
@@ -22,13 +32,43 @@ interface Props extends ThemeProps {
 // eslint-disable-next-line space-before-function-paren
 const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const [selectedAccountSymbol, setSelectedAccountSymbol] = useState<undefined | string>(undefined);
-  const [selectedTab, setSelectedTab] = useState('Assets');
+  const [selectedTab, setSelectedTab] = useState('Transactions');
   const { selectedAccount } = useContext(SelectedAccountContext);
+  const [walletBalance, setWalletBalance] = useState<any>();
+  const [walletTransactions, setWalletTransactions] = useState<any>();
+
+  const getValueInUSD = (balance: number, symbol: string): string => {
+    if (symbol === 'ICP') return `${balance * 80}`;
+    if (symbol === 'DOT') return `${balance * 20}`;
+    if (symbol === 'KSM') return `${balance * 120}`;
+
+    return `${balance}`;
+  };
+
+  const loadBalance = async (address: string) => {
+    const balance = await getBalance(address);
+
+    setWalletBalance(balance);
+  };
+
+  const loadTransactions = async (address: string) => {
+    const transactions = await getTransactions(address);
+
+    setWalletTransactions(transactions);
+  };
+
+  const getShortAddress = (address: string) =>
+    address.substring(0, 6) + '...' + address.substring(address.length - 5);
 
   useEffect(() => {
     if (selectedAccount?.genesisHash == null) { return; }
 
     setSelectedAccountSymbol(symbolGenesisMap().get(selectedAccount.genesisHash));
+
+    if (selectedAccount && selectedAccount?.address) {
+      loadBalance(selectedAccount?.address);
+      loadTransactions(selectedAccount?.address);
+    }
   }, [selectedAccount]);
 
   const getNetworkLogo = () => {
@@ -53,8 +93,14 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
           className='network-logo'
           src={getNetworkLogo()}
         />
-        <div className='primaryBalanceLabel'>$56,8812.98 USD</div>
-        <div className='secondaryBalanceLabel'>{selectedAccountSymbol ? `54 ${selectedAccountSymbol}` : ''}</div>
+        <div className='primaryBalanceLabel'>{walletBalance?.balances[0] &&
+                  `${walletBalance?.balances[0]?.value} ${walletBalance?.balances[0]?.currency?.symbol}`
+        }</div>
+        <div className='secondaryBalanceLabel'>{walletBalance?.balances[0] && ('$' +
+                getValueInUSD(
+                  walletBalance?.balances[0]?.value,
+                  walletBalance?.balances[0]?.currency?.symbol
+                ))}</div>
         <div className='walletActionsView'>
 
           <div
@@ -89,17 +135,31 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
         <div className='assetsAndActivityDiv'>
           <div className='tabsView'>
             <div
-              className={'tabView ' + (selectedTab === 'Assets' ? 'selectedTabView' : '') }
-              onClick={() => setSelectedTab('Assets')}
-            >
-                  Assets
-            </div>
-            <div
               className={'tabView ' + (selectedTab === 'Transactions' ? 'selectedTabView' : '') }
               onClick={() => setSelectedTab('Transactions')}
             >
          Transactions
             </div>
+          </div>
+
+          <div className="transactions-div">
+            {walletTransactions &&
+                  walletTransactions?.transactions &&
+                  walletTransactions?.transactions?.map(
+                    (transaction: { block_identifier: { hash: string } }) => {
+                      return (
+                        <div className="transaction-item-div">
+                          {getShortAddress(transaction.block_identifier.hash)}
+                        </div>
+                      );
+                    }
+                  )}
+            {walletTransactions &&
+                  !walletTransactions?.transactions?.length && (
+              <div className="transaction-item-div">
+                      No Transactions History
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -238,6 +298,18 @@ export default styled(Wallet)(({ theme }: Props) => `
     align-items: center;
     justify-content: center;
     box-shadow: inset 0 -3px 0 ${theme.buttonBackground};
+    }
+
+    .transactions-div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    }
+
+    .transaction-item-div {
+    padding: 8px;
+    font-size: 12px;
+    border-bottom: 1px solid #1b63a677;
     }
 
 `);

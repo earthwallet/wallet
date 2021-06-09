@@ -1600,23 +1600,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@earthwallet/sdk@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@earthwallet/sdk@npm:0.1.1"
+"@earthwallet/sdk@npm:^0.1.9":
+  version: 0.1.9
+  resolution: "@earthwallet/sdk@npm:0.1.9"
   dependencies:
     "@dfinity/agent": ^0.8.9
     "@dfinity/rosetta-client": ^0.5.1
     "@metamask/slip44": ^1.0.0
-    "@polkadot/keyring": ^6.5.1
-    "@polkadot/util": ^6.5.1
-    "@polkadot/util-crypto": ^6.5.1
+    "@polkadot/api": ^4.12.1
+    "@polkadot/keyring": ^6.6.1
+    "@polkadot/util": ^6.6.1
+    "@polkadot/util-crypto": ^6.6.1
+    axios: ^0.21.1
     bip39: ^3.0.4
     crc-32: ^1.2.0
     elliptic: ^6.5.4
     ethereumjs-util: ^7.0.10
     hdkey: ^2.0.1
     tweetnacl: ^1.0.3
-  checksum: fc2bff1071998ca7fd0dcd73bafba748daa4ed21b165f69a05915b3029cc0451321a9854bb5455bf7540a1f955897d17afc67225f34203f0eee15f5d40c351e1
+  peerDependencies:
+    "@polkadot/api": "*"
+    "@polkadot/util": "*"
+    "@polkadot/util-crypto": "*"
+  checksum: 49edcebbb1ea94e2ccba312afc47943e5e3906bf1c51990213e99c9677b23880c824d3b2c73bceb027e668dbdcbce9a0a8a503635554aa8af2da63f0a893235d
   languageName: node
   linkType: hard
 
@@ -1625,7 +1631,7 @@ __metadata:
   resolution: "@earthwallet/ui-keyring@workspace:packages/ui-keyring"
   dependencies:
     "@babel/runtime": ^7.12.5
-    "@earthwallet/sdk": ^0.1.1
+    "@earthwallet/sdk": ^0.1.9
     "@earthwallet/ui-settings": ^0.1.0
     "@polkadot/keyring": ^5.0.1
     "@polkadot/ledger": ^0.63.1
