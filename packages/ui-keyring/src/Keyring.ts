@@ -68,22 +68,19 @@ export class Keyring extends Base implements KeyringStruct {
   public async addUri (suri: string, password?: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol?: string): Promise<CreateResult> {
     console.log(suri, password, symbol, 'icp', meta);
 
-    /*
-    {"publicKey":"04348dad3fa4aa09558cf67e2e4d2aaddfafb928953191b7eeb43d7710ce2797b0f485ca7d7eb193f991159c62094ee82e9a9586a0607c02e84e8dc3d54d3b33f5","address":"e5e7fe5e5cdb102eb74b2092f517eeb2622315f6a9f71838a76dcc0390aabd63","type":"ecdsa"}
-     wallet v1 -{"suri":"canvas loan mention shrimp happy width card above endless tunnel tooth feature","password":"12345678","symbol":"ICP","meta":{"genesisHash":"the_icp","name":"12345678"}}
-   */
-    let wallet;
+    let wallet: any;
     let newPair: any = {};
 
     if (symbol === 'ICP') {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       wallet = await createWallet(suri, symbol);
     }
 
     const pair = this.keyring.addFromUri(suri, meta, type);
 
     if (symbol === 'ICP') {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      newPair = { ...pair, type: 'ethereum', address: wallet?.address };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+      newPair = { ...pair, address: wallet?.address, type: 'ethereum' };
     } else {
       newPair = { ...pair };
     }
@@ -91,6 +88,7 @@ export class Keyring extends Base implements KeyringStruct {
     console.log(newPair);
 
     return {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       json: this.saveAccount(pair, password, wallet?.address),
       pair
     };

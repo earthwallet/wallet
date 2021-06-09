@@ -19,14 +19,12 @@ export default function(): Option[] {
   useEffect(() => {
     getAllMetadata()
       .then((metadataDefs) => {
-        const res = metadataDefs.map((metadata) => ({ text: metadata.chain, value: metadata.genesisHash }));
+        const res = metadataDefs && metadataDefs.map((metadata) => ({ text: metadata.chain, value: metadata.genesisHash }));
 
         setMetadataChains(res);
       })
       .catch(console.error);
   }, []);
-
-  console.log('chains', chains);
 
   const hashes = useMemo(
     () => [

@@ -5,7 +5,9 @@ const config = require('@polkadot/dev/config/jest.cjs');
 
 module.exports = {
   ...config,
+  testEnvironment: 'jsdom',
   moduleNameMapper: {
+    '@earthwallet/ui-(keyring|settings)(.*)$': '<rootDir>/packages/ui-$1/src/$2',
     '@earthwallet/extension-(base|chains|dapp|inject|ui)(.*)$': '<rootDir>/packages/extension-$1/src/$2',
     // eslint-disable-next-line sort-keys
     '@earthwallet/extension(.*)$': '<rootDir>/packages/extension/src/$1',
@@ -18,7 +20,9 @@ module.exports = {
     '<rootDir>/packages/extension-chains/build',
     '<rootDir>/packages/extension-dapp/build',
     '<rootDir>/packages/extension-inject/build',
-    '<rootDir>/packages/extension-ui/build'
+    '<rootDir>/packages/extension-ui/build',
+    '<rootDir>/packages/ui-keyring/build',
+    '<rootDir>/packages/ui-settings/build'
   ],
   transformIgnorePatterns: ['/node_modules/(?!(@polkadot|@babel/runtime/helpers/esm/))']
 };
