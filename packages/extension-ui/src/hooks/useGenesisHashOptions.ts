@@ -26,7 +26,6 @@ export default function(): Option[] {
       .catch(console.error);
   }, []);
 
-
   const hashes = useMemo(
     () => [
       // put the relay chains at the top
