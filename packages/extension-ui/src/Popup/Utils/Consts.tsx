@@ -4,5 +4,5 @@
 export const defaultNetworkContext = {
   networks: [{ genesisHash: 'the_icp', symbol: 'ICP', text: 'The Internet Computer', value: 0 }],
   selectedNetwork: { genesisHash: 'the_icp', symbol: 'ICP', text: 'The Internet Computer', value: 0 },
-  setSelectedNetwork: () => {},
+  setSelectedNetwork: () => {}
 };

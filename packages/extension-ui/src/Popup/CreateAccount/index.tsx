@@ -30,7 +30,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
   const [genesis, setGenesis] = useState(genesisSymbolMap.ICP);
 
   useEffect((): void => {
-    createSeed(undefined, type)
+    createSeed(undefined, type, 'ICP')
       .then(setAccount)
       .catch((error: Error) => console.error(error));
   }, [type]);

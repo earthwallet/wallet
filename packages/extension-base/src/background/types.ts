@@ -320,11 +320,13 @@ export type RequestSigningSubscribe = null;
 export interface RequestSeedCreate {
   length?: SeedLengths;
   type?: KeypairType;
+  symbol?: string;
 }
 
 export interface RequestSeedValidate {
   suri: string;
   type?: KeypairType;
+  symbol?: string;
 }
 
 // Responses
