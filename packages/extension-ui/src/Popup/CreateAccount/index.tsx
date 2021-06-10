@@ -75,6 +75,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
               <>
                 <Dropdown
                   className={className}
+                  isDisabled
                   label={t<string>('Network')}
                   onChange={setGenesis}
                   options={options}

@@ -18,21 +18,7 @@ export const symbolGenesisMap = function(): Map<string, string> {
 };
 
 const chains = [
-  { chain: 'The Internet Computer', genesisHash: genesisSymbolMap.ICP, icon: 'icp', ss58Format: 1234, symbol: 'ICP' },
-  {
-    chain: 'Polkadot Relay Chain',
-    genesisHash: genesisSymbolMap.DOT,
-    icon: 'polkadot',
-    ss58Format: 0,
-    symbol: 'DOT'
-  },
-  {
-    chain: 'Kusama Relay Chain',
-    genesisHash: genesisSymbolMap.KSM,
-    icon: 'kusama',
-    ss58Format: 2,
-    symbol: 'KSM'
-  }
+  { chain: 'The Internet Computer', genesisHash: genesisSymbolMap.ICP, icon: 'icp', ss58Format: 1234, symbol: 'ICP' }
 ];
 
 export default chains;
