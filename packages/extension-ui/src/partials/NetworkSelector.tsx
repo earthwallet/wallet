@@ -49,15 +49,15 @@ const NetworkSelector = function ({ className }: Props): React.ReactElement<Prop
         <div className='networkColor'
           style={{ backgroundColor: generateRandomColor(selectedNetworkText) }} />
         {selectedNetworkText}
-        <FontAwesomeIcon
+        {networks.length > 1 && <FontAwesomeIcon
           className='dropDownIcon'
           color='#F4F5F8'
           icon={showDropDown ? faAngleDown : faAngleUp}
           size='sm'
-        />
+        />}
       </div>
     </div>}
-    {showDropDown && <div className='networkSelector'>
+    {showDropDown && networks.length > 1 && <div className='networkSelector'>
       {
         networks.map((token) => {
           return (<div className='networkItem'

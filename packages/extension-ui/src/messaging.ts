@@ -138,8 +138,8 @@ export async function createAccountSuri (name: string, password: string, suri: s
   return sendMessage('ewpri(accounts.create.suri)', { genesisHash, name, password, suri, type, symbol });
 }
 
-export async function createSeed (length?: SeedLengths, type?: KeypairType): Promise<{ address: string; seed: string }> {
-  return sendMessage('ewpri(seed.create)', { length, type });
+export async function createSeed (length?: SeedLengths, type?: KeypairType, symbol?: string): Promise<{ address: string; seed: string }> {
+  return sendMessage('ewpri(seed.create)', { length, symbol, type });
 }
 
 export async function getAllMetadata (): Promise<MetadataDef[]> {

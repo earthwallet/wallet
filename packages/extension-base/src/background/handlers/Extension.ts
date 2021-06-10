@@ -298,16 +298,17 @@ export default class Extension {
     }
   }
 
-  private seedCreate ({ length = SEED_DEFAULT_LENGTH, type }: RequestSeedCreate): ResponseSeedCreate {
+  private async seedCreate ({ length = SEED_DEFAULT_LENGTH, symbol, type }: RequestSeedCreate): Promise<ResponseSeedCreate> {
     const seed = mnemonicGenerate(length);
 
     return {
-      address: keyring.createFromUri(seed, {}, type).address,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      address: (await keyring.createFromUri(seed, {}, type, symbol)).address,
       seed
     };
   }
 
-  private seedValidate ({ suri, type }: RequestSeedValidate): ResponseSeedValidate {
+  private async seedValidate ({ suri, symbol, type }: RequestSeedValidate): Promise<ResponseSeedValidate> {
     const { phrase } = keyExtractSuri(suri);
 
     if (isHex(phrase)) {
@@ -319,7 +320,8 @@ export default class Extension {
     }
 
     return {
-      address: keyring.createFromUri(suri, {}, type).address,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      address: (await keyring.createFromUri(suri, {}, type, symbol)).address,
       suri
     };
   }
