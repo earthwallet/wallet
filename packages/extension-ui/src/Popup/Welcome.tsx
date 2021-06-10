@@ -42,7 +42,7 @@ const Welcome = function ({ className }: Props): React.ReactElement<Props> {
             className='welcome-logo'
             src={logo}
           />
-          <div className='welcomeInfo'>Connecting you to Earth Wallet and The Internet Computer.</div>
+          <div className='welcomeInfo'>Your Keys to The New Internet.</div>
           <Button className='continueButton'
             onClick={_onClick}>{t<string>('Continue')}</Button>
         </div>
@@ -84,7 +84,7 @@ export default styled(Welcome)(({ theme }: Props) => `
     margin-top: 16px;
     text-align: center;
   }
-  
+
   .welcome-h2-text {
     color: ${theme.textColor};
     font-family: ${theme.fontFamily};
@@ -101,7 +101,7 @@ export default styled(Welcome)(({ theme }: Props) => `
     margin-top: 36px;
     text-align: center;
   }
-    
+
     @keyframes move-twink-back {
     from {background-position:0 0;}
     to {background-position:-10000px 5000px;}
