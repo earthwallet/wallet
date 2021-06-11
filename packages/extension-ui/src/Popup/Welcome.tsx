@@ -3,7 +3,7 @@
 
 import type { ThemeProps } from '../types';
 
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import styled from 'styled-components';
 
 import logo from '../assets/icon.png';
@@ -25,6 +25,11 @@ const Welcome = function ({ className }: Props): React.ReactElement<Props> {
     onAction();
   };
 
+  const _importSeed = useCallback(
+    () => onAction('/account/import-seed'),
+    [onAction]
+  );
+
   return (
     <>
 
@@ -45,6 +50,8 @@ const Welcome = function ({ className }: Props): React.ReactElement<Props> {
           <div className='welcome-cta-div'>
             <Button className='continueButton'
               onClick={_onClick}>{t<string>('Create a new account')}</Button>
+            <div>or <span className='restore-option-span'
+              onClick={() => _importSeed()}>restore,  using seed phrase</span></div>
           </div>
         </div>
       </div>
