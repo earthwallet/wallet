@@ -33,18 +33,19 @@ const Welcome = function ({ className }: Props): React.ReactElement<Props> {
 
         <div className="stars"></div>
         <div className="twinkling"></div>
-
+        <img
+          className='welcome-logo'
+          src={logo}
+        />
         <div className='container-div'>
           <div className='welcome-h1-text'>EARTH</div>
           <div className='welcome-h2-text'>Wallet</div>
 
-          <img
-            className='welcome-logo'
-            src={logo}
-          />
           <div className='welcomeInfo'>Your Keys to The New Internet.</div>
-          <Button className='continueButton'
-            onClick={_onClick}>{t<string>('Continue')}</Button>
+          <div className='welcome-cta-div'>
+            <Button className='continueButton'
+              onClick={_onClick}>{t<string>('Create a new account')}</Button>
+          </div>
         </div>
       </div>
     </>
@@ -64,17 +65,34 @@ export default styled(Welcome)(({ theme }: Props) => `
     height: 100%;
     align-items: center;
     flex-direction: column;
-    justify-content: center;
     position:absolute;
     z-index:2;
     background-color:'#000';
-    padding: 16px 26px;
+    padding: 74px 26px;
   }
 
+  @keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(540deg);
+    }
+    }
+
+
   .welcome-logo {
-    height: 220px;
-    width: 220px;
-    margin-top: 36px;
+    height: 520px;
+    width: 520px;
+    position: absolute;
+    z-index: 2;
+    bottom: -160px;
+    right: -60px;
+    }
+
+    .welcome-logo {
+    animation: spin infinite 250s linear;
+    opacity: 0.95;
     }
 
   .welcome-h1-text {
@@ -98,7 +116,7 @@ export default styled(Welcome)(({ theme }: Props) => `
     font-family: ${theme.fontFamily};
     font-size: ${theme.fontSize};
     margin-bottom: 16px;
-    margin-top: 36px;
+    margin-top: 8px;
     text-align: center;
   }
 
@@ -149,4 +167,26 @@ export default styled(Welcome)(({ theme }: Props) => `
     animation:move-twink-back 200s linear infinite;
     }
 
+    .continueButton{
+
+    }
+
+    .welcome-cta-div {
+        display: flex;
+        height: 100%;
+        width: 260px;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1;
+        margin-bottom: 8px;
+    }
+
+    .restore-option-span {
+        color: #2496FF;
+        &:hover {
+            color: ${theme.buttonBackgroundHover};
+            cursor: pointer;
+        }
+    }
 `);
