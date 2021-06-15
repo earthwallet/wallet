@@ -5,12 +5,10 @@ import type { ThemeProps } from '../../types';
 import type { AccountInfo } from '.';
 
 import { validateSeed } from '@earthwallet/extension-ui/messaging';
-import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { ButtonArea, Dropdown, InputWithLabel, NextStepButton, TextAreaWithLabel, VerticalSpace, Warning } from '../../components';
+import { ButtonArea, Dropdown, NextStepButton, TextAreaWithLabel, VerticalSpace, Warning } from '../../components';
 import useGenesisHashOptions from '../../hooks/useGenesisHashOptions';
 import useTranslation from '../../hooks/useTranslation';
 
@@ -52,7 +50,6 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
       setError(t<string>('Invalid mnemonic seed'));
     });
   }, [t, seed, onAccountChange, genesis]);
-
 
   return (
     <>
