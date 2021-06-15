@@ -25,10 +25,8 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
   const genesisOptions = useGenesisHashOptions();
   const [address, setAddress] = useState('');
   const [seed, setSeed] = useState<string | null>(null);
-  const [path, setPath] = useState<string | null>(null);
-  const [advanced, setAdvances] = useState(false);
   const [error, setError] = useState('');
-  const [genesis, setGenesis] = useState('');
+  const [genesis, setGenesis] = useState('the_icp');
 
   useEffect(() => {
     // No need to validate an empty seed
@@ -39,9 +37,9 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
       return;
     }
 
-    const suri = `${seed || ''}${path || ''}`;
+    const suri = `${seed || ''}${''}`;
 
-    validateSeed(suri).then((validatedAccount) => {
+    validateSeed(suri, 'ethereum', 'ICP').then((validatedAccount) => {
       setError('');
       setAddress(validatedAccount.address);
       // a spread operator here breaks tests, using Object.assign as a workaround
@@ -51,16 +49,10 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
     }).catch(() => {
       setAddress('');
       onAccountChange(null);
-      setError(path
-        ? t<string>('Invalid mnemonic seed or derivation path')
-        : t<string>('Invalid mnemonic seed')
-      );
+      setError(t<string>('Invalid mnemonic seed'));
     });
-  }, [t, seed, path, onAccountChange, genesis]);
+  }, [t, seed, onAccountChange, genesis]);
 
-  const _onToggleAdvanced = useCallback(() => {
-    setAdvances(!advanced);
-  }, [advanced]);
 
   return (
     <>
@@ -90,22 +82,6 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
           options={genesisOptions}
           value={genesis}
         />
-        <div
-          className='advancedToggle'
-          onClick={_onToggleAdvanced}
-        >
-          <FontAwesomeIcon icon={advanced ? faCaretDown : faCaretRight}/>
-          <span>{t<string>('advanced')}</span>
-        </div>
-        { advanced && (
-          <InputWithLabel
-            className='derivationPath'
-            isError={!!path && !!error}
-            label={t<string>('derivation path')}
-            onChange={setPath}
-            value={path || ''}
-          />
-        )}
         {!!error && !!seed && (
           <Warning
             isDanger
