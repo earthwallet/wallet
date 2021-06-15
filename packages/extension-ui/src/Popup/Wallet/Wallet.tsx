@@ -15,8 +15,7 @@ import type { ThemeProps } from '../../types';
 
 import { Header } from '@earthwallet/extension-ui/partials';
 import { symbolGenesisMap } from '@earthwallet/extension-ui/util/chains';
-import { getBalance,
-  getTransactions } from '@earthwallet/sdk/build/main/util/icp';
+import { ICP } from '@earthwallet/sdk';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
@@ -51,7 +50,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
 
   const loadBalance = async (address: string) => {
     setLoading(true);
-    const balance: keyable = await getBalance(address);
+    const balance: keyable = await ICP.getBalance(address);
 
     setLoading(false);
 
@@ -59,7 +58,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   };
 
   const loadTransactions = async (address: string) => {
-    const transactions = await getTransactions(address);
+    const transactions = await ICP.getTransactions(address);
 
     console.log('transactions', transactions);
     setWalletTransactions(transactions);

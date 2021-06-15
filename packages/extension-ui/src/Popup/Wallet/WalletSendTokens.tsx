@@ -5,35 +5,64 @@ import type { ThemeProps } from '../../types';
 
 import useOutsideClick from '@earthwallet/extension-ui/hooks/useOutsideClick';
 import { Header } from '@earthwallet/extension-ui/partials';
-import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useRef, useState } from 'react';
+//import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import logo from '../../assets/icp-logo.png';
-import { Button, ButtonArea, Link, TextArea, VerticalSpace } from '../../components';
+import { Button, ButtonArea, Link, TextArea, VerticalSpace, SelectedAccountContext } from '../../components';
 import useTranslation from '../../hooks/useTranslation';
+import { ICP } from '@earthwallet/sdk';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+//import icon_send from '../../assets/icon_send.svg';
 
-interface Props extends ThemeProps {
+ interface Props extends ThemeProps {
   className?: string;
+}
+
+interface keyable {
+  [key: string]: any
 }
 
 // eslint-disable-next-line space-before-function-paren
 const WalletSendTokens = function ({ className }: Props): React.ReactElement<Props> {
   const [showTokenDropDown, setShowTokenDropDown] = useState(false);
-  const [selectedNetwork, setSelectedNetwork] = useState<string>('ICP');
+  const  selectedNetwork = 'ICP';
+  const { selectedAccount } = useContext(SelectedAccountContext);
+  const [selectedRecp, setSelectedRecp] = useState<string>('');
+  const [selectedAmount, setSelectedAmount] = useState<number>(0);
+
   const dropDownRef = useRef(null);
   const { t } = useTranslation();
+  const [walletBalance, setWalletBalance] = useState<any|null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const loadBalance = async (address: string) => {
+    setLoading(true);
+    const balance: keyable = await ICP.getBalance(address);
+
+    setLoading(false);
+
+    if (balance && balance?.balances != null) { setWalletBalance(balance); }
+  };
+
+  useEffect(() => {
+    if (selectedAccount && selectedAccount?.address) {
+      loadBalance(selectedAccount?.address);
+     }
+  }, [selectedAccount]);
+
 
   useOutsideClick(dropDownRef, (): void => {
     showTokenDropDown && setShowTokenDropDown(!showTokenDropDown);
   });
 
-  const onTokenSelected = (token: string) => {
+ /*  const onTokenSelected = (token: string) => {
     setSelectedNetwork(token);
-  };
+  }; */
 
-  const getTokenSelectionDropDownItem = (tokenSymbol: string) => {
+/*   const getTokenSelectionDropDownItem = (tokenSymbol: string) => {
     return (<div className='tokenSelectionDropDownItem'
       onClick={() => onTokenSelected(tokenSymbol)}>
       <img
@@ -42,10 +71,10 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
       />
       <div className='tokenSelectionLabelDiv'>
         <div className='tokenLabel'>{tokenSymbol}</div>
-        <div className='tokenBalance'>{`Balance: 10 ${tokenSymbol}`}</div>
+        <div className='tokenBalance'>{`Balance: 9 ${tokenSymbol}`}</div>
       </div>
     </div>);
-  };
+  }; */
 
   return (
     <>
@@ -62,24 +91,38 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
               to='/wallet/home'>Cancel</Link>
           </div>
         </div>
-
-        <TextArea
+     {selectedRecp}
+     {selectedAmount}
+        <input
           autoCapitalize='off'
           autoCorrect='off'
           autoFocus={true}
-          className='recipientAddress'
-          placeholder="public address"
+          className='recipientAddress earthinput'
+          placeholder="Recipient address"
+          onChange={e => setSelectedRecp(e.target.value)}
+          required
+        />
+        <input
+          autoCapitalize='off'
+          autoCorrect='off'
+          type="number"
+          autoFocus={false}
+          min="0.00"
+          step="0.001"
+          max="1.00"
+          className='recipientAddress earthinput'
+          placeholder="amount up to 8 decimal places"
+          required
+          onChange={e => setSelectedAmount(parseInt(e.target.value))}
         />
 
         <div className='transactionDetail'>
 
           <div className='assetSelectionDiv'>
             <div className='assetSelectionLabel'>
-                          Asset:
+              Asset:
             </div>
-            <div className='tokenSelectionDiv'
-              onClick={() => setShowTokenDropDown((status) => !status)}
-            >
+            <div className='tokenSelectionDiv'>
               <div className='selectedNetworkDiv'>
                 <img
                   className='tokenLogo'
@@ -87,33 +130,28 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
                 />
                 <div className='tokenSelectionLabelDiv'>
                   <div className='tokenLabel'>{selectedNetwork}</div>
-                  <div className='tokenBalance'>{`Balance: 10 ${selectedNetwork}`}</div>
+                  <div className='tokenBalance'> 
+                  { loading
+                     ? <SkeletonTheme color="#222"
+                         highlightColor="#000">
+                         <Skeleton width={150} />
+                       </SkeletonTheme>
+                     : <span>{walletBalance && walletBalance?.balances[0] &&
+                         `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} 
+                         ${walletBalance?.balances[0]?.currency?.symbol}`
+                       }</span>
+                  }
+                  </div>
                 </div>
-                <FontAwesomeIcon
-                  className='dropDownIcon'
-                  color='#303030'
-                  icon={faAngleUp}
-                  size='lg'
-                />
               </div>
-              {showTokenDropDown && <div className='tokenSelectionDropDown'>
-                {getTokenSelectionDropDownItem('ICP')}
-              </div>}
             </div>
           </div>
-
         </div>
-
       </div>
-
       <VerticalSpace />
       <ButtonArea>
-        <Button className='cancelButton'>
-          {t<string>('Cancel')}
-        </Button>
-
         <Button>
-          {t<string>('Next')}
+          {t<string>('Send')}
         </Button>
       </ButtonArea>
     </>
@@ -135,6 +173,20 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
         flex-direction: rows;
         align-items: center;
         justify-content: center;
+    }
+
+    .earthinput {
+      background-image:none;
+      background-color:transparent;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+      border: 1px solid rgb(67, 68, 75);
+      padding: 16px 12px;
+      border-radius: 2px;
+      &:focus-visible {
+        outline: none;
+     }
     }
 
     .topBarDivCenterItem {
@@ -169,19 +221,17 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
     .recipientAddress {
         color: ${theme.subTextColor};
         font-family: ${theme.fontFamily};
-        font-size:  ${theme.fontSize};
+        font-size: ${theme.fontSize};
         width: -webkit-fill-available;
-        margin: 24px;
+        margin: 12px 24px;
     }
 
     .transactionDetail {
         display: flex;
         flex-direction: column;
-        height: 420px;
-        width: 100%;
+         width: 100%;
         padding: 16px;
-        background: ${theme.addAccountImageBackground};
-    }
+     }
 
     .assetSelectionDiv {
         width: -webkit-fill-available;
@@ -206,11 +256,6 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
         flex-direction: row;
         margin-right: 24px;
         align-items: center;
-
-         &:hover {
-            background-color: ${theme.buttonBackgroundHover};
-            cursor: pointer;
-        }
     }
 
     .selectedNetworkDiv {
