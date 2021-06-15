@@ -30,7 +30,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
   const [genesis, setGenesis] = useState(genesisSymbolMap.ICP);
 
   useEffect((): void => {
-    createSeed(undefined, type)
+    createSeed(undefined, type, 'ICP')
       .then(setAccount)
       .catch((error: Error) => console.error(error));
   }, [type]);
@@ -75,6 +75,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
               <>
                 <Dropdown
                   className={className}
+                  isDisabled
                   label={t<string>('Network')}
                   onChange={setGenesis}
                   options={options}

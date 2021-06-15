@@ -76,7 +76,7 @@ export interface KeyringStruct {
   addUri: (suri: string, password?: string, meta?: KeyringPair$Meta, type?: KeypairType, symbol?: string) => Promise<CreateResult>;
   backupAccount: (pair: KeyringPair, password: string) => KeyringPair$Json;
   backupAccounts: (addresses: string[], password: string) => Promise<KeyringPairs$Json>
-  createFromUri (suri: string, meta?: KeyringPair$Meta, type?: KeypairType): KeyringPair;
+  createFromUri (suri: string, meta?: KeyringPair$Meta, type?: KeypairType, symbol?: string): Promise<KeyringPair>;
   decodeAddress: (key: string | Uint8Array) => Uint8Array;
   encodeAddress: (key: string | Uint8Array) => string;
   encryptAccount: (pair: KeyringPair, password: string) => void;

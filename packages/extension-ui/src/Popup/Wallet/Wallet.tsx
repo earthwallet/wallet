@@ -24,8 +24,6 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
 
 import icpLogo from '../../assets/icp-logo.png';
-import ksmLogo from '../../assets/kusama-ksm-logo.svg';
-import dotLogo from '../../assets/polkadot-new-dot-logo.svg';
 import { Link, SelectedAccountContext } from '../../components';
 
 interface Props extends ThemeProps {
@@ -101,8 +99,6 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
     if (selectedAccount?.genesisHash == null) { return icpLogo; }
 
     if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'ICP') return icpLogo;
-    if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'DOT') return dotLogo;
-    if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'KSM') return ksmLogo;
 
     return icpLogo;
   };
@@ -235,7 +231,7 @@ export default styled(Wallet)(({ theme }: Props) => `
             color: ${theme.buttonBackgroundHover};
         }
     }
-    
+
     .network-logo {
     height: 28px;
     width: 28px;

@@ -126,7 +126,16 @@ export class Keyring extends Base implements KeyringStruct {
     return this.keyring.createFromJson({ ...json, meta: { ...(json.meta || {}), meta } });
   }
 
-  public createFromUri (suri: string, meta: KeyringPair$Meta = {}, type?: KeypairType): KeyringPair {
+  public async createFromUri (suri: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol?: string): Promise<KeyringPair> {
+    if (symbol === 'ICP') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const wallet = await createWallet(suri, symbol);
+      const pair = this.keyring.addFromUri(suri, meta, type);
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+      return { ...pair, address: wallet?.address, type: 'ethereum' };
+    }
+
     return this.keyring.createFromUri(suri, meta, type);
   }
 

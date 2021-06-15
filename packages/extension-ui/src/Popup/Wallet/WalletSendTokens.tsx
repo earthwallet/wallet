@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import logo from '../../assets/polkadot-new-dot-logo.svg';
+import logo from '../../assets/icp-logo.png';
 import { Button, ButtonArea, Link, TextArea, VerticalSpace } from '../../components';
 import useTranslation from '../../hooks/useTranslation';
 
@@ -42,7 +42,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
       />
       <div className='tokenSelectionLabelDiv'>
         <div className='tokenLabel'>{tokenSymbol}</div>
-        <div className='tokenBalance'>{`Balance: 100 ${tokenSymbol}`}</div>
+        <div className='tokenBalance'>{`Balance: 10 ${tokenSymbol}`}</div>
       </div>
     </div>);
   };
@@ -56,7 +56,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
       >
         <div className='topBarDiv'>
           <div className='topBarDivSideItem'/>
-          <div className='topBarDivCenterItem'>Add Recipient</div>
+          <div className='topBarDivCenterItem'>Send</div>
           <div className='topBarDivSideItem topBarDivCancelItem'>
             <Link className='topBarDivCancelItem'
               to='/wallet/home'>Cancel</Link>
@@ -87,7 +87,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
                 />
                 <div className='tokenSelectionLabelDiv'>
                   <div className='tokenLabel'>{selectedNetwork}</div>
-                  <div className='tokenBalance'>{`Balance: 100 ${selectedNetwork}`}</div>
+                  <div className='tokenBalance'>{`Balance: 10 ${selectedNetwork}`}</div>
                 </div>
                 <FontAwesomeIcon
                   className='dropDownIcon'
@@ -98,8 +98,6 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
               </div>
               {showTokenDropDown && <div className='tokenSelectionDropDown'>
                 {getTokenSelectionDropDownItem('ICP')}
-                {getTokenSelectionDropDownItem('DOT')}
-                {getTokenSelectionDropDownItem('KSM')}
               </div>}
             </div>
           </div>
@@ -202,7 +200,7 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
         font-size: 16px;
         margin: 0px 34px;
     }
-    
+
     .tokenSelectionDiv {
         display: flex;
         flex-direction: row;
@@ -273,7 +271,7 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
     border: 1px solid ${theme.boxBorderColor};
     box-sizing: border-box;
     box-shadow: 0 0 10px ${theme.boxShadow};
-    margin-top: 260px;
+    margin-top: 0px;
     position: absolute;
     max-height: 300px;
     overflow: auto;
