@@ -65,7 +65,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   };
 
   const getShortAddress = (address: string) =>
-    address.substring(0, 6) + '...' + address.substring(address.length - 5);
+    address?.substring(0, 6) + '...' + address?.substring(address.length - 5);
 
   const getTransactionDetail = (transaction: any): any => {
     const operations = transaction.transaction.operations
@@ -200,14 +200,14 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
                           <FontAwesomeIcon
                             className='transaction-type-icon'
                             color='#fff'
-                            icon={getTransactionDetail(transaction).amount.value > 0 ? faArrowDown : faArrowUp }
+                            icon={(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? faArrowDown : faArrowUp }
                             size='lg'
                           />
                           <div className='transaction-detail-div'>
-                            <div className='transaction-type'>{getTransactionDetail(transaction).amount.value > 0 ? 'Receive' : 'Send'}</div>
-                            <div className='transaction-detail'>{`${getTransactionWithDetail(transaction).amount.value > 0 ? 'To:' : 'From:'} ${getShortAddress(getTransactionWithDetail(transaction).account.address)}`}</div>
+                            <div className='transaction-type'>{(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send'}</div>
+                            <div className='transaction-detail'>{`${getTransactionWithDetail(transaction)?.amount?.value > 0 ? 'To:' : 'From:'} ${getShortAddress(getTransactionWithDetail(transaction)?.account.address || 'Self')}`}</div>
                           </div>
-                          <div className='transaction-amount'>{`${getTransactionDetail(transaction).amount.value / Math.pow(10, getTransactionDetail(transaction).amount.currency.decimals)}` + ` ${getTransactionDetail(transaction).amount.currency.symbol}`}</div>
+                          <div className='transaction-amount'>{`${(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals)}` + ` ${(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.symbol}`}</div>
 
                         </div>
                       );

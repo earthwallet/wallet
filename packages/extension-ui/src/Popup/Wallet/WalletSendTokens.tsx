@@ -41,8 +41,6 @@ interface keyable {
   [key: string]: any
 }
 
-// const default_recp = '02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47';
-
 // eslint-disable-next-line space-before-function-paren
 const WalletSendTokens = function ({ className }: Props): React.ReactElement<Props> {
   const [showTokenDropDown, setShowTokenDropDown] = useState(false);
@@ -56,6 +54,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
   const [walletBalance, setWalletBalance] = useState<any|null|keyable>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
+  const [paymentHash, setPaymentHash] = useState<string>('');
 
   const loadBalance = async (address: string) => {
     setLoading(true);
@@ -95,11 +94,9 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
   }; */
 
   const sendIcp = async () => {
-    console.log('sendIcp', selectedAccount?.address);
     const currentAddress = selectedAccount?.address || '';
     const json_secret = window.localStorage.getItem(currentAddress) || '';
 
-    console.log(json_secret, 'json_secret');
     const currentIdentity = Ed25519KeyIdentity.fromJSON(json_secret);
     const address = address_to_hex(
       ICP.principal_id_to_address(currentIdentity.getPrincipal())
@@ -108,16 +105,22 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
     setLoadingSend(true);
 
     try {
-      const hash = await ICP.sendICP(
+      console.log(selectedAmount, typeof selectedAmount, 'selectedAmount');
+
+      if (selectedAmount === 0) {
+        alert('Amount cannot be 0');
+      }
+
+      const hash: any = await ICP.sendICP(
         currentIdentity,
         selectedRecp,
         address,
         selectedAmount
       );
 
+      await loadBalance(address);
       setLoadingSend(false);
-      alert('Payment done: ' + hash);
-      console.log(hash);
+      setPaymentHash(hash || '');
     } catch (error) {
       console.log(error);
       setLoadingSend(false);
@@ -138,9 +141,16 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
           <div className='topBarDivCenterItem'>Send</div>
           <div className='topBarDivSideItem topBarDivCancelItem'>
             <Link className='topBarDivCancelItem'
-              to='/wallet/home'>Cancel</Link>
+              to='/wallet/home'>BACK</Link>
           </div>
         </div>
+        {!(paymentHash === undefined || paymentHash === '') && <div className='paymentDone'>
+          Payment done. Check at <a
+            className='earthlink'
+            href={`https://dashboard.internetcomputer.org/transaction/${paymentHash}`}
+            rel="noreferrer"
+            target="_blank">explorer</a>
+        </div>}
         <input
           autoCapitalize='off'
           autoCorrect='off'
@@ -157,7 +167,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
           className='recipientAddress earthinput'
           max="1.00"
           min="0.00"
-          onChange={(e) => setSelectedAmount(parseInt(e.target.value))}
+          onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
           placeholder="amount up to 8 decimal places"
           required
           step="0.001"
@@ -226,7 +236,22 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
         align-items: center;
         justify-content: center;
     }
+    .paymentDone {
+      width: calc(100% - 58px);
+      text-align: center;
+      border: 1px solid #216321;
+      margin: 12px;
+      padding: 4px;
+      border-radius: 5px;
+    }
 
+    .earthlink{
+      font-size: 14px;
+      background: rgb(8,1,128);
+      background: linear-gradient(0deg, rgba(126,43,217,1) 0%, rgba(23,23,224,1) 35%, rgba(0,212,255,1) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
     .earthinput {
       background-image:none;
       background-color:transparent;

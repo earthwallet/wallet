@@ -164,5 +164,6 @@
   "Import account from seed phrase": "",
   "Restore account from JSON file": "",
   "Continue": "",
-  "Send": ""
+  "Send": "",
+  "Sending...": ""
 }
