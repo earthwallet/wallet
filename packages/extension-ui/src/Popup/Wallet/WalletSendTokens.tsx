@@ -41,7 +41,7 @@ interface keyable {
   [key: string]: any
 }
 
-const default_recp = '02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47';
+// const default_recp = '02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47';
 
 // eslint-disable-next-line space-before-function-paren
 const WalletSendTokens = function ({ className }: Props): React.ReactElement<Props> {
