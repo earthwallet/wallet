@@ -10,9 +10,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-key */
 /* eslint-disable camelcase */
+/* eslint-disable  @typescript-eslint/no-var-requires */
+/* eslint-disable  @typescript-eslint/restrict-plus-operands */
 
 import type { ThemeProps } from '../../types';
 
+import { Ed25519KeyIdentity } from '@dfinity/identity';
 import useOutsideClick from '@earthwallet/extension-ui/hooks/useOutsideClick';
 import { Header } from '@earthwallet/extension-ui/partials';
 import { ICP } from '@earthwallet/sdk';
@@ -25,6 +28,9 @@ import styled from 'styled-components';
 import logo from '../../assets/icp-logo.png';
 import { Button, ButtonArea, Link, SelectedAccountContext, VerticalSpace } from '../../components';
 import useTranslation from '../../hooks/useTranslation';
+
+const { address_to_hex } = require('@dfinity/rosetta-client');
+
 // import icon_send from '../../assets/icon_send.svg';
 
 interface Props extends ThemeProps {
@@ -42,13 +48,14 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
   const [showTokenDropDown, setShowTokenDropDown] = useState(false);
   const selectedNetwork = 'ICP';
   const { selectedAccount } = useContext(SelectedAccountContext);
-  const [selectedRecp, setSelectedRecp] = useState<string>('02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47');
-  const [selectedAmount, setSelectedAmount] = useState<number>(0.01);
+  const [selectedRecp, setSelectedRecp] = useState<string>('');
+  const [selectedAmount, setSelectedAmount] = useState<number>(0);
 
   const dropDownRef = useRef(null);
   const { t } = useTranslation();
   const [walletBalance, setWalletBalance] = useState<any|null|keyable>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingSend, setLoadingSend] = useState<boolean>(false);
 
   const loadBalance = async (address: string) => {
     setLoading(true);
@@ -87,6 +94,38 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
     </div>);
   }; */
 
+  const sendIcp = async () => {
+    console.log('sendIcp', selectedAccount?.address);
+    const currentAddress = selectedAccount?.address || '';
+    const json_secret = window.localStorage.getItem(currentAddress) || '';
+
+    console.log(json_secret, 'json_secret');
+    const currentIdentity = Ed25519KeyIdentity.fromJSON(json_secret);
+    const address = address_to_hex(
+      ICP.principal_id_to_address(currentIdentity.getPrincipal())
+    );
+
+    setLoadingSend(true);
+
+    try {
+      const hash = await ICP.sendICP(
+        currentIdentity,
+        selectedRecp,
+        address,
+        selectedAmount
+      );
+
+      setLoadingSend(false);
+      alert('Payment done: ' + hash);
+      console.log(hash);
+    } catch (error) {
+      console.log(error);
+      setLoadingSend(false);
+    }
+
+    return true;
+  };
+
   return (
     <>
       <Header showAccountsDropdown
@@ -102,14 +141,11 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
               to='/wallet/home'>Cancel</Link>
           </div>
         </div>
-        {selectedRecp}
-        {selectedAmount}
         <input
           autoCapitalize='off'
           autoCorrect='off'
           autoFocus={true}
           className='recipientAddress earthinput'
-          defaultValue={default_recp}
           onChange={(e) => setSelectedRecp(e.target.value)}
           placeholder="Recipient address"
           required
@@ -119,7 +155,6 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
           autoCorrect='off'
           autoFocus={false}
           className='recipientAddress earthinput'
-          defaultValue={0.001}
           max="1.00"
           min="0.00"
           onChange={(e) => setSelectedAmount(parseInt(e.target.value))}
@@ -163,9 +198,13 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
       </div>
       <VerticalSpace />
       <ButtonArea>
-        <Button>
-          {t<string>('Send')}
-        </Button>
+        {loadingSend
+          ? <Button onClick={() => sendIcp()}>
+            {t<string>('Sending...')}
+          </Button>
+          : <Button onClick={() => sendIcp()}>
+            {t<string>('Send')}
+          </Button>}
       </ButtonArea>
     </>
   );
