@@ -360,7 +360,7 @@ export default styled(Wallet)(({ theme }: Props) => `
     flex-direction: column;
     flex: 1;
     overflow: scroll;
-    height: 220px;
+    height: 170px;
     }
 
     .transaction-item-div {
