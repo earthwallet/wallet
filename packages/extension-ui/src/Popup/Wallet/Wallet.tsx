@@ -72,8 +72,21 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
       .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
       .filter((operation: { account: any; }) => operation.account.address === selectedAccount?.address);
 
-    console.log('getTransactionDetail', operations);
-
+    /*   var _ts = [];
+      ts.map(_t => {
+        if (_t.type != "TRANSACTION") return;
+        if (_t.status != "COMPLETED") return;
+        _ts.push({
+          from : _t.account1Address,
+          to :  _t.account2Address,
+          amount : Number(_t.amount)/(10**8),
+          fee : Number(_t.fee)/(10**8),
+          hash : _t.hash,
+          timestamp : _t.timestamp,
+        });
+      });
+            console.log('getTransactionDetail', operations);
+ */
     return operations[0];
   };
 
@@ -180,7 +193,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
           <div className="transactions-div">
             {walletTransactions &&
                   walletTransactions?.transactions &&
-                  walletTransactions?.transactions?.map(
+                  walletTransactions?.transactions?.reverse().map(
                     (transaction: { block_identifier: { hash: string } }) => {
                       return (
                         <div className="transaction-item-div">

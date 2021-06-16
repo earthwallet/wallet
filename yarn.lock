@@ -1888,9 +1888,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@earthwallet/sdk@npm:^0.1.11":
-  version: 0.1.11
-  resolution: "@earthwallet/sdk@npm:0.1.11"
+"@earthwallet/sdk@npm:^0.1.12":
+  version: 0.1.12
+  resolution: "@earthwallet/sdk@npm:0.1.12"
   dependencies:
     "@dfinity/agent": ^0.9.1
     "@dfinity/authentication": 0.7.1
@@ -1922,7 +1922,7 @@ __metadata:
     "@polkadot/api": "*"
     "@polkadot/util": "*"
     "@polkadot/util-crypto": "*"
-  checksum: eb354069695bedaaba077242cbf559c78a987ffdccffe447e74f5522dd69760a970cf632c6ff1ae9620ee115273f36e787229538b28a07e3922e999837e13abb
+  checksum: 18fd02af50eef3307d7378c431c12dd3e23a7212212ac34962906bdf664f9c488204b54715300ca1ca2beb90f9cd0effa588c5bc77c51fdf136b8a6f74e058d5
   languageName: node
   linkType: hard
 
@@ -1931,7 +1931,7 @@ __metadata:
   resolution: "@earthwallet/ui-keyring@workspace:packages/ui-keyring"
   dependencies:
     "@babel/runtime": ^7.12.5
-    "@earthwallet/sdk": ^0.1.11
+    "@earthwallet/sdk": ^0.1.12
     "@earthwallet/ui-settings": ^0.1.0
     "@polkadot/keyring": ^5.0.1
     "@polkadot/ledger": ^0.63.1
@@ -1942,6 +1942,7 @@ __metadata:
     "@types/store": ^2.0.2
     mkdirp: ^1.0.4
     store: ^2.0.12
+    string-crypto: ^2.0.1
   peerDependencies:
     "@earthwallet/ui-settings": "*"
     "@polkadot/keyring": "*"
@@ -16224,6 +16225,13 @@ resolve@^2.0.0-next.3:
   version: 1.1.0
   resolution: "strict-uri-encode@npm:1.1.0"
   checksum: 6c80f6998a45414d7c124772383cc10ce7bd22586af80762407cded1569666564fb8c0a4c9c997ac39a1116d46dfffc5d57135e759a0acb66a4da1191f5a3a4a
+  languageName: node
+  linkType: hard
+
+"string-crypto@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "string-crypto@npm:2.0.1"
+  checksum: d1f9e65c395ac495862775c6a64d418760a17a2ab6441c19c6158c1a5406e95e764eebc91b433dd5780c710ae51ef1ce18ff3ec13e36a3ba1de9cc4aefe3e3e9
   languageName: node
   linkType: hard
 

@@ -1,23 +1,33 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/jsx-key */
+/* eslint-disable camelcase */
+
 import type { ThemeProps } from '../../types';
 
 import useOutsideClick from '@earthwallet/extension-ui/hooks/useOutsideClick';
 import { Header } from '@earthwallet/extension-ui/partials';
-//import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ICP } from '@earthwallet/sdk';
+// import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
 
 import logo from '../../assets/icp-logo.png';
-import { Button, ButtonArea, Link, TextArea, VerticalSpace, SelectedAccountContext } from '../../components';
+import { Button, ButtonArea, Link, SelectedAccountContext, VerticalSpace } from '../../components';
 import useTranslation from '../../hooks/useTranslation';
-import { ICP } from '@earthwallet/sdk';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-//import icon_send from '../../assets/icon_send.svg';
+// import icon_send from '../../assets/icon_send.svg';
 
- interface Props extends ThemeProps {
+interface Props extends ThemeProps {
   className?: string;
 }
 
@@ -25,17 +35,19 @@ interface keyable {
   [key: string]: any
 }
 
+const default_recp = '02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47';
+
 // eslint-disable-next-line space-before-function-paren
 const WalletSendTokens = function ({ className }: Props): React.ReactElement<Props> {
   const [showTokenDropDown, setShowTokenDropDown] = useState(false);
-  const  selectedNetwork = 'ICP';
+  const selectedNetwork = 'ICP';
   const { selectedAccount } = useContext(SelectedAccountContext);
-  const [selectedRecp, setSelectedRecp] = useState<string>('');
-  const [selectedAmount, setSelectedAmount] = useState<number>(0);
+  const [selectedRecp, setSelectedRecp] = useState<string>('02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47');
+  const [selectedAmount, setSelectedAmount] = useState<number>(0.01);
 
   const dropDownRef = useRef(null);
   const { t } = useTranslation();
-  const [walletBalance, setWalletBalance] = useState<any|null>(null);
+  const [walletBalance, setWalletBalance] = useState<any|null|keyable>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const loadBalance = async (address: string) => {
@@ -50,19 +62,18 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
   useEffect(() => {
     if (selectedAccount && selectedAccount?.address) {
       loadBalance(selectedAccount?.address);
-     }
+    }
   }, [selectedAccount]);
-
 
   useOutsideClick(dropDownRef, (): void => {
     showTokenDropDown && setShowTokenDropDown(!showTokenDropDown);
   });
 
- /*  const onTokenSelected = (token: string) => {
+  /*  const onTokenSelected = (token: string) => {
     setSelectedNetwork(token);
   }; */
 
-/*   const getTokenSelectionDropDownItem = (tokenSymbol: string) => {
+  /*   const getTokenSelectionDropDownItem = (tokenSymbol: string) => {
     return (<div className='tokenSelectionDropDownItem'
       onClick={() => onTokenSelected(tokenSymbol)}>
       <img
@@ -91,29 +102,31 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
               to='/wallet/home'>Cancel</Link>
           </div>
         </div>
-     {selectedRecp}
-     {selectedAmount}
+        {selectedRecp}
+        {selectedAmount}
         <input
           autoCapitalize='off'
           autoCorrect='off'
           autoFocus={true}
           className='recipientAddress earthinput'
+          defaultValue={default_recp}
+          onChange={(e) => setSelectedRecp(e.target.value)}
           placeholder="Recipient address"
-          onChange={e => setSelectedRecp(e.target.value)}
           required
         />
         <input
           autoCapitalize='off'
           autoCorrect='off'
-          type="number"
           autoFocus={false}
-          min="0.00"
-          step="0.001"
-          max="1.00"
           className='recipientAddress earthinput'
+          defaultValue={0.001}
+          max="1.00"
+          min="0.00"
+          onChange={(e) => setSelectedAmount(parseInt(e.target.value))}
           placeholder="amount up to 8 decimal places"
           required
-          onChange={e => setSelectedAmount(parseInt(e.target.value))}
+          step="0.001"
+          type="number"
         />
 
         <div className='transactionDetail'>
@@ -130,17 +143,17 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
                 />
                 <div className='tokenSelectionLabelDiv'>
                   <div className='tokenLabel'>{selectedNetwork}</div>
-                  <div className='tokenBalance'> 
-                  { loading
-                     ? <SkeletonTheme color="#222"
-                         highlightColor="#000">
-                         <Skeleton width={150} />
-                       </SkeletonTheme>
-                     : <span>{walletBalance && walletBalance?.balances[0] &&
+                  <div className='tokenBalance'>
+                    { loading
+                      ? <SkeletonTheme color="#222"
+                        highlightColor="#000">
+                        <Skeleton width={150} />
+                      </SkeletonTheme>
+                      : <span>{walletBalance && walletBalance?.balances[0] &&
                          `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} 
                          ${walletBalance?.balances[0]?.currency?.symbol}`
-                       }</span>
-                  }
+                      }</span>
+                    }
                   </div>
                 </div>
               </div>
