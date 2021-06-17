@@ -13,25 +13,22 @@
 
 import type { ThemeProps } from '../../types';
 
+import { Header } from '@earthwallet/extension-ui/partials';
 import { symbolGenesisMap } from '@earthwallet/extension-ui/util/chains';
 import { ICP } from '@earthwallet/sdk';
-import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
-import { Header } from '@earthwallet/extension-ui/partials';
 
+import bg_wallet_details from '../../assets/bg_wallet_details.png';
+import icon_copy from '../../assets/icon_copy.svg';
 import icon_rec from '../../assets/icon_rec.svg';
 import icon_send from '../../assets/icon_send.svg';
-import icon_copy from '../../assets/icon_copy.svg';
-
 import icpLogo from '../../assets/icp-logo.png';
 import { Link, SelectedAccountContext } from '../../components';
-import bg_wallet_details from '../../assets/bg_wallet_details.png';
 import { getShortAddress } from '../Utils/CommonUtils';
 
-//import bg_wallet_details_2x from '../../assets/bg_wallet_details@2x.png';
+// import bg_wallet_details_2x from '../../assets/bg_wallet_details@2x.png';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -77,22 +74,6 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
     setWalletTransactions(transactions);
   };
 
-  const getTransactionDetail = (transaction: any): any => {
-    const operations = transaction.transaction.operations
-      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
-      .filter((operation: { account: any; }) => operation.account.address === selectedAccount?.address);
-
-    return operations[0];
-  };
-
-  const getTransactionWithDetail = (transaction: any): any => {
-    const operations = transaction.transaction.operations
-      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
-      .filter((operation: { account: any; }) => operation.account.address !== selectedAccount?.address);
-
-    return operations[0];
-  };
-
   useEffect(() => {
     const loadBalance = async (address: string) => {
       setLoading(true);
@@ -123,11 +104,11 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   return (
     <>
       <div className={className}>
-      <Header
-       className={'header'}
-        type={'wallet'}
-        showAccountsDropdown
-        showMenu />
+        <Header
+          className={'header'}
+          showAccountsDropdown
+          showMenu
+          type={'wallet'} />
         <img
           className='network-logo'
           src={getNetworkLogo()}
@@ -154,14 +135,14 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
 
         <div className='copyActionsView'>
           <div className='copyCont'>
-           <div className='copyName'>{selectedAccount?.name}</div>
-           <div className='copyAddress'>{getShortAddress(selectedAccount?.address || '')}</div>  
+            <div className='copyName'>{selectedAccount?.name}</div>
+            <div className='copyAddress'>{getShortAddress(selectedAccount?.address || '')}</div>
           </div>
           <div className='copyButton'>
             <img
-                  className='iconCopy'
-                  src={icon_copy}
-                />
+              className='iconCopy'
+              src={icon_copy}
+            />
           </div>
         </div>
         <div className='walletActionsView'>
@@ -207,7 +188,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
               className={'tabView ' + (selectedTab === 'Transactions' ? 'selectedTabView' : '') }
               onClick={() => setSelectedTab('Transactions')}
             >
-         Transactions
+             Transactions {walletTransactions?.transactions?.length === 0 || walletTransactions?.transactions === undefined ? '' : `(${walletTransactions?.transactions?.length})` }
             </div>
           </div>
         </div>

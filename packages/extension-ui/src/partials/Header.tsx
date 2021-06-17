@@ -9,14 +9,13 @@ import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import logo from '../assets/icon.png';
+import ICON_BACK from '../assets/icon_back.svg';
 import Link from '../components/Link';
 import useOutsideClick from '../hooks/useOutsideClick';
 import AccountSelector from './AccountSelector';
 import MenuAdd from './MenuAdd';
 import MenuSettings from './MenuSettings';
 import NetworkSelector from './NetworkSelector';
-import icon_back from '../assets/icon_back.svg';
-
 
 interface Props extends ThemeProps {
   children?: React.ReactNode;
@@ -32,7 +31,7 @@ interface Props extends ThemeProps {
   showAccountsDropdown?: boolean;
 }
 
-function Header ({ children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text, type }: Props): React.ReactElement<Props> {
+function Header ({ children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text, type = '' }: Props): React.ReactElement<Props> {
   const [isAddOpen, setShowAdd] = useState(false);
   const [isSettingsOpen, setShowSettings] = useState(false);
   const addRef = useRef(null);
@@ -60,92 +59,92 @@ function Header ({ children, className = '', showAccountsDropdown, showAdd, show
   //   const url = URL.createObjectURL(blob);
 
   return (
-    <div className={`${className} ${smallMargin ? 'smallMargin' : ''} ${type === 'wallet' && 'walletDiv'}`}>
-      {type !== 'wallet' ?
-      <div className='container'>
-        <div className='branding'>
-          {showBackArrow
-            ? (
-              <Link
-                className='backlink'
-                to='/'
+    <div className={`${className} ${smallMargin ? 'smallMargin' : ''} ${type === 'wallet' ? 'walletDiv' : ''}`}>
+      {type !== 'wallet'
+        ? <div className='container'>
+          <div className='branding'>
+            {showBackArrow
+              ? (
+                <Link
+                  className='backlink'
+                  to='/'
+                >
+                  <FontAwesomeIcon
+                    className='arrowLeftIcon'
+                    icon={faArrowLeft}
+                  />
+                </Link>
+              )
+              : (
+                <img
+                  className='header-logo'
+                  src={logo}
+                />
+              )
+            }
+
+            {text && <span className='logoText'>{text || 'Earth Wallet'}</span>}
+          </div>
+
+          {showNetworkDropdown && (<NetworkSelector/>)}
+          {showAccountsDropdown && (<AccountSelector/>)}
+
+          <div className='popupMenus'>
+            {showAdd && (
+              <div
+                className='popupToggle'
+                onClick={_toggleAdd}
               >
                 <FontAwesomeIcon
-                  className='arrowLeftIcon'
-                  icon={faArrowLeft}
+                  className={`plusIcon ${isAddOpen ? 'selected' : ''}`}
+                  icon={faEllipsisV}
+                  size='lg'
                 />
-              </Link>
-            )
-            : (
-              <img
-                className='header-logo'
-                src={logo}
-              />
-            )
-          }
-
-          {text && <span className='logoText'>{text || 'Earth Wallet'}</span>}
+              </div>
+            )}
+            {showSettings && (
+              <div
+                className='popupToggle'
+                data-toggle-settings
+                onClick={_toggleSettings}
+              >
+                <FontAwesomeIcon
+                  className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
+                  icon={faCog}
+                  size='lg'
+                />
+              </div>
+            )}
+            {showMenu && (
+              <div
+                className='popupToggle'
+                data-toggle-settings
+                onClick={_toggleSettings}
+              >
+                <FontAwesomeIcon
+                  className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
+                  icon={faEllipsisV}
+                  size='lg'
+                />
+              </div>
+            )}
+          </div>
+          {isAddOpen && (
+            <MenuAdd reference={addRef}/>
+          )}
+          {isSettingsOpen && (
+            <MenuSettings reference={setRef}/>
+          )}
+          {children}
         </div>
-
-        {showNetworkDropdown && (<NetworkSelector/>)}
-        {showAccountsDropdown && (<AccountSelector/>)}
-
-        <div className='popupMenus'>
-          {showAdd && (
-            <div
-              className='popupToggle'
-              onClick={_toggleAdd}
-            >
-              <FontAwesomeIcon
-                className={`plusIcon ${isAddOpen ? 'selected' : ''}`}
-                icon={faEllipsisV}
-                size='lg'
-              />
+        : <div className='container'>
+          <Link className='backButtonCont'
+            to='/'>
+            <div className='backButtonIcon' >
+              <img src={ICON_BACK} />
             </div>
-          )}
-          {showSettings && (
-            <div
-              className='popupToggle'
-              data-toggle-settings
-              onClick={_toggleSettings}
-            >
-              <FontAwesomeIcon
-                className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
-                icon={faCog}
-                size='lg'
-              />
-            </div>
-          )}
-          {showMenu && (
-            <div
-              className='popupToggle'
-              data-toggle-settings
-              onClick={_toggleSettings}
-            >
-              <FontAwesomeIcon
-                className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
-                icon={faEllipsisV}
-                size='lg'
-              />
-            </div>
-          )}
-        </div>
-        {isAddOpen && (
-          <MenuAdd reference={addRef}/>
-        )}
-        {isSettingsOpen && (
-          <MenuSettings reference={setRef}/>
-        )}
-        {children}
-      </div>
-      : <div className='container'>
-        <Link className='backButtonCont'
-          to='/'>
-            <div  className='backButtonIcon' >
-              <img src={icon_back} />
-            </div>
-            </Link>
-        {showAccountsDropdown && (<AccountSelector/>)}
+          </Link>
+          {showAccountsDropdown && (<AccountSelector/>)}
         </div>
       }
     </div>
