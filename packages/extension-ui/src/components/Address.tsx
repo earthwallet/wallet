@@ -264,11 +264,10 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
 }
 
 export default styled(Address)(({ theme }: ThemeProps) => `
-  background: ${theme.accountBackground};
-  border: 1px solid ${theme.boxBorderColor};
+ 
+  background: #081927b3;
+  border-bottom: 2px solid #2496ff80;
   box-sizing: border-box;
-  border-radius: 4px;
-  margin-bottom: 8px;
   position: relative;
 
   .banner {

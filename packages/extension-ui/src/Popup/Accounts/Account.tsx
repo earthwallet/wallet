@@ -103,7 +103,6 @@ function Account ({ address, className, genesisHash, isExternal, isHidden, name,
 
 export default styled(Account)(({ theme }: ThemeProps) => `
   .address {
-    margin-bottom: 8px;
   }
 
   .editName {

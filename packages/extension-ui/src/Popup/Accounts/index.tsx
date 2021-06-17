@@ -9,7 +9,8 @@ import styled from 'styled-components';
 import BG_WALLET_LIST from '../../assets/bg_wallet_list.png';
 import { AccountContext, Link, SelectedNetworkContext } from '../../components';
 import AccountsTree from './AccountsTree';
-
+import ICON_ADD from '../../assets/icon_add_account.svg';
+ 
 interface Props extends ThemeProps {
   className?: string;
 }
@@ -30,7 +31,7 @@ function Accounts ({ className }: Props): React.ReactElement {
                 <div className={'createButton earthButton'}>Create an Account</div>
               </Link>
             </div>
-            <div className={'linkCont'}><div className={'orSep'}>or</div>
+            <div className={'footerCont'}><div className={'orSep'}>or</div>
               <Link to={'/account/import-seed'}><div className={'earthLink'}>import seed phrase
               </div>
               </Link>
@@ -40,6 +41,8 @@ function Accounts ({ className }: Props): React.ReactElement {
         : (
           <>
             <>
+            <div className={'accountTitle'}>Select Account</div>
+              <div className={'accountsCont'}>
               {hierarchy
                 .filter(({ genesisHash }) => selectedNetwork.genesisHash.length ? genesisHash === selectedNetwork.genesisHash : true)
                 .map((json, index): React.ReactNode => {
@@ -51,7 +54,20 @@ function Accounts ({ className }: Props): React.ReactElement {
                     />
                   );
                 })}
+                
+                <Link to={'/account/create'}>
+                  <div className={'earthButton createAccountTableButton earthButtonTable'}>
+                  <div>Create an Account </div>
+                  <img  className='iconCopy' src={ICON_ADD}  />      
+                  </div> 
+                </Link>                
+              </div>
             </>
+            <div className={'footerCont'}><div className={'orSep'}>or</div>
+              <Link to={'/account/import-seed'}><div className={'earthLink'}>import seed phrase
+              </div>
+              </Link>
+            </div>
           </>
         )
       }
@@ -64,8 +80,46 @@ export default styled(Accounts)`
   overflow-y: scroll;
   scrollbar-width: none;
   background: url(${BG_WALLET_LIST});
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  .createAccountTableButton {
+    width: 291px;
+    height: 54px;
+    left: 2px;
+    top: 56px;
+    
+    background: linear-gradient(101.54deg, #2496FF 10.81%, #1B63A6 139.52%);
+  }
+  .accountTitle {
+    margin-top: 320px;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    text-align: left;
+    line-height: 150%;
+    color: #fff;
+    width: 100%;
+    padding-left: 40px;
 
-  .linkCont {
+    
+  }
+
+  .accountsCont {
+    height: 190px;
+    overflow: scroll;
+    margin-top: 10px;
+    width: calc(100vw - 40px);
+    border: 2px solid rgba(36, 150, 255, 0.5);
+    box-sizing: border-box;
+    border-radius: 8px;
+  }
+
+
+
+  .footerCont {
     display: flex;
     margin-top: 18px;
   }
@@ -163,5 +217,15 @@ export default styled(Accounts)`
     color: #FFFFFF;
 
     opacity: 0.46;
+  }
+  .earthButtonTable{
+    width: 100%;
+    border-radius: 0;
+    justify-content: flex-start;
+    padding: 0 17px;
+    cursor: pointer;
+    &:active {
+      opacity: 0.7;
+    }
   }
 `;

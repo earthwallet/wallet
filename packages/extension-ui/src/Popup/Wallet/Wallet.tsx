@@ -287,7 +287,7 @@ export default styled(Wallet)(({ theme }: Props) => `
       padding: 0px 3px 0 15px;
       min-height: 52px;
       align-items: left;
-      justify-content: center;
+      justify-content: space-between;
       flex-direction: row;
       display: flex;
       align-items: center;
