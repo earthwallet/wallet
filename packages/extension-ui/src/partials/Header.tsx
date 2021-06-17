@@ -15,6 +15,8 @@ import AccountSelector from './AccountSelector';
 import MenuAdd from './MenuAdd';
 import MenuSettings from './MenuSettings';
 import NetworkSelector from './NetworkSelector';
+import icon_back from '../assets/icon_back.svg';
+
 
 interface Props extends ThemeProps {
   children?: React.ReactNode;
@@ -24,12 +26,13 @@ interface Props extends ThemeProps {
   showBackArrow?: boolean;
   showSettings?: boolean;
   smallMargin?: boolean;
+  type?: string;
   showNetworkDropdown?: boolean;
   text?: React.ReactNode;
   showAccountsDropdown?: boolean;
 }
 
-function Header ({ children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text }: Props): React.ReactElement<Props> {
+function Header ({ children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text, type }: Props): React.ReactElement<Props> {
   const [isAddOpen, setShowAdd] = useState(false);
   const [isSettingsOpen, setShowSettings] = useState(false);
   const addRef = useRef(null);
@@ -58,6 +61,7 @@ function Header ({ children, className = '', showAccountsDropdown, showAdd, show
 
   return (
     <div className={`${className} ${smallMargin ? 'smallMargin' : ''}`}>
+      {type !== 'wallet' ?
       <div className='container'>
         <div className='branding'>
           {showBackArrow
@@ -134,6 +138,16 @@ function Header ({ children, className = '', showAccountsDropdown, showAdd, show
         )}
         {children}
       </div>
+      : <div className='container'>
+        <Link className='backButtonCont'
+          to='/'>
+            <div  className='backButtonIcon' >
+              <img src={icon_back} />
+            </div>
+            </Link>
+        {showAccountsDropdown && (<AccountSelector/>)}
+        </div>
+      }
     </div>
   );
 }
@@ -144,11 +158,29 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
   font-weight: normal;
   margin: 0;
   position: relative;
-  margin-bottom: 25px;
+  margin-bottom: 170px;
 
-  background: linear-gradient(101.54deg, #000204 10.81%, #1B63A6 139.52%);
-  box-shadow: 0px 0px 8px #236EFF, 0px 0px 13px rgba(43, 115, 255, 0.8), 0px 0px 54px rgba(71, 134, 255, 0.8);
-  border-radius: 0px 0px 20px 20px;
+  .backButtonCont{
+    background: rgba(5, 12, 18, 0.4);
+    backdrop-filter: blur(20px);
+    /* Note: backdrop-filter has minimal browser support */
+    
+    border-radius: 30px;
+    width: 39px;
+    height: 39px;    
+  }
+
+  .backButtonIcon{
+    width: 33px;
+    height: 33px;
+    background: rgba(255, 255, 255, 0.17);
+    border-radius: 21px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+
+  }
+
 
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
@@ -164,8 +196,9 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
   > .container {
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    min-height: 70px;
+    width: calc(100vw - 48px);
+    margin: 24px 0 0 0;
+    padding: 0 24px;
 
     .branding {
       display: flex;

@@ -20,11 +20,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
+import { Header } from '@earthwallet/extension-ui/partials';
 
 import icon_rec from '../../assets/icon_rec.svg';
 import icon_send from '../../assets/icon_send.svg';
 import icpLogo from '../../assets/icp-logo.png';
 import { Link, SelectedAccountContext } from '../../components';
+import bg_wallet_details from '../../assets/bg_wallet_details.png';
+//import bg_wallet_details_2x from '../../assets/bg_wallet_details@2x.png';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -119,8 +122,11 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   return (
     <>
       <div className={className}>
-        <Link className='topCancelButton'
-          to='/'>BACK</Link>
+      <Header
+       className={'header'}
+        type={'wallet'}
+        showAccountsDropdown
+        showMenu />
         <img
           className='network-logo'
           src={getNetworkLogo()}
@@ -232,13 +238,17 @@ export default styled(Wallet)(({ theme }: Props) => `
     flex-direction: column;
     align-items: center;
     height: -webkit-fill-available;
+    background: url(${bg_wallet_details});
+
+    .header{
+      width: ${theme.appWidth}
+    }
 
     .topCancelButton {
         cursor: pointer;
         color: ${theme.buttonBackground};
         font-family: ${theme.fontFamily};
         font-size: 12px;
-        align-self: flex-end;
         &:hover {
             color: ${theme.buttonBackgroundHover};
         }

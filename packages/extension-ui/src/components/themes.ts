@@ -2,6 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const darkTheme = {
+  appWidth: '375px',
+  appHeight: '688px',
+  headerHeight: '64px',
   accountBackground: '#000',
   accountDotsIconColor: '#8E8E8E',
   addAccountImageBackground: '#1A1B20',
