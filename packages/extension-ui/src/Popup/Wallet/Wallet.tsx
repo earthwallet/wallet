@@ -77,9 +77,6 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
     setWalletTransactions(transactions);
   };
 
-  const getShortAddress = (address: string) =>
-    address?.substring(0, 6) + '...' + address?.substring(address.length - 5);
-
   const getTransactionDetail = (transaction: any): any => {
     const operations = transaction.transaction.operations
       .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
@@ -204,6 +201,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
         </div>
 
         <div className='assetsAndActivityDiv'>
+          <div className='tabsPill'></div>
           <div className='tabsView'>
             <div
               className={'tabView ' + (selectedTab === 'Transactions' ? 'selectedTabView' : '') }
@@ -211,37 +209,6 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
             >
          Transactions
             </div>
-          </div>
-
-          <div className="transactions-div">
-            {walletTransactions &&
-                  walletTransactions?.transactions &&
-                  walletTransactions?.transactions?.reverse().map(
-                    (transaction: { block_identifier: { hash: string } }) => {
-                      return (
-                        <div className="transaction-item-div">
-                          <FontAwesomeIcon
-                            className='transaction-type-icon'
-                            color='#fff'
-                            icon={(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? faArrowDown : faArrowUp }
-                            size='lg'
-                          />
-                          <div className='transaction-detail-div'>
-                            <div className='transaction-type'>{(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send'}</div>
-                            <div className='transaction-detail'>{`${getTransactionWithDetail(transaction)?.amount?.value > 0 ? 'To:' : 'From:'} ${getShortAddress(getTransactionWithDetail(transaction)?.account.address || 'Self')}`}</div>
-                          </div>
-                          <div className='transaction-amount'>{`${(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals)}` + ` ${(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.symbol}`}</div>
-
-                        </div>
-                      );
-                    }
-                  )}
-            {walletTransactions &&
-                  !walletTransactions?.transactions?.length && (
-              <div className="transaction-item-div">
-                      No Transaction History
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -264,6 +231,16 @@ export default styled(Wallet)(({ theme }: Props) => `
       width: 17px;
       height: 20px;
     }
+    .tabsPill{
+      width: 29px;
+      height: 3px;
+      background: #175b99;
+      border-radius: 29px;
+      display: flex;
+      flex-basis: 3px;
+      min-height: 3px;
+      margin-top: 9px;
+    }
     .copyButton {
       width: 41.86px;
       height: 41.86px;
@@ -277,6 +254,14 @@ export default styled(Wallet)(({ theme }: Props) => `
       justify-content: center;
       cursor: pointer;
       user-select: none;
+      &:hover {
+        opacity: 0.95;
+        cursor: pointer;
+      }
+      &:active {
+        opacity: 0.65;
+        cursor: pointer;
+      }
     }
 
     .copyCont {
@@ -360,6 +345,7 @@ export default styled(Wallet)(({ theme }: Props) => `
       font-family: ${theme.fontFamilyMono};
       font-size: 34px;
       line-height: 44px;
+      height: 44px;
       text-align: center;
       margin: 3px;
       text-shadow: 0px 0px 11.4544px rgba(177, 204, 255, 0.89);
@@ -371,6 +357,7 @@ export default styled(Wallet)(({ theme }: Props) => `
       font-size: 16px;
       line-height: 150%;
       opacity: 0.8;
+      height: 21px;
     }
 
     .walletActionsView {
@@ -418,43 +405,42 @@ export default styled(Wallet)(({ theme }: Props) => `
     align-items: center;
     justify-content: center;
     margin-top: 16px;
-    height: 100%;
+    height: 60px;
+    display: flex;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), rgba(36, 150, 255, 0.32);
-    border: 1px solid #2496FF;
     box-sizing: border-box;
-    border-top-left-radius: 32px;
-    border-top-right-radius: 32px;
-    }
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    cursor: pointer;
+    background: linear-gradient(0deg, #071A28, #071A28), linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), rgba(36, 150, 255, 0.32);
+    justify-content: space-between; 
+    border: 2px solid #2496FF;
+    border-bottom: 0px;
+  }
 
     .tabsView {
-    height: 46px;
     width: 340px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    margin: 8px 0 10px 0;
     }
 
-    .tabView {
-    flex: 1;
-    height: 46px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    box-shadow: inset 0 -1px 0 ${theme.buttonBackground};
-    border-top-left-radius: 32px;
-    border-top-right-radius: 32px;
-    }
+  
 
     .selectedTabView {
-    flex: 1;
-    height: 46px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    box-shadow: inset 0 -3px 0 ${theme.buttonBackground};
+
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 16px;
+ 
+    text-align: center;
+    color: #E6E9ED;
+    opacity: 0.75;
+
     }
 
     .transactions-div {
