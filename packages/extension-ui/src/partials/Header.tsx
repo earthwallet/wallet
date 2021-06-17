@@ -60,7 +60,7 @@ function Header ({ children, className = '', showAccountsDropdown, showAdd, show
   //   const url = URL.createObjectURL(blob);
 
   return (
-    <div className={`${className} ${smallMargin ? 'smallMargin' : ''}`}>
+    <div className={`${className} ${smallMargin ? 'smallMargin' : ''} ${type === 'wallet' && 'walletDiv'}`}>
       {type !== 'wallet' ?
       <div className='container'>
         <div className='branding'>
@@ -158,7 +158,6 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
   font-weight: normal;
   margin: 0;
   position: relative;
-  margin-bottom: 170px;
 
   .backButtonCont{
     background: rgba(5, 12, 18, 0.4);

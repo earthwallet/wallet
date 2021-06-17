@@ -3,7 +3,7 @@
 
 const darkTheme = {
   appWidth: '375px',
-  appHeight: '688px',
+  appHeight: '600px',
   headerHeight: '64px',
   accountBackground: '#000',
   accountDotsIconColor: '#8E8E8E',

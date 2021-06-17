@@ -24,9 +24,13 @@ import { Header } from '@earthwallet/extension-ui/partials';
 
 import icon_rec from '../../assets/icon_rec.svg';
 import icon_send from '../../assets/icon_send.svg';
+import icon_copy from '../../assets/icon_copy.svg';
+
 import icpLogo from '../../assets/icp-logo.png';
 import { Link, SelectedAccountContext } from '../../components';
 import bg_wallet_details from '../../assets/bg_wallet_details.png';
+import { getShortAddress } from '../Utils/CommonUtils';
+
 //import bg_wallet_details_2x from '../../assets/bg_wallet_details@2x.png';
 
 interface Props extends ThemeProps {
@@ -150,6 +154,19 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
             </SkeletonTheme>
             : <span className='secondaryBalanceLabel'>${usdValue.toFixed(3)}</span>}
         </div>
+
+        <div className='copyActionsView'>
+          <div className='copyCont'>
+           <div className='copyName'>{selectedAccount?.name}</div>
+           <div className='copyAddress'>{getShortAddress(selectedAccount?.address || '')}</div>  
+          </div>
+          <div className='copyButton'>
+            <img
+                  className='iconCopy'
+                  src={icon_copy}
+                />
+          </div>
+        </div>
         <div className='walletActionsView'>
           <div
             className='tokenActionView receiveTokenAction'
@@ -239,24 +256,83 @@ export default styled(Wallet)(({ theme }: Props) => `
     align-items: center;
     height: -webkit-fill-available;
     background: url(${bg_wallet_details});
-
-    .header{
+    
+    .header {
       width: ${theme.appWidth}
     }
-
-    .topCancelButton {
-        cursor: pointer;
-        color: ${theme.buttonBackground};
-        font-family: ${theme.fontFamily};
-        font-size: 12px;
-        &:hover {
-            color: ${theme.buttonBackgroundHover};
-        }
+    .iconCopy{
+      width: 17px;
+      height: 20px;
     }
-    .iconActions{
+    .copyButton {
+      width: 41.86px;
+      height: 41.86px;
+      background: #0d3151;
+      display: flex;
+      border-radius: 52.9397px;
+      flex-basis: 42px;
+      min-height: 42px;
+      min-width: 42px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .copyCont {
+      overflow: hidden;
+      height: 42px;
+      min-height: 42px;
+    }
+    .copyName {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1; /* number of lines to show */
+      -webkit-box-orient: vertical;
+    }
+    .copyAddress{
+      font-family: DM Mono;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 150%;
+      letter-spacing: 0.615578px;
+      color: #E6E9ED;
+    }
+
+    .copyName {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 150%;
+      text-align: left;
+      color: #FAFBFB;
+      opacity: 0.51;
+    }
+
+     .copyActionsView {
+      border: 2px solid #2496FF40;
+      box-sizing: border-box;
+      border-radius: 49.2462px;
+      width: 245px;
+      height: 52px;
+      padding: 0px 3px 0 15px;
+      min-height: 52px;
+      align-items: left;
+      justify-content: center;
+      flex-direction: row;
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+
+     }
+
+    .iconActions {
       margin-right: 10px;
     }
-    .network-text{
+    .network-text {
       font-family: Poppins;
       font-style: normal;
       font-weight: normal;
@@ -276,6 +352,7 @@ export default styled(Wallet)(({ theme }: Props) => `
       background-color: ${theme.tokenLogoBackground};
       object-fit: contain;
       object-position: center;
+      margin-top:170px;
     }
 
     .primaryBalanceLabel {

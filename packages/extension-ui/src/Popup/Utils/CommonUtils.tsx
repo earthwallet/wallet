@@ -97,4 +97,6 @@ const generateRandomColor = (str: string) => {
   return randomColorArray[index];
 };
 
+export const getShortAddress = (address: string) => address.substring(0, 6) + '...' + address.substring(address.length - 5);
+
 export default generateRandomColor;
