@@ -8,7 +8,7 @@ const darkTheme = {
   backButtonBackground: '#3A3B41',
   backButtonBackgroundHover: '#3a3b41ad',
   backButtonTextColor: '#FFFFFF',
-  background: '#000',
+  background: '#040A0E',
   bodyColor: '#000',
   borderRadius: '4px',
   boxBorderColor: '#303030',
@@ -23,6 +23,7 @@ const darkTheme = {
   errorBorderColor: '#7E3530',
   errorColor: '#E42F2F',
   fontFamily: 'Poppins, sans-serif',
+  fontFamilyMono: 'DM Mono, monospace',
   fontSize: '14px',
   highlightedAreaBackground: '#212226',
   iconDangerColor: '#AF1111',
@@ -44,7 +45,10 @@ const darkTheme = {
   subTextColor: '#DDD',
   textColor: '#FFFFFF',
   textColorDanger: '#FF8686',
-  tokenLogoBackground: '#FFFFFF'
+  tokenLogoBackground: '#FFFFFF',
+  moonLightGrey: '#FAFBFB',
+  usdBalance: '#7f8284'
+
 };
 
 export declare type Theme = typeof darkTheme;

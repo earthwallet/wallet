@@ -13,7 +13,6 @@
 
 import type { ThemeProps } from '../../types';
 
-import { Header } from '@earthwallet/extension-ui/partials';
 import { symbolGenesisMap } from '@earthwallet/extension-ui/util/chains';
 import { ICP } from '@earthwallet/sdk';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
@@ -22,6 +21,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
 
+import icon_rec from '../../assets/icon_rec.svg';
+import icon_send from '../../assets/icon_send.svg';
 import icpLogo from '../../assets/icp-logo.png';
 import { Link, SelectedAccountContext } from '../../components';
 
@@ -39,22 +40,27 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const [walletBalance, setWalletBalance] = useState<any|null>(null);
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [usdValue, setUsdValue] = useState<number>(0);
 
-  const getValueInUSD = (balance: number, decimals: number, symbol: string) => {
-    if (symbol === 'ICP') return `${(balance / Math.pow(10, decimals)) * 80}`;
-    if (symbol === 'DOT') return `${(balance / Math.pow(10, decimals)) * 20}`;
-    if (symbol === 'KSM') return `${(balance / Math.pow(10, decimals)) * 120}`;
+  const getBalanceInUSD = async (walletBalance: keyable) => {
+    const balance = walletBalance?.balances[0]?.value;
+    const decimals = walletBalance?.balances[0]?.currency?.decimals;
 
-    return `${balance / Math.pow(10, decimals)}`;
-  };
+    const fetchHeaders = new Headers();
 
-  const loadBalance = async (address: string) => {
-    setLoading(true);
-    const balance: keyable = await ICP.getBalance(address);
+    fetchHeaders.append('accept', 'application/json');
 
-    setLoading(false);
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      headers: fetchHeaders,
+      redirect: 'follow'
+    };
 
-    if (balance && balance?.balances != null) { setWalletBalance(balance); }
+    const factor: keyable = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd', requestOptions)
+      .then((response) => response.json())
+      .catch((error) => console.log('error', error));
+
+    setUsdValue((balance / Math.pow(10, decimals)) * parseFloat(factor['internet-computer'].usd));
   };
 
   const loadTransactions = async (address: string) => {
@@ -72,21 +78,6 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
       .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
       .filter((operation: { account: any; }) => operation.account.address === selectedAccount?.address);
 
-    /*   var _ts = [];
-      ts.map(_t => {
-        if (_t.type != "TRANSACTION") return;
-        if (_t.status != "COMPLETED") return;
-        _ts.push({
-          from : _t.account1Address,
-          to :  _t.account2Address,
-          amount : Number(_t.amount)/(10**8),
-          fee : Number(_t.fee)/(10**8),
-          hash : _t.hash,
-          timestamp : _t.timestamp,
-        });
-      });
-            console.log('getTransactionDetail', operations);
- */
     return operations[0];
   };
 
@@ -95,12 +86,22 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
       .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
       .filter((operation: { account: any; }) => operation.account.address !== selectedAccount?.address);
 
-    console.log('getTransactionWithDetail', operations);
-
     return operations[0];
   };
 
   useEffect(() => {
+    const loadBalance = async (address: string) => {
+      setLoading(true);
+      const balance: keyable = await ICP.getBalance(address);
+
+      setLoading(false);
+
+      if (balance && balance?.balances != null) {
+        setWalletBalance(balance);
+        getBalanceInUSD(balance);
+      }
+    };
+
     if (selectedAccount && selectedAccount?.address) {
       loadBalance(selectedAccount?.address);
       loadTransactions(selectedAccount?.address);
@@ -110,16 +111,13 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const getNetworkLogo = () => {
     if (selectedAccount?.genesisHash == null) { return icpLogo; }
 
-    if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'ICP') return icpLogo;
+    if (symbolGenesisMap().get(selectedAccount?.genesisHash) === 'ICP') return icpLogo;
 
     return icpLogo;
   };
 
   return (
     <>
-      <Header
-        showAccountsDropdown
-        showMenu />
       <div className={className}>
         <Link className='topCancelButton'
           to='/'>BACK</Link>
@@ -127,15 +125,16 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
           className='network-logo'
           src={getNetworkLogo()}
         />
+        <div className='network-text'>Internet Computer</div>
         <div className='primaryBalanceLabel'>
           { loading
             ? <SkeletonTheme color="#222"
               highlightColor="#000">
               <Skeleton width={150} />
             </SkeletonTheme>
-            : <span>{walletBalance && walletBalance?.balances[0] &&
+            : <div className='primaryBalanceLabel'>{walletBalance && walletBalance?.balances[0] &&
                   `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} ${walletBalance?.balances[0]?.currency?.symbol}`
-            }</span>
+            }</div>
           }</div>
         <div className='secondaryBalanceLabel'>
           { loading
@@ -143,40 +142,41 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
               highlightColor="#000">
               <Skeleton width={100} />
             </SkeletonTheme>
-            : <span>{walletBalance && walletBalance?.balances[0] && ('$' +
-                getValueInUSD(
-                  walletBalance?.balances[0]?.value,
-                  walletBalance?.balances[0]?.currency?.decimals,
-                  walletBalance?.balances[0]?.currency?.symbol
-                ))}</span>}</div>
+            : <span className='secondaryBalanceLabel'>${usdValue.toFixed(3)}</span>}
+        </div>
         <div className='walletActionsView'>
-
           <div
             className='tokenActionView receiveTokenAction'
           >
             <Link to='/wallet/receive'>
-              <FontAwesomeIcon
+              <div
                 className='tokenActionButton'
-                color='#fff'
-                icon={faArrowDown}
-                size='lg'
-              />
+              >
+                <img
+                  className='iconActions'
+                  src={icon_rec}
+                />
+                <div className='tokenActionLabel'>Receive</div>
+              </div>
+
             </Link>
-            <div className='tokenActionLabel'>Receive</div>
+
           </div>
 
           <div
             className='tokenActionView sendTokenAction'
           >
             <Link to='/wallet/send'>
-              <FontAwesomeIcon
+              <div
                 className='tokenActionButton'
-                color='#fff'
-                icon={faArrowUp}
-                size='lg'
-              />
+              >
+                <img
+                  className='iconActions'
+                  src={icon_send}
+                />
+                <div className='tokenActionLabel'>Send</div>
+              </div>
             </Link>
-            <div className='tokenActionLabel'>Send</div>
           </div>
         </div>
 
@@ -243,30 +243,47 @@ export default styled(Wallet)(({ theme }: Props) => `
             color: ${theme.buttonBackgroundHover};
         }
     }
+    .iconActions{
+      margin-right: 10px;
+    }
+    .network-text{
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 15px;
+      line-height: 150%;
+      text-align: center;
+      color: ${theme.moonLightGrey};
+      opacity: 0.7;
+    }
 
     .network-logo {
-    height: 28px;
-    width: 28px;
-    margin-bottom: 16px;
-    border-radius: 50%;
-    border: 1px solid ${theme.subTextColor};
-    padding: 4px;
-    background-color: ${theme.tokenLogoBackground};
-    object-fit: contain;
-    object-position: center;
+      height: 50px;
+      width: 50px;
+      margin-bottom: 16px;
+      border-radius: 50%;
+      border: 1px solid ${theme.subTextColor};
+      background-color: ${theme.tokenLogoBackground};
+      object-fit: contain;
+      object-position: center;
     }
 
     .primaryBalanceLabel {
-    color: ${theme.textColor};
-    font-family: ${theme.fontFamily};
-    font-size: 30px;
-    margin: 12px;
+      color: ${theme.textColor};
+      font-family: ${theme.fontFamilyMono};
+      font-size: 34px;
+      line-height: 44px;
+      text-align: center;
+      margin: 3px;
+      text-shadow: 0px 0px 11.4544px rgba(177, 204, 255, 0.89);
     }
 
     .secondaryBalanceLabel {
-    color: ${theme.subTextColor};
-    font-family: ${theme.fontFamily};
-    font-size: 20px;
+      color: ${theme.usdBalance};
+      font-family: ${theme.fontFamilyMono};
+      font-size: 16px;
+      line-height: 150%;
+      opacity: 0.8;
     }
 
     .walletActionsView {
@@ -285,11 +302,13 @@ export default styled(Wallet)(({ theme }: Props) => `
     }
 
     .tokenActionButton {
-    height: 26px;
-    width: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2496FF;
+    border-radius: 29px;
     background-color: ${theme.buttonBackground};
-    padding: 10px;
-    border-radius: 50%;
+    padding: 8px 20px;
     &:hover {
         background-color: ${theme.buttonBackgroundHover};
         cursor: pointer;
@@ -297,18 +316,14 @@ export default styled(Wallet)(({ theme }: Props) => `
     }
 
     .tokenActionLabel {
-    color: ${theme.buttonBackground};
+    color: #fff;
     font-family: ${theme.fontFamily};
     font-size: ${theme.fontSize};
-    margin-top: 6px;
-    }
-
-    .receiveTokenAction {
-        margin-right: 18px;
+    line-height: 150%;
     }
 
     .sendTokenAction {
-        margin-left: 18px;
+        margin-left: 7px;
     }
 
     .assetsAndActivityDiv{
@@ -360,7 +375,7 @@ export default styled(Wallet)(({ theme }: Props) => `
     flex-direction: column;
     flex: 1;
     overflow: scroll;
-    height: 170px;
+    height: 270px;
     }
 
     .transaction-item-div {
