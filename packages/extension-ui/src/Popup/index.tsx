@@ -166,7 +166,7 @@ export default function Popup (): React.ReactElement {
                                 exact
                                 path='/'
                               >
-                                {Root()}
+                                {wrapWithErrorBoundary(<Accounts />, 'accounts')}
                               </Route>
                             </Switch>
                           </ToastProvider>
