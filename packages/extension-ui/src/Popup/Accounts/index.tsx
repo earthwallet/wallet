@@ -149,7 +149,7 @@ export default styled(Accounts)`
   
   .earthButton {
     width: 295px;
-    height: 56px;
+    height: 74px;
     background: linear-gradient(101.54deg, #2496FF 10.81%, #1B63A6 139.52%);
     border-radius: 8px;
     display: flex;

@@ -24,6 +24,7 @@ function HeaderWithSteps ({ className, step, text }: Props): React.ReactElement<
 
   return (
     <Header
+      type={'wallet'}
       className={className}
       text={text}
     >
