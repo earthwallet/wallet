@@ -17,11 +17,7 @@ interface Props extends ThemeProps {
 
 function HeaderWithSteps ({ className, step, text }: Props): React.ReactElement<Props> {
   const onAction = useContext(ActionContext);
-
-  const _onCancel = useCallback(() => {
-    onAction('/');
-  }, [onAction]);
-
+ 
   return (
     <Header
       type={'wallet'}
@@ -33,10 +29,7 @@ function HeaderWithSteps ({ className, step, text }: Props): React.ReactElement<
           <span className='current'>{step}</span>
           <span className='total'>/2</span>
         </div>
-        <ActionText
-          onClick={_onCancel}
-          text='Cancel'
-        />
+   
       </div>
     </Header>
   );
@@ -47,15 +40,19 @@ export default React.memo(styled(HeaderWithSteps)(({ theme }: Props) => `
     font-size: ${theme.labelFontSize};
     line-height: ${theme.labelLineHeight};
     color: ${theme.primaryColor};
+    margin-right: 6px;
+  }
+
+  .total {
+    letter-spacing: 6px;
   }
 
   .steps {
     align-items: center;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     flex-grow: 1;
     padding-left: 1em;
-    padding-right: 24px;
     margin-top: 3px;
   }
 

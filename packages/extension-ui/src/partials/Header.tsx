@@ -140,6 +140,8 @@ function Header ({ children, className = '', showAccountsDropdown, showAdd, show
               <img src={ICON_BACK} />
             </div>
           </Link>
+          {text && <div className='headerText'>{text}</div>}
+          {children}
           {showAccountsDropdown && (<AccountSelector/>)}
         </div>
       }
@@ -161,7 +163,21 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
     
     border-radius: 30px;
     width: 39px;
-    height: 39px;    
+    height: 39px;   
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+  }
+
+  .headerText {
+    font-style: normal;
+    /* font-weight: 600; */
+    font-size: 16px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+    
   }
 
   .backButtonIcon{
@@ -207,6 +223,7 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
         font-family: ${theme.fontFamily};
         font-size: 18px;
         margin-left: 12px;
+        align-items: center;
       }
 
       .header-logo {
