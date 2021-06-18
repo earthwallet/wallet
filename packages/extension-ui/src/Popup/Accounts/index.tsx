@@ -7,10 +7,10 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import BG_WALLET_LIST from '../../assets/bg_wallet_list.png';
+import ICON_ADD from '../../assets/icon_add_account.svg';
 import { AccountContext, Link, SelectedNetworkContext } from '../../components';
 import AccountsTree from './AccountsTree';
-import ICON_ADD from '../../assets/icon_add_account.svg';
- 
+
 interface Props extends ThemeProps {
   className?: string;
 }
@@ -41,26 +41,27 @@ function Accounts ({ className }: Props): React.ReactElement {
         : (
           <>
             <>
-            <div className={'accountTitle'}>Select Account</div>
+              <div className={'accountTitle'}>Select Account</div>
               <div className={'accountsCont'}>
-              {hierarchy
-                .filter(({ genesisHash }) => selectedNetwork.genesisHash.length ? genesisHash === selectedNetwork.genesisHash : true)
-                .map((json, index): React.ReactNode => {
-                //   console.log('hierarchy', json);
-                  return (
-                    <AccountsTree
-                      {...json}
-                      key={`${index}:${json.address}`}
-                    />
-                  );
-                })}
-                
+                {hierarchy
+                  .filter(({ genesisHash }) => selectedNetwork.genesisHash.length ? genesisHash === selectedNetwork.genesisHash : true)
+                  .map((json, index): React.ReactNode => {
+                    //   console.log('hierarchy', json);
+                    return (
+                      <AccountsTree
+                        {...json}
+                        key={`${index}:${json.address}`}
+                      />
+                    );
+                  })}
+
                 <Link to={'/account/create'}>
                   <div className={'earthButton createAccountTableButton earthButtonTable'}>
-                  <div>Create an Account </div>
-                  <img  className='iconCopy' src={ICON_ADD}  />      
-                  </div> 
-                </Link>                
+                    <div>Create an Account </div>
+                    <img className='iconCopy'
+                      src={ICON_ADD} />
+                  </div>
+                </Link>
               </div>
             </>
             <div className={'footerCont'}><div className={'orSep'}>or</div>
@@ -92,9 +93,9 @@ export default styled(Accounts)`
     
     background: linear-gradient(101.54deg, #2496FF 10.81%, #1B63A6 139.52%);
   }
+
   .accountTitle {
     margin-top: 320px;
-    font-family: Poppins;
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
@@ -123,9 +124,8 @@ export default styled(Accounts)`
     display: flex;
     margin-top: 18px;
   }
-  .orSep{
 
-    font-family: Poppins;
+  .orSep{
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -158,7 +158,6 @@ export default styled(Accounts)`
   }
 
   .earthLink{
-    font-family: Poppins;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -182,7 +181,6 @@ export default styled(Accounts)`
     padding: 3px;
     cursor: pointer;
     margin-top: 280px;
-    font-family: Poppins;
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
@@ -199,33 +197,29 @@ export default styled(Accounts)`
   &::-webkit-scrollbar {
     display: none;
   }
-  .earthButton
-  {
-
-  }
+ 
   .subtitle {
     margin-top: 180px;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
     line-height: 150%;
-    /* identical to box height, or 24px */
-
     text-align: center;
     text-transform: capitalize;
-
     color: #FFFFFF;
-
     opacity: 0.46;
   }
-  .earthButtonTable{
+
+  .earthButtonTable {
     width: 100%;
     border-radius: 0;
-    justify-content: flex-start;
     padding: 0 17px;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    }
+
     &:active {
       opacity: 0.7;
     }
-  }
 `;

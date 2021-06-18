@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import logo from '../assets/icon.png';
 import ICON_BACK from '../assets/icon_back.svg';
 import Link from '../components/Link';
 import useOutsideClick from '../hooks/useOutsideClick';
@@ -76,10 +75,7 @@ function Header ({ children, className = '', showAccountsDropdown, showAdd, show
                 </Link>
               )
               : (
-                <img
-                  className='header-logo'
-                  src={logo}
-                />
+                <div />
               )
             }
 
@@ -205,7 +201,6 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
       color: ${theme.labelColor};
       font-family: ${theme.fontFamily};
       text-align: center;
-      margin-left: 24px;
 
       .logoText {
         color: ${theme.textColor};

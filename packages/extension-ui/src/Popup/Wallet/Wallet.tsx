@@ -16,7 +16,8 @@ import type { ThemeProps } from '../../types';
 import { Header } from '@earthwallet/extension-ui/partials';
 import { symbolGenesisMap } from '@earthwallet/extension-ui/util/chains';
 import { ICP } from '@earthwallet/sdk';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
 
@@ -26,6 +27,7 @@ import icon_rec from '../../assets/icon_rec.svg';
 import icon_send from '../../assets/icon_send.svg';
 import icpLogo from '../../assets/icp-logo.png';
 import { Link, SelectedAccountContext } from '../../components';
+import useToast from '../../hooks/useToast';
 import { getShortAddress } from '../Utils/CommonUtils';
 
 // import bg_wallet_details_2x from '../../assets/bg_wallet_details@2x.png';
@@ -45,6 +47,10 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [usdValue, setUsdValue] = useState<number>(0);
+
+  const { show } = useToast();
+
+  const _onCopy = useCallback((): void => show('Copied'), [show]);
 
   const getBalanceInUSD = async (walletBalance: keyable) => {
     const balance = walletBalance?.balances[0]?.value;
@@ -133,18 +139,24 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
             : <span className='secondaryBalanceLabel'>${usdValue.toFixed(3)}</span>}
         </div>
 
-        <div className='copyActionsView'>
-          <div className='copyCont'>
-            <div className='copyName'>{selectedAccount?.name}</div>
-            <div className='copyAddress'>{getShortAddress(selectedAccount?.address || '')}</div>
+        <CopyToClipboard
+          text={selectedAccount?.address || ''} >
+          <div
+            className='copyActionsView'
+            onClick={_onCopy}>
+            <div className='copyCont'>
+              <div className='copyName'>{selectedAccount?.name}</div>
+              <div className='copyAddress'>{getShortAddress(selectedAccount?.address || '')}</div>
+            </div>
+            <div className='copyButton'>
+              <img
+                className='iconCopy'
+                src={icon_copy}
+              />
+            </div>
           </div>
-          <div className='copyButton'>
-            <img
-              className='iconCopy'
-              src={icon_copy}
-            />
-          </div>
-        </div>
+        </CopyToClipboard>
+
         <div className='walletActionsView'>
           <div
             className='tokenActionView receiveTokenAction'
