@@ -192,6 +192,8 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
             </Link>
           </div>
         </div>
+        
+        <Link to='/wallet/transactions'>
 
         <div className='assetsAndActivityDiv'>
           <div className='tabsPill'></div>
@@ -204,6 +206,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
             </div>
           </div>
         </div>
+        </Link>
       </div>
     </>
   );

@@ -20,6 +20,8 @@ import useTranslation from '../../hooks/useTranslation';
 import { createAccountSuri, createSeed } from '../../messaging';
 import { HeaderWithSteps } from '../../partials';
 import { DEFAULT_TYPE } from '../../util/defaultType';
+import { saveAs } from "file-saver";
+import { SelectedAccountContext } from '../../components';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -29,8 +31,9 @@ function CreateAccount({ className }: Props): React.ReactElement {
   const { t } = useTranslation();
   const onAction = useContext(ActionContext);
   const [isBusy, setIsBusy] = useState(false);
-  const [checked, setChecked] = useState(true);
-  const [secondChecked, setSecondChecked] = useState(true);
+  const [checked, setChecked] = useState(false);
+  const [secondChecked, setSecondChecked] = useState(false);
+  const { setSelectedAccount } = useContext(SelectedAccountContext);
 
   const [step, setStep] = useState(1);
   const [account, setAccount] = useState<null | { address: string; seed: string }>(null);
@@ -59,7 +62,9 @@ function CreateAccount({ className }: Props): React.ReactElement {
         setIsBusy(true);
 
         createAccountSuri(_name, _password, account.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined)
-          .then(() => onAction('/'))
+          .then(() => {
+            setSelectedAccount({...account, name: _name, genesis: 'the_icp', symbol: 'ICP' });
+            onAction('/wallet/home')})
           .catch((error: Error): void => {
             setIsBusy(false);
             console.error(error);
@@ -68,6 +73,23 @@ function CreateAccount({ className }: Props): React.ReactElement {
     },
     [account, genesis, onAction, _name, _password, _reptPassword]
   );
+
+  const backupKeystore = async () => {
+    setIsBusy(true);
+    let meId = account?.address;
+    var blob;
+       blob = new Blob([account?.seed || ''], {
+        type: "text/plain;charset=utf-8",
+      });
+     
+    saveAs(
+      blob,
+        `${meId}.txt`
+    );
+    setIsBusy(false);
+
+  };
+
 
   const _onNextStep = useCallback(() => setStep((step) => step + 1), []);
   const _onPreviousStep = useCallback(() => setStep((step) => step - 1), []);
@@ -116,7 +138,8 @@ function CreateAccount({ className }: Props): React.ReactElement {
                           </div>
                         </CopyToClipboard>
 
-                        <div className='mnemonicAction'><img className='mnemonicActionIcon'
+                        <div className='mnemonicAction' onClick={() => backupKeystore()}>
+                          <img className='mnemonicActionIcon'
                           src={ICON_COPY}/>
                         <div>DOWNLOAD</div>
                         </div>

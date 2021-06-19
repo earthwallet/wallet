@@ -34,6 +34,8 @@ import Metadata from './Metadata';
 import PhishingDetected from './PhishingDetected';
 import RestoreJson from './RestoreJson';
 import Signing from './Signing';
+import Transactions from './Transactions';
+
 // import Welcome from './Welcome';
 
 const startSettings = uiSettings.get();
@@ -162,7 +164,7 @@ export default function Popup (): React.ReactElement {
                               <Route path='/account/derive/:address/locked'>{wrapWithErrorBoundary(<Derive isLocked />, 'derived-address-locked')}</Route>
                               <Route path='/account/derive/:address'>{wrapWithErrorBoundary(<Derive />, 'derive-address')}</Route>
                               <Route path='/wallet/home'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
-                              <Route path='/wallet/transactions'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
+                              <Route path='/wallet/transactions'>{wrapWithErrorBoundary(<Transactions />, 'wallet')}</Route>
                               <Route path='/wallet/send'>{wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}</Route>
                               <Route path='/wallet/receive'>{wrapWithErrorBoundary(<WalletReceiveTokens />, 'wallet-receive-token')}</Route>
                               <Route path={`${PHISHING_PAGE_REDIRECT}/:website`}>{wrapWithErrorBoundary(<PhishingDetected />, 'phishing-page-redirect')}</Route>

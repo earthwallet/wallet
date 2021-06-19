@@ -8,6 +8,7 @@ import type { ThemeProps } from '../types';
 
 import React from 'react';
 import styled from 'styled-components';
+import { ClipLoader } from "react-spinners";
 
 import Button from './Button';
 
@@ -17,11 +18,12 @@ function NextStepButton ({ children, ...props }: Props): React.ReactElement<Prop
   return (
     <div className={props.className}>
       <div
-        className={props.isDisabled ? 'buttonDisabledCont' : 'buttonCont'}
+        className={(props.isDisabled ? 'buttonDisabledCont' : props.loading ? 'buttonCont buttonContLoading' : 'buttonCont') }
         onClick={props.onClick}
       >
-        <div className={props.isDisabled ? 'buttonDisabled' : 'button'} >
-          {children}
+        <div className={props.isDisabled ? 'buttonDisabled' :  'button'} >
+          {props.loading ? <ClipLoader size={15} color={'#fffff'} />
+        : children }
         </div>
       </div>
     </div>
@@ -86,6 +88,9 @@ export default styled(NextStepButton)(({ theme }: ThemeProps) => `
 
     color: #fff;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
    }
 
   .buttonDisabled {
@@ -105,6 +110,9 @@ export default styled(NextStepButton)(({ theme }: ThemeProps) => `
 
   }
   
-
+  .buttonContLoading {
+    opacity: 0.7;
+    pointer-events: none;
+    }
    
 `);

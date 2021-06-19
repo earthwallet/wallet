@@ -45,5 +45,9 @@
     "stylelint": "^13.13.1",
     "stylelint-config-recommended": "^5.0.0",
     "stylelint-config-styled-components": "^0.1.1"
+  },
+  "dependencies": {
+    "file-saver": "^2.0.5",
+    "react-spinners": "^0.11.0"
   }
 }
