@@ -10,13 +10,11 @@ import styled from 'styled-components';
 
 // import Mnemonic from './Mnemonic';
 import BG_MNEMONIC from '../../assets/bg_mnemonic.png';
-import ICON_COPY from '../../assets/icon_copy.svg';
 import ICON_CHECKED from '../../assets/icon_checkbox_checked.svg';
 import ICON_UNCHECKED from '../../assets/icon_checkbox_unchecked.svg';
-
+import ICON_COPY from '../../assets/icon_copy.svg';
 import { ActionContext, Loading, NextStepButton } from '../../components';
 //  // NextStepButton
-import AccountNamePasswordCreation from '../../components/AccountNamePasswordCreation';
 import useToast from '../../hooks/useToast';
 import useTranslation from '../../hooks/useTranslation';
 import { createAccountSuri, createSeed } from '../../messaging';
@@ -54,12 +52,13 @@ function CreateAccount({ className }: Props): React.ReactElement {
 
   const _onCreate = useCallback(
     (): void => {
-      console.log( _name, _password, account?.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined, '_onCreate')
+      console.log(_reptPassword);
+
       // this should always be the case
       if (_name && _password && account) {
         setIsBusy(true);
 
-        createAccountSuri( _name, _password, account.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined)
+        createAccountSuri(_name, _password, account.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined)
           .then(() => onAction('/'))
           .catch((error: Error): void => {
             setIsBusy(false);
@@ -67,7 +66,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
           });
       }
     },
-    [account, genesis, onAction, _name, _password]
+    [account, genesis, onAction, _name, _password, _reptPassword]
   );
 
   const _onNextStep = useCallback(() => setStep((step) => step + 1), []);
@@ -75,136 +74,143 @@ function CreateAccount({ className }: Props): React.ReactElement {
 
   return (
     <div className={className}>
-      <HeaderWithSteps step={step}
-        backOverride={step === 1 ? undefined : _onPreviousStep}
-        text={t<string>('Create an account')} 
-        />
+      <HeaderWithSteps backOverride={step === 1 ? undefined : _onPreviousStep}
+        step={step}
+        text={t<string>('Create an account')}
+      />
       <Loading>
-       
+
         {account &&
           (step === 1
             ? (
               <>
-               <div className='earthInputCont'>
-              <div className='labelText'>Account name</div>
-              <input
-                autoCapitalize='off'
-                autoCorrect='off'
-                autoFocus={true}
-                className='earthName earthInput'
-                onChange={(e) => setName(e.target.value)}
-                placeholder="REQUIRED"
-                required
-              />
-            </div>
-              <div className='earthInputCont mnemonicInputCont'>
-                <div className='labelText'>Mnemonic Seed</div>
-                <div className='mnemonicContWrap'>
-                  <div className='mnemonicCont'>
-                    { account.seed.split(' ').map((word, index) => <div className='mnemonicWords'
-                      key={index}>
-                      {word}
-                    </div>)}
-                    <div className='mnemonicActionsCont'>
-                      <CopyToClipboard
-                        text={account.seed || ''}
-                      >
-                        <div
-                          className='mnemonicAction'
-                          onClick={_onCopy}><img className='mnemonicActionIcon'
-                            src={ICON_COPY}/>
-                          <div>COPY</div>
-                        </div>
-                      </CopyToClipboard>
+                <div className='earthInputCont'>
+                  <div className='labelText'>Account name</div>
+                  <input
+                    autoCapitalize='off'
+                    autoCorrect='off'
+                    autoFocus={true}
+                    className='earthName earthInput'
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="REQUIRED"
+                    required
+                  />
+                </div>
+                <div className='earthInputCont mnemonicInputCont'>
+                  <div className='labelText'>Mnemonic Seed</div>
+                  <div className='mnemonicContWrap'>
+                    <div className='mnemonicCont'>
+                      { account.seed.split(' ').map((word, index) => <div className='mnemonicWords'
+                        key={index}>
+                        {word}
+                      </div>)}
+                      <div className='mnemonicActionsCont'>
+                        <CopyToClipboard
+                          text={account.seed || ''}
+                        >
+                          <div
+                            className='mnemonicAction'
+                            onClick={_onCopy}><img className='mnemonicActionIcon'
+                              src={ICON_COPY}/>
+                            <div>COPY</div>
+                          </div>
+                        </CopyToClipboard>
 
-                      <div className='mnemonicAction'><img className='mnemonicActionIcon'
-                        src={ICON_COPY}/>
-                      <div>DOWNLOAD</div>
+                        <div className='mnemonicAction'><img className='mnemonicActionIcon'
+                          src={ICON_COPY}/>
+                        <div>DOWNLOAD</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className='mnemonicHelp'>
-                    <div className='mnemonicHelpTitle'>
+                    <div className='mnemonicHelp'>
+                      <div className='mnemonicHelpTitle'>
                     This is a generated 12-word mnemonic seed.
-                    </div>
-            {/*         <div className='mnemonicHelpSubTitle'>
+                      </div>
+                      {/*         <div className='mnemonicHelpSubTitle'>
                      Please write down your wallet’s mnemonic seed and keep it in a safe place.
                      </div> */}
+                    </div>
                   </div>
-                </div>
                   <div className='checkboxCont'>
-                   { checked ? <img  
-                   onClick={() => setChecked(false)}
-                   className='checkboxIcon' src={ICON_CHECKED} />
-                   :  <img 
-                   onClick={() => setChecked(true)}
-                   className='checkboxIcon' src={ICON_UNCHECKED} />
-                   }
+                    { checked
+                      ? <img
+                        className='checkboxIcon'
+                        onClick={() => setChecked(false)}
+                        src={ICON_CHECKED} />
+                      : <img
+                        className='checkboxIcon'
+                        onClick={() => setChecked(true)}
+                        src={ICON_UNCHECKED} />
+                    }
 
                     <div className='checkboxTitle'>I have saved my mnemonic seed safely.</div>
-                    </div>
-                <div>
+                  </div>
+                  <div>
+                  </div>
+                  <NextStepButton
+                    isDisabled={!checked}
+                    onClick={!checked ? console.log : _onNextStep}
+                  >
+                    {t<string>('Next step')}
+                  </NextStepButton>
                 </div>
-             <NextStepButton
-                isDisabled={!checked}
-                onClick={!checked ? console.log : _onNextStep}
-                          >
-               {t<string>('Next step')}
-              </NextStepButton> 
-              </div>
-                   </>
+              </>
             )
             : (
               <>
-                 <div className='earthInputCont'>
-                <div className='labelText'>Password {_password}</div>
-                <input
-                  key='password'
-                  autoCapitalize='off'
-                  autoCorrect='off'
-                  autoFocus={true}
-                  className='earthPassword earthInput'
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="REQUIRED"
-                  type={'password'}
-                  defaultValue={''}
-                  required
-                />
-              </div>
-              <div className='earthInputCont'>
-              <div className='labelText'>Repeat Password</div>
-              <input
-                key='reptpassword'
-                autoCapitalize='off'
-                autoCorrect='off'
-                className='earthPassword earthInput'
-                onChange={(e) => setReptPassword(e.target.value)}
-                placeholder="REQUIRED"
-                type={'password'}
-                required
-              />
-              <div className='helpPassword'>
+                <div className='earthInputCont'>
+                  <div className='labelText'>Password {_password}</div>
+                  <input
+                    autoCapitalize='off'
+                    autoCorrect='off'
+                    autoFocus={true}
+                    className='earthPassword earthInput'
+                    defaultValue={''}
+                    key='password'
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="REQUIRED"
+                    required
+                    type={'password'}
+                  />
+                </div>
+                <div className='earthInputCont'>
+                  <div className='labelText'>Repeat Password</div>
+                  <input
+                    autoCapitalize='off'
+                    autoCorrect='off'
+                    className='earthPassword earthInput'
+                    key='reptpassword'
+                    onChange={(e) => setReptPassword(e.target.value)}
+                    placeholder="REQUIRED"
+                    required
+                    type={'password'}
+                  />
+                  <div className='helpPassword'>
                Minimum 8 characters for password
-              </div>
-                <div className='checkboxCont'>
-                   { secondChecked ? <img  
-                   onClick={() => setSecondChecked(false)}
-                   className='checkboxIcon' src={ICON_CHECKED} />
-                   :  <img 
-                   onClick={() => setSecondChecked(true)}
-                   className='checkboxIcon' src={ICON_UNCHECKED} />
-                   }
+                  </div>
+                  <div className='checkboxCont'>
+                    { secondChecked
+                      ? <img
+                        className='checkboxIcon'
+                        onClick={() => setSecondChecked(false)}
+                        src={ICON_CHECKED} />
+                      : <img
+                        className='checkboxIcon'
+                        onClick={() => setSecondChecked(true)}
+                        src={ICON_UNCHECKED} />
+                    }
 
                     <div className='checkboxTitle'>I understand that I will loose access to the account if I loose thise mnemonic phrase.</div>
-                    </div>
+                  </div>
 
-                    <NextStepButton
+                  <NextStepButton
                     isDisabled={!secondChecked}
-                     onClick={!secondChecked ? console.log : _onCreate}
-                          >
-               {t<string>('Create an Account')}
-              </NextStepButton> 
-            </div>
+                    loading={isBusy}
+                    onClick={!secondChecked ? console.log : _onCreate}
+                  >
+                    {t<string>('Create an Account')}
+                  </NextStepButton>
+                </div>
               </>
             ))}
       </Loading>

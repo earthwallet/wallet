@@ -1,6 +1,9 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import type { ThemeProps } from '../types';
 
 import React from 'react';
@@ -12,18 +15,18 @@ interface Props extends ThemeProps {
   className?: string;
   step: number;
   text: string;
-  backOverride? : any;
+  backOverride?: any;
 }
 
-function HeaderWithSteps ({ className, step, text, backOverride }: Props): React.ReactElement<Props> {
+function HeaderWithSteps ({ backOverride, className, step, text }: Props): React.ReactElement<Props> {
   // const onAction = useContext(ActionContext);
 
   return (
     <Header
+      backOverride={backOverride}
       className={className}
       text={text}
       type={'wallet'}
-      backOverride={backOverride}
     >
       <div className='steps'>
         <div>

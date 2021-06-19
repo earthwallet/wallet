@@ -1,6 +1,9 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import type { ThemeProps } from '../types';
 
 import { faArrowLeft, faCog, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
@@ -135,20 +138,21 @@ function Header ({ backOverride, children, className = '', showAccountsDropdown,
           {children}
         </div>
         : <div className='container'>
-          {backOverride === undefined ? <Link className='backButtonCont'
-            to='/'>
-            <div className='backButtonIcon' >
-              <img src={ICON_BACK} />
+          {backOverride === undefined
+            ? <Link className='backButtonCont'
+              to='/'>
+              <div className='backButtonIcon' >
+                <img src={ICON_BACK} />
+              </div>
+            </Link>
+            : <div
+              className='backButtonCont'
+              onClick={ () => backOverride()}>
+              <div className='backButtonIcon' >
+                <img src={ICON_BACK} />
+              </div>
             </div>
-          </Link>
-        : <div 
-        onClick={ () => backOverride()}
-        className='backButtonCont'>
-          <div className='backButtonIcon' >
-              <img src={ICON_BACK} />
-            </div>
-        </div>  
-        }
+          }
           {text && <div className='headerText'>{text}</div>}
           {children}
           {showAccountsDropdown && (<AccountSelector/>)}
