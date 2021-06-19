@@ -28,9 +28,10 @@ interface Props extends ThemeProps {
   showNetworkDropdown?: boolean;
   text?: React.ReactNode;
   showAccountsDropdown?: boolean;
+  backOverride?: any;
 }
 
-function Header ({ children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text, type = '' }: Props): React.ReactElement<Props> {
+function Header ({ backOverride, children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text, type = '' }: Props): React.ReactElement<Props> {
   const [isAddOpen, setShowAdd] = useState(false);
   const [isSettingsOpen, setShowSettings] = useState(false);
   const addRef = useRef(null);
@@ -134,12 +135,20 @@ function Header ({ children, className = '', showAccountsDropdown, showAdd, show
           {children}
         </div>
         : <div className='container'>
-          <Link className='backButtonCont'
+          {backOverride === undefined ? <Link className='backButtonCont'
             to='/'>
             <div className='backButtonIcon' >
               <img src={ICON_BACK} />
             </div>
           </Link>
+        : <div 
+        onClick={ () => backOverride()}
+        className='backButtonCont'>
+          <div className='backButtonIcon' >
+              <img src={ICON_BACK} />
+            </div>
+        </div>  
+        }
           {text && <div className='headerText'>{text}</div>}
           {children}
           {showAccountsDropdown && (<AccountSelector/>)}
@@ -167,6 +176,9 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
     display: flex;
     align-items: center;
     justify-content: center; 
+    &:active {
+      opacity: 0.7;
+    }
   }
 
   .headerText {

@@ -34,7 +34,7 @@ import Metadata from './Metadata';
 import PhishingDetected from './PhishingDetected';
 import RestoreJson from './RestoreJson';
 import Signing from './Signing';
-//import Welcome from './Welcome';
+// import Welcome from './Welcome';
 
 const startSettings = uiSettings.get();
 
@@ -109,9 +109,9 @@ export default function Popup (): React.ReactElement {
     setAccountCtx(initAccountContext(accounts || []));
   }, [accounts]);
 
-  useEffect(():  void => {
+  useEffect((): void => {
     window.localStorage.setItem('welcome_read', 'ok');
-  },[]);
+  }, []);
 
   useEffect((): void => {
     requestMediaAccess(cameraOn)
@@ -134,7 +134,7 @@ export default function Popup (): React.ReactElement {
             ? wrapWithErrorBoundary(<Signing />, 'signing')
             : wrapWithErrorBoundary(<Accounts />, 'accounts')
       : wrapWithErrorBoundary(<Accounts />, 'accounts'));
-  };  
+  };
 
   return (
     <Loading>{accounts && authRequests && metaRequests && signRequests && (

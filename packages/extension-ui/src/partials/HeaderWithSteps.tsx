@@ -3,33 +3,34 @@
 
 import type { ThemeProps } from '../types';
 
-import React, { useCallback, useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-import { ActionContext, ActionText } from '../components';
 import Header from './Header';
 
 interface Props extends ThemeProps {
   className?: string;
   step: number;
   text: string;
+  backOverride? : any;
 }
 
-function HeaderWithSteps ({ className, step, text }: Props): React.ReactElement<Props> {
-  const onAction = useContext(ActionContext);
- 
+function HeaderWithSteps ({ className, step, text, backOverride }: Props): React.ReactElement<Props> {
+  // const onAction = useContext(ActionContext);
+
   return (
     <Header
-      type={'wallet'}
       className={className}
       text={text}
+      type={'wallet'}
+      backOverride={backOverride}
     >
       <div className='steps'>
         <div>
           <span className='current'>{step}</span>
           <span className='total'>/2</span>
         </div>
-   
+
       </div>
     </Header>
   );

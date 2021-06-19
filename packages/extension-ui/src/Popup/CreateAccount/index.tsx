@@ -1,20 +1,27 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+
 import type { ThemeProps } from '../../types';
 
 import { genesisSymbolMap } from '@earthwallet/extension-ui/util/chains';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 
-import { ActionContext, Address, Loading } from '../../components';
+// import Mnemonic from './Mnemonic';
+import BG_MNEMONIC from '../../assets/bg_mnemonic.png';
+import ICON_COPY from '../../assets/icon_copy.svg';
+import ICON_CHECKED from '../../assets/icon_checkbox_checked.svg';
+import ICON_UNCHECKED from '../../assets/icon_checkbox_unchecked.svg';
+
+import { ActionContext, Loading, NextStepButton } from '../../components';
+//  // NextStepButton
 import AccountNamePasswordCreation from '../../components/AccountNamePasswordCreation';
+import useToast from '../../hooks/useToast';
 import useTranslation from '../../hooks/useTranslation';
 import { createAccountSuri, createSeed } from '../../messaging';
 import { HeaderWithSteps } from '../../partials';
 import { DEFAULT_TYPE } from '../../util/defaultType';
-import Mnemonic from './Mnemonic';
-import BG_MNEMONIC from '../../assets/bg_mnemonic.png';
-import { NextStepButton } from '../../components';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -24,11 +31,20 @@ function CreateAccount({ className }: Props): React.ReactElement {
   const { t } = useTranslation();
   const onAction = useContext(ActionContext);
   const [isBusy, setIsBusy] = useState(false);
+  const [checked, setChecked] = useState(true);
+  const [secondChecked, setSecondChecked] = useState(true);
+
   const [step, setStep] = useState(1);
   const [account, setAccount] = useState<null | { address: string; seed: string }>(null);
   const type = DEFAULT_TYPE;
-  const [name, setName] = useState('');
+  const [_name, setName] = useState('');
+  const [_password, setPassword] = useState<string>('');
+  const [_reptPassword, setReptPassword] = useState<string>('');
+
   const genesis = genesisSymbolMap.ICP;
+
+  const { show } = useToast();
+  const _onCopy = useCallback((): void => show('Copied'), [show]);
 
   useEffect((): void => {
     createSeed(undefined, type, 'ICP')
@@ -37,12 +53,13 @@ function CreateAccount({ className }: Props): React.ReactElement {
   }, [type]);
 
   const _onCreate = useCallback(
-    (name: string, password: string): void => {
+    (): void => {
+      console.log( _name, _password, account?.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined, '_onCreate')
       // this should always be the case
-      if (name && password && account) {
+      if (_name && _password && account) {
         setIsBusy(true);
 
-        createAccountSuri(name, password, account.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined)
+        createAccountSuri( _name, _password, account.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined)
           .then(() => onAction('/'))
           .catch((error: Error): void => {
             setIsBusy(false);
@@ -50,7 +67,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
           });
       }
     },
-    [account, genesis, onAction]
+    [account, genesis, onAction, _name, _password]
   );
 
   const _onNextStep = useCallback(() => setStep((step) => step + 1), []);
@@ -59,49 +76,135 @@ function CreateAccount({ className }: Props): React.ReactElement {
   return (
     <div className={className}>
       <HeaderWithSteps step={step}
-        text={t<string>('Create an account')} />
+        backOverride={step === 1 ? undefined : _onPreviousStep}
+        text={t<string>('Create an account')} 
+        />
       <Loading>
-        <div className='earthInputCont'>
-          <div className='labelText'>Account name</div>
-              <input
-              autoCapitalize='off'
-              autoCorrect='off'
-              autoFocus={true}
-              className='recipientAddress earthInput'
-              onChange={(e) => console.log(e.target.value)}
-              placeholder="REQUIRED"
-              required
-            />
-        </div>
+       
         {account &&
           (step === 1
             ? (
-              <div className='earthInputCont'>
-                  <div className='labelText'>Mnemonic Seed</div>
+              <>
+               <div className='earthInputCont'>
+              <div className='labelText'>Account name</div>
+              <input
+                autoCapitalize='off'
+                autoCorrect='off'
+                autoFocus={true}
+                className='earthName earthInput'
+                onChange={(e) => setName(e.target.value)}
+                placeholder="REQUIRED"
+                required
+              />
+            </div>
+              <div className='earthInputCont mnemonicInputCont'>
+                <div className='labelText'>Mnemonic Seed</div>
+                <div className='mnemonicContWrap'>
                   <div className='mnemonicCont'>
-                  { account.seed.split(" ").map((word, index )=> <div  className='mnemonicWords' key={index}>
-                   {word}
-                 </div>)}</div> 
-                 
-                 {/* 
-                         <NextStepButton
-                            isDisabled={!isMnemonicSaved}
-                            onClick={onNextStep}
+                    { account.seed.split(' ').map((word, index) => <div className='mnemonicWords'
+                      key={index}>
+                      {word}
+                    </div>)}
+                    <div className='mnemonicActionsCont'>
+                      <CopyToClipboard
+                        text={account.seed || ''}
+                      >
+                        <div
+                          className='mnemonicAction'
+                          onClick={_onCopy}><img className='mnemonicActionIcon'
+                            src={ICON_COPY}/>
+                          <div>COPY</div>
+                        </div>
+                      </CopyToClipboard>
+
+                      <div className='mnemonicAction'><img className='mnemonicActionIcon'
+                        src={ICON_COPY}/>
+                      <div>DOWNLOAD</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='mnemonicHelp'>
+                    <div className='mnemonicHelpTitle'>
+                    This is a generated 12-word mnemonic seed.
+                    </div>
+            {/*         <div className='mnemonicHelpSubTitle'>
+                     Please write down your wallet’s mnemonic seed and keep it in a safe place.
+                     </div> */}
+                  </div>
+                </div>
+                  <div className='checkboxCont'>
+                   { checked ? <img  
+                   onClick={() => setChecked(false)}
+                   className='checkboxIcon' src={ICON_CHECKED} />
+                   :  <img 
+                   onClick={() => setChecked(true)}
+                   className='checkboxIcon' src={ICON_UNCHECKED} />
+                   }
+
+                    <div className='checkboxTitle'>I have saved my mnemonic seed safely.</div>
+                    </div>
+                <div>
+                </div>
+             <NextStepButton
+                isDisabled={!checked}
+                onClick={!checked ? console.log : _onNextStep}
                           >
-                            {t<string>('Next step')}
-                          </NextStepButton> */}
-               </div>
-              
+               {t<string>('Next step')}
+              </NextStepButton> 
+              </div>
+                   </>
             )
             : (
               <>
-                <AccountNamePasswordCreation
-                  buttonLabel={t<string>('Add Account')}
-                  isBusy={isBusy}
-                  onBackClick={_onPreviousStep}
-                  onCreate={_onCreate}
-                  onNameChange={setName}
+                 <div className='earthInputCont'>
+                <div className='labelText'>Password {_password}</div>
+                <input
+                  key='password'
+                  autoCapitalize='off'
+                  autoCorrect='off'
+                  autoFocus={true}
+                  className='earthPassword earthInput'
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="REQUIRED"
+                  type={'password'}
+                  defaultValue={''}
+                  required
                 />
+              </div>
+              <div className='earthInputCont'>
+              <div className='labelText'>Repeat Password</div>
+              <input
+                key='reptpassword'
+                autoCapitalize='off'
+                autoCorrect='off'
+                className='earthPassword earthInput'
+                onChange={(e) => setReptPassword(e.target.value)}
+                placeholder="REQUIRED"
+                type={'password'}
+                required
+              />
+              <div className='helpPassword'>
+               Minimum 8 characters for password
+              </div>
+                <div className='checkboxCont'>
+                   { secondChecked ? <img  
+                   onClick={() => setSecondChecked(false)}
+                   className='checkboxIcon' src={ICON_CHECKED} />
+                   :  <img 
+                   onClick={() => setSecondChecked(true)}
+                   className='checkboxIcon' src={ICON_UNCHECKED} />
+                   }
+
+                    <div className='checkboxTitle'>I understand that I will loose access to the account if I loose thise mnemonic phrase.</div>
+                    </div>
+
+                    <NextStepButton
+                    isDisabled={!secondChecked}
+                     onClick={!secondChecked ? console.log : _onCreate}
+                          >
+               {t<string>('Create an Account')}
+              </NextStepButton> 
+            </div>
               </>
             ))}
       </Loading>
@@ -114,7 +217,38 @@ export default styled(CreateAccount)(({ theme }: Props) => `
   height: 600px;
   width: ${theme.appWidth};
 
-  .mnemonicCont{
+  .helpPassword{
+    font-family: DM Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 140%;
+    /* or 20px */
+
+
+    color: #FFFFFF;
+    opacity: 0.5;
+    margin: 20px 0;
+  }
+  .checkboxTitle {
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 150%;
+    color: #FFFFFF; 
+    margin-left: 12px;
+  }
+  .checkboxIcon {
+    cursor: pointer;
+    user-select: none;
+  }
+  .checkboxCont {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 24px 0px;  
+  }
+
+  .mnemonicCont {
 
     background: rgba(36, 150, 255, 0.22);
     backdrop-filter: blur(8px);
@@ -127,7 +261,83 @@ export default styled(CreateAccount)(({ theme }: Props) => `
     border: 1px solid #3A60D4;
   }
 
-  .mnemonicWords{
+  .mnemonicContWrap {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), rgba(36, 150, 255, 0.47);
+    backdrop-filter: blur(5px);
+    /* Note: backdrop-filter has minimal browser support */
+
+    border-radius: 14px;
+  }
+
+  .mnemonicHelpTitle {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 129%;
+    /* or 21px */
+
+    text-align: center;
+
+    color: #DBE4F2;
+    margin-bottom: 12px;
+  }
+  
+  .mnemonicHelpSubTitle {
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 150%;
+    /* or 18px */
+
+    text-align: center;
+    letter-spacing: 0.02em;
+
+    color: #DBE4F2;
+
+    opacity: 0.8;
+  }
+  .mnemonicActionsCont {
+    display: flex;
+    flex-direction: row;
+    margin-top: 16px;
+  }
+  .mnemonicActionIcon {
+    height: 16px;
+    width: 16px;
+    margin-right: 10px;
+  }
+  .mnemonicAction{
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 3px;
+    padding: 4px 9px;
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin-right: 16px;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 12px;
+    /* identical to box height, or 92% */
+
+    text-align: center;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #FFFFFF;
+    cursor: pointer;
+    user-select: none;
+    &:active {
+      opacity : 0.7;
+    }
+
+  }
+
+  .mnemonicHelp {
+    padding: 16px;
+  }
+
+  .mnemonicWords {
     background: rgba(0, 0, 0, 0.31);
     border-radius: 5px;
     
@@ -136,7 +346,7 @@ export default styled(CreateAccount)(({ theme }: Props) => `
     flex: none;
     order: 0;
     flex-grow: 0;
-    margin: 0px 8px 5px 8px;
+    margin: 0px 8px 5px 0px;
     padding: 4px 13px;
 
   }
@@ -155,8 +365,10 @@ export default styled(CreateAccount)(({ theme }: Props) => `
 
     color: #DBE4F2;
     margin-bottom: 10px;
+    
   }
-  .mnemonicWords{
+
+  .mnemonicWords {
 
     font-family: DM Mono;
     font-style: normal;
@@ -174,6 +386,7 @@ export default styled(CreateAccount)(({ theme }: Props) => `
     padding: 0 27px;
     margin: 20px 0;
   }
+
   .earthInput {
     width: 100%;
     background-image:none;
@@ -203,4 +416,3 @@ export default styled(CreateAccount)(({ theme }: Props) => `
 
   }
   `);
-
