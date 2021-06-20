@@ -193,7 +193,7 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
           </div>
         </div>
         
-        <Link to='/wallet/transactions'>
+        <Link to={`/wallet/transactions/${selectedAccount?.address}`} >
 
         <div className='assetsAndActivityDiv'>
           <div className='tabsPill'></div>
@@ -223,10 +223,12 @@ export default styled(Wallet)(({ theme }: Props) => `
     .header {
       width: ${theme.appWidth}
     }
+    
     .iconCopy{
       width: 17px;
       height: 20px;
     }
+
     .tabsPill{
       width: 29px;
       height: 3px;
@@ -237,6 +239,7 @@ export default styled(Wallet)(({ theme }: Props) => `
       min-height: 3px;
       margin-top: 9px;
     }
+
     .copyButton {
       width: 41.86px;
       height: 41.86px;
@@ -265,6 +268,7 @@ export default styled(Wallet)(({ theme }: Props) => `
       height: 42px;
       min-height: 42px;
     }
+
     .copyName {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -272,6 +276,7 @@ export default styled(Wallet)(({ theme }: Props) => `
       -webkit-line-clamp: 1; /* number of lines to show */
       -webkit-box-orient: vertical;
     }
+
     .copyAddress{
       font-family: DM Mono;
       font-style: normal;
@@ -293,7 +298,7 @@ export default styled(Wallet)(({ theme }: Props) => `
       opacity: 0.51;
     }
 
-     .copyActionsView {
+    .copyActionsView {
       border: 2px solid #2496FF40;
       box-sizing: border-box;
       border-radius: 49.2462px;
@@ -333,7 +338,7 @@ export default styled(Wallet)(({ theme }: Props) => `
       background-color: ${theme.tokenLogoBackground};
       object-fit: contain;
       object-position: center;
-      margin-top:170px;
+      margin-top: 90px;
     }
 
     .primaryBalanceLabel {
@@ -356,22 +361,24 @@ export default styled(Wallet)(({ theme }: Props) => `
       height: 21px;
     }
 
-    .walletActionsView {
+  .walletActionsView {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     padding: 18px;
+    margin-bottom: 22px;
+    margin-top: 46px;
     }
 
-    .tokenActionView {
+  .tokenActionView {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     }
 
-    .tokenActionButton {
+  .tokenActionButton {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -385,23 +392,23 @@ export default styled(Wallet)(({ theme }: Props) => `
       }
     }
 
-    .tokenActionLabel {
+  .tokenActionLabel {
     color: #fff;
     font-family: ${theme.fontFamily};
     font-size: ${theme.fontSize};
     line-height: 150%;
     }
 
-    .sendTokenAction {
+  .sendTokenAction {
         margin-left: 7px;
     }
 
-    .assetsAndActivityDiv{
+  .assetsAndActivityDiv {
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-top: 16px;
-    height: 60px;
+    height: 64px;
     display: flex;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), rgba(36, 150, 255, 0.32);
     box-sizing: border-box;
@@ -410,18 +417,18 @@ export default styled(Wallet)(({ theme }: Props) => `
     cursor: pointer;
     background: linear-gradient(0deg, #071A28, #071A28), linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), rgba(36, 150, 255, 0.32);
     justify-content: space-between; 
-    border: 2px solid #2496FF;
+    border: 1px solid #2496FF;
     border-bottom: 0px;
   }
 
-    .tabsView {
+  .tabsView {
     width: 340px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin: 8px 0 10px 0;
-    }
+    margin: 12px 0px 24px;
+  }
 
   
 

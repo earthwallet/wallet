@@ -18,6 +18,7 @@ import AccountSelector from './AccountSelector';
 import MenuAdd from './MenuAdd';
 import MenuSettings from './MenuSettings';
 import NetworkSelector from './NetworkSelector';
+import { useHistory } from "react-router-dom";
 
 interface Props extends ThemeProps {
   children?: React.ReactNode;
@@ -39,6 +40,7 @@ function Header ({ backOverride, children, className = '', showAccountsDropdown,
   const [isSettingsOpen, setShowSettings] = useState(false);
   const addRef = useRef(null);
   const setRef = useRef(null);
+  const history = useHistory();
 
   useOutsideClick(addRef, (): void => {
     isAddOpen && setShowAdd(!isAddOpen);
@@ -139,15 +141,16 @@ function Header ({ backOverride, children, className = '', showAccountsDropdown,
         </div>
         : <div className='container'>
           {backOverride === undefined
-            ? <Link className='backButtonCont'
-              to='/'>
+            ? <div 
+              className='backButtonCont'
+              onClick={() => history.goBack()}>
               <div className='backButtonIcon' >
                 <img src={ICON_BACK} />
               </div>
-            </Link>
+            </div>
             : <div
               className='backButtonCont'
-              onClick={ () => backOverride()}>
+              onClick={() => backOverride()}>
               <div className='backButtonIcon' >
                 <img src={ICON_BACK} />
               </div>
