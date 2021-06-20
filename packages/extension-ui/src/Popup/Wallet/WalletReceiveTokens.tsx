@@ -29,17 +29,11 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
 
   return (
     <>
-      <Header showAccountsDropdown
+      <Header 
+        showAccountsDropdown
+        type='wallet'
         showMenu />
       <div className={className}>
-        <div className='topBarDiv'>
-          <div className='topBarDivSideItem'/>
-          <div className='topBarDivCenterItem'>Receive</div>
-          <div className='topBarDivSideItem topBarDivCancelItem'>
-            <Link className='topBarDivCancelItem'
-              to='/wallet/home'>Cancel</Link>
-          </div>
-        </div>
         <div className='accountDetail'>
 
           {selectedAccount?.address && <div className='addressDisplay'>
