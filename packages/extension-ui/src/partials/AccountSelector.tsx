@@ -130,7 +130,6 @@ display: block;
     border: 1px solid ${theme.boxBorderColor};
     box-sizing: border-box;
     box-shadow: 0 0 10px ${theme.boxShadow};
-    margin-top: 60px;
     position: absolute;
     max-height: 300px;
     overflow: auto;

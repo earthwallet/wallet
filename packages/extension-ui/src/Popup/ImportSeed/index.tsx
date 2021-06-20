@@ -3,7 +3,7 @@
 
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
-import { AccountContext, ActionContext, Address } from '../../components';
+import { AccountContext, ActionContext } from '../../components';
 import AccountNamePasswordCreation from '../../components/AccountNamePasswordCreation';
 import useTranslation from '../../hooks/useTranslation';
 import { createAccountSuri } from '../../messaging';
@@ -32,6 +32,8 @@ function ImportSeed({ className }: Props): React.ReactElement {
   const [name, setName] = useState<string | null>(null);
   const [step1, setStep1] = useState(true);
 
+  console.log(name, 'name');
+  
   useEffect((): void => {
     !accounts.length && onAction();
   }, [accounts, onAction]);

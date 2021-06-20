@@ -4,7 +4,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { Name, Password } from '../partials';
-import { BackButton, ButtonArea, NextStepButton, VerticalSpace } from '.';
+import { NextStepButton } from '.';
 
 interface Props {
   buttonLabel: string;
@@ -31,14 +31,6 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
     [onNameChange]
   );
 
-  const _onBackClick = useCallback(
-    () => {
-      _onNameChange(null);
-      setPassword(null);
-      onBackClick();
-    },
-    [_onNameChange, onBackClick]
-  );
 
   return (
     <>

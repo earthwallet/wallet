@@ -6,9 +6,10 @@ import { RouteComponentProps, withRouter } from 'react-router';
 //import { ActionContext } from '../../components';
 import ICON_CARET from '../../assets/icon_caret.svg';
 import ICON_RECV from '../../assets/icon_receive.svg';
-import ICON_SEND from '../../assets/icon_send.svg';
+import ICON_SEND from '../../assets/icon_send_status.svg';
 import ICON_FAILED from '../../assets/icon_failed.svg';
 import ICON_FORWARD from '../../assets/icon_forward.svg';
+import { useHistory } from "react-router-dom";
 
 interface Props extends RouteComponentProps<{address: string}>, ThemeProps {
     className?: string;
@@ -37,6 +38,7 @@ const MOCK = [{
     }];
 const Transactions = ({ className, match: { params: { address =  'ba01ff35bda94f7f54c231b03301512681bf742ab28032fefef6e299e087a21f'} } }: Props) => {
    // const onAction = useContext(ActionContext);
+   const history = useHistory();
 
    const statusToIcon =  (status : string) => {
     switch (status) {
@@ -67,11 +69,16 @@ const Transactions = ({ className, match: { params: { address =  'ba01ff35bda94f
             showAccountsDropdown
             showMenu
             type={'wallet'} /> */}
+            
             <div className={'transCont'}>
+            <div 
+                          onClick={() => history.goBack()}
+
+            className={'backTransButton'}>
             <img src={ICON_CARET} />
 
             <div className={'transTitle'}>Transactions</div>
-            
+            </div>
             <div className={'transItems'}>
             {[...MOCK, ...MOCK, ...MOCK].map((trans, index) =>  <div key={index} className={'transItem'}>
                 <div className={'transColIcon'}>
@@ -115,11 +122,23 @@ align-items: center;
 height: -webkit-fill-available;
 background: url(${bg_wallet_details});
 
-.transColIcon{
+.backTransButton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.backTransButton:active {
+    opacity: 0.7;
+}
+
+.transColIcon {
     margin-right: 8px;
 }
 
-.transCont{
+.transCont {
     backdrop-filter: blur(7px);
     height: 568px;
     width: 343px;
@@ -135,7 +154,7 @@ background: url(${bg_wallet_details});
     overflow: hidden;
 };
 
-.transTitle{
+.transTitle {
     font-weight: 500;
     font-size: 16px;
     line-height: 150%;
@@ -147,7 +166,7 @@ background: url(${bg_wallet_details});
     color: #E6E9ED;
     }
 
-    .transItem{
+    .transItem {
         border-bottom : 1px solid #FFFFFF1A;
         padding: 23px 0;
         display: flex;
