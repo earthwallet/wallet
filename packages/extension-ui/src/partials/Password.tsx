@@ -2,19 +2,22 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ThemeProps } from '../types';
+import styled from 'styled-components';
 
 import { InputWithLabel, ValidatedInput } from '../components';
 import useTranslation from '../hooks/useTranslation';
 import { allOf, isNotShorterThan, isSameAs, Validator } from '../util/validators';
 
 interface Props {
+  className?: string;
   isFocussed?: boolean;
   onChange: (password: string | null) => void;
 }
 
 const MIN_LENGTH = 6;
 
-export default function Password ({ isFocussed, onChange }: Props): React.ReactElement<Props> {
+function Password ({ className, isFocussed, onChange }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const [pass1, setPass1] = useState<string | null>(null);
   const [pass2, setPass2] = useState<string | null>(null);
@@ -31,6 +34,7 @@ export default function Password ({ isFocussed, onChange }: Props): React.ReactE
   return (
     <>
       <ValidatedInput
+        className={className}
         component={InputWithLabel}
         data-input-password
         isFocused={isFocussed}
@@ -38,17 +42,24 @@ export default function Password ({ isFocussed, onChange }: Props): React.ReactE
         onValidatedChange={setPass1}
         type='password'
         validator={isFirstPasswordValid}
+        placeholder={'REQUIRED'}
       />
       {pass1 && (
         <ValidatedInput
+          className={className}
           component={InputWithLabel}
           data-input-repeat-password
           label={t<string>('Repeat password for verification')}
           onValidatedChange={setPass2}
           type='password'
           validator={isSecondPasswordValid(pass1)}
+          placeholder="REQUIRED"
         />
       )}
     </>
   );
 }
+
+export default styled(Password)(({ theme }: ThemeProps) => `
+padding: 0 16px; 
+`);

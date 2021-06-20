@@ -47,10 +47,11 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
         onChange={_onNameChange}
       />
       <Password onChange={setPassword} />
-      <VerticalSpace />
-      <ButtonArea>
-        <BackButton onClick={_onBackClick} />
-        <NextStepButton
+      <div style={{  padding: '0 27px', marginBottom: 30, 
+      position: 'absolute', 
+      bottom: 0, left: 0}}>
+
+      <NextStepButton
           data-button-action='add new root'
           isBusy={isBusy}
           isDisabled={!password || !name}
@@ -58,8 +59,9 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
         >
           {buttonLabel}
         </NextStepButton>
-      </ButtonArea>
-    </>
+        </div>
+
+     </>
   );
 }
 

@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useContext, useMemo } from 'react';
+import type { ThemeProps } from '../types';
 
 import { AccountContext, InputWithLabel, ValidatedInput } from '../components';
 import useTranslation from '../hooks/useTranslation';
 import { isNotShorterThan } from '../util/validators';
+import styled from 'styled-components';
 
 interface Props {
   address?: string;
@@ -17,7 +19,7 @@ interface Props {
   value?: string | null;
 }
 
-export default function Name ({ address, className, isFocused, label, onBlur, onChange, value }: Props): React.ReactElement<Props> {
+function Name ({ address, className, isFocused, label, onBlur, onChange, value }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
   const isNameValid = useMemo(() => isNotShorterThan(3, t<string>('Account name is too short')), [t]);
@@ -38,6 +40,11 @@ export default function Name ({ address, className, isFocused, label, onBlur, on
       onValidatedChange={onChange}
       type='text'
       validator={isNameValid}
+      placeholder="REQUIRED"
     />
   );
 }
+
+export default styled(Name)(({ theme }: ThemeProps) => `
+   padding: 0 16px; 
+   `);

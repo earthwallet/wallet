@@ -57,6 +57,7 @@ function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused
       className={`${className || ''} ${withoutMargin ? 'withoutMargin' : ''}`}
       label={label}
     >
+      <div className={'inputCont'}>
       <Input
         autoCapitalize='off'
         autoCorrect='off'
@@ -73,6 +74,7 @@ function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused
         value={value}
         withError={isError}
       />
+      </div>
       { isCapsLock && (
         <Warning isBelowInput>{t<string>('Warning: Caps lock is on')}</Warning>
       )}
@@ -82,7 +84,10 @@ function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused
 
 export default styled(InputWithLabel)`
   margin-bottom: 16px;
-
+  .inputCont{
+    border: 2px solid #175b98;
+    border-radius: 8px;
+  }
   &.withoutMargin {
     margin-bottom: 0px;
 
