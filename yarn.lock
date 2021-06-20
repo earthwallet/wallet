@@ -12981,6 +12981,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moment@npm:2.24.0":
+  version: 2.24.0
+  resolution: "moment@npm:2.24.0"
+  checksum: 983617bc51c8121a88d9530671fb9e5dc2c71d67ba5bf1b16ebef25b51bd3d1291f17735ac33e8604f4984a275561dfe0fb883664eceacf8f67291ffd26acee9
+  languageName: node
+  linkType: hard
+
 "moment@npm:^2.24.0":
   version: 2.29.1
   resolution: "moment@npm:2.29.1"
@@ -15557,6 +15564,7 @@ resolve@^2.0.0-next.3:
     "@types/jest": ^26.0.23
     file-saver: ^2.0.5
     i18next-scanner: ^3.0.0
+    moment: 2.24.0
     react-spinners: ^0.11.0
     sinon-chrome: ^3.0.1
     stylelint: ^13.13.1

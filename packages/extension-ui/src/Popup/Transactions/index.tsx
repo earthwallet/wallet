@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import type { ThemeProps } from '../../types';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import bg_wallet_details from '../../assets/bg_wallet_details.png';
 import { RouteComponentProps, withRouter } from 'react-router';
 //import { ActionContext } from '../../components';
@@ -10,11 +10,17 @@ import ICON_SEND from '../../assets/icon_send_status.svg';
 import ICON_FAILED from '../../assets/icon_failed.svg';
 import ICON_FORWARD from '../../assets/icon_forward.svg';
 import { useHistory } from "react-router-dom";
+import { ICP } from '@earthwallet/sdk';
+import { getShortAddress } from '../Utils/CommonUtils';
+import moment from 'moment';
 
 interface Props extends RouteComponentProps<{address: string}>, ThemeProps {
     className?: string;
 }
-const MOCK = [{
+interface keyable {
+    [key: string]: any
+  }
+/* const MOCK = [{
     status: "Failed",
     time: "Jun 7",
     to: "0x4f2...0c90",
@@ -35,10 +41,83 @@ const MOCK = [{
     to: "0x4f2...0c90",
     value: "2.997627 ICP",
     price: "$12,154.33 USD"
-    }];
-const Transactions = ({ className, match: { params: { address =  'ba01ff35bda94f7f54c231b03301512681bf742ab28032fefef6e299e087a21f'} } }: Props) => {
+    }]; */
+const Transactions = ({ className, match: { params: { address =  'f78f75b401011ea77b498e4f7aac096b2ffd892e3dd2cea7da24a64d4229aa85'} } }: Props) => {
    // const onAction = useContext(ActionContext);
    const history = useHistory();
+   const [walletTransactions, setWalletTransactions] = useState<any>();
+   const [loading, setLoading] = useState<boolean>(false);
+   const [usdValue, setUsdValue] = useState<number>(0);
+ 
+    console.log(loading);
+
+   const getTransactionDetail = (transaction: any): any => {
+    const operations = transaction.transaction.operations
+      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
+      .filter((operation: { account: any; }) => operation.account.address === address);
+
+    return operations[0];
+  };
+
+
+  const getTransactionTime = (transaction: any): any => {
+    const timestamp : number = transaction.transaction.metadata.timestamp;
+
+    return moment((timestamp / 1000000)).format('MMM DD');
+  };
+
+  const getTransactionWithDetail = (transaction: any): any => {
+    const operations = transaction.transaction.operations
+      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
+      .filter((operation: { account: any; }) => operation.account.address !== address);
+
+    return operations[0];
+  };
+
+
+  const getICPUSDValue = async (walletBalance: keyable) => {
+
+    const fetchHeaders = new Headers();
+
+    fetchHeaders.append('accept', 'application/json');
+
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      headers: fetchHeaders,
+      redirect: 'follow'
+    };
+
+    const factor: keyable = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd', requestOptions)
+      .then((response) => response.json())
+      .catch((error) => console.log('error', error));
+
+    setUsdValue(parseFloat(factor['internet-computer'].usd));
+  };
+
+   useEffect(() => {
+    const loadBalance = async (address: string) => {
+      setLoading(true);
+      const balance: keyable = await ICP.getBalance(address);
+
+      setLoading(false);
+
+      if (balance && balance?.balances != null) {
+        getICPUSDValue(balance);
+      }
+    };
+
+    if (address) {
+      loadBalance(address);
+      loadTransactions(address);
+    }
+  }, []);
+
+   const loadTransactions = async (address: string) => {
+    const transactions = await ICP.getTransactions(address);
+
+    console.log('transactions', transactions);
+    setWalletTransactions(transactions);
+  };
 
    const statusToIcon =  (status : string) => {
     switch (status) {
@@ -79,26 +158,54 @@ const Transactions = ({ className, match: { params: { address =  'ba01ff35bda94f
 
             <div className={'transTitle'}>Transactions</div>
             </div>
+          {/*   <div className="transactions-div">
+            {walletTransactions &&
+                  walletTransactions?.transactions &&
+                  walletTransactions?.transactions?.reverse().map(
+                    (transaction: { block_identifier: { hash: string } }) => {
+                      return (
+                        <div className="transaction-item-div">
+                      
+                          <div className='transaction-detail-div'>
+                            <div className='transaction-type'>{(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send'}</div>
+                            <div className='transaction-detail'>{`${getTransactionWithDetail(transaction)?.amount?.value > 0 ? 'To:' : 'From:'} ${getShortAddress(getTransactionWithDetail(transaction)?.account.address || 'Self')}`}</div>
+                          </div>
+                          <div className='transaction-amount'>{`${(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals)}` + ` ${(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.symbol}`}</div>
+
+                        </div>
+                      );
+                    }
+                  )}
+            {walletTransactions &&
+                  !walletTransactions?.transactions?.length && (
+              <div className="transaction-item-div">
+                      No Transaction History
+              </div>
+            )}
+          </div> */}
             <div className={'transItems'}>
-            {[...MOCK, ...MOCK, ...MOCK].map((trans, index) =>  <div key={index} className={'transItem'}>
+            {walletTransactions &&
+                  walletTransactions?.transactions &&
+                  walletTransactions?.transactions?.sort((a : keyable,b : keyable) => getTransactionTime(a) - getTransactionTime(b)).reverse().map(
+                    (transaction: { block_identifier: { hash: string } }, index : number)  =>  <div key={index} className={'transItem'}>
                 <div className={'transColIcon'}>
-                    {statusToIcon(trans.status)}
+                    {statusToIcon((getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send')}
                 </div>
                 <div className={'transColStatus'}> 
-                     <div>{ trans.status}</div>
+                     <div>{(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send'}</div>
                      <div className={'transSubColTime'}>
-                         <div>{trans.time}</div>
+                         <div>{getTransactionTime(transaction) || 'Jun 7'}</div>
                         <div className={'transSubColDot'}></div>
-                        <div>to {trans.to}</div>
+                        <div>to {getShortAddress(getTransactionWithDetail(transaction)?.account.address || 'Self')}</div>
                      </div>
                 </div>
 
                 <div className={'transColValue'}> 
                     <div>
-                         {trans.value}
+                    {(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals)} ICP
                     </div>
                     <div className={'transSubColPrice'}>
-                        {trans.price}
+                        ${((getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals) * usdValue).toFixed(3)}
                     </div>
                 </div>
                 <div className={'transColAction'}>
@@ -136,6 +243,7 @@ background: url(${bg_wallet_details});
 
 .transColIcon {
     margin-right: 8px;
+    margin-top: 2px;
 }
 
 .transCont {
@@ -177,13 +285,12 @@ background: url(${bg_wallet_details});
     .transColStatus {
      display: flex;
      flex-direction: column;
-     width: 133px;
+     width: 150px;
      margin-right: 21px;
     }
     .transSubColTime {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
         font-style: normal;
         font-weight: normal;
         font-size: 12px;
@@ -223,10 +330,12 @@ background: url(${bg_wallet_details});
         display: flex;
         flex-direction: column;
         text-align: end;
+        flex: 1;
     }
     .transSubColDot { 
         width: 2px;
         height: 2px;
+        margin: 0 3px;
         border-radius : 6px;
         background: #989DA9;
     }
