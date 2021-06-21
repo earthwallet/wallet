@@ -13,7 +13,8 @@ import React, { useCallback, useContext } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 
-import { Link, SelectedAccountContext } from '../../components';
+import { SelectedAccountContext } from '../../components';
+import BG_RECEIVE from '../../assets/bg_receive.png';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -28,12 +29,13 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
   const _onCopy = useCallback((): void => show('Copied'), [show]);
 
   return (
-    <>
+    <div className={className}>
       <Header 
         showAccountsDropdown
         type='wallet'
         showMenu />
-      <div className={className}>
+      <div >
+        <div className='accountShare'>Share your Public Address</div>
         <div className='accountDetail'>
 
           {selectedAccount?.address && <div className='addressDisplay'>
@@ -50,26 +52,57 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
               />
             </CopyToClipboard> </div>}
 
+
+          <div
+      className='qrCodeCont'
+
+          >
+
           <QRCode bgColor='#0000'
             fgColor='#DDD'
             size={220}
             value={selectedAccount?.address || ''} />
 
+          </div>
+        
+
         </div>
 
       </div>
-    </>
+    </div>
   );
 };
 
 export default styled(WalletReceiveTokens)(({ theme }: Props) => `
     width: auto;
     height: 100%;
-    display: flex;
-    flex-direction: column;
+    background: url(${BG_RECEIVE});
+
+    .qrCodeCont {
+      display: flex;
+    background: #5a597e66;
+    backdrop-filter: blur(15px);
+    border-radius: 14px;
+    width: calc(100% - 48px);
+    padding: 40px;
     align-items: center;
     justify-content: center;
-    padding 0;
+    box-sizing: border-box;
+    }
+
+    .accountShare {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 27px;
+      /* identical to box height */
+
+
+      color: #FFFFFF;
+      padding: 24px 24px 0 24px;
+      text-align: center;
+      }
 
     .topBarDiv {
         width: 100%;
@@ -116,7 +149,6 @@ export default styled(WalletReceiveTokens)(({ theme }: Props) => `
         flex: 1;
         height: 420px;
         width: 100%;
-        padding: 16px;
          align-items: center;
         justify-content: center;
     }

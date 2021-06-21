@@ -33,9 +33,10 @@ interface Props extends ThemeProps {
   text?: React.ReactNode;
   showAccountsDropdown?: boolean;
   backOverride?: any;
+  centerText?: boolean;
 }
 
-function Header ({ backOverride, children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text, type = '' }: Props): React.ReactElement<Props> {
+function Header ({ backOverride, centerText, children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text, type = '' }: Props): React.ReactElement<Props> {
   const [isAddOpen, setShowAdd] = useState(false);
   const [isSettingsOpen, setShowSettings] = useState(false);
   const addRef = useRef(null);
@@ -156,7 +157,7 @@ function Header ({ backOverride, children, className = '', showAccountsDropdown,
               </div>
             </div>
           }
-          {text && <div className='headerText'>{text}</div>}
+          {text && <div className={`headerText ${centerText ? 'headerTextCenter' : ''}`}>{text}</div>}
           {children}
           {showAccountsDropdown && (<AccountSelector/>)}
         </div>
@@ -312,5 +313,9 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
 
   &.smallMargin {
     margin-bottom: 15px;
+  }
+
+  .headerTextCenter {
+    margin-left: -34px;
   }
 `));

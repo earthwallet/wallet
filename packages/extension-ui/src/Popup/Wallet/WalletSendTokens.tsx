@@ -132,18 +132,13 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
   return (
     <>
       <Header showAccountsDropdown
-        showMenu />
+      type={'wallet'}
+      text={'Send'}
+      centerText
+      showMenu />
       <div className={className}
         ref={dropDownRef}
       >
-        <div className='topBarDiv'>
-          <div className='topBarDivSideItem'/>
-          <div className='topBarDivCenterItem'>Send</div>
-          <div className='topBarDivSideItem topBarDivCancelItem'>
-            <Link className='topBarDivCancelItem'
-              to='/wallet/home'>BACK</Link>
-          </div>
-        </div>
         {!(paymentHash === undefined || paymentHash === '') && <div className='paymentDone'>
           Payment done. Check at <a
             className='earthlink'
@@ -205,6 +200,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
             </div>
           </div>
         </div>
+        <div className={'sendBg'}></div>
       </div>
       <VerticalSpace />
       <ButtonArea>
@@ -228,6 +224,15 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
     align-items: center;
     justify-content: center;
     padding 0;
+
+    .sendBg {
+      position: absolute;
+      width: 375px;
+      height: 446px;
+      left: 0px;
+      bottom: 0px;
+      background: linear-gradient(0deg, rgba(71, 134, 255, 0.4) 0%, rgba(71, 134, 255, 0) 100%);
+      }
 
     .topBarDiv {
         width: 100%;
