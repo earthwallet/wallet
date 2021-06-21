@@ -1,32 +1,49 @@
-import styled from 'styled-components';
+// [object Object]
+// SPDX-License-Identifier: Apache-2.0
+
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/jsx-key */
+/* eslint-disable camelcase */
+/* eslint-disable  header/header */
+
 import type { ThemeProps } from '../../types';
-import React, { useState, useEffect } from 'react';
-import bg_wallet_details from '../../assets/bg_wallet_details.png';
+
+import { ICP } from '@earthwallet/sdk';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-//import { ActionContext } from '../../components';
+import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
+
+import bg_wallet_details from '../../assets/bg_wallet_details.png';
+// import { ActionContext } from '../../components';
 import ICON_CARET from '../../assets/icon_caret.svg';
-import ICON_RECV from '../../assets/icon_receive.svg';
-import ICON_SEND from '../../assets/icon_send_status.svg';
 import ICON_FAILED from '../../assets/icon_failed.svg';
 import ICON_FORWARD from '../../assets/icon_forward.svg';
-import { useHistory } from "react-router-dom";
-import { ICP } from '@earthwallet/sdk';
+import ICON_RECV from '../../assets/icon_receive.svg';
+import ICON_SEND from '../../assets/icon_send_status.svg';
 import { getShortAddress } from '../Utils/CommonUtils';
-import moment from 'moment';
 
 interface Props extends RouteComponentProps<{address: string}>, ThemeProps {
-    className?: string;
+  className?: string;
 }
 interface keyable {
-    [key: string]: any
-  }
+  [key: string]: any
+}
+
 /* const MOCK = [{
     status: "Failed",
     time: "Jun 7",
     to: "0x4f2...0c90",
     value: "1.32464 ICP",
     price: "$4,652.33 USD"
-    
+
     },
     {
     status: "Send",
@@ -42,16 +59,16 @@ interface keyable {
     value: "2.997627 ICP",
     price: "$12,154.33 USD"
     }]; */
-const Transactions = ({ className, match: { params: { address =  'f78f75b401011ea77b498e4f7aac096b2ffd892e3dd2cea7da24a64d4229aa85'} } }: Props) => {
-   // const onAction = useContext(ActionContext);
-   const history = useHistory();
-   const [walletTransactions, setWalletTransactions] = useState<any>();
-   const [loading, setLoading] = useState<boolean>(false);
-   const [usdValue, setUsdValue] = useState<number>(0);
- 
-    console.log(loading);
+const Transactions = ({ className, match: { params: { address = 'f78f75b401011ea77b498e4f7aac096b2ffd892e3dd2cea7da24a64d4229aa85' } } }: Props) => {
+  // const onAction = useContext(ActionContext);
+  const history = useHistory();
+  const [walletTransactions, setWalletTransactions] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [usdValue, setUsdValue] = useState<number>(0);
 
-   const getTransactionDetail = (transaction: any): any => {
+  console.log(loading);
+
+  const getTransactionDetail = (transaction: any): any => {
     const operations = transaction.transaction.operations
       .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
       .filter((operation: { account: any; }) => operation.account.address === address);
@@ -59,9 +76,8 @@ const Transactions = ({ className, match: { params: { address =  'f78f75b401011e
     return operations[0];
   };
 
-
   const getTransactionTime = (transaction: any): any => {
-    const timestamp : number = transaction.transaction.metadata.timestamp;
+    const timestamp: number = transaction.transaction.metadata.timestamp;
 
     return moment((timestamp / 1000000)).format('MMM DD');
   };
@@ -74,9 +90,7 @@ const Transactions = ({ className, match: { params: { address =  'f78f75b401011e
     return operations[0];
   };
 
-
   const getICPUSDValue = async (walletBalance: keyable) => {
-
     const fetchHeaders = new Headers();
 
     fetchHeaders.append('accept', 'application/json');
@@ -94,7 +108,7 @@ const Transactions = ({ className, match: { params: { address =  'f78f75b401011e
     setUsdValue(parseFloat(factor['internet-computer'].usd));
   };
 
-   useEffect(() => {
+  useEffect(() => {
     const loadBalance = async (address: string) => {
       setLoading(true);
       const balance: keyable = await ICP.getBalance(address);
@@ -110,62 +124,60 @@ const Transactions = ({ className, match: { params: { address =  'f78f75b401011e
       loadBalance(address);
       loadTransactions(address);
     }
-  }, []);
+  }, [address]);
 
-   const loadTransactions = async (address: string) => {
+  const loadTransactions = async (address: string) => {
     const transactions = await ICP.getTransactions(address);
 
     console.log('transactions', transactions);
     setWalletTransactions(transactions);
   };
 
-   const statusToIcon =  (status : string) => {
+  const statusToIcon = (status: string) => {
     switch (status) {
-       case 'Receive':
-          return ([
-            <img src={ICON_RECV} />
-            ,
-          ]);
-          case 'Send':
-            return ([
-                <img src={ICON_SEND} />
-                ,
-            ]);
-            case 'Failed':
-                return ([
-                    <img src={ICON_FAILED} />
-                    ,
-                ]);
-            default:
-                    return <div />;
-        }
- }
-    return (
-        <div className={className}>
-     {/*        <Header
+      case 'Receive':
+        return ([
+          <img src={ICON_RECV} />
+        ]);
+      case 'Send':
+        return ([
+          <img src={ICON_SEND} />
+        ]);
+      case 'Failed':
+        return ([
+          <img src={ICON_FAILED} />
+        ]);
+      default:
+        return <div />;
+    }
+  };
+
+  return (
+    <div className={className}>
+      {/*        <Header
             text={'Transactions'}
             className={'header'}
             showAccountsDropdown
             showMenu
             type={'wallet'} /> */}
-            
-            <div className={'transCont'}>
-            <div 
-                          onClick={() => history.goBack()}
 
-            className={'backTransButton'}>
-            <img src={ICON_CARET} />
+      <div className={'transCont'}>
+        <div
+          className={'backTransButton'}
 
-            <div className={'transTitle'}>Transactions</div>
-            </div>
-          {/*   <div className="transactions-div">
+          onClick={() => history.goBack()}>
+          <img src={ICON_CARET} />
+
+          <div className={'transTitle'}>Transactions</div>
+        </div>
+        {/*   <div className="transactions-div">
             {walletTransactions &&
                   walletTransactions?.transactions &&
                   walletTransactions?.transactions?.reverse().map(
                     (transaction: { block_identifier: { hash: string } }) => {
                       return (
                         <div className="transaction-item-div">
-                      
+
                           <div className='transaction-detail-div'>
                             <div className='transaction-type'>{(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send'}</div>
                             <div className='transaction-detail'>{`${getTransactionWithDetail(transaction)?.amount?.value > 0 ? 'To:' : 'From:'} ${getShortAddress(getTransactionWithDetail(transaction)?.account.address || 'Self')}`}</div>
@@ -183,43 +195,42 @@ const Transactions = ({ className, match: { params: { address =  'f78f75b401011e
               </div>
             )}
           </div> */}
-            <div className={'transItems'}>
-            {walletTransactions &&
+        <div className={'transItems'}>
+          {walletTransactions &&
                   walletTransactions?.transactions &&
-                  walletTransactions?.transactions?.sort((a : keyable,b : keyable) => getTransactionTime(a) - getTransactionTime(b)).reverse().map(
-                    (transaction: { block_identifier: { hash: string } }, index : number)  =>  <div key={index} className={'transItem'}>
-                <div className={'transColIcon'}>
-                    {statusToIcon((getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send')}
-                </div>
-                <div className={'transColStatus'}> 
-                     <div>{(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send'}</div>
-                     <div className={'transSubColTime'}>
-                         <div>{getTransactionTime(transaction) || 'Jun 7'}</div>
-                        <div className={'transSubColDot'}></div>
-                        <div>to {getShortAddress(getTransactionWithDetail(transaction)?.account.address || 'Self')}</div>
-                     </div>
-                </div>
+                  walletTransactions?.transactions?.sort((a: keyable, b: keyable) => getTransactionTime(a) - getTransactionTime(b)).reverse().map(
+                    (transaction: { block_identifier: { hash: string } }, index: number) => <div className={'transItem'}
+                      key={index}>
+                      <div className={'transColIcon'}>
+                        {statusToIcon((getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send')}
+                      </div>
+                      <div className={'transColStatus'}>
+                        <div>{(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send'}</div>
+                        <div className={'transSubColTime'}>
+                          <div>{getTransactionTime(transaction) || 'Jun 7'}</div>
+                          <div className={'transSubColDot'}></div>
+                          <div>to {getShortAddress(getTransactionWithDetail(transaction)?.account.address || 'Self')}</div>
+                        </div>
+                      </div>
 
-                <div className={'transColValue'}> 
-                    <div>
-                    {(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals)} ICP
-                    </div>
-                    <div className={'transSubColPrice'}>
+                      <div className={'transColValue'}>
+                        <div>
+                          {(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals)} ICP
+                        </div>
+                        <div className={'transSubColPrice'}>
                         ${((getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals) * usdValue).toFixed(3)}
-                    </div>
-                </div>
-                <div className={'transColAction'}>
-                <img src={ICON_FORWARD} />
-                </div>
+                        </div>
+                      </div>
+                      <div className={'transColAction'}>
+                        <img src={ICON_FORWARD} />
+                      </div>
 
-            </div>)}
-            </div>
-            </div>
+                    </div>)}
         </div>
-    );
+      </div>
+    </div>
+  );
 };
-
-
 
 export default withRouter(styled(Transactions)`
 width: auto;
@@ -344,4 +355,4 @@ background: url(${bg_wallet_details});
         height: 502px;
         overflow: hidden scroll;
     }
-`); 
+`);

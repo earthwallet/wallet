@@ -1,17 +1,18 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import type { ThemeProps } from '../../types';
 
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import styled from 'styled-components';
+
+import BG_MNEMONIC from '../../assets/bg_mnemonic.png';
 import { AccountContext, ActionContext } from '../../components';
 import AccountNamePasswordCreation from '../../components/AccountNamePasswordCreation';
 import useTranslation from '../../hooks/useTranslation';
 import { createAccountSuri } from '../../messaging';
 import { HeaderWithSteps } from '../../partials';
 import SeedAndPath from './SeedAndPath';
-import BG_MNEMONIC from '../../assets/bg_mnemonic.png';
-import styled from 'styled-components';
-import type { ThemeProps } from '../../types';
 
 export interface AccountInfo {
   address: string;
@@ -22,8 +23,8 @@ export interface AccountInfo {
 interface Props extends ThemeProps {
   className?: string;
 }
-function ImportSeed({ className }: Props): React.ReactElement {
 
+function ImportSeed({ className }: Props): React.ReactElement {
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
   const onAction = useContext(ActionContext);
@@ -33,7 +34,7 @@ function ImportSeed({ className }: Props): React.ReactElement {
   const [step1, setStep1] = useState(true);
 
   console.log(name, 'name');
-  
+
   useEffect((): void => {
     !accounts.length && onAction();
   }, [accounts, onAction]);
@@ -58,23 +59,22 @@ function ImportSeed({ className }: Props): React.ReactElement {
   return (
     <div className={className}>
       <HeaderWithSteps
-      backOverride={step1 ? undefined : _onBackClick}
+        backOverride={step1 ? undefined : _onBackClick}
         step={step1 ? 1 : 2}
         text={t<string>('Import account')}
       />
       {step1
-        ? 
-        <div>
-           <div className='earthInputCont'>
+        ? <div>
+          <div className='earthInputCont'>
             <div className='labelText'>Enter your Mnemonic Seed phrase</div>
             <SeedAndPath
               onAccountChange={setAccount}
               onNextStep={_onNextStep}
             />
           </div>
-    
+
         </div>
-       
+
         : <AccountNamePasswordCreation
           buttonLabel={t<string>('Add account')}
           isBusy={isBusy}
@@ -87,7 +87,6 @@ function ImportSeed({ className }: Props): React.ReactElement {
     </div>
   );
 }
-
 
 export default styled(ImportSeed)(({ theme }: Props) => `
   background: url(${BG_MNEMONIC}); 

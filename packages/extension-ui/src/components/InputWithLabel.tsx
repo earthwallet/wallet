@@ -58,22 +58,22 @@ function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused
       label={label}
     >
       <div className={'inputCont'}>
-      <Input
-        autoCapitalize='off'
-        autoCorrect='off'
-        autoFocus={isFocused}
-        defaultValue={defaultValue || undefined}
-        disabled={disabled}
-        onBlur={onBlur}
-        onChange={_onChange}
-        onKeyPress={_checkKey}
-        placeholder={placeholder}
-        readOnly={isReadOnly}
-        spellCheck={false}
-        type={type}
-        value={value}
-        withError={isError}
-      />
+        <Input
+          autoCapitalize='off'
+          autoCorrect='off'
+          autoFocus={isFocused}
+          defaultValue={defaultValue || undefined}
+          disabled={disabled}
+          onBlur={onBlur}
+          onChange={_onChange}
+          onKeyPress={_checkKey}
+          placeholder={placeholder}
+          readOnly={isReadOnly}
+          spellCheck={false}
+          type={type}
+          value={value}
+          withError={isError}
+        />
       </div>
       { isCapsLock && (
         <Warning isBelowInput>{t<string>('Warning: Caps lock is on')}</Warning>

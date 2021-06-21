@@ -9,6 +9,7 @@ import type { ThemeProps } from '../types';
 import { faArrowLeft, faCog, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useCallback, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import ICON_BACK from '../assets/icon_back.svg';
@@ -18,7 +19,6 @@ import AccountSelector from './AccountSelector';
 import MenuAdd from './MenuAdd';
 import MenuSettings from './MenuSettings';
 import NetworkSelector from './NetworkSelector';
-import { useHistory } from "react-router-dom";
 
 interface Props extends ThemeProps {
   children?: React.ReactNode;
@@ -142,7 +142,7 @@ function Header ({ backOverride, centerText, children, className = '', showAccou
         </div>
         : <div className='container'>
           {backOverride === undefined
-            ? <div 
+            ? <div
               className='backButtonCont'
               onClick={() => history.goBack()}>
               <div className='backButtonIcon' >

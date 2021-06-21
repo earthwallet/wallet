@@ -53,26 +53,26 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
     <div className={className}>
       <>
         <div className={'wrap'} >
-        <TextAreaWithLabel
-          className='seedInput'
-          isError={!!error}
-          isFocused
-          label={''}
-          onChange={setSeed}
-          rowsCount={2}
-          value={seed || ''}
-          placeholder="paste the mnemonic seed phrase here"
+          <TextAreaWithLabel
+            className='seedInput'
+            isError={!!error}
+            isFocused
+            label={''}
+            onChange={setSeed}
+            placeholder="paste the mnemonic seed phrase here"
+            rowsCount={2}
+            value={seed || ''}
           />
           <div className='mnemonicHelp'>
-        <div className='mnemonicHelpTitle'>
+            <div className='mnemonicHelpTitle'>
         To restore your account, paste your saved mnemonic phrase here
-          </div>
-          <div className='mnemonicHelpSubTitle'>
+            </div>
+            <div className='mnemonicHelpSubTitle'>
               Please write down your wallet’s mnemonic seed and keep it in a safe place.
+            </div>
+          </div>
         </div>
-        </div>
-        </div>
-        
+
         {!!error && !seed && (
           <Warning
             className='seedError'
@@ -82,7 +82,7 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
             {t<string>('Mnemonic needs to contain 12, 15, 18, 21, 24 words')}
           </Warning>
         )}
-      {/*   <Dropdown
+        {/*   <Dropdown
           className='genesisSelection'
           label={t<string>('Network')}
           onChange={setGenesis}
@@ -98,15 +98,15 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
         )}
       </>
       <div className='nextCont'>
-      <NextStepButton
+        <NextStepButton
           isDisabled={!address || !!error}
           onClick={onNextStep}
         >
           {t<string>('Next')}
         </NextStepButton>
       </div>
-        
-     </div>
+
+    </div>
   );
 }
 

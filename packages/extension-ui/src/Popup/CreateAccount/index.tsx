@@ -1,9 +1,20 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/jsx-key */
+/* eslint-disable camelcase */
+
 import type { ThemeProps } from '../../types';
 
 import { genesisSymbolMap } from '@earthwallet/extension-ui/util/chains';
+import { saveAs } from 'file-saver';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
@@ -13,15 +24,13 @@ import BG_MNEMONIC from '../../assets/bg_mnemonic.png';
 import ICON_CHECKED from '../../assets/icon_checkbox_checked.svg';
 import ICON_UNCHECKED from '../../assets/icon_checkbox_unchecked.svg';
 import ICON_COPY from '../../assets/icon_copy.svg';
-import { ActionContext, Loading, NextStepButton } from '../../components';
+import { ActionContext, Loading, NextStepButton, SelectedAccountContext } from '../../components';
 //  // NextStepButton
 import useToast from '../../hooks/useToast';
 import useTranslation from '../../hooks/useTranslation';
 import { createAccountSuri, createSeed } from '../../messaging';
 import { HeaderWithSteps } from '../../partials';
 import { DEFAULT_TYPE } from '../../util/defaultType';
-import { saveAs } from "file-saver";
-import { SelectedAccountContext } from '../../components';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -63,33 +72,31 @@ function CreateAccount({ className }: Props): React.ReactElement {
 
         createAccountSuri(_name, _password, account.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined)
           .then(() => {
-            setSelectedAccount({...account, name: _name, genesis: 'the_icp', symbol: 'ICP' });
-            onAction('/wallet/home')})
+            setSelectedAccount({ ...account, name: _name, genesis: 'the_icp', symbol: 'ICP' });
+            onAction('/wallet/home');
+          })
           .catch((error: Error): void => {
             setIsBusy(false);
             console.error(error);
           });
       }
     },
-    [account, genesis, onAction, _name, _password, _reptPassword]
+    [account, genesis, onAction, _name, _password, _reptPassword, setSelectedAccount]
   );
 
-  const backupKeystore = async () => {
+  const backupKeystore = () => {
     setIsBusy(true);
-    let meId = account?.address;
-    var blob;
-       blob = new Blob([account?.seed || ''], {
-        type: "text/plain;charset=utf-8",
-      });
-     
+    const meId = account?.address;
+    const blob = new Blob([account?.seed || ''], {
+      type: 'text/plain;charset=utf-8'
+    });
+
     saveAs(
       blob,
-        `${meId}.txt`
+      `${meId}.txt`
     );
     setIsBusy(false);
-
   };
-
 
   const _onNextStep = useCallback(() => setStep((step) => step + 1), []);
   const _onPreviousStep = useCallback(() => setStep((step) => step - 1), []);
@@ -138,10 +145,11 @@ function CreateAccount({ className }: Props): React.ReactElement {
                           </div>
                         </CopyToClipboard>
 
-                        <div className='mnemonicAction' onClick={() => backupKeystore()}>
+                        <div className='mnemonicAction'
+                          onClick={() => backupKeystore()}>
                           <img className='mnemonicActionIcon'
-                          src={ICON_COPY}/>
-                        <div>DOWNLOAD</div>
+                            src={ICON_COPY}/>
+                          <div>DOWNLOAD</div>
                         </div>
                       </div>
                     </div>

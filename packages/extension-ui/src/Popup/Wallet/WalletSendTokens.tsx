@@ -26,7 +26,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
 
 import logo from '../../assets/icp-logo.png';
-import { Button, ButtonArea, SelectedAccountContext, VerticalSpace } from '../../components';
+import { Button, SelectedAccountContext } from '../../components';
 import useTranslation from '../../hooks/useTranslation';
 
 const { address_to_hex } = require('@dfinity/rosetta-client');
@@ -131,11 +131,11 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
 
   return (
     <>
-      <Header showAccountsDropdown
-      type={'wallet'}
-      text={'Send'}
-      centerText
-      showMenu />
+      <Header centerText
+        showAccountsDropdown
+        showMenu
+        text={'Send'}
+        type={'wallet'} />
       <div className={className}
         ref={dropDownRef}
       >
@@ -157,36 +157,36 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
           required
         />
         <div className='assetSelectionDivCont'>
-            <div className='earthInputLabel'>
+          <div className='earthInputLabel'>
               Asset
-            </div>
-            <div className='tokenSelectionDiv'>
-              <div className='selectedNetworkDiv'>
-                <img
-                  className='tokenLogo'
-                  src={logo}
-                />
-                <div className='tokenSelectionLabelDiv'>
-                  <div className='tokenLabel'>{selectedNetwork}</div>
-                  <div className='tokenBalance'>
-                    { loading
-                      ? <SkeletonTheme color="#222"
-                        highlightColor="#000">
-                        <Skeleton width={150} />
-                      </SkeletonTheme>
-                      : <span>{walletBalance && walletBalance?.balances[0] &&
+          </div>
+          <div className='tokenSelectionDiv'>
+            <div className='selectedNetworkDiv'>
+              <img
+                className='tokenLogo'
+                src={logo}
+              />
+              <div className='tokenSelectionLabelDiv'>
+                <div className='tokenLabel'>{selectedNetwork}</div>
+                <div className='tokenBalance'>
+                  { loading
+                    ? <SkeletonTheme color="#222"
+                      highlightColor="#000">
+                      <Skeleton width={150} />
+                    </SkeletonTheme>
+                    : <span>{walletBalance && walletBalance?.balances[0] &&
                          `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} 
                          ${walletBalance?.balances[0]?.currency?.symbol}`
-                      }</span>
-                    }
-                  </div>
+                    }</span>
+                  }
                 </div>
               </div>
             </div>
           </div>
-          <div className='earthInputLabel'>
+        </div>
+        <div className='earthInputLabel'>
               Amount
-            </div>
+        </div>
         <input
           autoCapitalize='off'
           autoCorrect='off'
@@ -200,17 +200,17 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
           step="0.001"
           type="number"
         />
-      <div className={'buttonCont'}>
-            {loadingSend
-              ? <Button onClick={() => sendIcp()}>
-                {t<string>('Sending...')}
-              </Button>
-              : <Button onClick={() => sendIcp()}>
-                {t<string>('Send')}
-              </Button>}
-          </div>
-       </div>
-    
+        <div className={'buttonCont'}>
+          {loadingSend
+            ? <Button onClick={() => sendIcp()}>
+              {t<string>('Sending...')}
+            </Button>
+            : <Button onClick={() => sendIcp()}>
+              {t<string>('Send')}
+            </Button>}
+        </div>
+      </div>
+
     </>
   );
 };

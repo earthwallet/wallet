@@ -1,13 +1,14 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useContext, useMemo } from 'react';
 import type { ThemeProps } from '../types';
+
+import React, { useContext, useMemo } from 'react';
+import styled from 'styled-components';
 
 import { AccountContext, InputWithLabel, ValidatedInput } from '../components';
 import useTranslation from '../hooks/useTranslation';
 import { isNotShorterThan } from '../util/validators';
-import styled from 'styled-components';
 
 interface Props {
   address?: string;
@@ -38,9 +39,9 @@ function Name ({ address, className, isFocused, label, onBlur, onChange, value }
       onBlur={onBlur}
       onEnter={onBlur}
       onValidatedChange={onChange}
+      placeholder="REQUIRED"
       type='text'
       validator={isNameValid}
-      placeholder="REQUIRED"
     />
   );
 }

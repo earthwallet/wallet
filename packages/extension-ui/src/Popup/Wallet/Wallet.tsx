@@ -192,20 +192,20 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
             </Link>
           </div>
         </div>
-        
+
         <Link to={`/wallet/transactions/${selectedAccount?.address}`} >
 
-        <div className='assetsAndActivityDiv'>
-          <div className='tabsPill'></div>
-          <div className='tabsView'>
-            <div
-              className={'tabView ' + (selectedTab === 'Transactions' ? 'selectedTabView' : '') }
-              onClick={() => setSelectedTab('Transactions')}
-            >
+          <div className='assetsAndActivityDiv'>
+            <div className='tabsPill'></div>
+            <div className='tabsView'>
+              <div
+                className={'tabView ' + (selectedTab === 'Transactions' ? 'selectedTabView' : '') }
+                onClick={() => setSelectedTab('Transactions')}
+              >
              Transactions {walletTransactions?.transactions?.length === 0 || walletTransactions?.transactions === undefined ? '' : `(${walletTransactions?.transactions?.length})` }
+              </div>
             </div>
           </div>
-        </div>
         </Link>
       </div>
     </>

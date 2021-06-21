@@ -1,8 +1,9 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ThemeProps } from '../types';
+
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { InputWithLabel, ValidatedInput } from '../components';
@@ -40,9 +41,9 @@ function Password ({ className, isFocussed, onChange }: Props): React.ReactEleme
         isFocused={isFocussed}
         label={t<string>('A new password for this account')}
         onValidatedChange={setPass1}
+        placeholder={'REQUIRED'}
         type='password'
         validator={isFirstPasswordValid}
-        placeholder={'REQUIRED'}
       />
       {pass1 && (
         <ValidatedInput
@@ -51,9 +52,9 @@ function Password ({ className, isFocussed, onChange }: Props): React.ReactEleme
           data-input-repeat-password
           label={t<string>('Repeat password for verification')}
           onValidatedChange={setPass2}
+          placeholder="REQUIRED"
           type='password'
           validator={isSecondPasswordValid(pass1)}
-          placeholder="REQUIRED"
         />
       )}
     </>

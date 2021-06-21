@@ -31,7 +31,6 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
     [onNameChange]
   );
 
-
   return (
     <>
       <Name
@@ -39,11 +38,13 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
         onChange={_onNameChange}
       />
       <Password onChange={setPassword} />
-      <div style={{  padding: '0 27px', marginBottom: 30, 
-      position: 'absolute', 
-      bottom: 0, left: 0}}>
+      <div style={{ padding: '0 27px',
+        marginBottom: 30,
+        position: 'absolute',
+        bottom: 0,
+        left: 0 }}>
 
-      <NextStepButton
+        <NextStepButton
           data-button-action='add new root'
           isBusy={isBusy}
           isDisabled={!password || !name}
@@ -51,9 +52,9 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
         >
           {buttonLabel}
         </NextStepButton>
-        </div>
+      </div>
 
-     </>
+    </>
   );
 }
 

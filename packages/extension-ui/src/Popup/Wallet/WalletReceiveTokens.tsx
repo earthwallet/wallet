@@ -13,8 +13,8 @@ import React, { useCallback, useContext } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 
-import { SelectedAccountContext } from '../../components';
 import BG_RECEIVE from '../../assets/bg_receive.png';
+import { SelectedAccountContext } from '../../components';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -30,10 +30,10 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
 
   return (
     <div className={className}>
-      <Header 
+      <Header
         showAccountsDropdown
-        type='wallet'
-        showMenu />
+        showMenu
+        type='wallet' />
       <div >
         <div className='accountShare'>Share your Public Address</div>
         <div className='accountDetail'>
@@ -52,19 +52,17 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
               />
             </CopyToClipboard> </div>}
 
-
           <div
-      className='qrCodeCont'
+            className='qrCodeCont'
 
           >
 
-          <QRCode bgColor='#0000'
-            fgColor='#DDD'
-            size={220}
-            value={selectedAccount?.address || ''} />
+            <QRCode bgColor='#0000'
+              fgColor='#DDD'
+              size={220}
+              value={selectedAccount?.address || ''} />
 
           </div>
-        
 
         </div>
 

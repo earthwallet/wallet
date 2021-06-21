@@ -7,8 +7,8 @@
 import type { ThemeProps } from '../types';
 
 import React from 'react';
+import { ClipLoader } from 'react-spinners';
 import styled from 'styled-components';
-import { ClipLoader } from "react-spinners";
 
 import Button from './Button';
 
@@ -21,9 +21,11 @@ function NextStepButton ({ children, ...props }: Props): React.ReactElement<Prop
         className={(props.isDisabled ? 'buttonDisabledCont' : props.loading ? 'buttonCont buttonContLoading' : 'buttonCont') }
         onClick={props.onClick}
       >
-        <div className={props.isDisabled ? 'buttonDisabled' :  'button'} >
-          {props.loading ? <ClipLoader size={15} color={'#fffff'} />
-        : children }
+        <div className={props.isDisabled ? 'buttonDisabled' : 'button'} >
+          {props.loading
+            ? <ClipLoader color={'#fffff'}
+              size={15} />
+            : children }
         </div>
       </div>
     </div>
