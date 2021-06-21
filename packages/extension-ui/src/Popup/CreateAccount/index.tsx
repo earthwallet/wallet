@@ -190,7 +190,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
             : (
               <>
                 <div className='earthInputCont'>
-                  <div className='labelText'>Password {_password}</div>
+                  <div className='labelText'>Password</div>
                   <input
                     autoCapitalize='off'
                     autoCorrect='off'

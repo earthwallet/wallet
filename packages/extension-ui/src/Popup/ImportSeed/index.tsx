@@ -7,7 +7,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import BG_MNEMONIC from '../../assets/bg_mnemonic.png';
-import { AccountContext, ActionContext } from '../../components';
+import { AccountContext, ActionContext, SelectedAccountContext } from '../../components';
 import AccountNamePasswordCreation from '../../components/AccountNamePasswordCreation';
 import useTranslation from '../../hooks/useTranslation';
 import { createAccountSuri } from '../../messaging';
@@ -33,7 +33,7 @@ function ImportSeed({ className }: Props): React.ReactElement {
   const [name, setName] = useState<string | null>(null);
   const [step1, setStep1] = useState(true);
 
-  console.log(name, 'name');
+  const { setSelectedAccount } = useContext(SelectedAccountContext);
 
   useEffect((): void => {
     !accounts.length && onAction();
@@ -45,8 +45,10 @@ function ImportSeed({ className }: Props): React.ReactElement {
       setIsBusy(true);
 
       createAccountSuri(name, password, account.suri, undefined, account.genesis, account.genesis === 'the_icp' ? 'ICP' : undefined)
-        .then(() => onAction('/'))
-        .catch((error): void => {
+      .then(() => {
+        setSelectedAccount({ ...account, name: name, genesis: 'the_icp', symbol: 'ICP' });
+        onAction('/wallet/home');
+      }).catch((error): void => {
           setIsBusy(false);
           console.error(error);
         });

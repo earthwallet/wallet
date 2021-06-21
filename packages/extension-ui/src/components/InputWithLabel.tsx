@@ -54,7 +54,7 @@ function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused
 
   return (
     <Label
-      className={`${className || ''} ${withoutMargin ? 'withoutMargin' : ''}`}
+      className={`${className || ''} ${withoutMargin ? 'withoutMargin' : ''} ' labelStyle'`}
       label={label}
     >
       <div className={'inputCont'}>
@@ -84,10 +84,26 @@ function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused
 
 export default styled(InputWithLabel)`
   margin-bottom: 16px;
-  .inputCont{
+  .inputCont {
     border: 2px solid #175b98;
     border-radius: 8px;
   }
+
+  .labelStyle {
+
+     opacity: 0.65;
+     font-family: "DM Sans";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 150%;
+    letter-spacing: 0.05em;
+    color: #dbe4f2; //#dbe4f2
+    margin-bottom: 10px;
+    text-transform: uppercase;
+
+  }
+  
   &.withoutMargin {
     margin-bottom: 0px;
 
