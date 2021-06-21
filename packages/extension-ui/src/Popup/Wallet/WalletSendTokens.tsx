@@ -26,7 +26,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
 
 import logo from '../../assets/icp-logo.png';
-import { Button, ButtonArea, Link, SelectedAccountContext, VerticalSpace } from '../../components';
+import { Button, ButtonArea, SelectedAccountContext, VerticalSpace } from '../../components';
 import useTranslation from '../../hooks/useTranslation';
 
 const { address_to_hex } = require('@dfinity/rosetta-client');
@@ -146,6 +146,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
             rel="noreferrer"
             target="_blank">explorer</a>
         </div>}
+        <div className={'earthInputLabel'}>Add recipient</div>
         <input
           autoCapitalize='off'
           autoCorrect='off'
@@ -155,25 +156,9 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
           placeholder="Recipient address"
           required
         />
-        <input
-          autoCapitalize='off'
-          autoCorrect='off'
-          autoFocus={false}
-          className='recipientAddress earthinput'
-          max="1.00"
-          min="0.00"
-          onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
-          placeholder="amount up to 8 decimal places"
-          required
-          step="0.001"
-          type="number"
-        />
-
-        <div className='transactionDetail'>
-
-          <div className='assetSelectionDiv'>
-            <div className='assetSelectionLabel'>
-              Asset:
+        <div className='assetSelectionDivCont'>
+            <div className='earthInputLabel'>
+              Asset
             </div>
             <div className='tokenSelectionDiv'>
               <div className='selectedNetworkDiv'>
@@ -199,19 +184,33 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
               </div>
             </div>
           </div>
-        </div>
-        <div className={'sendBg'}></div>
-      </div>
-      <VerticalSpace />
-      <ButtonArea>
-        {loadingSend
-          ? <Button onClick={() => sendIcp()}>
-            {t<string>('Sending...')}
-          </Button>
-          : <Button onClick={() => sendIcp()}>
-            {t<string>('Send')}
-          </Button>}
-      </ButtonArea>
+          <div className='earthInputLabel'>
+              Amount
+            </div>
+        <input
+          autoCapitalize='off'
+          autoCorrect='off'
+          autoFocus={false}
+          className='recipientAddress earthinput'
+          max="1.00"
+          min="0.00"
+          onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
+          placeholder="amount up to 8 decimal places"
+          required
+          step="0.001"
+          type="number"
+        />
+      <div className={'buttonCont'}>
+            {loadingSend
+              ? <Button onClick={() => sendIcp()}>
+                {t<string>('Sending...')}
+              </Button>
+              : <Button onClick={() => sendIcp()}>
+                {t<string>('Send')}
+              </Button>}
+          </div>
+       </div>
+    
     </>
   );
 };
@@ -222,17 +221,26 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     padding 0;
+    background: linear-gradient(0deg, rgba(71, 134, 255, 0.4) 0%, rgba(71, 134, 255, 0) 100%);
 
-    .sendBg {
-      position: absolute;
-      width: 375px;
-      height: 446px;
-      left: 0px;
-      bottom: 0px;
-      background: linear-gradient(0deg, rgba(71, 134, 255, 0.4) 0%, rgba(71, 134, 255, 0) 100%);
-      }
+
+    .assetSelectionDivCont {
+      width: 100%;
+    }
+
+    .buttonCont {
+      display: flex;
+      flex-direction: row;
+      /* background: #212226; */
+      /* border-top: 1px solid #43444b; */
+      padding: 12px 24px;
+      margin-left: 50px;
+      margin-right: 50px;
+      position: fixed;
+      width: calc(100% - 50px);
+      bottom: 0;
+    }
 
     .topBarDiv {
         width: 100%;
@@ -240,6 +248,21 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
         flex-direction: rows;
         align-items: center;
         justify-content: center;
+    }
+
+    .earthInputLabel {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 24px;
+      /* identical to box height */
+      
+      
+      color: #FFFFFF;
+      text-align: left;
+      width: calc(100% - 48px);
+      padding: 30px 24px 13px;
     }
     .paymentDone {
       width: calc(100% - 58px);
@@ -259,13 +282,14 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
     }
     .earthinput {
       background-image:none;
-      background-color:transparent;
       -webkit-box-shadow: none;
       -moz-box-shadow: none;
       box-shadow: none;
-      border: 1px solid rgb(67, 68, 75);
+      background: rgba(8, 25, 39, 0.65);
+      border: 2px solid rgba(36, 150, 255, 0.5);
       padding: 16px 12px;
-      border-radius: 2px;
+      border-radius: 8px;
+      
       &:focus-visible {
         outline: none;
      }
@@ -305,7 +329,7 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
         font-family: ${theme.fontFamily};
         font-size: ${theme.fontSize};
         width: -webkit-fill-available;
-        margin: 12px 24px;
+        margin: 0px 24px;
     }
 
     .transactionDetail {
@@ -336,7 +360,7 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
     .tokenSelectionDiv {
         display: flex;
         flex-direction: row;
-        margin-right: 24px;
+        margin-left: 24px;
         align-items: center;
     }
 
@@ -348,7 +372,11 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
         border-radius: 4px;
         border: 1px solid rgb(67, 68, 75);
         padding: 0 6px;
-        height: 52px;
+        background: #5a597e63;
+        backdrop-filter: blur(7px);
+        border-radius: 14px;
+        height: 72px;
+        width: calc(100% - 40px);
     }
 
     .tokenLogo {
