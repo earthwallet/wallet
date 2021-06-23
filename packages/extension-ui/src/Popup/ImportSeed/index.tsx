@@ -30,7 +30,7 @@ function ImportSeed({ className }: Props): React.ReactElement {
   const onAction = useContext(ActionContext);
   const [isBusy, setIsBusy] = useState(false);
   const [account, setAccount] = useState<AccountInfo | null>(null);
-  const [name, setName] = useState<string | null>(null);
+  const [_name, setName] = useState<string | null>(null);
   const [step1, setStep1] = useState(true);
 
   const { setSelectedAccount } = useContext(SelectedAccountContext);
@@ -40,20 +40,21 @@ function ImportSeed({ className }: Props): React.ReactElement {
   }, [accounts, onAction]);
 
   const _onCreate = useCallback((name: string, password: string): void => {
+    console.log(name);
     // this should always be the case
-    if (name && password && account) {
+    if (_name && password && account) {
       setIsBusy(true);
 
-      createAccountSuri(name, password, account.suri, undefined, account.genesis, account.genesis === 'the_icp' ? 'ICP' : undefined)
+      createAccountSuri(_name, password, account.suri, undefined, account.genesis, account.genesis === 'the_icp' ? 'ICP' : undefined)
       .then(() => {
-        setSelectedAccount({ ...account, name: name, genesis: 'the_icp', symbol: 'ICP' });
+        setSelectedAccount({ ...account, name: _name, genesis: 'the_icp', symbol: 'ICP' });
         onAction('/wallet/home');
       }).catch((error): void => {
           setIsBusy(false);
           console.error(error);
         });
     }
-  }, [account, onAction]);
+  }, [account, onAction, _name]);
 
   const _onNextStep = useCallback(() => { setStep1(false); }, []);
   const _onBackClick = useCallback(() => { setStep1(true); }, []);

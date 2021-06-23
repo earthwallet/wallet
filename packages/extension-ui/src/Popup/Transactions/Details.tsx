@@ -30,7 +30,7 @@ import ICON_RECV from '../../assets/icon_receive.svg';
 import ICON_SEND from '../../assets/icon_send_status.svg';
 import { getShortAddress } from '../Utils/CommonUtils';
 
-interface Props extends RouteComponentProps<{address: string}>, ThemeProps {
+interface Props extends RouteComponentProps<{txnId: string}>, ThemeProps {
   className?: string;
 }
 interface keyable {
@@ -59,8 +59,11 @@ interface keyable {
     value: "2.997627 ICP",
     price: "$12,154.33 USD"
     }]; */
-const Transactions = ({ className, match: { params: { address = 'f78f75b401011ea77b498e4f7aac096b2ffd892e3dd2cea7da24a64d4229aa85' } } }: Props) => {
+const Details = ({ className, match: { params: { txnId = '25cc95c15f11b46a316fa4112056ec8b142a5b82a4ad1dce5cabefa8baf05eb9' } } }: Props) => {
   // const onAction = useContext(ActionContext);
+
+  console.log(txnId);
+  const address = '78d068b96cfee9c0fc6f97b42051ea89c0eb9892bcf30c3361169d8a9241897c'
   const history = useHistory();
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -200,9 +203,7 @@ const Transactions = ({ className, match: { params: { address = 'f78f75b401011ea
                   walletTransactions?.transactions &&
                   walletTransactions?.transactions?.sort((a: keyable, b: keyable) => getTransactionTime(a) - getTransactionTime(b)).reverse().map(
                     (transaction: { block_identifier: { hash: string } }, index: number) => <div className={'transItem'}
-                      key={index}
-                      onClick={() => history.push(`/wallet/transaction/${transaction?.block_identifier?.hash}`)}
-                      >
+                      key={index}>
                       <div className={'transColIcon'}>
                         {statusToIcon((getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send')}
                       </div>
@@ -234,7 +235,7 @@ const Transactions = ({ className, match: { params: { address = 'f78f75b401011ea
   );
 };
 
-export default withRouter(styled(Transactions)`
+export default withRouter(styled(Details)`
 width: auto;
 display: flex;
 flex-direction: column;
