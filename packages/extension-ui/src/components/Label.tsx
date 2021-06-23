@@ -15,7 +15,7 @@ interface Props {
 function Label ({ children, className, label }: Props): React.ReactElement<Props> {
   return (
     <div className={className}>
-     { label !== '' && <label>{label}</label>}
+      { label !== '' && <label>{label}</label>}
       {children}
     </div>
   );

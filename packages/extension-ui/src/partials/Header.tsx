@@ -140,38 +140,39 @@ function Header ({ backOverride, centerText, children, className = '', showAccou
           )}
           {children}
         </div>
-        : type === 'details' ? <div className='container containerDetails'>
+        : type === 'details'
+          ? <div className='container containerDetails'>
             <div
               className='backButtonCont backButtonContDetails'
               onClick={() => history.goBack()}>
               <div className='backButtonIcon backButtonIconDetails' >
-                <img src={ICON_BACK} /> <div  className='backText'>Back</div>
+                <img src={ICON_BACK} /> <div className='backText'>Back</div>
               </div>
             </div>
-          {text && <div className={`headerText ${centerText ? 'headerTextCenter' : ''}`}>{text}</div>}
-          {children}
-         </div>
-        : <div className='container'>
-        {backOverride === undefined
-          ? <div
-            className='backButtonCont'
-            onClick={() => history.goBack()}>
-            <div className='backButtonIcon' >
-              <img src={ICON_BACK} />
-            </div>
+            {text && <div className={`headerText ${centerText ? 'headerTextCenter' : ''}`}>{text}</div>}
+            {children}
           </div>
-          : <div
-            className='backButtonCont backButtonContDetails'
-            onClick={() => backOverride()}>
-            <div className='backButtonIcon' >
-              <img src={ICON_BACK} />
-            </div>
+          : <div className='container'>
+            {backOverride === undefined
+              ? <div
+                className='backButtonCont'
+                onClick={() => history.goBack()}>
+                <div className='backButtonIcon' >
+                  <img src={ICON_BACK} />
+                </div>
+              </div>
+              : <div
+                className='backButtonCont backButtonContDetails'
+                onClick={() => backOverride()}>
+                <div className='backButtonIcon' >
+                  <img src={ICON_BACK} />
+                </div>
+              </div>
+            }
+            {text && <div className={`headerText ${centerText ? 'headerTextCenter' : ''}`}>{text}</div>}
+            {children}
+            {showAccountsDropdown && (<AccountSelector/>)}
           </div>
-        }
-        {text && <div className={`headerText ${centerText ? 'headerTextCenter' : ''}`}>{text}</div>}
-        {children}
-        {showAccountsDropdown && (<AccountSelector/>)}
-      </div>
       }
     </div>
   );

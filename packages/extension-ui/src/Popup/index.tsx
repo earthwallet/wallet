@@ -15,6 +15,7 @@ import { AccountContext, ActionContext, AuthorizeReqContext, MediaContext, Metad
 import ToastProvider from '../components/Toast/ToastProvider';
 import { subscribeAccounts, subscribeAuthorizeRequests, subscribeMetadataRequests, subscribeSigningRequests } from '../messaging';
 import { buildHierarchy } from '../util/buildHierarchy';
+import Details from './Transactions/Details';
 import { defaultNetworkContext } from './Utils/Consts';
 import Wallet from './Wallet/Wallet';
 import WalletReceiveTokens from './Wallet/WalletReceiveTokens';
@@ -35,7 +36,6 @@ import PhishingDetected from './PhishingDetected';
 import RestoreJson from './RestoreJson';
 import Signing from './Signing';
 import Transactions from './Transactions';
-import Details from './Transactions/Details';
 
 // import Welcome from './Welcome';
 

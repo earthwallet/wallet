@@ -41,20 +41,21 @@ function ImportSeed({ className }: Props): React.ReactElement {
 
   const _onCreate = useCallback((name: string, password: string): void => {
     console.log(name);
+
     // this should always be the case
     if (_name && password && account) {
       setIsBusy(true);
 
       createAccountSuri(_name, password, account.suri, undefined, account.genesis, account.genesis === 'the_icp' ? 'ICP' : undefined)
-      .then(() => {
-        setSelectedAccount({ ...account, name: _name, genesis: 'the_icp', symbol: 'ICP' });
-        onAction('/wallet/home');
-      }).catch((error): void => {
+        .then(() => {
+          setSelectedAccount({ ...account, name: _name, genesis: 'the_icp', symbol: 'ICP' });
+          onAction('/wallet/home');
+        }).catch((error): void => {
           setIsBusy(false);
           console.error(error);
         });
     }
-  }, [account, onAction, _name]);
+  }, [account, onAction, _name, setSelectedAccount]);
 
   const _onNextStep = useCallback(() => { setStep1(false); }, []);
   const _onBackClick = useCallback(() => { setStep1(true); }, []);

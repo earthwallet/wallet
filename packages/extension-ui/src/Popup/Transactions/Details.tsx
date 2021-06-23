@@ -22,15 +22,13 @@ import styled from 'styled-components';
 import bg_wallet_details from '../../assets/bg_wallet_details.png';
 // import { ActionContext } from '../../components';
 import ICON_COPY from '../../assets/icon_copy_details.svg';
-import ICON_OPEN from '../../assets/icon_open_new.svg';
 import ICON_ICP_DETAILS from '../../assets/icon_icp_details.png';
-
+import ICON_OPEN from '../../assets/icon_open_new.svg';
+import Header from '../../partials/Header';
 // import ICON_FAILED from '../../assets/icon_failed.svg';
 // import ICON_FORWARD from '../../assets/icon_forward.svg';
 // import ICON_RECV from '../../assets/icon_receive.svg';
 import { getShortAddress } from '../Utils/CommonUtils';
-
-import Header from '../../partials/Header';
 
 interface Props extends RouteComponentProps<{txnId: string}>, ThemeProps {
   className?: string;
@@ -64,62 +62,53 @@ interface keyable {
 const Details = ({ className, match: { params: { txnId = '25cc95c15f11b46a316fa4112056ec8b142a5b82a4ad1dce5cabefa8baf05eb9' } } }: Props) => {
   // const onAction = useContext(ActionContext);
 
-  console.log(txnId);
   const [loading, setLoading] = useState<boolean>(false);
   const [usdValue, setUsdValue] = useState<number>(0);
   const [transDetail, setTransDetail] = useState<any|null>(null);
 
   console.log(loading, usdValue);
 
-  
-
-
   const fetchTransactionDetail = async (transactionId: string) => {
-    var myHeaders = new Headers();
-      myHeaders.append("accept", "application/json, text/plain, */*");
-      myHeaders.append("content-type", "application/json;charset=UTF-8");
-          
-    var raw : BodyInit = JSON.stringify({
-        network_identifier: {
-          blockchain: "Internet Computer",
-          network: "00000000000000020101",
-        },
-        transaction_identifier: {
-          hash: transactionId,
-        },
-      });
-          
-    var requestOptions : RequestInit = {
+    const myHeaders = new Headers();
+
+    myHeaders.append('accept', 'application/json, text/plain, */*');
+    myHeaders.append('content-type', 'application/json;charset=UTF-8');
+
+    const raw: BodyInit = JSON.stringify({
+      network_identifier: {
+        blockchain: 'Internet Computer',
+        network: '00000000000000020101'
+      },
+      transaction_identifier: {
+        hash: transactionId
+      }
+    });
+
+    const requestOptions: RequestInit = {
       method: 'POST',
       headers: myHeaders,
       body: raw,
       redirect: 'follow'
     };
-    
-   let transDetail : keyable = await fetch("https://rosetta-api.internetcomputer.org/search/transactions", requestOptions)
-      .then(response => response.json())
-      .catch(error => console.log('error', error));
-      return transDetail;
 
+    const transDetail: keyable = await fetch('https://rosetta-api.internetcomputer.org/search/transactions', requestOptions)
+      .then((response) => response.json())
+      .catch((error) => console.log('error', error));
+
+    return transDetail;
   };
-
 
   const getTransactionDetail = (transaction: any): any => {
-      
     const operations = transaction.transaction.operations;
 
-      const timestamp: number = transaction.transaction.metadata.timestamp;
+    const timestamp: number = transaction.transaction.metadata.timestamp;
 
-      console.log(operations, 'operations');
-    
-    return { from : operations[0].amount?.value < 0 ? operations[0].account.address : operations[1].account.address,
-        to : operations[0].amount?.value > 0 ? operations[0].account.address : operations[1].account.address,
-        amount:  Math.abs(operations[0].amount.value / Math.pow(10, operations[0].amount.currency.decimals)),
-        fees: Math.abs(operations[2].amount.value / Math.pow(10, operations[2].amount.currency.decimals)),
-        time: moment((timestamp / 1000000)).format('mm:ss on MMM DD YY')
-     };
+    return { from: operations[0].amount?.value < 0 ? operations[0].account.address : operations[1].account.address,
+      to: operations[0].amount?.value > 0 ? operations[0].account.address : operations[1].account.address,
+      amount: Math.abs(operations[0].amount.value / Math.pow(10, operations[0].amount.currency.decimals)),
+      fees: Math.abs(operations[2].amount.value / Math.pow(10, operations[2].amount.currency.decimals)),
+      time: moment((timestamp / 1000000)).format('mm:ss on MMM DD YY') };
   };
-
 
   /* const getTransactionTime = (transaction: any): any => {
     const timestamp: number = transaction.transaction.metadata.timestamp;
@@ -159,95 +148,91 @@ const Details = ({ className, match: { params: { txnId = '25cc95c15f11b46a316fa4
       getICPUSDValue();
 
       const transactionDetail: keyable = await fetchTransactionDetail(txnId);
-        console.log(transactionDetail.transactions[0])
-        if(transactionDetail.transactions[0] !== undefined && transactionDetail.transactions[0] !== null) {
-            setTransDetail(getTransactionDetail(transactionDetail.transactions[0]));
-            console.log(transactionDetail, transactionDetail.transactions[0], getTransactionDetail(transactionDetail.transactions[0]), 'transactionDetail');
 
-        }
+      if (transactionDetail.transactions[0] !== undefined && transactionDetail.transactions[0] !== null) {
+        setTransDetail(getTransactionDetail(transactionDetail.transactions[0]));
+      }
 
-        setLoading(false);
+      setLoading(false);
     };
 
     if (txnId) {
       loadTransactionDetails(txnId);
-     }
+    }
   }, [txnId]);
 
- 
-  if(transDetail === undefined || transDetail === null && loading !== true) {
-   return ( <div className={className}>
-    <div className={'transCont transErrorCont'}>
+  if ((transDetail === undefined || transDetail === null) && loading !== true) {
+    return (<div className={className}>
+      <div className={'transCont transErrorCont'}>
         Please check transaction Id
         <div className={'transError'}>{txnId}</div>
-     </div>
- </div>)
+      </div>
+    </div>);
   }
-  
 
   return (
     <div className={className}>
       <div className={'transCont'}>
-            <Header
-            text={'Details'}
-            className={'header'}
-            showAccountsDropdown={false}
-            type={'details'} >
-                <div className={'headerIcons'}>  
-                    <div className={'headerIcon headerIconFirst'}>
-                     <img src={ICON_COPY} />
-                    </div>
-                <div 
-                onClick={() => window.open(`https://dashboard.internetcomputer.org/transaction/${txnId}`, "_blank")}
-                className={'headerIcon headerIconSecond'}>
-                    <img src={ICON_OPEN} />
-                </div>
-                </div>
+        <Header
+          className={'header'}
+          showAccountsDropdown={false}
+          text={'Details'}
+          type={'details'} >
+          <div className={'headerIcons'}>
+            <div className={'headerIcon headerIconFirst'}>
+              <img src={ICON_COPY} />
+            </div>
+            <div
+              className={'headerIcon headerIconSecond'}
+              onClick={() => window.open(`https://dashboard.internetcomputer.org/transaction/${txnId}`, '_blank')}>
+              <img src={ICON_OPEN} />
+            </div>
+          </div>
 
-          </Header>  
-       
+        </Header>
+
         <div className={'transItems'}>
-            <div className={'transHeader'}>
-                <div>
-                    <div className={'transAccount'}>From</div>
-                    <div className={'transAddressCont'}>
-                        <img src={ICON_ICP_DETAILS} />
-                    <div className={'transAddress'}>{getShortAddress(transDetail?.from || '')}</div>
-                    </div>
-                </div>
-                <div>
-                    <div className={'transAccount'}>To</div>
-                    <div className={'transAddressCont'}>
-                        <img src={ICON_ICP_DETAILS} />
-                    <div className={'transAddress'}>{getShortAddress(transDetail?.to || '')}</div>
-                    </div>
-                </div>
-                <div>
-                    <div className={'transAccount'}>Transaction</div>
-                    <div className={'transRow'}>
-                        <div className={'transCol1'}>Amount</div>
-                        <div className={'transCol2'}>{transDetail?.amount?.toFixed(4)} ICP</div>
-                    </div>
-                    <div className={'transRow'}>
-                        <div className={'transCol1'}>Value</div>
-                        <div className={'transCol2'}>{(transDetail?.amount * usdValue).toFixed(4)} USD</div>
-                    </div>
-                    <div className={'transRow'}>
-                        <div className={'transCol1'}>Transaction Fees</div>
-                        <div className={'transCol2'}>{(transDetail?.fees)?.toFixed(4)} ICP</div>
-                    </div>
-                    <div className={'transRow'}>
-                        <div className={'transCol1'}>Total</div>
-                        <div className={'transCol2'}>{(transDetail?.fees + transDetail?.amount)?.toFixed(4)} ICP</div>
-                    </div>
-                </div>
-                <div>
-                    <div className={'transAccount'}>Activity Log</div>
-                    <div className={'transActivity'}>
-                        {`Transaction created with a value of ${(transDetail?.fees + transDetail?.amount)?.toFixed(4)} ICP at ${transDetail?.time}.`}
-                     </div>
-                </div>
-             </div>
+          <div className={'transHeader'}>
+            <div>
+              <div className={'transAccount'}>From</div>
+              <div className={'transAddressCont'}>
+                <img src={ICON_ICP_DETAILS} />
+                <div className={'transAddress'}>{getShortAddress(transDetail?.from || '')}</div>
+              </div>
+            </div>
+            <div>
+              <div className={'transAccount'}>To</div>
+              <div className={'transAddressCont'}>
+                <img src={ICON_ICP_DETAILS} />
+                <div className={'transAddress'}>{getShortAddress(transDetail?.to || '')}</div>
+              </div>
+            </div>
+            <div>
+              <div className={'transAccount'}>Transaction</div>
+              <div className={'transRow'}>
+                <div className={'transCol1'}>Amount</div>
+                <div className={'transCol2'}>{transDetail?.amount?.toFixed(4)} ICP</div>
+              </div>
+              <div className={'transRow'}>
+                <div className={'transCol1'}>Value</div>
+                <div className={'transCol2'}>{(transDetail?.amount * usdValue).toFixed(4)} USD</div>
+              </div>
+              <div className={'transRow'}>
+                <div className={'transCol1'}>Transaction Fees</div>
+                <div className={'transCol2'}>{(transDetail?.fees)?.toFixed(4)} ICP</div>
+              </div>
+              <div className={'transRow'}>
+                <div className={'transCol1'}>Total</div>
+                <div className={'transCol2'}>{(parseFloat(transDetail?.fees || 0) + parseFloat(transDetail?.amount || 0))?.toFixed(4)} ICP</div>
+              </div>
+            </div>
+            <div>
+              <div className={'transAccount'}>Activity Log</div>
+              <div className={'transActivity'}>
+                {`Transaction created with a value of ${(parseFloat(transDetail?.fees || 0) + parseFloat(transDetail?.amount || 0))?.toFixed(4)} ICP at ${transDetail?.time}.`}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -202,7 +202,7 @@ const Transactions = ({ className, match: { params: { address = 'f78f75b401011ea
                     (transaction: keyable, index: number) => <div className={'transItem'}
                       key={index}
                       onClick={() => history.push(`/wallet/transaction/${transaction?.transaction?.transaction_identifier?.hash}`)}
-                      >
+                    >
                       <div className={'transColIcon'}>
                         {statusToIcon((getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send')}
                       </div>
