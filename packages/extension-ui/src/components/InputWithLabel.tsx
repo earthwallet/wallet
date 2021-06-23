@@ -98,7 +98,7 @@ export default styled(InputWithLabel)`
     font-size: 12px;
     line-height: 150%;
     letter-spacing: 0.05em;
-    color: #dbe4f2; //#dbe4f2
+    color: #dbe4f2;
     margin-bottom: 10px;
     text-transform: uppercase;
 
