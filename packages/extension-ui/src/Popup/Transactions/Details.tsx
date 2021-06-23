@@ -14,21 +14,23 @@
 
 import type { ThemeProps } from '../../types';
 
-import { ICP } from '@earthwallet/sdk';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import bg_wallet_details from '../../assets/bg_wallet_details.png';
 // import { ActionContext } from '../../components';
-import ICON_CARET from '../../assets/icon_caret.svg';
-import ICON_FAILED from '../../assets/icon_failed.svg';
-import ICON_FORWARD from '../../assets/icon_forward.svg';
-import ICON_RECV from '../../assets/icon_receive.svg';
-import ICON_SEND from '../../assets/icon_send_status.svg';
+import ICON_COPY from '../../assets/icon_copy_details.svg';
+import ICON_OPEN from '../../assets/icon_open_new.svg';
+import ICON_ICP_DETAILS from '../../assets/icon_icp_details.png';
+
+// import ICON_FAILED from '../../assets/icon_failed.svg';
+// import ICON_FORWARD from '../../assets/icon_forward.svg';
+// import ICON_RECV from '../../assets/icon_receive.svg';
 import { getShortAddress } from '../Utils/CommonUtils';
+
+import Header from '../../partials/Header';
 
 interface Props extends RouteComponentProps<{txnId: string}>, ThemeProps {
   className?: string;
@@ -63,23 +65,63 @@ const Details = ({ className, match: { params: { txnId = '25cc95c15f11b46a316fa4
   // const onAction = useContext(ActionContext);
 
   console.log(txnId);
-  const address = '78d068b96cfee9c0fc6f97b42051ea89c0eb9892bcf30c3361169d8a9241897c'
-  const history = useHistory();
-  const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [usdValue, setUsdValue] = useState<number>(0);
+  const [transDetail, setTransDetail] = useState<any|null>(null);
 
-  console.log(loading);
+  console.log(loading, usdValue);
 
-  const getTransactionDetail = (transaction: any): any => {
-    const operations = transaction.transaction.operations
-      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
-      .filter((operation: { account: any; }) => operation.account.address === address);
+  
 
-    return operations[0];
+
+  const fetchTransactionDetail = async (transactionId: string) => {
+    var myHeaders = new Headers();
+      myHeaders.append("accept", "application/json, text/plain, */*");
+      myHeaders.append("content-type", "application/json;charset=UTF-8");
+          
+    var raw : BodyInit = JSON.stringify({
+        network_identifier: {
+          blockchain: "Internet Computer",
+          network: "00000000000000020101",
+        },
+        transaction_identifier: {
+          hash: transactionId,
+        },
+      });
+          
+    var requestOptions : RequestInit = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    
+   let transDetail : keyable = await fetch("https://rosetta-api.internetcomputer.org/search/transactions", requestOptions)
+      .then(response => response.json())
+      .catch(error => console.log('error', error));
+      return transDetail;
+
   };
 
-  const getTransactionTime = (transaction: any): any => {
+
+  const getTransactionDetail = (transaction: any): any => {
+      
+    const operations = transaction.transaction.operations;
+
+      const timestamp: number = transaction.transaction.metadata.timestamp;
+
+      console.log(operations, 'operations');
+    
+    return { from : operations[0].amount?.value < 0 ? operations[0].account.address : operations[1].account.address,
+        to : operations[0].amount?.value > 0 ? operations[0].account.address : operations[1].account.address,
+        amount:  Math.abs(operations[0].amount.value / Math.pow(10, operations[0].amount.currency.decimals)),
+        fees: Math.abs(operations[2].amount.value / Math.pow(10, operations[2].amount.currency.decimals)),
+        time: moment((timestamp / 1000000)).format('mm:ss on MMM DD YY')
+     };
+  };
+
+
+  /* const getTransactionTime = (transaction: any): any => {
     const timestamp: number = transaction.transaction.metadata.timestamp;
 
     return moment((timestamp / 1000000)).format('MMM DD');
@@ -91,9 +133,9 @@ const Details = ({ className, match: { params: { txnId = '25cc95c15f11b46a316fa4
       .filter((operation: { account: any; }) => operation.account.address !== address);
 
     return operations[0];
-  };
+  }; */
 
-  const getICPUSDValue = async (walletBalance: keyable) => {
+  const getICPUSDValue = async () => {
     const fetchHeaders = new Headers();
 
     fetchHeaders.append('accept', 'application/json');
@@ -112,123 +154,100 @@ const Details = ({ className, match: { params: { txnId = '25cc95c15f11b46a316fa4
   };
 
   useEffect(() => {
-    const loadBalance = async (address: string) => {
+    const loadTransactionDetails = async (txnId: string) => {
       setLoading(true);
-      const balance: keyable = await ICP.getBalance(address);
+      getICPUSDValue();
 
-      setLoading(false);
+      const transactionDetail: keyable = await fetchTransactionDetail(txnId);
+        console.log(transactionDetail.transactions[0])
+        if(transactionDetail.transactions[0] !== undefined && transactionDetail.transactions[0] !== null) {
+            setTransDetail(getTransactionDetail(transactionDetail.transactions[0]));
+            console.log(transactionDetail, transactionDetail.transactions[0], getTransactionDetail(transactionDetail.transactions[0]), 'transactionDetail');
 
-      if (balance && balance?.balances != null) {
-        getICPUSDValue(balance);
-      }
+        }
+
+        setLoading(false);
     };
 
-    if (address) {
-      loadBalance(address);
-      loadTransactions(address);
-    }
-  }, [address]);
+    if (txnId) {
+      loadTransactionDetails(txnId);
+     }
+  }, [txnId]);
 
-  const loadTransactions = async (address: string) => {
-    const transactions = await ICP.getTransactions(address);
-
-    console.log('transactions', transactions);
-    setWalletTransactions(transactions);
-  };
-
-  const statusToIcon = (status: string) => {
-    switch (status) {
-      case 'Receive':
-        return ([
-          <img src={ICON_RECV} />
-        ]);
-      case 'Send':
-        return ([
-          <img src={ICON_SEND} />
-        ]);
-      case 'Failed':
-        return ([
-          <img src={ICON_FAILED} />
-        ]);
-      default:
-        return <div />;
-    }
-  };
+ 
+  if(transDetail === undefined || transDetail === null && loading !== true) {
+   return ( <div className={className}>
+    <div className={'transCont transErrorCont'}>
+        Please check transaction Id
+        <div className={'transError'}>{txnId}</div>
+     </div>
+ </div>)
+  }
+  
 
   return (
     <div className={className}>
-      {/*        <Header
-            text={'Transactions'}
-            className={'header'}
-            showAccountsDropdown
-            showMenu
-            type={'wallet'} /> */}
-
       <div className={'transCont'}>
-        <div
-          className={'backTransButton'}
+            <Header
+            text={'Details'}
+            className={'header'}
+            showAccountsDropdown={false}
+            type={'details'} >
+                <div className={'headerIcons'}>  
+                    <div className={'headerIcon headerIconFirst'}>
+                     <img src={ICON_COPY} />
+                    </div>
+                <div 
+                onClick={() => window.open(`https://dashboard.internetcomputer.org/transaction/${txnId}`, "_blank")}
+                className={'headerIcon headerIconSecond'}>
+                    <img src={ICON_OPEN} />
+                </div>
+                </div>
 
-          onClick={() => history.goBack()}>
-          <img src={ICON_CARET} />
-
-          <div className={'transTitle'}>Transactions</div>
-        </div>
-        {/*   <div className="transactions-div">
-            {walletTransactions &&
-                  walletTransactions?.transactions &&
-                  walletTransactions?.transactions?.reverse().map(
-                    (transaction: { block_identifier: { hash: string } }) => {
-                      return (
-                        <div className="transaction-item-div">
-
-                          <div className='transaction-detail-div'>
-                            <div className='transaction-type'>{(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send'}</div>
-                            <div className='transaction-detail'>{`${getTransactionWithDetail(transaction)?.amount?.value > 0 ? 'To:' : 'From:'} ${getShortAddress(getTransactionWithDetail(transaction)?.account.address || 'Self')}`}</div>
-                          </div>
-                          <div className='transaction-amount'>{`${(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals)}` + ` ${(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.symbol}`}</div>
-
-                        </div>
-                      );
-                    }
-                  )}
-            {walletTransactions &&
-                  !walletTransactions?.transactions?.length && (
-              <div className="transaction-item-div">
-                      No Transaction History
-              </div>
-            )}
-          </div> */}
+          </Header>  
+       
         <div className={'transItems'}>
-          {walletTransactions &&
-                  walletTransactions?.transactions &&
-                  walletTransactions?.transactions?.sort((a: keyable, b: keyable) => getTransactionTime(a) - getTransactionTime(b)).reverse().map(
-                    (transaction: { block_identifier: { hash: string } }, index: number) => <div className={'transItem'}
-                      key={index}>
-                      <div className={'transColIcon'}>
-                        {statusToIcon((getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send')}
-                      </div>
-                      <div className={'transColStatus'}>
-                        <div>{(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send'}</div>
-                        <div className={'transSubColTime'}>
-                          <div>{getTransactionTime(transaction) || 'Jun 7'}</div>
-                          <div className={'transSubColDot'}></div>
-                          <div>to {getShortAddress(getTransactionWithDetail(transaction)?.account.address || 'Self')}</div>
-                        </div>
-                      </div>
-
-                      <div className={'transColValue'}>
-                        <div>
-                          {(getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals)} ICP
-                        </div>
-                        <div className={'transSubColPrice'}>
-                        ${((getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value / Math.pow(10, (getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).currency.decimals) * usdValue).toFixed(3)}
-                        </div>
-                      </div>
-                      <div className={'transColAction'}>
-                        <img src={ICON_FORWARD} />
-                      </div>
-
-                    </div>)}
+            <div className={'transHeader'}>
+                <div>
+                    <div className={'transAccount'}>From</div>
+                    <div className={'transAddressCont'}>
+                        <img src={ICON_ICP_DETAILS} />
+                    <div className={'transAddress'}>{getShortAddress(transDetail?.from || '')}</div>
+                    </div>
+                </div>
+                <div>
+                    <div className={'transAccount'}>To</div>
+                    <div className={'transAddressCont'}>
+                        <img src={ICON_ICP_DETAILS} />
+                    <div className={'transAddress'}>{getShortAddress(transDetail?.to || '')}</div>
+                    </div>
+                </div>
+                <div>
+                    <div className={'transAccount'}>Transaction</div>
+                    <div className={'transRow'}>
+                        <div className={'transCol1'}>Amount</div>
+                        <div className={'transCol2'}>{transDetail?.amount?.toFixed(4)} ICP</div>
+                    </div>
+                    <div className={'transRow'}>
+                        <div className={'transCol1'}>Value</div>
+                        <div className={'transCol2'}>{(transDetail?.amount * usdValue).toFixed(4)} USD</div>
+                    </div>
+                    <div className={'transRow'}>
+                        <div className={'transCol1'}>Transaction Fees</div>
+                        <div className={'transCol2'}>{(transDetail?.fees)?.toFixed(4)} ICP</div>
+                    </div>
+                    <div className={'transRow'}>
+                        <div className={'transCol1'}>Total</div>
+                        <div className={'transCol2'}>{(transDetail?.fees + transDetail?.amount)?.toFixed(4)} ICP</div>
+                    </div>
+                </div>
+                <div>
+                    <div className={'transAccount'}>Activity Log</div>
+                    <div className={'transActivity'}>
+                        {`Transaction created with a value of ${(transDetail?.fees + transDetail?.amount)?.toFixed(4)} ICP at ${transDetail?.time}.`}
+                     </div>
+                </div>
+             </div>
         </div>
       </div>
     </div>
@@ -242,6 +261,43 @@ flex-direction: column;
 align-items: center;
 height: -webkit-fill-available;
 background: url(${bg_wallet_details});
+
+.headerIcon{
+position: static;
+width: 33px;
+height: 33px;
+
+background: rgba(255, 255, 255, 0.17);
+border-radius: 21px;
+
+/* Inside Auto Layout */
+
+flex: none;
+order: 0;
+flex-grow: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 2px solid #131A28;
+cursor: pointer;
+user-select: none;
+}
+
+.headerIconFirst {
+    margin-left: 10px;
+    margin-right: 10px;
+    visibility: hidden;
+
+}
+.headerIconSecond {
+
+}
+
+.headerIcons{
+    display: flex;
+    flex-shrink:0;
+    flex-direction: row;
+}
 
 .backTransButton {
     display: flex;
@@ -357,5 +413,84 @@ background: url(${bg_wallet_details});
     .transItems {
         height: 502px;
         overflow: hidden scroll;
+        width: 317px;
+    }
+
+    .transAccount {
+        margin-top: 24px;
+        margin-bottom: 8px;
+        font-family: Poppins;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 24px;
+        color: #FFFFFF;
+    }
+
+    .transAddress {
+        font-family: DM Mono;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 12px;
+        /* identical to box height, or 100% */
+
+
+        color: #FAFBFB;
+
+        opacity: 0.54;
+    }
+
+    .transAddressCont {
+        display: flex;
+        align-items: center;
+    }
+
+    .transAddress {
+        margin-left: 10px;
+    }
+
+    .transCol1, .transCol2 {
+        font-family: Poppins;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 21px;
+        /* identical to box height */
+
+
+        color: #FFFFFF;
+
+        opacity: 0.54;
+    }
+
+    .transRow {
+        display: flex;
+        justify-content: space-between;
+        height: 40px;
+        border-bottom: 1px solid #ffffff1a;
+        align-items: center;
+    }
+
+    .transError {
+        font-family: Poppins;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 21px;
+        /* identical to box height */
+
+
+        color: #FFFFFF;
+
+        opacity: 0.54;
+        word-break:break-all;
+
+    }
+
+    .transErrorCont {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 `);

@@ -199,9 +199,9 @@ const Transactions = ({ className, match: { params: { address = 'f78f75b401011ea
           {walletTransactions &&
                   walletTransactions?.transactions &&
                   walletTransactions?.transactions?.sort((a: keyable, b: keyable) => getTransactionTime(a) - getTransactionTime(b)).reverse().map(
-                    (transaction: { block_identifier: { hash: string } }, index: number) => <div className={'transItem'}
+                    (transaction: keyable, index: number) => <div className={'transItem'}
                       key={index}
-                      onClick={() => history.push(`/wallet/transaction/${transaction?.block_identifier?.hash}`)}
+                      onClick={() => history.push(`/wallet/transaction/${transaction?.transaction?.transaction_identifier?.hash}`)}
                       >
                       <div className={'transColIcon'}>
                         {statusToIcon((getTransactionDetail(transaction) && getTransactionDetail(transaction).amount).value > 0 ? 'Receive' : 'Send')}
@@ -293,6 +293,12 @@ background: url(${bg_wallet_details});
         display: flex;
         width: calc(340px - 32px);
         overflow: hidden;
+        cursor: pointer;
+        user-select: none;
+
+        &:active {
+          opacity: 0.7;
+        }
     }
 
     .transColStatus {

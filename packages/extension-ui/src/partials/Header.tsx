@@ -66,7 +66,7 @@ function Header ({ backOverride, centerText, children, className = '', showAccou
 
   return (
     <div className={`${className} ${smallMargin ? 'smallMargin' : ''} ${type === 'wallet' ? 'walletDiv' : ''}`}>
-      {type !== 'wallet'
+      {type !== 'wallet' && type !== 'details'
         ? <div className='container'>
           <div className='branding'>
             {showBackArrow
@@ -140,27 +140,38 @@ function Header ({ backOverride, centerText, children, className = '', showAccou
           )}
           {children}
         </div>
-        : <div className='container'>
-          {backOverride === undefined
-            ? <div
-              className='backButtonCont'
+        : type === 'details' ? <div className='container containerDetails'>
+            <div
+              className='backButtonCont backButtonContDetails'
               onClick={() => history.goBack()}>
-              <div className='backButtonIcon' >
-                <img src={ICON_BACK} />
+              <div className='backButtonIcon backButtonIconDetails' >
+                <img src={ICON_BACK} /> <div  className='backText'>Back</div>
               </div>
             </div>
-            : <div
-              className='backButtonCont'
-              onClick={() => backOverride()}>
-              <div className='backButtonIcon' >
-                <img src={ICON_BACK} />
-              </div>
-            </div>
-          }
           {text && <div className={`headerText ${centerText ? 'headerTextCenter' : ''}`}>{text}</div>}
           {children}
-          {showAccountsDropdown && (<AccountSelector/>)}
-        </div>
+         </div>
+        : <div className='container'>
+        {backOverride === undefined
+          ? <div
+            className='backButtonCont'
+            onClick={() => history.goBack()}>
+            <div className='backButtonIcon' >
+              <img src={ICON_BACK} />
+            </div>
+          </div>
+          : <div
+            className='backButtonCont backButtonContDetails'
+            onClick={() => backOverride()}>
+            <div className='backButtonIcon' >
+              <img src={ICON_BACK} />
+            </div>
+          </div>
+        }
+        {text && <div className={`headerText ${centerText ? 'headerTextCenter' : ''}`}>{text}</div>}
+        {children}
+        {showAccountsDropdown && (<AccountSelector/>)}
+      </div>
       }
     </div>
   );
@@ -173,7 +184,29 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
   margin: 0;
   position: relative;
 
-  .backButtonCont{
+
+
+  .backText {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 150%;
+    /* identical to box height, or 21px */
+    
+    
+    color: #FFFFFF;
+    
+    
+    /* Inside Auto Layout */
+    
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    margin: 0px 8px;
+  }
+
+  .backButtonCont {
     background: rgba(5, 12, 18, 0.4);
     backdrop-filter: blur(20px);
     /* Note: backdrop-filter has minimal browser support */
@@ -317,5 +350,20 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
 
   .headerTextCenter {
     margin-left: -34px;
+  }
+
+  .backButtonIconDetails {
+    padding: 0 10px;
+    width: auto;
+  }
+  .containerDetails {
+    margin: 0;
+    width: 317px;
+    max-width: 317px;
+    padding: 0px 0 0 0px;
+  }
+
+  .backButtonContDetails {
+    width: 86px;
   }
 `));
