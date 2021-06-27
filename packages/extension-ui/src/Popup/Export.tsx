@@ -8,10 +8,12 @@ import React, { useCallback, useContext, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import styled from 'styled-components';
 
-import { ActionBar, ActionContext, ActionText, Address, Button, InputWithLabel, Warning } from '../components';
+import {  ActionContext, EarthAddress, NextStepButton, InputWithLabel, Warning } from '../components';
 import useTranslation from '../hooks/useTranslation';
 import { exportAccount } from '../messaging';
 import { Header } from '../partials';
+import BG_MNEMONIC from '../assets/bg_mnemonic.png';
+
 
 const MIN_LENGTH = 6;
 
@@ -61,15 +63,18 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
 
   return (
     <>
+    
+      <div className={className}>
       <Header
         showBackArrow
+        type={'wallet'}
         text={t<string>('Export account')}
-      />
-      <div className={className}>
-        <Address address={address}>
-          <Warning className='movedWarning'>
+      ><div style={{width: 39}}></div></Header>
+        <EarthAddress address={address || 'f78f75b401011ea77b498e4f7aac096b2ffd892e3dd2cea7da24a64d4229aa85'}></EarthAddress>
+
+       {/*    <Warning className='movedWarning'>
             {t<string>("You are exporting your account. Keep it safe and don't share it with anyone.")}
-          </Warning>
+          </Warning> */}
           <div className='actionArea'>
             <InputWithLabel
               data-export-password
@@ -87,7 +92,8 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
                 {error}
               </Warning>
             )}
-            <Button
+            <div className={'nextCont'}>
+            <NextStepButton
               className='export-button'
               data-export-button
               isBusy={isBusy}
@@ -95,29 +101,32 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
               isDisabled={pass.length === 0 || !!error}
               onClick={_onExportButtonClick}
             >
-              {t<string>('I want to export this account')}
-            </Button>
-            <ActionBar className='withMarginTop'>
-              <ActionText
-                className='center'
-                onClick={_goHome}
-                text={t<string>('Cancel')}
-              />
-            </ActionBar>
+              {t<string>('Confirm')}
+            </NextStepButton>
+            </div>
           </div>
-        </Address>
       </div>
     </>
   );
 }
 
 export default withRouter(styled(Export)`
+background: url(${BG_MNEMONIC}); 
+    height: 600px;
+
   .actionArea {
     padding: 10px 24px;
   }
 
   .center {
     margin: auto;
+  }
+
+  .nextCont{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin: 20px 30px;
   }
 
   .export-button {

@@ -174,7 +174,7 @@ function ExportAccount({ className }: Props): React.ReactElement {
                         src={ICON_UNCHECKED} />
                     }
 
-                    <div className='checkboxTitle'>I have saved my mnemonic seed safely.</div>
+                    <div className='checkboxTitle'>I understand that I will loose access to the account if I disclose my private keys.</div>
                   </div>
                   <div>
                   </div>
