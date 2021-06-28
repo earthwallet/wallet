@@ -90,8 +90,8 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
             isError={pass.length < MIN_LENGTH || !!error}
             label={t<string>('password for this account')}
             onChange={onPassChange}
-            type='password'
             placeholder='REQUIRED'
+            type='password'
           />
           {error && (
             <Warning
