@@ -91,6 +91,7 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
             label={t<string>('password for this account')}
             onChange={onPassChange}
             type='password'
+            placeholder='REQUIRED'
           />
           {error && (
             <Warning
