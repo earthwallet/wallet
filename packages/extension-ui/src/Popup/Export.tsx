@@ -3,17 +3,20 @@
 
 import type { ThemeProps } from '../types';
 
+import { validateMnemonic } from 'bip39';
 import { saveAs } from 'file-saver';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
+import StringCrypto from 'string-crypto';
 import styled from 'styled-components';
 
-import {  ActionContext, EarthAddress, NextStepButton, InputWithLabel, Warning } from '../components';
-import useTranslation from '../hooks/useTranslation';
-import { exportAccount } from '../messaging';
-import { Header } from '../partials';
 import BG_MNEMONIC from '../assets/bg_mnemonic.png';
+import { EarthAddress, InputWithLabel, NextStepButton, Warning } from '../components';
+import useToast from '../hooks/useToast';
+import useTranslation from '../hooks/useTranslation';
+import { Header } from '../partials';
 
+const { decryptString } = new StringCrypto();
 
 const MIN_LENGTH = 6;
 
@@ -23,15 +26,10 @@ interface Props extends RouteComponentProps<{address: string}>, ThemeProps {
 
 function Export ({ className, match: { params: { address } } }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const onAction = useContext(ActionContext);
   const [isBusy, setIsBusy] = useState(false);
   const [pass, setPass] = useState('');
   const [error, setError] = useState('');
-
-  const _goHome = useCallback(
-    () => onAction('/'),
-    [onAction]
-  );
+  const { show } = useToast();
 
   const onPassChange = useCallback(
     (password: string) => {
@@ -43,8 +41,23 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
   const _onExportButtonClick = useCallback(
     (): void => {
       setIsBusy(true);
+      const mnemonicSecret = decryptString(window.localStorage.getItem(address + '_mnemonic'), pass);
 
-      exportAccount(address, pass)
+
+      if (validateMnemonic(mnemonicSecret)) {
+        const blob = new Blob([mnemonicSecret], {
+          type: 'text/plain;charset=utf-8'
+        });
+
+        saveAs(blob, `${address}.txt`);
+
+        show('Downloading mnemonic to file');
+      } else {
+        setError('Wrong password! Please try again');
+        setIsBusy(false);
+      }
+
+      /*    exportAccount(address, pass)
         .then(({ exportedJson }) => {
           const blob = new Blob([JSON.stringify(exportedJson)], { type: 'application/json; charset=utf-8' });
 
@@ -56,43 +69,43 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
           console.error(error);
           setError(error.message);
           setIsBusy(false);
-        });
+        }); */
     },
-    [address, onAction, pass]
+    [address, pass, show]
   );
 
   return (
     <>
-    
+
       <div className={className}>
-      <Header
-        showBackArrow
-        type={'wallet'}
-        text={t<string>('Export account')}
-      ><div style={{width: 39}}></div></Header>
+        <Header
+          showBackArrow
+          text={t<string>('Export account')}
+          type={'wallet'}
+        ><div style={{ width: 39 }}></div></Header>
         <EarthAddress address={address || 'f78f75b401011ea77b498e4f7aac096b2ffd892e3dd2cea7da24a64d4229aa85'}></EarthAddress>
 
-       {/*    <Warning className='movedWarning'>
+        {/*    <Warning className='movedWarning'>
             {t<string>("You are exporting your account. Keep it safe and don't share it with anyone.")}
           </Warning> */}
-          <div className='actionArea'>
-            <InputWithLabel
-              data-export-password
-              disabled={isBusy}
-              isError={pass.length < MIN_LENGTH || !!error}
-              label={t<string>('password for this account')}
-              onChange={onPassChange}
-              type='password'
-            />
-            {error && (
-              <Warning
-                isBelowInput
-                isDanger
-              >
-                {error}
-              </Warning>
-            )}
-            <div className={'nextCont'}>
+        <div className='actionArea'>
+          <InputWithLabel
+            data-export-password
+            disabled={isBusy}
+            isError={pass.length < MIN_LENGTH || !!error}
+            label={t<string>('password for this account')}
+            onChange={onPassChange}
+            type='password'
+          />
+          {error && (
+            <Warning
+              isBelowInput
+              isDanger
+            >
+              {error}
+            </Warning>
+          )}
+          <div className={'nextCont'}>
             <NextStepButton
               className='export-button'
               data-export-button
@@ -103,8 +116,8 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
             >
               {t<string>('Confirm')}
             </NextStepButton>
-            </div>
           </div>
+        </div>
       </div>
     </>
   );

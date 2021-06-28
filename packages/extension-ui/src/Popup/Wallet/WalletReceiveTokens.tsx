@@ -11,10 +11,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import QRCode from 'qrcode.react';
 import React, { useCallback, useContext } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import BG_RECEIVE from '../../assets/bg_receive.png';
-import { SelectedAccountContext } from '../../components';
+import { NextStepButton, SelectedAccountContext } from '../../components';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -23,6 +24,7 @@ interface Props extends ThemeProps {
 // eslint-disable-next-line space-before-function-paren
 const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<Props> {
   const { show } = useToast();
+  const history = useHistory();
 
   const { selectedAccount } = useContext(SelectedAccountContext);
   const getShortAddress = (address: string) => address.substring(0, 8) + '.....' + address.substring(address.length - 8);
@@ -65,6 +67,19 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
           </div>
 
         </div>
+
+      </div>
+      <div style={{ padding: '0 27px',
+        marginBottom: 30,
+        position: 'absolute',
+        bottom: 0,
+        left: 0 }}>
+        <NextStepButton
+          isDisabled={false}
+          onClick={() => history.push(`/account/export/${selectedAccount?.address || ''}`)}
+        >
+          {'Export Account'}
+        </NextStepButton>
 
       </div>
     </div>

@@ -80,7 +80,6 @@ export class Keyring extends Base implements KeyringStruct {
   }
 
   public async addUri (suri: string, password?: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol?: string): Promise<CreateResult> {
-    console.log(suri, password, symbol, 'icp', meta);
     console.log('addUri');
     let wallet: any;
     let newPair: any = {};
@@ -96,6 +95,7 @@ export class Keyring extends Base implements KeyringStruct {
       if (password !== '') {
         window.localStorage.setItem(wallet?.address, JSON.stringify(wallet.identity.toJSON()));
         window.localStorage.setItem(wallet?.address + '_secure', encryptString(JSON.stringify(wallet.identity.toJSON()), password));
+        window.localStorage.setItem(wallet?.address + '_mnemonic', encryptString(suri, password));
       }
 
       console.log(wallet.identity.toJSON(), 'wallet.toJSON()',

@@ -16,6 +16,7 @@ import type { ThemeProps } from '../../types';
 import { genesisSymbolMap } from '@earthwallet/extension-ui/util/chains';
 import { saveAs } from 'file-saver';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Animated } from 'react-animated-css';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 
@@ -102,7 +103,13 @@ function CreateAccount({ className }: Props): React.ReactElement {
   const _onPreviousStep = useCallback(() => setStep((step) => step - 1), []);
 
   return (
-    <div className={className}>
+    <Animated
+      animationIn="fadeIn"
+      animationInDuration={600}
+      animationOut="fadeOut"
+      className={className}
+      isVisible={true}
+    >
       <HeaderWithSteps backOverride={step === 1 ? undefined : _onPreviousStep}
         step={step}
         text={t<string>('Create an account')}
@@ -233,19 +240,20 @@ function CreateAccount({ className }: Props): React.ReactElement {
 
                     <div className='checkboxTitle'>I understand that I will loose access to the account if I loose thise mnemonic phrase.</div>
                   </div>
-
-                  <NextStepButton
-                    isDisabled={!secondChecked}
-                    loading={isBusy}
-                    onClick={!secondChecked ? console.log : _onCreate}
-                  >
-                    {t<string>('Create an Account')}
-                  </NextStepButton>
+                  <div className={'nextCont'}>
+                    <NextStepButton
+                      isDisabled={!secondChecked}
+                      loading={isBusy}
+                      onClick={!secondChecked ? console.log : _onCreate}
+                    >
+                      {t<string>('Create an Account')}
+                    </NextStepButton>
+                  </div>
                 </div>
               </>
             ))}
       </Loading>
-    </div>
+    </Animated>
   );
 }
 
@@ -253,6 +261,13 @@ export default styled(CreateAccount)(({ theme }: Props) => `
   background: url(${BG_MNEMONIC}); 
   height: 600px;
   width: ${theme.appWidth};
+
+  .nextCont{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin: 20px 30px;
+  }
 
   .helpPassword{
     font-family: DM Sans;

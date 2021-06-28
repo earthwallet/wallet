@@ -162,7 +162,7 @@ function Header ({ backOverride, centerText, children, className = '', showAccou
                 </div>
               </div>
               : <div
-                className='backButtonCont backButtonContDetails'
+                className='backButtonCont'
                 onClick={() => backOverride()}>
                 <div className='backButtonIcon' >
                   <img src={ICON_BACK} />

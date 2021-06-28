@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
+import logo from '../assets/icon_icp_details.png';
 // import { decodeAddress } from '@polkadot/util-crypto';
 import { Link } from '../components';
 import useMetadata from '../hooks/useMetadata';
@@ -21,7 +22,6 @@ import useTranslation from '../hooks/useTranslation';
 import { DEFAULT_TYPE } from '../util/defaultType';
 import getParentNameSuri from '../util/getParentNameSuri';
 import { AccountContext, SelectedAccountContext, SettingsContext } from './contexts';
-import logo from '../assets/icon_icp_details.png';
 
 export interface Props {
   actions?: React.ReactNode;
@@ -188,7 +188,8 @@ function EarthAddress ({ address, children, className, genesisHash, isExternal, 
               className='name'
               data-field='name'
             >
-              <img src={logo}    className='nameIcon'></img>
+              <img className='nameIcon'
+                src={logo}></img>
               <Name />
             </div>
           )
