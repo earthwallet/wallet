@@ -15,7 +15,7 @@ import type { ThemeProps } from '../../types';
 
 import { Header } from '@earthwallet/extension-ui/partials';
 import { symbolGenesisMap } from '@earthwallet/extension-ui/util/chains';
-import { ICP } from '@earthwallet/sdk';
+import { getBalance, getTransactions } from '@earthwallet/sdk';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -74,16 +74,15 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   };
 
   const loadTransactions = async (address: string) => {
-    const transactions = await ICP.getTransactions(address);
+    const transactions = await getTransactions(address, 'ICP');
 
-    console.log('transactions', transactions);
     setWalletTransactions(transactions);
   };
 
   useEffect(() => {
     const loadBalance = async (address: string) => {
       setLoading(true);
-      const balance: keyable = await ICP.getBalance(address);
+      const balance: keyable = await getBalance(address, 'ICP');
 
       setLoading(false);
 

@@ -31,8 +31,7 @@ import { Base } from './Base';
 import { accountKey, accountRegex, addressKey, addressRegex, contractKey, contractRegex } from './defaults';
 import { KeyringOption } from './options';
 
-const { decryptString,
-  encryptString } = new StringCrypto();
+const { encryptString } = new StringCrypto();
 
 const RECENT_EXPIRY = 24 * 60 * 60;
 
@@ -87,20 +86,12 @@ export class Keyring extends Base implements KeyringStruct {
     if (symbol === 'ICP') {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       wallet = await createWallet(suri, symbol);
-      console.log('createWallet');
-
-      console.log(wallet);
-      console.log(wallet?.identity.toJSON(), 'wallet.toJSON()');
 
       if (password !== '') {
         window.localStorage.setItem(wallet?.address, JSON.stringify(wallet.identity.toJSON()));
         window.localStorage.setItem(wallet?.address + '_secure', encryptString(JSON.stringify(wallet.identity.toJSON()), password));
         window.localStorage.setItem(wallet?.address + '_mnemonic', encryptString(suri, password));
       }
-
-      console.log(wallet.identity.toJSON(), 'wallet.toJSON()',
-        window.localStorage.getItem(wallet?.address + '_secure'),
-        decryptString(window.localStorage.getItem(wallet?.address + '_secure'), password));
     }
 
     const pair = this.keyring.addFromUri(suri, meta, type);

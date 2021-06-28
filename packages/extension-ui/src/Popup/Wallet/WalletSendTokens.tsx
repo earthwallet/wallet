@@ -18,7 +18,8 @@ import type { ThemeProps } from '../../types';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import useOutsideClick from '@earthwallet/extension-ui/hooks/useOutsideClick';
 import { Header } from '@earthwallet/extension-ui/partials';
-import { ICP } from '@earthwallet/sdk';
+import { getBalance, send } from '@earthwallet/sdk';
+import { principal_id_to_address } from '@earthwallet/sdk/build/main/util/icp';
 // import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useRef, useState } from 'react';
@@ -58,7 +59,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
 
   const loadBalance = async (address: string) => {
     setLoading(true);
-    const balance: keyable = await ICP.getBalance(address);
+    const balance: keyable = await getBalance(address, 'ICP');
 
     setLoading(false);
 
@@ -75,47 +76,28 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
     showTokenDropDown && setShowTokenDropDown(!showTokenDropDown);
   });
 
-  /*  const onTokenSelected = (token: string) => {
-    setSelectedNetwork(token);
-  }; */
-
-  /*   const getTokenSelectionDropDownItem = (tokenSymbol: string) => {
-    return (<div className='tokenSelectionDropDownItem'
-      onClick={() => onTokenSelected(tokenSymbol)}>
-      <img
-        className='tokenLogo'
-        src={logo}
-      />
-      <div className='tokenSelectionLabelDiv'>
-        <div className='tokenLabel'>{tokenSymbol}</div>
-        <div className='tokenBalance'>{`Balance: 9 ${tokenSymbol}`}</div>
-      </div>
-    </div>);
-  }; */
-
-  const sendIcp = async () => {
+  const sendTx = async () => {
     const currentAddress = selectedAccount?.address || '';
     const json_secret = window.localStorage.getItem(currentAddress) || '';
 
     const currentIdentity = Ed25519KeyIdentity.fromJSON(json_secret);
     const address = address_to_hex(
-      ICP.principal_id_to_address(currentIdentity.getPrincipal())
+      principal_id_to_address(currentIdentity.getPrincipal())
     );
 
     setLoadingSend(true);
 
     try {
-      console.log(selectedAmount, typeof selectedAmount, 'selectedAmount');
-
       if (selectedAmount === 0) {
         alert('Amount cannot be 0');
       }
 
-      const hash: any = await ICP.sendICP(
+      const hash: any = await send(
         currentIdentity,
         selectedRecp,
         address,
-        selectedAmount
+        selectedAmount,
+        'ICP'
       );
 
       await loadBalance(address);
@@ -131,7 +113,8 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
 
   return (
     <>
-      <Header centerText
+      <Header
+        centerText
         showAccountsDropdown
         showMenu
         text={'Send'}
@@ -140,11 +123,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
         ref={dropDownRef}
       >
         {!(paymentHash === undefined || paymentHash === '') && <div className='paymentDone'>
-          Payment done. Check at <a
-            className='earthlink'
-            href={`https://dashboard.internetcomputer.org/transaction/${paymentHash}`}
-            rel="noreferrer"
-            target="_blank">explorer</a>
+          Payment Done! Check transactions for more details.
         </div>}
         <div className={'earthInputLabel'}>Add recipient</div>
         <input
@@ -202,10 +181,10 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
         />
         <div className={'buttonCont'}>
           {loadingSend
-            ? <Button onClick={() => sendIcp()}>
+            ? <Button onClick={() => sendTx()}>
               {t<string>('Sending...')}
             </Button>
-            : <Button onClick={() => sendIcp()}>
+            : <Button onClick={() => sendTx()}>
               {t<string>('Send')}
             </Button>}
         </div>

@@ -14,7 +14,7 @@
 
 import type { ThemeProps } from '../../types';
 
-import { ICP } from '@earthwallet/sdk';
+import { getBalance, getTransactions } from '@earthwallet/sdk';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -37,29 +37,7 @@ interface keyable {
   [key: string]: any
 }
 
-/* const MOCK = [{
-    status: "Failed",
-    time: "Jun 7",
-    to: "0x4f2...0c90",
-    value: "1.32464 ICP",
-    price: "$4,652.33 USD"
-
-    },
-    {
-    status: "Send",
-    time: "Jun 7",
-    to: "0x4f2...0c90",
-    value: "2.997627 ICP",
-    price: "$1,32.33 USD"
-    },
-    {
-    status: "Receive",
-    time: "Jun 7",
-    to: "0x4f2...0c90",
-    value: "2.997627 ICP",
-    price: "$12,154.33 USD"
-    }]; */
-const Transactions = ({ className, match: { params: { address = 'f78f75b401011ea77b498e4f7aac096b2ffd892e3dd2cea7da24a64d4229aa85' } } }: Props) => {
+const Transactions = ({ className, match: { params: { address } } }: Props) => {
   // const onAction = useContext(ActionContext);
   const history = useHistory();
   const [walletTransactions, setWalletTransactions] = useState<any>();
@@ -111,7 +89,7 @@ const Transactions = ({ className, match: { params: { address = 'f78f75b401011ea
   useEffect(() => {
     const loadBalance = async (address: string) => {
       setLoading(true);
-      const balance: keyable = await ICP.getBalance(address);
+      const balance: keyable = await getBalance(address, 'ICP');
 
       setLoading(false);
 
@@ -127,9 +105,8 @@ const Transactions = ({ className, match: { params: { address = 'f78f75b401011ea
   }, [address]);
 
   const loadTransactions = async (address: string) => {
-    const transactions = await ICP.getTransactions(address);
+    const transactions = await getTransactions(address, 'ICP');
 
-    console.log('transactions', transactions);
     setWalletTransactions(transactions);
   };
 

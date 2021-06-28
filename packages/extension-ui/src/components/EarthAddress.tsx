@@ -90,7 +90,6 @@ function EarthAddress ({ address, children, className, genesisHash, isExternal, 
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
 
-  console.log(accounts);
   const settings = useContext(SettingsContext);
   const [{ account, formatted, genesisHash: recodedGenesis, type }, setRecoded] = useState<Recoded>(defaultRecoded);
   const chain = useMetadata(genesisHash || recodedGenesis, true);

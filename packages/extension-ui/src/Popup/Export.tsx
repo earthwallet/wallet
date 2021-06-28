@@ -82,11 +82,7 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
           text={t<string>('Export account')}
           type={'wallet'}
         ><div style={{ width: 39 }}></div></Header>
-        <EarthAddress address={address || 'f78f75b401011ea77b498e4f7aac096b2ffd892e3dd2cea7da24a64d4229aa85'}></EarthAddress>
-
-        {/*    <Warning className='movedWarning'>
-            {t<string>("You are exporting your account. Keep it safe and don't share it with anyone.")}
-          </Warning> */}
+        <EarthAddress address={address} ></EarthAddress>
         <div className='actionArea'>
           <InputWithLabel
             data-export-password

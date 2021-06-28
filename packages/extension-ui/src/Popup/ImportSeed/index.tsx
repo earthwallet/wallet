@@ -40,8 +40,6 @@ function ImportSeed({ className }: Props): React.ReactElement {
   }, [accounts, onAction]);
 
   const _onCreate = useCallback((name: string, password: string): void => {
-    console.log(name);
-
     // this should always be the case
     if (_name && password && account) {
       setIsBusy(true);
