@@ -43,7 +43,6 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
       setIsBusy(true);
       const mnemonicSecret = decryptString(window.localStorage.getItem(address + '_mnemonic'), pass);
 
-
       if (validateMnemonic(mnemonicSecret)) {
         const blob = new Blob([mnemonicSecret], {
           type: 'text/plain;charset=utf-8'
