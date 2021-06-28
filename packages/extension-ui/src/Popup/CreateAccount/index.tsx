@@ -119,7 +119,12 @@ function CreateAccount({ className }: Props): React.ReactElement {
         {account &&
           (step === 1
             ? (
-              <>
+              <Animated
+                animationIn="fadeIn"
+                animationInDuration={600}
+                animationOut="fadeOut"
+                isVisible={true}
+              >
                 <div className='earthInputCont'>
                   <div className='labelText'>Account name</div>
                   <input
@@ -164,9 +169,6 @@ function CreateAccount({ className }: Props): React.ReactElement {
                       <div className='mnemonicHelpTitle'>
                     This is a generated 12-word mnemonic seed.
                       </div>
-                      {/*         <div className='mnemonicHelpSubTitle'>
-                     Please write down your wallet’s mnemonic seed and keep it in a safe place.
-                     </div> */}
                     </div>
                   </div>
                   <div className='checkboxCont'>
@@ -192,7 +194,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
                     {t<string>('Next step')}
                   </NextStepButton>
                 </div>
-              </>
+              </Animated>
             )
             : (
               <>
