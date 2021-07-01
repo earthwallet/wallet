@@ -22,14 +22,18 @@ import { getBalance, send } from '@earthwallet/sdk';
 import { principal_id_to_address } from '@earthwallet/sdk/build/main/util/icp';
 // import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import StringCrypto from 'string-crypto';
 import styled from 'styled-components';
 
-import logo from '../../assets/icp-logo.png';
-import { NextStepButton, SelectedAccountContext } from '../../components';
+import ICON_ICP_DETAILS from '../../assets/icon_icp_details.png';
+import { InputWithLabel, NextStepButton, SelectedAccountContext, Warning } from '../../components';
+import { isJsonString } from '../../Popup/Utils/CommonUtils';
 
 const { address_to_hex } = require('@dfinity/rosetta-client');
+
+const { decryptString } = new StringCrypto();
 
 // import icon_send from '../../assets/icon_send.svg';
 
@@ -41,12 +45,19 @@ interface keyable {
   [key: string]: any
 }
 
+const MIN_LENGTH = 6;
+
 // eslint-disable-next-line space-before-function-paren
 const WalletSendTokens = function ({ className }: Props): React.ReactElement<Props> {
   const [showTokenDropDown, setShowTokenDropDown] = useState(false);
   const selectedNetwork = 'ICP';
   const { selectedAccount } = useContext(SelectedAccountContext);
+  const [isBusy, setIsBusy] = useState(false);
   const [selectedRecp, setSelectedRecp] = useState<string>('');
+  const [pass, setPass] = useState('');
+  const [error, setError] = useState('');
+  const [step1, setStep1] = useState(true);
+
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
 
   const dropDownRef = useRef(null);
@@ -54,6 +65,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
   const [paymentHash, setPaymentHash] = useState<string>('');
+  const [usdValue, setUsdValue] = useState<number>(0);
 
   const loadBalance = async (address: string) => {
     setLoading(true);
@@ -64,9 +76,41 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
     if (balance && balance?.balances != null) { setWalletBalance(balance); }
   };
 
+  const getICPUSDValue = async () => {
+    const fetchHeaders = new Headers();
+
+    fetchHeaders.append('accept', 'application/json');
+
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      headers: fetchHeaders,
+      redirect: 'follow'
+    };
+
+    const factor: keyable = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd', requestOptions)
+      .then((response) => response.json())
+      .catch((error) => console.log('error', error));
+
+    setUsdValue(parseFloat(factor['internet-computer'].usd));
+  };
+
+  const onPassChange = useCallback(
+    (password: string) => {
+      setPass(password);
+      setError('');
+      const currentAddress = selectedAccount?.address || '';
+      const json_secret = decryptString(window.localStorage.getItem(currentAddress + '_icpjson'), password);
+
+      if (!isJsonString(json_secret)) {
+        setError('Wrong password! Please try again');
+      }
+    }
+    , [selectedAccount]);
+
   useEffect(() => {
     if (selectedAccount && selectedAccount?.address) {
       loadBalance(selectedAccount?.address);
+      getICPUSDValue();
     }
   }, [selectedAccount]);
 
@@ -74,36 +118,48 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
     showTokenDropDown && setShowTokenDropDown(!showTokenDropDown);
   });
 
+  const onNextStep = useCallback(() => { setStep1(false); }, []);
+  const onBackClick = useCallback(() => { setStep1(true); }, []);
+
   const sendTx = async () => {
+    setIsBusy(true);
+
     const currentAddress = selectedAccount?.address || '';
-    const json_secret = window.localStorage.getItem(currentAddress) || '';
+    const json_secret = decryptString(window.localStorage.getItem(currentAddress + '_icpjson'), pass);
 
-    const currentIdentity = Ed25519KeyIdentity.fromJSON(json_secret);
-    const address = address_to_hex(
-      principal_id_to_address(currentIdentity.getPrincipal())
-    );
-
-    setLoadingSend(true);
-
-    try {
-      if (selectedAmount === 0) {
-        alert('Amount cannot be 0');
-      }
-
-      const hash: any = await send(
-        currentIdentity,
-        selectedRecp,
-        address,
-        selectedAmount,
-        'ICP'
+    if (isJsonString(json_secret)) {
+      const currentIdentity = Ed25519KeyIdentity.fromJSON(json_secret);
+      const address = address_to_hex(
+        principal_id_to_address(currentIdentity.getPrincipal())
       );
 
-      await loadBalance(address);
-      setLoadingSend(false);
-      setPaymentHash(hash || '');
-    } catch (error) {
-      console.log(error);
-      setLoadingSend(false);
+      setLoadingSend(true);
+
+      try {
+        if (selectedAmount === 0) {
+          alert('Amount cannot be 0');
+        }
+
+        const hash: any = await send(
+          currentIdentity,
+          selectedRecp,
+          address,
+          selectedAmount,
+          'ICP'
+        );
+
+        await loadBalance(address);
+        setLoadingSend(false);
+        setPaymentHash(hash || '');
+        setIsBusy(false);
+      } catch (error) {
+        console.log(error);
+        setLoadingSend(false);
+        setIsBusy(false);
+      }
+    } else {
+      setError('Wrong password! Please try again');
+      setIsBusy(false);
     }
 
     return true;
@@ -112,6 +168,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
   return (
     <>
       <Header
+        backOverride={step1 ? undefined : paymentHash === '' ? onBackClick : undefined}
         centerText
         showMenu
         text={'Send'}
@@ -122,72 +179,116 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
         {!(paymentHash === undefined || paymentHash === '') && <div className='paymentDone'>
           Payment Done! Check transactions for more details.
         </div>}
-        <div className={'earthInputLabel'}>Add recipient</div>
-        <input
-          autoCapitalize='off'
-          autoCorrect='off'
-          autoFocus={true}
-          className='recipientAddress earthinput'
-          onChange={(e) => setSelectedRecp(e.target.value)}
-          placeholder="Recipient address"
-          required
-        />
-        <div className='assetSelectionDivCont'>
-          <div className='earthInputLabel'>
+        { step1
+          ? <div style={{ width: '100vw' }}>
+            <div className={'earthInputLabel'}>Add recipient</div>
+            <input
+              autoCapitalize='off'
+              autoCorrect='off'
+              autoFocus={true}
+              className='recipientAddress earthinput'
+              key={'recp'}
+              onChange={(e) => setSelectedRecp(e.target.value)}
+              placeholder="Recipient address"
+              required
+              value={selectedRecp}
+            />
+            <div className='assetSelectionDivCont'>
+              <div className='earthInputLabel'>
               Asset
-          </div>
-          <div className='tokenSelectionDiv'>
-            <div className='selectedNetworkDiv'>
-              <img
-                className='tokenLogo'
-                src={logo}
-              />
-              <div className='tokenSelectionLabelDiv'>
-                <div className='tokenLabel'>{selectedNetwork}</div>
-                <div className='tokenBalance'>
-                  { loading
-                    ? <SkeletonTheme color="#222"
-                      highlightColor="#000">
-                      <Skeleton width={150} />
-                    </SkeletonTheme>
-                    : <span className='tokenBalanceText'>Balance: {walletBalance && walletBalance?.balances[0] &&
+              </div>
+              <div className='tokenSelectionDiv'>
+                <div className='selectedNetworkDiv'>
+                  <img
+                    className='tokenLogo'
+                    src={ICON_ICP_DETAILS}
+                  />
+                  <div className='tokenSelectionLabelDiv'>
+                    <div className='tokenLabel'>{selectedNetwork}</div>
+                    <div className='tokenBalance'>
+                      { loading
+                        ? <SkeletonTheme color="#222"
+                          highlightColor="#000">
+                          <Skeleton width={150} />
+                        </SkeletonTheme>
+                        : <span className='tokenBalanceText'>Balance: {walletBalance && walletBalance?.balances[0] &&
                          `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} 
                          ${walletBalance?.balances[0]?.currency?.symbol}`
-                    }</span>
-                  }
+                        }</span>
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div className='earthInputLabel'>
+            <div className='earthInputLabel'>
               Amount
-        </div>
-        <input
-          autoCapitalize='off'
-          autoCorrect='off'
-          autoFocus={false}
-          className='recipientAddress earthinput'
-          max="1.00"
-          min="0.00"
-          onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
-          placeholder="amount up to 8 decimal places"
-          required
-          step="0.001"
-          type="number"
-        />
+            </div>
+            <input
+              autoCapitalize='off'
+              autoCorrect='off'
+              autoFocus={false}
+              className='recipientAddress earthinput'
+              key={'amount'}
+              max="1.00"
+              min="0.00"
+              onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
+              placeholder="amount up to 8 decimal places"
+              required
+              step="0.001"
+              type="number"
+              value={selectedAmount}
+            />
+          </div>
+          : <div className={'confirmPage'}>
+            <div className={'confirmAmountCont'}>
+              <img
+                className='tokenLogo tokenLogoConfirm'
+                src={ICON_ICP_DETAILS}
+              />
+              <div className={'tokenText'}>Internet Computer</div>
+              <div className={'tokenAmount'}>{selectedAmount} ICP</div>
+              <div className={'tokenValue'}>${(selectedAmount * usdValue).toFixed(3)}</div>
 
+            </div>
+            <InputWithLabel
+              data-export-password
+              disabled={isBusy}
+              isError={pass.length < MIN_LENGTH || !!error}
+              label={'password for this account'}
+              onChange={onPassChange}
+              placeholder='REQUIRED'
+              type='password'
+            />
+            {error && (
+              <Warning
+                isBelowInput
+                isDanger
+              >
+                {error}
+              </Warning>
+            )}
+          </div>}
       </div>
       <div style={{ padding: '0 27px',
         marginBottom: 30,
         position: 'absolute',
         bottom: 0,
         left: 0 }}>
-        <NextStepButton
-          isDisabled={loadingSend}
-          onClick={() => sendTx()}>
-          {'Next'}
-        </NextStepButton>
+        { step1
+          ? <NextStepButton
+            isDisabled={loadingSend || !selectedRecp }
+            loading={isBusy}
+            onClick={onNextStep}>
+            {'Next'}
+          </NextStepButton>
+
+          : <NextStepButton
+            isDisabled={loadingSend || !!error || pass.length < MIN_LENGTH}
+            loading={isBusy || loadingSend}
+            onClick={() => sendTx()}>
+            {'Send'}
+          </NextStepButton>}
       </div>
     </>
   );
@@ -357,13 +458,13 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
     }
 
     .tokenLogo {
-        height: 24px;
-        width: 24px;
-        margin: 0 12px;
-        border-radius: 50%;
-        border: 1px solid ${theme.subTextColor};
-        padding: 4px;
-        background-color: ${theme.tokenLogoBackground};
+      height: 50px;
+      width: 50px;
+      margin: 0px 12px;
+    }
+    .tokenLogoConfirm { 
+      margin: 0px 12px 6px;
+
     }
 
     .tokenSelectionLabelDiv {
@@ -427,5 +528,64 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
             background-color: ${theme.buttonBackgroundHover};
             cursor: pointer;
         }
+    }
+
+    .tokenText {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 15px;
+      line-height: 150%;
+      text-align: center;
+      color: #FAFBFB;
+      opacity: 0.7;
+      margin-bottom: 3px;
+    }
+    .tokenAmount {
+      font-family: DM Mono;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 34px;
+      line-height: 44px;
+      text-align: center;
+      color: #FAFBFB;
+      text-shadow: 0px 0px 11.4544px rgba(177, 204, 255, 0.89);
+      margin-bottom: 3px;
+
+    }
+    .confirmPage {
+      padding: 0 24px;
+      width: 100vw;
+      box-sizing: border-box;
+    }
+    .confirmAmountCont{
+      width: 327px;
+      
+
+      background: rgba(90, 89, 126, 0.39);
+      backdrop-filter: blur(7px);
+
+      border-radius: 14px;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 27px 0 24px 0;
+    }
+    .tokenValue {
+      font-family: DM Mono;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 150%;
+      /* identical to box height, or 24px */
+
+      text-align: center;
+
+      /* Brand / Moonlight Grey / 20% */
+
+      color: #FAFBFB;
+
+      opacity: 0.51;
     }
 `);

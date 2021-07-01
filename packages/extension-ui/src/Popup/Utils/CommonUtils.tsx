@@ -99,4 +99,14 @@ const generateRandomColor = (str: string) => {
 
 export const getShortAddress = (address: string) => address.substring(0, 6) + '...' + address.substring(address.length - 5);
 
+export const isJsonString = (str: string) => {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+
+  return true;
+};
+
 export default generateRandomColor;

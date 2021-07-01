@@ -37,28 +37,6 @@ interface keyable {
   [key: string]: any
 }
 
-/* const MOCK = [{
-    status: "Failed",
-    time: "Jun 7",
-    to: "0x4f2...0c90",
-    value: "1.32464 ICP",
-    price: "$4,652.33 USD"
-
-    },
-    {
-    status: "Send",
-    time: "Jun 7",
-    to: "0x4f2...0c90",
-    value: "2.997627 ICP",
-    price: "$1,32.33 USD"
-    },
-    {
-    status: "Receive",
-    time: "Jun 7",
-    to: "0x4f2...0c90",
-    value: "2.997627 ICP",
-    price: "$12,154.33 USD"
-    }]; */
 const Details = ({ className, match: { params: { txnId = '25cc95c15f11b46a316fa4112056ec8b142a5b82a4ad1dce5cabefa8baf05eb9' } } }: Props) => {
   // const onAction = useContext(ActionContext);
 

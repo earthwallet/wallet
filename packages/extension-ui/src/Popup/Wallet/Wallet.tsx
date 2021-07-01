@@ -23,9 +23,9 @@ import styled from 'styled-components';
 
 import bg_wallet_details from '../../assets/bg_wallet_details.png';
 import icon_copy from '../../assets/icon_copy.svg';
+import icpLogo from '../../assets/icon_icp_details.png';
 import icon_rec from '../../assets/icon_rec.svg';
 import icon_send from '../../assets/icon_send.svg';
-import icpLogo from '../../assets/icp-logo.png';
 import { Link, SelectedAccountContext } from '../../components';
 import useToast from '../../hooks/useToast';
 import { getShortAddress } from '../Utils/CommonUtils';
@@ -332,9 +332,6 @@ export default styled(Wallet)(({ theme }: Props) => `
       height: 50px;
       width: 50px;
       margin-bottom: 16px;
-      border-radius: 50%;
-      border: 1px solid ${theme.subTextColor};
-      background-color: ${theme.tokenLogoBackground};
       object-fit: contain;
       object-position: center;
       margin-top: 90px;

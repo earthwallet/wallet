@@ -166,9 +166,9 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
               ? <NextStepButton
                 className='export-button'
                 data-export-button
-                isBusy={isBusy}
                 isDanger
                 isDisabled={(pass.length === 0 || !!error || !checked) }
+                loading={isBusy}
                 onClick={_onExportButtonClick}
               >
               Confirm

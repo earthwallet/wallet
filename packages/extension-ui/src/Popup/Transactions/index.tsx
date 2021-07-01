@@ -68,7 +68,7 @@ const Transactions = ({ className, match: { params: { address } } }: Props) => {
     return operations[0];
   };
 
-  const getICPUSDValue = async (walletBalance: keyable) => {
+  const getICPUSDValue = async () => {
     const fetchHeaders = new Headers();
 
     fetchHeaders.append('accept', 'application/json');
@@ -94,7 +94,7 @@ const Transactions = ({ className, match: { params: { address } } }: Props) => {
       setLoading(false);
 
       if (balance && balance?.balances != null) {
-        getICPUSDValue(balance);
+        getICPUSDValue();
       }
     };
 
