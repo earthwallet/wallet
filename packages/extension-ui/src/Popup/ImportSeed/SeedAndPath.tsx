@@ -136,7 +136,10 @@ export default styled(SeedAndPath)(({ theme }: ThemeProps) => `
 
   .nextCont {
     padding: 0 27px;
-    margin-top: 200px;
+    margin-bottom: 30px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
   }
 
   .mnemonicHelpSubTitle {

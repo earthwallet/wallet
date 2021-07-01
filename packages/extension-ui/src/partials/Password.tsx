@@ -62,5 +62,5 @@ function Password ({ className, isFocussed, onChange }: Props): React.ReactEleme
 }
 
 export default styled(Password)(({ theme }: ThemeProps) => `
-padding: 0 16px; 
+padding: 0 24px; 
 `);

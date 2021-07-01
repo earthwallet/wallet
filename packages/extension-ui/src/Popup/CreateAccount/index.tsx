@@ -18,6 +18,7 @@ import { saveAs } from 'file-saver';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Animated } from 'react-animated-css';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 // import Mnemonic from './Mnemonic';
@@ -25,12 +26,12 @@ import BG_MNEMONIC from '../../assets/bg_mnemonic.png';
 import ICON_CHECKED from '../../assets/icon_checkbox_checked.svg';
 import ICON_UNCHECKED from '../../assets/icon_checkbox_unchecked.svg';
 import ICON_COPY from '../../assets/icon_copy.svg';
-import { ActionContext, Loading, NextStepButton, SelectedAccountContext } from '../../components';
+import { Loading, NextStepButton, SelectedAccountContext } from '../../components';
 //  // NextStepButton
 import useToast from '../../hooks/useToast';
 import useTranslation from '../../hooks/useTranslation';
 import { createAccountSuri, createSeed } from '../../messaging';
-import { HeaderWithSteps } from '../../partials';
+import { HeaderWithSteps, Password } from '../../partials';
 import { DEFAULT_TYPE } from '../../util/defaultType';
 
 interface Props extends ThemeProps {
@@ -39,7 +40,6 @@ interface Props extends ThemeProps {
 
 function CreateAccount({ className }: Props): React.ReactElement {
   const { t } = useTranslation();
-  const onAction = useContext(ActionContext);
   const [isBusy, setIsBusy] = useState(false);
   const [checked, setChecked] = useState(false);
   const [secondChecked, setSecondChecked] = useState(false);
@@ -48,9 +48,9 @@ function CreateAccount({ className }: Props): React.ReactElement {
   const [step, setStep] = useState(1);
   const [account, setAccount] = useState<null | { address: string; seed: string }>(null);
   const type = DEFAULT_TYPE;
-  const [_name, setName] = useState('');
-  const [_password, setPassword] = useState<string>('');
-  const [_reptPassword, setReptPassword] = useState<string>('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState<string | null>(null);
+  const history = useHistory();
 
   const genesis = genesisSymbolMap.ICP;
 
@@ -65,16 +65,14 @@ function CreateAccount({ className }: Props): React.ReactElement {
 
   const _onCreate = useCallback(
     (): void => {
-      console.log(_reptPassword);
-
       // this should always be the case
-      if (_name && _password && account) {
+      if (name && password && account) {
         setIsBusy(true);
 
-        createAccountSuri(_name, _password, account.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined)
+        createAccountSuri(name, password, account.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined)
           .then(() => {
-            setSelectedAccount({ ...account, name: _name, genesis: 'the_icp', symbol: 'ICP' });
-            onAction('/wallet/home');
+            setSelectedAccount({ ...account, name: name, genesis: 'the_icp', symbol: 'ICP' });
+            history.replace('/wallet/home');
           })
           .catch((error: Error): void => {
             setIsBusy(false);
@@ -82,7 +80,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
           });
       }
     },
-    [account, genesis, onAction, _name, _password, _reptPassword, setSelectedAccount]
+    [account, genesis, history, name, password, setSelectedAccount]
   );
 
   const backupKeystore = () => {
@@ -188,7 +186,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
                   <div>
                   </div>
                   <NextStepButton
-                    isDisabled={!checked}
+                    isDisabled={!checked || !name}
                     onClick={!checked ? console.log : _onNextStep}
                   >
                     {t<string>('Next step')}
@@ -198,53 +196,26 @@ function CreateAccount({ className }: Props): React.ReactElement {
             )
             : (
               <>
-                <div className='earthInputCont'>
-                  <div className='labelText'>Password</div>
-                  <input
-                    autoCapitalize='off'
-                    autoCorrect='off'
-                    autoFocus={true}
-                    className='earthPassword earthInput'
-                    defaultValue={''}
-                    key='password'
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="REQUIRED"
-                    required
-                    type={'password'}
-                  />
-                </div>
-                <div className='earthInputCont'>
-                  <div className='labelText'>Repeat Password</div>
-                  <input
-                    autoCapitalize='off'
-                    autoCorrect='off'
-                    className='earthPassword earthInput'
-                    key='reptpassword'
-                    onChange={(e) => setReptPassword(e.target.value)}
-                    placeholder="REQUIRED"
-                    required
-                    type={'password'}
-                  />
-                  <div className='helpPassword'>
-               Minimum 8 characters for password
-                  </div>
-                  <div className='checkboxCont'>
-                    { secondChecked
-                      ? <img
-                        className='checkboxIcon'
-                        onClick={() => setSecondChecked(false)}
-                        src={ICON_CHECKED} />
-                      : <img
-                        className='checkboxIcon'
-                        onClick={() => setSecondChecked(true)}
-                        src={ICON_UNCHECKED} />
-                    }
+                <div className='earthInputCont earthInputContPassword'>
+                  <Password onChange={setPassword} />
 
-                    <div className='checkboxTitle'>I understand that I will loose access to the account if I loose thise mnemonic phrase.</div>
-                  </div>
                   <div className={'nextCont'}>
+                    <div className='checkboxCont'>
+                      { secondChecked
+                        ? <img
+                          className='checkboxIcon'
+                          onClick={() => setSecondChecked(false)}
+                          src={ICON_CHECKED} />
+                        : <img
+                          className='checkboxIcon'
+                          onClick={() => setSecondChecked(true)}
+                          src={ICON_UNCHECKED} />
+                      }
+
+                      <div className='checkboxTitle'>I understand that I will lose access to the account if I lose this mnemonic phrase.</div>
+                    </div>
                     <NextStepButton
-                      isDisabled={!secondChecked}
+                      isDisabled={!secondChecked || !password}
                       loading={isBusy}
                       onClick={!secondChecked ? console.log : _onCreate}
                     >
@@ -437,8 +408,12 @@ export default styled(CreateAccount)(({ theme }: Props) => `
 
   }
   .earthInputCont {
-    padding: 0 27px;
+    padding: 0 24px;
     margin: 20px 0;
+  }
+
+  .earthInputContPassword {
+    padding: 0;
   }
 
   .earthInput {

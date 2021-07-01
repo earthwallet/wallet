@@ -43,11 +43,10 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
         position: 'absolute',
         bottom: 0,
         left: 0 }}>
-
         <NextStepButton
           data-button-action='add new root'
-          isBusy={isBusy}
           isDisabled={!password || !name}
+          loading={isBusy}
           onClick={_onCreate}
         >
           {buttonLabel}

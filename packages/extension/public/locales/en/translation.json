@@ -168,5 +168,6 @@
   "Sending...": "",
   "Create an Account": "",
   "Add account": "",
-  "Confirm": ""
+  "Confirm": "",
+  "Please write down your wallet mnemonic seed and keep it in a safe place. The mnemonic can be used to restore your wallet.": ""
 }

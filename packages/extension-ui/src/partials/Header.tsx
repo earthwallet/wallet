@@ -170,6 +170,7 @@ function Header ({ backOverride, centerText, children, className = '', showAccou
               </div>
             }
             {text && <div className={`headerText ${centerText ? 'headerTextCenter' : ''}`}>{text}</div>}
+            {centerText && <div/>}
             {children}
             {showAccountsDropdown && (<AccountSelector/>)}
           </div>

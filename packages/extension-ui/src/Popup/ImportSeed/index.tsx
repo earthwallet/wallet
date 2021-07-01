@@ -4,6 +4,7 @@
 import type { ThemeProps } from '../../types';
 
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import BG_MNEMONIC from '../../assets/bg_mnemonic.png';
@@ -32,6 +33,7 @@ function ImportSeed({ className }: Props): React.ReactElement {
   const [account, setAccount] = useState<AccountInfo | null>(null);
   const [_name, setName] = useState<string | null>(null);
   const [step1, setStep1] = useState(true);
+  const history = useHistory();
 
   const { setSelectedAccount } = useContext(SelectedAccountContext);
 
@@ -47,13 +49,13 @@ function ImportSeed({ className }: Props): React.ReactElement {
       createAccountSuri(_name, password, account.suri, undefined, account.genesis, account.genesis === 'the_icp' ? 'ICP' : undefined)
         .then(() => {
           setSelectedAccount({ ...account, name: _name, genesis: 'the_icp', symbol: 'ICP' });
-          onAction('/wallet/home');
+          history.replace('/wallet/home');
         }).catch((error): void => {
           setIsBusy(false);
           console.error(error);
         });
     }
-  }, [account, onAction, _name, setSelectedAccount]);
+  }, [account, history, _name, setSelectedAccount]);
 
   const _onNextStep = useCallback(() => { setStep1(false); }, []);
   const _onBackClick = useCallback(() => { setStep1(true); }, []);
@@ -262,7 +264,7 @@ export default styled(ImportSeed)(({ theme }: Props) => `
 
   }
   .earthInputCont {
-    margin: 20px 0;
+    margin: 24px 0;
   }
 
   .earthInput {

@@ -27,8 +27,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
 
 import logo from '../../assets/icp-logo.png';
-import { Button, SelectedAccountContext } from '../../components';
-import useTranslation from '../../hooks/useTranslation';
+import { NextStepButton, SelectedAccountContext } from '../../components';
 
 const { address_to_hex } = require('@dfinity/rosetta-client');
 
@@ -51,7 +50,6 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
 
   const dropDownRef = useRef(null);
-  const { t } = useTranslation();
   const [walletBalance, setWalletBalance] = useState<any|null|keyable>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
@@ -115,7 +113,6 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
     <>
       <Header
         centerText
-        showAccountsDropdown
         showMenu
         text={'Send'}
         type={'wallet'} />
@@ -153,7 +150,7 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
                       highlightColor="#000">
                       <Skeleton width={150} />
                     </SkeletonTheme>
-                    : <span>{walletBalance && walletBalance?.balances[0] &&
+                    : <span className='tokenBalanceText'>Balance: {walletBalance && walletBalance?.balances[0] &&
                          `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} 
                          ${walletBalance?.balances[0]?.currency?.symbol}`
                     }</span>
@@ -179,17 +176,19 @@ const WalletSendTokens = function ({ className }: Props): React.ReactElement<Pro
           step="0.001"
           type="number"
         />
-        <div className={'buttonCont'}>
-          {loadingSend
-            ? <Button onClick={() => sendTx()}>
-              {t<string>('Sending...')}
-            </Button>
-            : <Button onClick={() => sendTx()}>
-              {t<string>('Send')}
-            </Button>}
-        </div>
-      </div>
 
+      </div>
+      <div style={{ padding: '0 27px',
+        marginBottom: 30,
+        position: 'absolute',
+        bottom: 0,
+        left: 0 }}>
+        <NextStepButton
+          isDisabled={loadingSend}
+          onClick={() => sendTx()}>
+          {'Next'}
+        </NextStepButton>
+      </div>
     </>
   );
 };
@@ -241,7 +240,7 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
       color: #FFFFFF;
       text-align: left;
       width: calc(100% - 48px);
-      padding: 30px 24px 13px;
+      padding: 27px 24px 13px;
     }
     .paymentDone {
       width: calc(100% - 58px);
@@ -349,7 +348,6 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
         align-items: center;
         width:240px;
         border-radius: 4px;
-        border: 1px solid rgb(67, 68, 75);
         padding: 0 6px;
         background: #5a597e63;
         backdrop-filter: blur(7px);
@@ -386,6 +384,9 @@ export default styled(WalletSendTokens)(({ theme }: Props) => `
         font-family: ${theme.fontFamily};
         line-height: 1;
         font-size: 14px;
+    }
+    .tokenBalanceText {
+      opacity: 0.54;
     }
 
     .cancelButton {

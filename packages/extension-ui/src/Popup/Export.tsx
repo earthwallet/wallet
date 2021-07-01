@@ -120,7 +120,7 @@ function Export ({ className, match: { params: { address } } }: Props): React.Re
                     src={ICON_UNCHECKED} />
                 }
 
-                <div className='checkboxTitle'>I understand that I will loose access to the account if
+                <div className='checkboxTitle'>I understand that I may lose access to digital assets if
                     I disclose my private keys.</div>
               </div>
 

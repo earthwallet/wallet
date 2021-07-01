@@ -88,7 +88,6 @@ export class Keyring extends Base implements KeyringStruct {
       wallet = await createWallet(suri, symbol);
 
       if (password !== '') {
-        window.localStorage.setItem(wallet?.address, JSON.stringify(wallet.identity.toJSON()));
         window.localStorage.setItem(wallet?.address + '_secure', encryptString(JSON.stringify(wallet.identity.toJSON()), password));
         window.localStorage.setItem(wallet?.address + '_mnemonic', encryptString(suri, password));
       }

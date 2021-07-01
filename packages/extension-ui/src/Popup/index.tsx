@@ -154,6 +154,7 @@ export default function Popup (): React.ReactElement {
                           <ToastProvider>
                             <Switch>
                               <Route path='/auth-list'>{wrapWithErrorBoundary(<AuthList />, 'auth-list')}</Route>
+                              <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
                               <Route path='/account/create'>{wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}</Route>
                               <Route path='/account/forget/:address'>{wrapWithErrorBoundary(<Forget />, 'forget-address')}</Route>
                               <Route path='/account/export/:address'>{wrapWithErrorBoundary(<Export />, 'export-address')}</Route>

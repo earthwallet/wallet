@@ -40,7 +40,7 @@ function Mnemonic ({ onNextStep, seed }: Props): React.ReactElement<Props> {
         seed={seed}
       />
       <Warning>
-        {t<string>("Please write down your wallet's mnemonic seed and keep it in a safe place. The mnemonic can be used to restore your wallet.")}
+        {t<string>('Please write down your wallet mnemonic seed and keep it in a safe place. The mnemonic can be used to restore your wallet.')}
       </Warning>
       <Checkbox
         checked={isMnemonicSaved}

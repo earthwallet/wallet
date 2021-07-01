@@ -47,5 +47,5 @@ function Name ({ address, className, isFocused, label, onBlur, onChange, value }
 }
 
 export default styled(Name)(({ theme }: ThemeProps) => `
-   padding: 0 16px; 
+   padding: 0 24px;
    `);
