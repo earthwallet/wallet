@@ -15,16 +15,22 @@ import type { ThemeProps } from '../../types';
 
 import { Header } from '@earthwallet/extension-ui/partials';
 import { symbolGenesisMap } from '@earthwallet/extension-ui/util/chains';
-import { getBalance,
-  getTransactions } from '@earthwallet/sdk/build/main/util/icp';
-import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useEffect, useState } from 'react';
+import { getBalance, getTransactions } from '@earthwallet/sdk';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import styled from 'styled-components';
 
-import icpLogo from '../../assets/icp-logo.png';
+import bg_wallet_details from '../../assets/bg_wallet_details.png';
+import icon_copy from '../../assets/icon_copy.svg';
+import icpLogo from '../../assets/icon_icp_details.png';
+import icon_rec from '../../assets/icon_rec.svg';
+import icon_send from '../../assets/icon_send.svg';
 import { Link, SelectedAccountContext } from '../../components';
+import useToast from '../../hooks/useToast';
+import { getShortAddress } from '../Utils/CommonUtils';
+
+// import bg_wallet_details_2x from '../../assets/bg_wallet_details@2x.png';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -40,55 +46,52 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const [walletBalance, setWalletBalance] = useState<any|null>(null);
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [usdValue, setUsdValue] = useState<number>(0);
 
-  const getValueInUSD = (balance: number, decimals: number, symbol: string) => {
-    if (symbol === 'ICP') return `${(balance / Math.pow(10, decimals)) * 80}`;
-    if (symbol === 'DOT') return `${(balance / Math.pow(10, decimals)) * 20}`;
-    if (symbol === 'KSM') return `${(balance / Math.pow(10, decimals)) * 120}`;
+  const { show } = useToast();
 
-    return `${balance / Math.pow(10, decimals)}`;
-  };
+  const _onCopy = useCallback((): void => show('Copied'), [show]);
 
-  const loadBalance = async (address: string) => {
-    setLoading(true);
-    const balance: keyable = await getBalance(address);
+  const getBalanceInUSD = async (walletBalance: keyable) => {
+    const balance = walletBalance?.balances[0]?.value;
+    const decimals = walletBalance?.balances[0]?.currency?.decimals;
 
-    setLoading(false);
+    const fetchHeaders = new Headers();
 
-    if (balance && balance?.balances != null) { setWalletBalance(balance); }
+    fetchHeaders.append('accept', 'application/json');
+
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      headers: fetchHeaders,
+      redirect: 'follow'
+    };
+
+    const factor: keyable = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd', requestOptions)
+      .then((response) => response.json())
+      .catch((error) => console.log('error', error));
+
+    setUsdValue((balance / Math.pow(10, decimals)) * parseFloat(factor['internet-computer'].usd));
   };
 
   const loadTransactions = async (address: string) => {
-    const transactions = await getTransactions(address);
+    const transactions = await getTransactions(address, 'ICP');
 
-    console.log('transactions', transactions);
     setWalletTransactions(transactions);
   };
 
-  const getShortAddress = (address: string) =>
-    address.substring(0, 6) + '...' + address.substring(address.length - 5);
-
-  const getTransactionDetail = (transaction: any): any => {
-    const operations = transaction.transaction.operations
-      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
-      .filter((operation: { account: any; }) => operation.account.address === selectedAccount?.address);
-
-    console.log('getTransactionDetail', operations);
-
-    return operations[0];
-  };
-
-  const getTransactionWithDetail = (transaction: any): any => {
-    const operations = transaction.transaction.operations
-      .filter((operation: { type: string; }) => operation.type === 'TRANSACTION')
-      .filter((operation: { account: any; }) => operation.account.address !== selectedAccount?.address);
-
-    console.log('getTransactionWithDetail', operations);
-
-    return operations[0];
-  };
-
   useEffect(() => {
+    const loadBalance = async (address: string) => {
+      setLoading(true);
+      const balance: keyable = await getBalance(address, 'ICP');
+
+      setLoading(false);
+
+      if (balance && balance?.balances != null) {
+        setWalletBalance(balance);
+        getBalanceInUSD(balance);
+      }
+    };
+
     if (selectedAccount && selectedAccount?.address) {
       loadBalance(selectedAccount?.address);
       loadTransactions(selectedAccount?.address);
@@ -98,32 +101,33 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
   const getNetworkLogo = () => {
     if (selectedAccount?.genesisHash == null) { return icpLogo; }
 
-    if (symbolGenesisMap().get(selectedAccount.genesisHash) === 'ICP') return icpLogo;
+    if (symbolGenesisMap().get(selectedAccount?.genesisHash) === 'ICP') return icpLogo;
 
     return icpLogo;
   };
 
   return (
     <>
-      <Header
-        showAccountsDropdown
-        showMenu />
       <div className={className}>
-        <Link className='topCancelButton'
-          to='/'>BACK</Link>
+        <Header
+          className={'header'}
+          showAccountsDropdown
+          showMenu
+          type={'wallet'} />
         <img
           className='network-logo'
           src={getNetworkLogo()}
         />
+        <div className='network-text'>Internet Computer</div>
         <div className='primaryBalanceLabel'>
           { loading
             ? <SkeletonTheme color="#222"
               highlightColor="#000">
               <Skeleton width={150} />
             </SkeletonTheme>
-            : <span>{walletBalance && walletBalance?.balances[0] &&
+            : <div className='primaryBalanceLabel'>{walletBalance && walletBalance?.balances[0] &&
                   `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} ${walletBalance?.balances[0]?.currency?.symbol}`
-            }</span>
+            }</div>
           }</div>
         <div className='secondaryBalanceLabel'>
           { loading
@@ -131,84 +135,77 @@ const Wallet = function ({ className }: Props): React.ReactElement<Props> {
               highlightColor="#000">
               <Skeleton width={100} />
             </SkeletonTheme>
-            : <span>{walletBalance && walletBalance?.balances[0] && ('$' +
-                getValueInUSD(
-                  walletBalance?.balances[0]?.value,
-                  walletBalance?.balances[0]?.currency?.decimals,
-                  walletBalance?.balances[0]?.currency?.symbol
-                ))}</span>}</div>
-        <div className='walletActionsView'>
+            : <span className='secondaryBalanceLabel'>${usdValue.toFixed(3)}</span>}
+        </div>
 
+        <CopyToClipboard
+          text={selectedAccount?.address || ''} >
+          <div
+            className='copyActionsView'
+            onClick={_onCopy}>
+            <div className='copyCont'>
+              <div className='copyName'>{selectedAccount?.name}</div>
+              <div className='copyAddress'>{getShortAddress(selectedAccount?.address || '')}</div>
+            </div>
+            <div className='copyButton'>
+              <img
+                className='iconCopy'
+                src={icon_copy}
+              />
+            </div>
+          </div>
+        </CopyToClipboard>
+
+        <div className='walletActionsView'>
           <div
             className='tokenActionView receiveTokenAction'
           >
             <Link to='/wallet/receive'>
-              <FontAwesomeIcon
+              <div
                 className='tokenActionButton'
-                color='#fff'
-                icon={faArrowDown}
-                size='lg'
-              />
+              >
+                <img
+                  className='iconActions'
+                  src={icon_rec}
+                />
+                <div className='tokenActionLabel'>Receive</div>
+              </div>
+
             </Link>
-            <div className='tokenActionLabel'>Receive</div>
+
           </div>
 
           <div
             className='tokenActionView sendTokenAction'
           >
             <Link to='/wallet/send'>
-              <FontAwesomeIcon
+              <div
                 className='tokenActionButton'
-                color='#fff'
-                icon={faArrowUp}
-                size='lg'
-              />
+              >
+                <img
+                  className='iconActions'
+                  src={icon_send}
+                />
+                <div className='tokenActionLabel'>Send</div>
+              </div>
             </Link>
-            <div className='tokenActionLabel'>Send</div>
           </div>
         </div>
 
-        <div className='assetsAndActivityDiv'>
-          <div className='tabsView'>
-            <div
-              className={'tabView ' + (selectedTab === 'Transactions' ? 'selectedTabView' : '') }
-              onClick={() => setSelectedTab('Transactions')}
-            >
-         Transactions
+        <Link to={`/wallet/transactions/${selectedAccount?.address}`} >
+
+          <div className='assetsAndActivityDiv'>
+            <div className='tabsPill'></div>
+            <div className='tabsView'>
+              <div
+                className={'tabView ' + (selectedTab === 'Transactions' ? 'selectedTabView' : '') }
+                onClick={() => setSelectedTab('Transactions')}
+              >
+             Transactions {walletTransactions?.transactions?.length === 0 || walletTransactions?.transactions === undefined ? '' : `(${walletTransactions?.transactions?.length})` }
+              </div>
             </div>
           </div>
-
-          <div className="transactions-div">
-            {walletTransactions &&
-                  walletTransactions?.transactions &&
-                  walletTransactions?.transactions?.map(
-                    (transaction: { block_identifier: { hash: string } }) => {
-                      return (
-                        <div className="transaction-item-div">
-                          <FontAwesomeIcon
-                            className='transaction-type-icon'
-                            color='#fff'
-                            icon={getTransactionDetail(transaction).amount.value > 0 ? faArrowDown : faArrowUp }
-                            size='lg'
-                          />
-                          <div className='transaction-detail-div'>
-                            <div className='transaction-type'>{getTransactionDetail(transaction).amount.value > 0 ? 'Receive' : 'Send'}</div>
-                            <div className='transaction-detail'>{`${getTransactionWithDetail(transaction).amount.value > 0 ? 'To:' : 'From:'} ${getShortAddress(getTransactionWithDetail(transaction).account.address)}`}</div>
-                          </div>
-                          <div className='transaction-amount'>{`${getTransactionDetail(transaction).amount.value / Math.pow(10, getTransactionDetail(transaction).amount.currency.decimals)}` + ` ${getTransactionDetail(transaction).amount.currency.symbol}`}</div>
-
-                        </div>
-                      );
-                    }
-                  )}
-            {walletTransactions &&
-                  !walletTransactions?.transactions?.length && (
-              <div className="transaction-item-div">
-                      No Transaction History
-              </div>
-            )}
-          </div>
-        </div>
+        </Link>
       </div>
     </>
   );
@@ -220,127 +217,229 @@ export default styled(Wallet)(({ theme }: Props) => `
     flex-direction: column;
     align-items: center;
     height: -webkit-fill-available;
+    background: url(${bg_wallet_details});
+    
+    .header {
+      width: ${theme.appWidth}
+    }
+    
+    .iconCopy{
+      width: 17px;
+      height: 20px;
+    }
 
-    .topCancelButton {
+    .tabsPill{
+      width: 29px;
+      height: 3px;
+      background: #175b99;
+      border-radius: 29px;
+      display: flex;
+      flex-basis: 3px;
+      min-height: 3px;
+      margin-top: 9px;
+    }
+
+    .copyButton {
+      width: 41.86px;
+      height: 41.86px;
+      background: #0d3151;
+      display: flex;
+      border-radius: 52.9397px;
+      flex-basis: 42px;
+      min-height: 42px;
+      min-width: 42px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      &:hover {
+        opacity: 0.95;
         cursor: pointer;
-        color: ${theme.buttonBackground};
-        font-family: ${theme.fontFamily};
-        font-size: 12px;
-        align-self: flex-end;
-        &:hover {
-            color: ${theme.buttonBackgroundHover};
-        }
+      }
+      &:active {
+        opacity: 0.65;
+        cursor: pointer;
+      }
+    }
+
+    .copyCont {
+      overflow: hidden;
+      height: 42px;
+      min-height: 42px;
+    }
+
+    .copyName {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1; /* number of lines to show */
+      -webkit-box-orient: vertical;
+    }
+
+    .copyAddress{
+      font-family: DM Mono;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 150%;
+      letter-spacing: 0.615578px;
+      color: #E6E9ED;
+    }
+
+    .copyName {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 150%;
+      text-align: left;
+      color: #FAFBFB;
+      opacity: 0.51;
+    }
+
+    .copyActionsView {
+      border: 2px solid #2496FF40;
+      box-sizing: border-box;
+      border-radius: 49.2462px;
+      width: 245px;
+      height: 52px;
+      padding: 0px 3px 0 15px;
+      min-height: 52px;
+      align-items: left;
+      justify-content: space-between;
+      flex-direction: row;
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+
+     }
+
+    .iconActions {
+      margin-right: 10px;
+    }
+    .network-text {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 15px;
+      line-height: 150%;
+      text-align: center;
+      color: ${theme.moonLightGrey};
+      opacity: 0.7;
     }
 
     .network-logo {
-    height: 28px;
-    width: 28px;
-    margin-bottom: 16px;
-    border-radius: 50%;
-    border: 1px solid ${theme.subTextColor};
-    padding: 4px;
-    background-color: ${theme.tokenLogoBackground};
-    object-fit: contain;
-    object-position: center;
+      height: 50px;
+      width: 50px;
+      margin-bottom: 16px;
+      object-fit: contain;
+      object-position: center;
+      margin-top: 90px;
     }
 
     .primaryBalanceLabel {
-    color: ${theme.textColor};
-    font-family: ${theme.fontFamily};
-    font-size: 30px;
-    margin: 12px;
+      color: ${theme.textColor};
+      font-family: ${theme.fontFamilyMono};
+      font-size: 34px;
+      line-height: 44px;
+      height: 44px;
+      text-align: center;
+      margin: 3px;
+      text-shadow: 0px 0px 11.4544px rgba(177, 204, 255, 0.89);
     }
 
     .secondaryBalanceLabel {
-    color: ${theme.subTextColor};
-    font-family: ${theme.fontFamily};
-    font-size: 20px;
+      color: ${theme.usdBalance};
+      font-family: ${theme.fontFamilyMono};
+      font-size: 16px;
+      line-height: 150%;
+      opacity: 0.8;
+      height: 21px;
     }
 
-    .walletActionsView {
+  .walletActionsView {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     padding: 18px;
+    margin-bottom: 22px;
+    margin-top: 46px;
     }
 
-    .tokenActionView {
+  .tokenActionView {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     }
 
-    .tokenActionButton {
-    height: 26px;
-    width: 26px;
+  .tokenActionButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2496FF;
+    border-radius: 29px;
     background-color: ${theme.buttonBackground};
-    padding: 10px;
-    border-radius: 50%;
+    padding: 8px 20px;
     &:hover {
         background-color: ${theme.buttonBackgroundHover};
         cursor: pointer;
       }
     }
 
-    .tokenActionLabel {
-    color: ${theme.buttonBackground};
+  .tokenActionLabel {
+    color: #fff;
     font-family: ${theme.fontFamily};
     font-size: ${theme.fontSize};
-    margin-top: 6px;
+    line-height: 150%;
     }
 
-    .receiveTokenAction {
-        margin-right: 18px;
+  .sendTokenAction {
+        margin-left: 7px;
     }
 
-    .sendTokenAction {
-        margin-left: 18px;
-    }
-
-    .assetsAndActivityDiv{
+  .assetsAndActivityDiv {
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-top: 16px;
-    height: 100%;
+    height: 64px;
+    display: flex;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), rgba(36, 150, 255, 0.32);
-    border: 1px solid #2496FF;
     box-sizing: border-box;
-    border-top-left-radius: 32px;
-    border-top-right-radius: 32px;
-    }
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    cursor: pointer;
+    background: linear-gradient(0deg, #071A28, #071A28), linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), rgba(36, 150, 255, 0.32);
+    justify-content: space-between; 
+    border: 1px solid #2496FF;
+    border-bottom: 0px;
+  }
 
-    .tabsView {
-    height: 46px;
+  .tabsView {
     width: 340px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    }
+    margin: 12px 0px 24px;
+  }
 
-    .tabView {
-    flex: 1;
-    height: 46px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    box-shadow: inset 0 -1px 0 ${theme.buttonBackground};
-    border-top-left-radius: 32px;
-    border-top-right-radius: 32px;
-    }
+  
 
     .selectedTabView {
-    flex: 1;
-    height: 46px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    box-shadow: inset 0 -3px 0 ${theme.buttonBackground};
+
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 16px;
+ 
+    text-align: center;
+    color: #E6E9ED;
+    opacity: 0.75;
+
     }
 
     .transactions-div {
@@ -348,7 +447,7 @@ export default styled(Wallet)(({ theme }: Props) => `
     flex-direction: column;
     flex: 1;
     overflow: scroll;
-    height: 220px;
+    height: 270px;
     }
 
     .transaction-item-div {

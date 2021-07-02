@@ -3,7 +3,7 @@
 
 import React, { useCallback, useState } from 'react';
 
-import { ButtonArea, Checkbox, MnemonicSeed, NextStepButton, VerticalSpace, Warning } from '../../components';
+import { ButtonArea, Checkbox, MnemonicSeed, NextStepButton, Warning } from '../../components';
 import useToast from '../../hooks/useToast';
 import useTranslation from '../../hooks/useTranslation';
 
@@ -40,9 +40,8 @@ function Mnemonic ({ onNextStep, seed }: Props): React.ReactElement<Props> {
         seed={seed}
       />
       <Warning>
-        {t<string>("Please write down your wallet's mnemonic seed and keep it in a safe place. The mnemonic can be used to restore your wallet.")}
+        {t<string>('Please write down your wallet mnemonic seed and keep it in a safe place. The mnemonic can be used to restore your wallet.')}
       </Warning>
-      <VerticalSpace />
       <Checkbox
         checked={isMnemonicSaved}
         label={t<string>('I have saved my mnemonic seed safely.')}

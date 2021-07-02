@@ -5,7 +5,7 @@
   "name": "Earth Wallet",
   "short_name": "Earth Wallet",
   "manifest_version": 2,
-  "permissions": ["storage", "tabs"],
+  "permissions": ["storage", "activeTab"],
   "background": {
     "scripts": ["background.js"],
     "persistent": true

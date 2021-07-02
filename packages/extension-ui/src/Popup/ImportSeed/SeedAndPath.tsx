@@ -5,13 +5,10 @@ import type { ThemeProps } from '../../types';
 import type { AccountInfo } from '.';
 
 import { validateSeed } from '@earthwallet/extension-ui/messaging';
-import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { ButtonArea, Dropdown, InputWithLabel, NextStepButton, TextAreaWithLabel, VerticalSpace, Warning } from '../../components';
-import useGenesisHashOptions from '../../hooks/useGenesisHashOptions';
+import { NextStepButton, TextAreaWithLabel, Warning } from '../../components';
 import useTranslation from '../../hooks/useTranslation';
 
 interface Props {
@@ -22,13 +19,10 @@ interface Props {
 
 function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.ReactElement {
   const { t } = useTranslation();
-  const genesisOptions = useGenesisHashOptions();
   const [address, setAddress] = useState('');
   const [seed, setSeed] = useState<string | null>(null);
-  const [path, setPath] = useState<string | null>(null);
-  const [advanced, setAdvances] = useState(false);
   const [error, setError] = useState('');
-  const [genesis, setGenesis] = useState('');
+  const genesis = 'the_icp';
 
   useEffect(() => {
     // No need to validate an empty seed
@@ -39,9 +33,9 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
       return;
     }
 
-    const suri = `${seed || ''}${path || ''}`;
+    const suri = `${seed || ''}${''}`;
 
-    validateSeed(suri).then((validatedAccount) => {
+    validateSeed(suri, 'ethereum', 'ICP').then((validatedAccount) => {
       setError('');
       setAddress(validatedAccount.address);
       // a spread operator here breaks tests, using Object.assign as a workaround
@@ -51,29 +45,34 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
     }).catch(() => {
       setAddress('');
       onAccountChange(null);
-      setError(path
-        ? t<string>('Invalid mnemonic seed or derivation path')
-        : t<string>('Invalid mnemonic seed')
-      );
+      setError(t<string>('Invalid mnemonic seed'));
     });
-  }, [t, seed, path, onAccountChange, genesis]);
-
-  const _onToggleAdvanced = useCallback(() => {
-    setAdvances(!advanced);
-  }, [advanced]);
+  }, [t, seed, onAccountChange, genesis]);
 
   return (
-    <>
-      <div className={className}>
-        <TextAreaWithLabel
-          className='seedInput'
-          isError={!!error}
-          isFocused
-          label={t<string>('existing 12 or 24-word mnemonic seed')}
-          onChange={setSeed}
-          rowsCount={2}
-          value={seed || ''}
-        />
+    <div className={className}>
+      <>
+        <div className={'wrap'} >
+          <TextAreaWithLabel
+            className='seedInput'
+            isError={!!error}
+            isFocused
+            label={''}
+            onChange={setSeed}
+            placeholder="paste the mnemonic seed phrase here"
+            rowsCount={2}
+            value={seed || ''}
+          />
+          <div className='mnemonicHelp'>
+            <div className='mnemonicHelpTitle'>
+        To restore your account, paste your saved mnemonic phrase here
+            </div>
+            <div className='mnemonicHelpSubTitle'>
+              Please write down your wallet’s mnemonic seed and keep it in a safe place.
+            </div>
+          </div>
+        </div>
+
         {!!error && !seed && (
           <Warning
             className='seedError'
@@ -83,29 +82,13 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
             {t<string>('Mnemonic needs to contain 12, 15, 18, 21, 24 words')}
           </Warning>
         )}
-        <Dropdown
+        {/*   <Dropdown
           className='genesisSelection'
           label={t<string>('Network')}
           onChange={setGenesis}
           options={genesisOptions}
           value={genesis}
-        />
-        <div
-          className='advancedToggle'
-          onClick={_onToggleAdvanced}
-        >
-          <FontAwesomeIcon icon={advanced ? faCaretDown : faCaretRight}/>
-          <span>{t<string>('advanced')}</span>
-        </div>
-        { advanced && (
-          <InputWithLabel
-            className='derivationPath'
-            isError={!!path && !!error}
-            label={t<string>('derivation path')}
-            onChange={setPath}
-            value={path || ''}
-          />
-        )}
+        /> */}
         {!!error && !!seed && (
           <Warning
             isDanger
@@ -113,17 +96,17 @@ function SeedAndPath ({ className, onAccountChange, onNextStep }: Props): React.
             {error}
           </Warning>
         )}
-      </div>
-      <VerticalSpace />
-      <ButtonArea>
+      </>
+      <div className='nextCont'>
         <NextStepButton
           isDisabled={!address || !!error}
           onClick={onNextStep}
         >
           {t<string>('Next')}
         </NextStepButton>
-      </ButtonArea>
-    </>
+      </div>
+
+    </div>
   );
 }
 
@@ -143,12 +126,89 @@ export default styled(SeedAndPath)(({ theme }: ThemeProps) => `
     }
   }
 
+  .nextButtonCont {
+    margin: 0 27px;
+  }
+
+  .mnemonicHelp {
+    padding: 16px;
+  }
+
+  .nextCont {
+    padding: 0 27px;
+    margin-bottom: 30px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .mnemonicHelpSubTitle {
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 150%;
+    /* or 18px */
+
+    text-align: center;
+    letter-spacing: 0.02em;
+
+    color: #DBE4F2;
+
+    opacity: 0.8;
+  }
+  
+  .mnemonicHelpTitle {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 129%;
+    /* or 21px */
+
+    text-align: center;
+
+    color: #DBE4F2;
+    margin-bottom: 12px;
+  }
+  
+
+  .wrap {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), rgba(36, 150, 255, 0.47);
+    backdrop-filter: blur(5px);
+    /* Note: backdrop-filter has minimal browser support */
+
+    border-radius: 14px;
+    margin: 14px 24px;
+      }
+
   .genesisSelection {
     margin-bottom: ${theme.fontSize};
   }
 
   .seedInput {
-    margin-bottom: ${theme.fontSize};
+    width: 100%;
+    background-image:none;
+    background-color:transparent;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background: linear-gradient(0deg, rgba(8, 25, 39, 0.6), rgba(8, 25, 39, 0.6));
+    border: 2px solid rgba(36, 150, 255, 0.5);
+    box-sizing: border-box;
+    border-radius: 8px;
+    padding: 16px 12px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 19px;
+    /* identical to box height */
+    letter-spacing: 0.025em;
+
+     &:focus-visible {
+      outline: none;
+   }  
+    &::placeholder {
+     
+      color: #DBE4F2;
+      opacity: 0.25;
+    }
     textarea {
       height: unset;
     }

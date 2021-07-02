@@ -163,5 +163,11 @@
   "Setup Account": "",
   "Import account from seed phrase": "",
   "Restore account from JSON file": "",
-  "Continue": ""
+  "Continue": "",
+  "Send": "",
+  "Sending...": "",
+  "Create an Account": "",
+  "Add account": "",
+  "Confirm": "",
+  "Please write down your wallet mnemonic seed and keep it in a safe place. The mnemonic can be used to restore your wallet.": ""
 }

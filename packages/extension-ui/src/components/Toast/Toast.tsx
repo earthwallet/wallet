@@ -26,7 +26,8 @@ export default styled(Toast)<{visible: boolean}>`
   text-align: center;
   vertical-align: middle;
   line-height: 7px;
-  top: 460px;
+  top: 500px;
+  padding: 0 25px;
   left: calc(50% - 50px);
   && {
     margin: auto;

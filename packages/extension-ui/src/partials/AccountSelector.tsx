@@ -76,14 +76,20 @@ const AccountSelector = function ({ className }: Props): React.ReactElement<Prop
 };
 
 export default styled(AccountSelector)(({ theme }: Props) => `
-  width: 100%;
-  display: flex;
-  justify-content: center;
+width: fit-content;
+display: block;
+
 
   .selectedAccountDiv {
     display: flex;
     justify-content: center;
     align-items: center;
+    background: rgba(5, 12, 18, 0.4);
+    backdrop-filter: blur(20px);
+    /* Note: backdrop-filter has minimal browser support */
+    height: 33px;
+    padding: 3px;
+    border-radius: 34px;
   }
 
     .networkColor {
@@ -107,8 +113,13 @@ export default styled(AccountSelector)(({ theme }: Props) => `
     text-align: center;
     padding: 2px 8px;
     border-radius: 18px;
-    border: 1px solid ${theme.identiconBackground};
     font-size: 12px;
+    background: #ffffff2b;
+    backdrop-filter: blur(20px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 34px;
+    padding-top: 3px;
+    padding-bottom: 4px;
     &:hover {
         cursor: pointer;
     }
@@ -119,7 +130,6 @@ export default styled(AccountSelector)(({ theme }: Props) => `
     border: 1px solid ${theme.boxBorderColor};
     box-sizing: border-box;
     box-shadow: 0 0 10px ${theme.boxShadow};
-    margin-top: 60px;
     position: absolute;
     max-height: 300px;
     overflow: auto;

@@ -8,18 +8,15 @@ import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { ThemeProps } from '../types';
 
 import { faUsb } from '@fortawesome/free-brands-svg-icons';
-import { faCopy } from '@fortawesome/free-regular-svg-icons';
 import { faCodeBranch, faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 // import { decodeAddress } from '@polkadot/util-crypto';
 import { Link } from '../components';
 import useMetadata from '../hooks/useMetadata';
 import useOutsideClick from '../hooks/useOutsideClick';
-import useToast from '../hooks/useToast';
 import useTranslation from '../hooks/useTranslation';
 import { DEFAULT_TYPE } from '../util/defaultType';
 import getParentNameSuri from '../util/getParentNameSuri';
@@ -98,7 +95,6 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
   const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [, setIsMovedMenu] = useState(false);
   const actionsRef = useRef<HTMLDivElement>(null);
-  const { show } = useToast();
 
   const { setSelectedAccount } = useContext(SelectedAccountContext);
 
@@ -134,8 +130,6 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
   useEffect((): void => {
     setShowActionsMenu(false);
   }, [toggleActions]);
-
-  const _onCopy = useCallback((): void => show(t('Copied')), [show, t]);
 
   const Name = () => {
     const accountName = name || account?.name;
@@ -196,19 +190,6 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
             </div>
           )
         }
-        {chain?.genesisHash && (
-          <div
-            className='banner chain'
-            data-field='chain'
-            style={
-              chain.definition.color
-                ? { backgroundColor: chain.definition.color }
-                : undefined
-            }
-          >
-            {chain.name.replace(' Relay Chain', '')}
-          </div>
-        )}
         <div className='addressDisplay'>
           <div
             className='fullAddress'
@@ -216,16 +197,6 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
           >
             {formatted || address || t('<unknown>')}
           </div>
-          <CopyToClipboard
-            text={(formatted && formatted) || ''} >
-            <FontAwesomeIcon
-              className='copyIcon'
-              icon={faCopy}
-              onClick={_onCopy}
-              size='sm'
-              title={t('copy address')}
-            />
-          </CopyToClipboard>
         </div>
       </div>
     </div>);
@@ -263,11 +234,10 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
 }
 
 export default styled(Address)(({ theme }: ThemeProps) => `
-  background: ${theme.accountBackground};
-  border: 1px solid ${theme.boxBorderColor};
+ 
+  background: #081927b3;
+  border-bottom: 2px solid #2496ff80;
   box-sizing: border-box;
-  border-radius: 4px;
-  margin-bottom: 8px;
   position: relative;
 
   .banner {
