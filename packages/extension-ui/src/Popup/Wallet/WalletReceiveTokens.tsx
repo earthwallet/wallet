@@ -11,11 +11,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import QRCode from 'qrcode.react';
 import React, { useCallback, useContext } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import BG_RECEIVE from '../../assets/bg_receive.png';
-import { NextStepButton, SelectedAccountContext } from '../../components';
+import { Link, SelectedAccountContext } from '../../components';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -24,20 +22,24 @@ interface Props extends ThemeProps {
 // eslint-disable-next-line space-before-function-paren
 const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<Props> {
   const { show } = useToast();
-  const history = useHistory();
 
   const { selectedAccount } = useContext(SelectedAccountContext);
   const getShortAddress = (address: string) => address.substring(0, 8) + '.....' + address.substring(address.length - 8);
   const _onCopy = useCallback((): void => show('Copied'), [show]);
 
   return (
-    <div className={className}>
-      <Header
-        showAccountsDropdown
-        showMenu
-        type='wallet' />
-      <div >
-        <div className='accountShare'>Share your Public Address</div>
+    <>
+      <Header showAccountsDropdown
+        showMenu />
+      <div className={className}>
+        <div className='topBarDiv'>
+          <div className='topBarDivSideItem'/>
+          <div className='topBarDivCenterItem'>Receive</div>
+          <div className='topBarDivSideItem topBarDivCancelItem'>
+            <Link className='topBarDivCancelItem'
+              to='/wallet/home'>Cancel</Link>
+          </div>
+        </div>
         <div className='accountDetail'>
 
           {selectedAccount?.address && <div className='addressDisplay'>
@@ -54,68 +56,26 @@ const WalletReceiveTokens = function ({ className }: Props): React.ReactElement<
               />
             </CopyToClipboard> </div>}
 
-          <div
-            className='qrCodeCont'
-
-          >
-
-            <QRCode bgColor='#0000'
-              fgColor='#DDD'
-              size={220}
-              value={selectedAccount?.address || ''} />
-
-          </div>
+          <QRCode bgColor='#0000'
+            fgColor='#DDD'
+            size={220}
+            value={selectedAccount?.address || ''} />
 
         </div>
 
       </div>
-      <div style={{ padding: '0 27px',
-        marginBottom: 30,
-        position: 'absolute',
-        bottom: 0,
-        left: 0 }}>
-        <NextStepButton
-          isDisabled={false}
-          onClick={() => history.push(`/account/export/${selectedAccount?.address || ''}`)}
-        >
-          {'Export Account'}
-        </NextStepButton>
-
-      </div>
-    </div>
+    </>
   );
 };
 
 export default styled(WalletReceiveTokens)(({ theme }: Props) => `
     width: auto;
     height: 100%;
-    background: url(${BG_RECEIVE});
-
-    .qrCodeCont {
-      display: flex;
-    background: #5a597e66;
-    backdrop-filter: blur(15px);
-    border-radius: 14px;
-    width: calc(100% - 48px);
-    padding: 40px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-sizing: border-box;
-    }
-
-    .accountShare {
-      font-family: Poppins;
-      font-style: normal;
-      font-weight: 500;
-      font-size: 18px;
-      line-height: 27px;
-      /* identical to box height */
-
-
-      color: #FFFFFF;
-      padding: 24px 24px 0 24px;
-      text-align: center;
-      }
+    padding 0;
 
     .topBarDiv {
         width: 100%;
@@ -162,6 +122,7 @@ export default styled(WalletReceiveTokens)(({ theme }: Props) => `
         flex: 1;
         height: 420px;
         width: 100%;
+        padding: 16px;
          align-items: center;
         justify-content: center;
     }

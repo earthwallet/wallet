@@ -211,8 +211,8 @@ export async function subscribeSigningRequests (cb: (accounts: SigningRequest[])
   return sendMessage('ewpri(signing.requests)', null, cb);
 }
 
-export async function validateSeed (suri: string, type?: KeypairType, symbol?: string): Promise<{ address: string; suri: string }> {
-  return sendMessage('ewpri(seed.validate)', { suri, type, symbol });
+export async function validateSeed (suri: string, type?: KeypairType): Promise<{ address: string; suri: string }> {
+  return sendMessage('ewpri(seed.validate)', { suri, type });
 }
 
 export async function validateDerivationPath (parentAddress: string, suri: string, parentPassword: string): Promise<ResponseDeriveValidate> {

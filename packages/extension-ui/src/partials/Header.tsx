@@ -1,18 +1,14 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import type { ThemeProps } from '../types';
 
 import { faArrowLeft, faCog, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useCallback, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import ICON_BACK from '../assets/icon_back.svg';
+import logo from '../assets/icon.png';
 import Link from '../components/Link';
 import useOutsideClick from '../hooks/useOutsideClick';
 import AccountSelector from './AccountSelector';
@@ -28,20 +24,16 @@ interface Props extends ThemeProps {
   showBackArrow?: boolean;
   showSettings?: boolean;
   smallMargin?: boolean;
-  type?: string;
   showNetworkDropdown?: boolean;
   text?: React.ReactNode;
   showAccountsDropdown?: boolean;
-  backOverride?: any;
-  centerText?: boolean;
 }
 
-function Header ({ backOverride, centerText, children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text, type = '' }: Props): React.ReactElement<Props> {
+function Header ({ children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text }: Props): React.ReactElement<Props> {
   const [isAddOpen, setShowAdd] = useState(false);
   const [isSettingsOpen, setShowSettings] = useState(false);
   const addRef = useRef(null);
   const setRef = useRef(null);
-  const history = useHistory();
 
   useOutsideClick(addRef, (): void => {
     isAddOpen && setShowAdd(!isAddOpen);
@@ -65,116 +57,83 @@ function Header ({ backOverride, centerText, children, className = '', showAccou
   //   const url = URL.createObjectURL(blob);
 
   return (
-    <div className={`${className} ${smallMargin ? 'smallMargin' : ''} ${type === 'wallet' ? 'walletDiv' : ''}`}>
-      {type !== 'wallet' && type !== 'details'
-        ? <div className='container'>
-          <div className='branding'>
-            {showBackArrow
-              ? (
-                <Link
-                  className='backlink'
-                  to='/'
-                >
-                  <FontAwesomeIcon
-                    className='arrowLeftIcon'
-                    icon={faArrowLeft}
-                  />
-                </Link>
-              )
-              : (
-                <div />
-              )
-            }
-
-            {text && <span className='logoText'>{text || 'Earth Wallet'}</span>}
-          </div>
-
-          {showNetworkDropdown && (<NetworkSelector/>)}
-          {showAccountsDropdown && (<AccountSelector/>)}
-
-          <div className='popupMenus'>
-            {showAdd && (
-              <div
-                className='popupToggle'
-                onClick={_toggleAdd}
+    <div className={`${className} ${smallMargin ? 'smallMargin' : ''}`}>
+      <div className='container'>
+        <div className='branding'>
+          {showBackArrow
+            ? (
+              <Link
+                className='backlink'
+                to='/'
               >
                 <FontAwesomeIcon
-                  className={`plusIcon ${isAddOpen ? 'selected' : ''}`}
-                  icon={faEllipsisV}
-                  size='lg'
+                  className='arrowLeftIcon'
+                  icon={faArrowLeft}
                 />
-              </div>
-            )}
-            {showSettings && (
-              <div
-                className='popupToggle'
-                data-toggle-settings
-                onClick={_toggleSettings}
-              >
-                <FontAwesomeIcon
-                  className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
-                  icon={faCog}
-                  size='lg'
-                />
-              </div>
-            )}
-            {showMenu && (
-              <div
-                className='popupToggle'
-                data-toggle-settings
-                onClick={_toggleSettings}
-              >
-                <FontAwesomeIcon
-                  className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
-                  icon={faEllipsisV}
-                  size='lg'
-                />
-              </div>
-            )}
-          </div>
-          {isAddOpen && (
-            <MenuAdd reference={addRef}/>
-          )}
-          {isSettingsOpen && (
-            <MenuSettings reference={setRef}/>
-          )}
-          {children}
+              </Link>
+            )
+            : (
+              <img
+                className='header-logo'
+                src={logo}
+              />
+            )
+          }
+
+          {text && <span className='logoText'>{text || 'Earth Wallet'}</span>}
         </div>
-        : type === 'details'
-          ? <div className='container containerDetails'>
+
+        {showNetworkDropdown && (<NetworkSelector/>)}
+        {showAccountsDropdown && (<AccountSelector/>)}
+
+        <div className='popupMenus'>
+          {showAdd && (
             <div
-              className='backButtonCont backButtonContDetails'
-              onClick={() => history.goBack()}>
-              <div className='backButtonIcon backButtonIconDetails' >
-                <img src={ICON_BACK} /> <div className='backText'>Back</div>
-              </div>
+              className='popupToggle'
+              onClick={_toggleAdd}
+            >
+              <FontAwesomeIcon
+                className={`plusIcon ${isAddOpen ? 'selected' : ''}`}
+                icon={faEllipsisV}
+                size='lg'
+              />
             </div>
-            {text && <div className={`headerText ${centerText ? 'headerTextCenter' : ''}`}>{text}</div>}
-            {children}
-          </div>
-          : <div className='container'>
-            {backOverride === undefined
-              ? <div
-                className='backButtonCont'
-                onClick={() => history.goBack()}>
-                <div className='backButtonIcon' >
-                  <img src={ICON_BACK} />
-                </div>
-              </div>
-              : <div
-                className='backButtonCont'
-                onClick={() => backOverride()}>
-                <div className='backButtonIcon' >
-                  <img src={ICON_BACK} />
-                </div>
-              </div>
-            }
-            {text && <div className={`headerText ${centerText ? 'headerTextCenter' : ''}`}>{text}</div>}
-            {centerText && <div/>}
-            {children}
-            {showAccountsDropdown && (<AccountSelector/>)}
-          </div>
-      }
+          )}
+          {showSettings && (
+            <div
+              className='popupToggle'
+              data-toggle-settings
+              onClick={_toggleSettings}
+            >
+              <FontAwesomeIcon
+                className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
+                icon={faCog}
+                size='lg'
+              />
+            </div>
+          )}
+          {showMenu && (
+            <div
+              className='popupToggle'
+              data-toggle-settings
+              onClick={_toggleSettings}
+            >
+              <FontAwesomeIcon
+                className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
+                icon={faEllipsisV}
+                size='lg'
+              />
+            </div>
+          )}
+        </div>
+        {isAddOpen && (
+          <MenuAdd reference={addRef}/>
+        )}
+        {isSettingsOpen && (
+          <MenuSettings reference={setRef}/>
+        )}
+        {children}
+      </div>
     </div>
   );
 }
@@ -185,68 +144,11 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
   font-weight: normal;
   margin: 0;
   position: relative;
+  margin-bottom: 25px;
 
-
-
-  .backText {
-    font-family: Poppins;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 150%;
-    /* identical to box height, or 21px */
-    
-    
-    color: #FFFFFF;
-    
-    
-    /* Inside Auto Layout */
-    
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-    margin: 0px 8px;
-  }
-
-  .backButtonCont {
-    background: rgba(5, 12, 18, 0.4);
-    backdrop-filter: blur(20px);
-    /* Note: backdrop-filter has minimal browser support */
-    
-    border-radius: 30px;
-    width: 39px;
-    height: 39px;   
-    display: flex;
-    align-items: center;
-    justify-content: center; 
-    &:active {
-      opacity: 0.7;
-    }
-  }
-
-  .headerText {
-    font-style: normal;
-    /* font-weight: 600; */
-    font-size: 16px;
-    line-height: 16px;
-    display: flex;
-    align-items: center;
-    margin-left: 15px;
-    
-  }
-
-  .backButtonIcon{
-    width: 33px;
-    height: 33px;
-    background: rgba(255, 255, 255, 0.17);
-    border-radius: 21px;
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-
-  }
-
+  background: linear-gradient(101.54deg, #000204 10.81%, #1B63A6 139.52%);
+  box-shadow: 0px 0px 8px #236EFF, 0px 0px 13px rgba(43, 115, 255, 0.8), 0px 0px 54px rgba(71, 134, 255, 0.8);
+  border-radius: 0px 0px 20px 20px;
 
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
@@ -262,9 +164,8 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
   > .container {
     display: flex;
     justify-content: space-between;
-    width: calc(100vw - 48px);
-    margin: 24px 0 0 0;
-    padding: 0 24px;
+    width: 100%;
+    min-height: 70px;
 
     .branding {
       display: flex;
@@ -273,13 +174,13 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
       color: ${theme.labelColor};
       font-family: ${theme.fontFamily};
       text-align: center;
+      margin-left: 24px;
 
       .logoText {
         color: ${theme.textColor};
         font-family: ${theme.fontFamily};
         font-size: 18px;
         margin-left: 12px;
-        align-items: center;
       }
 
       .header-logo {
@@ -348,24 +249,5 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
 
   &.smallMargin {
     margin-bottom: 15px;
-  }
-
-  .headerTextCenter {
-    margin-left: -34px;
-  }
-
-  .backButtonIconDetails {
-    padding: 0 10px;
-    width: auto;
-  }
-  .containerDetails {
-    margin: 0;
-    width: 317px;
-    max-width: 317px;
-    padding: 0px 0 0 0px;
-  }
-
-  .backButtonContDetails {
-    width: 86px;
   }
 `));

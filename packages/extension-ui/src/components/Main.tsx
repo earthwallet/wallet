@@ -22,7 +22,7 @@ function Main ({ children, className }: Props): React.ReactElement<Props> {
 export default styled(Main)(({ theme }: ThemeProps) => `
   display: flex;
   flex-direction: column;
-  height: ${theme.appHeight};
+  height: 100%;
   background: ${theme.background};
   color: ${theme.textColor};
   font-size: ${theme.fontSize};
@@ -33,8 +33,8 @@ export default styled(Main)(({ theme }: ThemeProps) => `
     font-family: ${theme.fontFamily};
   }
 
-  // > * {
-  //   padding-left: 24px;
-  //   padding-right: 24px;
-  // }
+  > * {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 `);

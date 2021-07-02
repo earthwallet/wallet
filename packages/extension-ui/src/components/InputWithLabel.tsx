@@ -54,27 +54,25 @@ function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused
 
   return (
     <Label
-      className={`${className || ''} ${withoutMargin ? 'withoutMargin' : ''} ' labelStyle'`}
+      className={`${className || ''} ${withoutMargin ? 'withoutMargin' : ''}`}
       label={label}
     >
-      <div className={'inputCont'}>
-        <Input
-          autoCapitalize='off'
-          autoCorrect='off'
-          autoFocus={isFocused}
-          defaultValue={defaultValue || undefined}
-          disabled={disabled}
-          onBlur={onBlur}
-          onChange={_onChange}
-          onKeyPress={_checkKey}
-          placeholder={placeholder}
-          readOnly={isReadOnly}
-          spellCheck={false}
-          type={type}
-          value={value}
-          withError={isError}
-        />
-      </div>
+      <Input
+        autoCapitalize='off'
+        autoCorrect='off'
+        autoFocus={isFocused}
+        defaultValue={defaultValue || undefined}
+        disabled={disabled}
+        onBlur={onBlur}
+        onChange={_onChange}
+        onKeyPress={_checkKey}
+        placeholder={placeholder}
+        readOnly={isReadOnly}
+        spellCheck={false}
+        type={type}
+        value={value}
+        withError={isError}
+      />
       { isCapsLock && (
         <Warning isBelowInput>{t<string>('Warning: Caps lock is on')}</Warning>
       )}
@@ -84,26 +82,7 @@ function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused
 
 export default styled(InputWithLabel)`
   margin-bottom: 16px;
-  .inputCont {
-    border: 2px solid #175b98;
-    border-radius: 8px;
-  }
 
-  .labelStyle {
-
-     opacity: 0.65;
-     font-family: "DM Sans";
-    font-style: normal;
-    font-weight: 700;
-    font-size: 12px;
-    line-height: 150%;
-    letter-spacing: 0.05em;
-    color: #dbe4f2;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-
-  }
-  
   &.withoutMargin {
     margin-bottom: 0px;
 

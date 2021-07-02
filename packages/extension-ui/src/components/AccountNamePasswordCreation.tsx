@@ -4,7 +4,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { Name, Password } from '../partials';
-import { NextStepButton } from '.';
+import { BackButton, ButtonArea, NextStepButton, VerticalSpace } from '.';
 
 interface Props {
   buttonLabel: string;
@@ -31,6 +31,15 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
     [onNameChange]
   );
 
+  const _onBackClick = useCallback(
+    () => {
+      _onNameChange(null);
+      setPassword(null);
+      onBackClick();
+    },
+    [_onNameChange, onBackClick]
+  );
+
   return (
     <>
       <Name
@@ -38,21 +47,18 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
         onChange={_onNameChange}
       />
       <Password onChange={setPassword} />
-      <div style={{ padding: '0 27px',
-        marginBottom: 30,
-        position: 'absolute',
-        bottom: 0,
-        left: 0 }}>
+      <VerticalSpace />
+      <ButtonArea>
+        <BackButton onClick={_onBackClick} />
         <NextStepButton
           data-button-action='add new root'
+          isBusy={isBusy}
           isDisabled={!password || !name}
-          loading={isBusy}
           onClick={_onCreate}
         >
           {buttonLabel}
         </NextStepButton>
-      </div>
-
+      </ButtonArea>
     </>
   );
 }

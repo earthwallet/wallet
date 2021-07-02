@@ -25,7 +25,7 @@ function MnemonicSeed ({ className, onCopy, seed }: Props): React.ReactElement<P
       <TextAreaWithLabel
         className='mnemonicDisplay'
         isReadOnly
-        label={''}
+        label={t<string>('Generated 12-word mnemonic seed:')}
         value={seed}
       />
       <div className='buttonsRow'>
@@ -62,11 +62,6 @@ export default styled(MnemonicSeed)(({ theme }: ThemeProps) => `
       letter-spacing: -0.01em;
       margin-bottom: 10px;
       padding: 6px;
-      background: rgba(36, 150, 255, 0.22);
-      backdrop-filter: blur(8px);
-      /* Note: backdrop-filter has minimal browser support */
-
-      border-radius: 14px;
     }
   }
 `);

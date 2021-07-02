@@ -102,12 +102,8 @@ function Account ({ address, className, genesisHash, isExternal, isHidden, name,
 }
 
 export default styled(Account)(({ theme }: ThemeProps) => `
-  &:nth-child(even) {
-    background: #ffffff1a;
-   }
-
-  
   .address {
+    margin-bottom: 8px;
   }
 
   .editName {

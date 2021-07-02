@@ -15,7 +15,6 @@ import { AccountContext, ActionContext, AuthorizeReqContext, MediaContext, Metad
 import ToastProvider from '../components/Toast/ToastProvider';
 import { subscribeAccounts, subscribeAuthorizeRequests, subscribeMetadataRequests, subscribeSigningRequests } from '../messaging';
 import { buildHierarchy } from '../util/buildHierarchy';
-import Details from './Transactions/Details';
 import { defaultNetworkContext } from './Utils/Consts';
 import Wallet from './Wallet/Wallet';
 import WalletReceiveTokens from './Wallet/WalletReceiveTokens';
@@ -35,9 +34,7 @@ import Metadata from './Metadata';
 import PhishingDetected from './PhishingDetected';
 import RestoreJson from './RestoreJson';
 import Signing from './Signing';
-import Transactions from './Transactions';
-
-// import Welcome from './Welcome';
+import Welcome from './Welcome';
 
 const startSettings = uiSettings.get();
 
@@ -113,10 +110,6 @@ export default function Popup (): React.ReactElement {
   }, [accounts]);
 
   useEffect((): void => {
-    window.localStorage.setItem('welcome_read', 'ok');
-  }, []);
-
-  useEffect((): void => {
     requestMediaAccess(cameraOn)
       .then(setMediaAllowed)
       .catch(console.error);
@@ -136,7 +129,7 @@ export default function Popup (): React.ReactElement {
           : signRequests && signRequests.length
             ? wrapWithErrorBoundary(<Signing />, 'signing')
             : wrapWithErrorBoundary(<Accounts />, 'accounts')
-      : wrapWithErrorBoundary(<Accounts />, 'accounts'));
+      : wrapWithErrorBoundary(<Welcome />, 'welcome'));
   };
 
   return (
@@ -154,7 +147,6 @@ export default function Popup (): React.ReactElement {
                           <ToastProvider>
                             <Switch>
                               <Route path='/auth-list'>{wrapWithErrorBoundary(<AuthList />, 'auth-list')}</Route>
-                              <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
                               <Route path='/account/create'>{wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}</Route>
                               <Route path='/account/forget/:address'>{wrapWithErrorBoundary(<Forget />, 'forget-address')}</Route>
                               <Route path='/account/export/:address'>{wrapWithErrorBoundary(<Export />, 'export-address')}</Route>
@@ -166,8 +158,6 @@ export default function Popup (): React.ReactElement {
                               <Route path='/account/derive/:address/locked'>{wrapWithErrorBoundary(<Derive isLocked />, 'derived-address-locked')}</Route>
                               <Route path='/account/derive/:address'>{wrapWithErrorBoundary(<Derive />, 'derive-address')}</Route>
                               <Route path='/wallet/home'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
-                              <Route path='/wallet/transactions/:address'>{wrapWithErrorBoundary(<Transactions />, 'transactions')}</Route>
-                              <Route path='/wallet/transaction/:txnId'>{wrapWithErrorBoundary(<Details />, 'transactions')}</Route>
                               <Route path='/wallet/send'>{wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}</Route>
                               <Route path='/wallet/receive'>{wrapWithErrorBoundary(<WalletReceiveTokens />, 'wallet-receive-token')}</Route>
                               <Route path={`${PHISHING_PAGE_REDIRECT}/:website`}>{wrapWithErrorBoundary(<PhishingDetected />, 'phishing-page-redirect')}</Route>

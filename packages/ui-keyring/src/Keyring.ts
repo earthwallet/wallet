@@ -1,16 +1,6 @@
 // Copyright 2017-2020 @earthwallet/ui-keyring authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react/jsx-key */
-/* eslint-disable @typescript-eslint/restrict-plus-operands */
-
 import type { KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@polkadot/keyring/types';
 import type { EncryptedJson } from '@polkadot/util-crypto/json/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
@@ -20,7 +10,6 @@ import type { CreateResult, KeyringAddress, KeyringAddressType, KeyringItemType,
 import { createWallet } from '@earthwallet/sdk';
 import { chains } from '@earthwallet/ui-settings/defaults/chains';
 import BN from 'bn.js';
-import StringCrypto from 'string-crypto';
 
 import { createPair } from '@polkadot/keyring/pair';
 import { bnToBn, hexToU8a, isHex, isString, stringToU8a, u8aSorted, u8aToString } from '@polkadot/util';
@@ -30,8 +19,6 @@ import { env } from './observable/env';
 import { Base } from './Base';
 import { accountKey, accountRegex, addressKey, addressRegex, contractKey, contractRegex } from './defaults';
 import { KeyringOption } from './options';
-
-const { encryptString } = new StringCrypto();
 
 const RECENT_EXPIRY = 24 * 60 * 60;
 
@@ -79,18 +66,14 @@ export class Keyring extends Base implements KeyringStruct {
   }
 
   public async addUri (suri: string, password?: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol?: string): Promise<CreateResult> {
-    console.log('addUri');
+    console.log(suri, password, symbol, 'icp', meta);
+
     let wallet: any;
     let newPair: any = {};
 
     if (symbol === 'ICP') {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       wallet = await createWallet(suri, symbol);
-
-      if (password !== '') {
-        window.localStorage.setItem(wallet?.address + '_icpjson', encryptString(JSON.stringify(wallet.identity.toJSON()), password));
-        window.localStorage.setItem(wallet?.address + '_mnemonic', encryptString(suri, password));
-      }
     }
 
     const pair = this.keyring.addFromUri(suri, meta, type);
