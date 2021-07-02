@@ -1,7 +1,7 @@
 {
   "author": "Earth Wallet",
-  "description": "Manage your Earth Wallet wallet.",
-  "homepage_url": "https://github.com/polkadot-js/extension",
+  "description": "Your Keys to Web3.",
+  "homepage_url": "https://github.com/earthwallet/extension",
   "name": "Earth Wallet",
   "short_name": "Earth Wallet",
   "manifest_version": 2,
