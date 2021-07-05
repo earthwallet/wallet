@@ -3,7 +3,7 @@
 
 import type { ResponseJsonGetAccountInfo } from '@earthwallet/extension-base/background/types';
 import type { KeyringPairs$Json } from '@earthwallet/ui-keyring/types';
-import type { KeyringPair$Json } from '@polkadot/keyring/types';
+import type { KeyringPair$Json } from '@earthwallet/ui-keyring/types_extended';
 
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';

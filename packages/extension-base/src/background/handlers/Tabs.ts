@@ -3,7 +3,7 @@
 
 import type { InjectedAccount, InjectedMetadataKnown, MetadataDef, ProviderMeta } from '@earthwallet/extension-inject/types';
 import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
-import type { KeyringPair } from '@polkadot/keyring/types';
+import type { KeyringPair } from '@earthwallet/ui-keyring/types_extended';
 import type { JsonRpcResponse } from '@polkadot/rpc-provider/types';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
 import type { MessageTypes, RequestAccountList, RequestAuthorizeTab, RequestRpcSend, RequestRpcSubscribe, RequestRpcUnsubscribe, RequestTypes, ResponseRpcListProviders, ResponseSigning, ResponseTypes, SubscriptionMessageTypes } from '../types';

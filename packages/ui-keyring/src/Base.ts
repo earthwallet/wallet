@@ -1,7 +1,7 @@
 // Copyright 2017-2020 @earthwallet/ui-keyring authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { KeyringInstance, KeyringPair } from '@polkadot/keyring/types';
+import type { KeyringInstance, KeyringPair } from '@earthwallet/ui-keyring/types_extended';
 import type { Prefix } from '@polkadot/util-crypto/address/types';
 import type { AddressSubject } from './observable/types';
 import type { KeyringOptions, KeyringStore } from './types';
