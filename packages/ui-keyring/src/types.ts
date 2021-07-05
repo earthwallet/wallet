@@ -1,11 +1,10 @@
 // Copyright 2017-2020 @earthwallet/ui-keyring authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { KeyringInstance as BaseKeyringInstance, KeyringOptions as KeyringOptionsBase, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from './types_extended';
 import type { EncryptedJson } from '@polkadot/util-crypto/json/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { AddressSubject, SingleAddress } from './observable/types';
-
+import type { KeyringInstance as BaseKeyringInstance, KeyringOptions as KeyringOptionsBase, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from './types_extended';
 
 export interface ContractMeta {
   abi: string;
