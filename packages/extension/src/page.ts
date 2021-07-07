@@ -4,7 +4,7 @@
 import type { Message } from '@earthwallet/extension-base/types';
 
 import { enable, handleResponse, redirectIfPhishing } from '@earthwallet/extension-base/page';
-import { injectExtension } from '@earthwallet/extension-inject';
+import { injectExtension } from '@earthwallet/sdk/build/main/inject';
 
 // setup a response listener (events created by the loader for extension responses)
 window.addEventListener('message', ({ data, source }: Message): void => {

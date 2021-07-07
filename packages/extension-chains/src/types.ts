@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension-chains authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { MetadataDef } from '@earthwallet/extension-inject/types';
+import type { MetadataDef } from '@earthwallet/sdk/build/main/inject/types';
 import type { Registry } from '@polkadot/types/types';
 
 export interface Chain {

@@ -1,6 +1,6 @@
 # @earthwallet/ui-keyring
 
-A wrapper extending the base @polkadot/keyring interface for usage in the browser:
+A wrapper extending the base @earthwallet/sdk interface for usage in the browser:
 Key management of user accounts including generation and retrieval of keyring pairs from a variety of input combinations.
 
 ## Usage Examples

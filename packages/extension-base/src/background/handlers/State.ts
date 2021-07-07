@@ -1,12 +1,12 @@
 // Copyright 2021 @earthwallet/extension-bg authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { MetadataDef, ProviderMeta } from '@earthwallet/extension-inject/types';
+import type { MetadataDef, ProviderMeta } from '@earthwallet/sdk/build/main/inject/types';
 import type { JsonRpcResponse, ProviderInterface, ProviderInterfaceCallback } from '@polkadot/rpc-provider/types';
 import type { AccountJson, AuthorizeRequest, MetadataRequest, RequestAuthorizeTab, RequestRpcSend, RequestRpcSubscribe, RequestRpcUnsubscribe, RequestSign, ResponseRpcListProviders, ResponseSigning, SigningRequest } from '../types';
 
 import { addMetadata, knownMetadata } from '@earthwallet/extension-chains';
-import chrome from '@earthwallet/extension-inject/chrome';
+import chrome from '@earthwallet/sdk/build/main/inject/chrome';
 import { BehaviorSubject } from 'rxjs';
 
 import { assert } from '@polkadot/util';
@@ -155,7 +155,7 @@ export default class State {
 
   private popupClose (): void {
     this.#windows.forEach((id: number): void =>
-      chrome.windows.remove(id)
+      chrome.windows.remove(id, console.log)
     );
     this.#windows = [];
   }
@@ -258,7 +258,9 @@ export default class State {
           : (signCount ? `${signCount}` : '')
     );
 
-    chrome.browserAction.setBadgeText({ text });
+    const callback = () => console.log('setBadgeText', text);
+
+    chrome.browserAction.setBadgeText({ text }, callback);
 
     if (shouldClose && text === '') {
       this.popupClose();

@@ -9,7 +9,6 @@
   "sideEffects": false,
   "dependencies": {
     "@babel/runtime": "^7.14.0",
-    "@earthwallet/extension-inject": "^0.1.0",
     "@earthwallet/ui-keyring": "^0.1.0",
     "@polkadot/api": "^4.9.3-11",
     "@polkadot/keyring": "^6.3.2-10",

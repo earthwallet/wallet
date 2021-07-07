@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { InjectedMetadata, InjectedMetadataKnown, MetadataDef } from '@earthwallet/extension-inject/types';
+import type { InjectedMetadata, InjectedMetadataKnown, MetadataDef } from '@earthwallet/sdk/build/main/inject/types';
 import type { SendRequest } from './types';
 
 // External to class, this.# is not private enough (yet)

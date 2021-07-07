@@ -6,14 +6,14 @@
 import handlers from '@earthwallet/extension-base/background/handlers';
 import { PORT_CONTENT, PORT_EXTENSION } from '@earthwallet/extension-base/defaults';
 import { AccountsStore } from '@earthwallet/extension-base/stores';
-import chrome from '@earthwallet/extension-inject/chrome';
+import chrome from '@earthwallet/sdk/build/main/inject/chrome';
 import keyring from '@earthwallet/ui-keyring';
 
 import { assert } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 // setup the notification (same a FF default background, white text)
-chrome.browserAction.setBadgeBackgroundColor({ color: '#d90000' });
+chrome.browserAction.setBadgeBackgroundColor({ color: '#d90000' }, console.log);
 
 // listen to all messages and handle appropriately
 chrome.runtime.onConnect.addListener((port): void => {

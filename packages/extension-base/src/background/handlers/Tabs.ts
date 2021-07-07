@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { InjectedAccount, InjectedMetadataKnown, MetadataDef, ProviderMeta } from '@earthwallet/extension-inject/types';
+import type { InjectedAccount, InjectedMetadataKnown, MetadataDef, ProviderMeta } from '@earthwallet/sdk/build/main/inject/types';
 import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
 import type { KeyringPair } from '@earthwallet/ui-keyring/types_extended';
 import type { JsonRpcResponse } from '@polkadot/rpc-provider/types';
@@ -146,11 +146,13 @@ export default class Tabs {
     const encodedWebsite = encodeURIComponent(phishingWebsite);
     const url = `${chrome.extension.getURL('index.html')}#${PHISHING_PAGE_REDIRECT}/${encodedWebsite}`;
 
+    const callback = () => console.log('update', url);
+
     chrome.tabs.query({ url: phishingWebsite }, (tabs) => {
       tabs
         .map(({ id }) => id)
         .filter((id): id is number => isNumber(id))
-        .forEach((id) => chrome.tabs.update(id, { url }));
+        .forEach((id) => chrome.tabs.update(id, { url }, callback));
     });
   }
 

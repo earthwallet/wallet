@@ -8,7 +8,6 @@
   "dependencies": {
     "@babel/runtime": "^7.14.0",
     "@earthwallet/extension-base": "^0.1.0",
-    "@earthwallet/extension-inject": "^0.1.0",
     "@earthwallet/extension-ui": "^0.1.0"
   },
   "devDependencies": {

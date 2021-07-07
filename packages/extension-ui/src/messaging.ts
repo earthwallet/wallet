@@ -10,8 +10,8 @@ import type { KeypairType } from '@polkadot/util-crypto/types';
 
 import { PORT_EXTENSION } from '@earthwallet/extension-base/defaults';
 import { metadataExpand } from '@earthwallet/extension-chains';
-import chrome from '@earthwallet/extension-inject/chrome';
-import { MetadataDef } from '@earthwallet/extension-inject/types';
+import chrome from '@earthwallet/sdk/build/main/inject/chrome';
+import { MetadataDef } from '@earthwallet/sdk/build/main/inject/types';
 
 import allChains from './util/chains';
 import { getSavedMeta, setSavedMeta } from './MetadataCache';

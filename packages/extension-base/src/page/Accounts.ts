@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { InjectedAccount, InjectedAccounts, Unsubcall } from '@earthwallet/extension-inject/types';
+import type { InjectedAccount, InjectedAccounts, Unsubcall } from '@earthwallet/sdk/build/main/inject/types';
 import type { SendRequest } from './types';
 
 // External to class, this.# is not private enough (yet)

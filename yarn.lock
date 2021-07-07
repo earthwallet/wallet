@@ -1758,7 +1758,6 @@ __metadata:
   resolution: "@earthwallet/extension-base@workspace:packages/extension-base"
   dependencies:
     "@babel/runtime": ^7.14.0
-    "@earthwallet/extension-inject": ^0.1.0
     "@earthwallet/ui-keyring": ^0.1.0
     "@polkadot/api": ^4.9.3-11
     "@polkadot/keyring": ^6.3.2-10
@@ -1779,33 +1778,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@earthwallet/extension-dapp@workspace:packages/extension-dapp":
-  version: 0.0.0-use.local
-  resolution: "@earthwallet/extension-dapp@workspace:packages/extension-dapp"
-  dependencies:
-    "@babel/runtime": ^7.14.0
-    "@earthwallet/extension-inject": ^0.1.0
-    "@polkadot/util": ^6.3.2-10
-    "@polkadot/util-crypto": ^6.3.2-10
-  peerDependencies:
-    "@polkadot/api": "*"
-    "@polkadot/util": "*"
-    "@polkadot/util-crypto": "*"
-  languageName: unknown
-  linkType: soft
-
-"@earthwallet/extension-inject@^0.1.0, @earthwallet/extension-inject@workspace:packages/extension-inject":
-  version: 0.0.0-use.local
-  resolution: "@earthwallet/extension-inject@workspace:packages/extension-inject"
-  dependencies:
-    "@babel/runtime": ^7.14.0
-    "@types/chrome": ^0.0.139
-    "@types/firefox-webext-browser": ^82.0.0
-  peerDependencies:
-    "@polkadot/api": "*"
-  languageName: unknown
-  linkType: soft
-
 "@earthwallet/extension-ui@^0.1.0, @earthwallet/extension-ui@workspace:packages/extension-ui":
   version: 0.0.0-use.local
   resolution: "@earthwallet/extension-ui@workspace:packages/extension-ui"
@@ -1814,7 +1786,6 @@ __metadata:
     "@dfinity/identity": ^0.9.1
     "@dfinity/rosetta-client": ^0.5.2
     "@earthwallet/extension-base": ^0.1.0
-    "@earthwallet/extension-inject": ^0.1.0
     "@earthwallet/ui-settings": ^0.1.0
     "@fortawesome/fontawesome-svg-core": ^1.2.35
     "@fortawesome/free-brands-svg-icons": ^5.15.3
@@ -1867,7 +1838,6 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.14.0
     "@earthwallet/extension-base": ^0.1.0
-    "@earthwallet/extension-inject": ^0.1.0
     "@earthwallet/extension-ui": ^0.1.0
     "@polkadot/dev": ^0.62.13
     assert: ^2.0.0
@@ -3555,16 +3525,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chrome@npm:^0.0.139":
-  version: 0.0.139
-  resolution: "@types/chrome@npm:0.0.139"
-  dependencies:
-    "@types/filesystem": "*"
-    "@types/har-format": "*"
-  checksum: 2e76ab4e293b0fd5543ccc6e8b745ec08e49a0145cd6b2d1607bbe3d3cf8b3b16a4dbdef6169aa5ad9dd42cb3cdace0998f69c837358d88aa56d9ffe84e19ba7
-  languageName: node
-  linkType: hard
-
 "@types/crc@npm:^3.4.0":
   version: 3.4.0
   resolution: "@types/crc@npm:3.4.0"
@@ -3647,13 +3607,6 @@ __metadata:
   version: 0.0.29
   resolution: "@types/filewriter@npm:0.0.29"
   checksum: 7a178fb74d3973d422005420d1b05c9054189edbdc34511803a3090221e466b7732e4e1eff8188be59dd4bd59c566d4411efe83c0cfd66293e7b1cc7a8385975
-  languageName: node
-  linkType: hard
-
-"@types/firefox-webext-browser@npm:^82.0.0":
-  version: 82.0.0
-  resolution: "@types/firefox-webext-browser@npm:82.0.0"
-  checksum: 0edd3f30d59a559f9c30a5d8adbfbb10620442b436248300b4ec52ebef3a5483a56ab7b2ddb64848621f770a922f9179b528cbb2182b3150a1d408cf059712e7
   languageName: node
   linkType: hard
 

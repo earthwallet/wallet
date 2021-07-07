@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension-base authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { InjectedProvider, ProviderList, ProviderMeta } from '@earthwallet/extension-inject/types';
+import type { InjectedProvider, ProviderList, ProviderMeta } from '@earthwallet/sdk/build/main/inject/types';
 import type { ProviderInterfaceEmitCb, ProviderInterfaceEmitted } from '@polkadot/rpc-provider/types';
 import type { AnyFunction } from '@polkadot/types/types';
 import type { SendRequest } from './types';

@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension-base authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import chrome from '@earthwallet/extension-inject/chrome';
+import chrome from '@earthwallet/sdk/build/main/inject/chrome';
 
 type StoreValue = Record<string, unknown>;
 

@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { MetadataDef } from '@earthwallet/extension-inject/types';
+import { MetadataDef } from '@earthwallet/sdk/build/main/inject/types';
 
 const metadataGets = new Map<string, Promise<MetadataDef | null>>();
 

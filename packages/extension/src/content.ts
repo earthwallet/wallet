@@ -4,7 +4,7 @@
 import type { Message } from '@earthwallet/extension-base/types';
 
 import { PORT_CONTENT } from '@earthwallet/extension-base/defaults';
-import chrome from '@earthwallet/extension-inject/chrome';
+import chrome from '@earthwallet/sdk/build/main/inject/chrome';
 
 // connect to the extension
 const port = chrome.runtime.connect({ name: PORT_CONTENT });
