@@ -4,7 +4,7 @@
 import type { EncryptedJson } from '@polkadot/util-crypto/json/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { AddressSubject, SingleAddress } from './observable/types';
-import type { KeyringInstance as BaseKeyringInstance, KeyringOptions as KeyringOptionsBase, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from './types_extended';
+import type { EarthKeyringPair, KeyringInstance as BaseKeyringInstance, KeyringOptions as KeyringOptionsBase, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from './types_extended';
 
 export interface ContractMeta {
   abi: string;
@@ -52,7 +52,7 @@ export interface KeyringOptions extends KeyringOptionsBase {
 export interface KeyringAddress {
   readonly address: string;
   readonly meta: KeyringJson$Meta;
-  readonly publicKey: Uint8Array;
+  readonly publicKey?: Uint8Array;
 }
 
 export type KeyringAddressType = 'address' | 'contract';
@@ -71,8 +71,7 @@ export interface KeyringStruct {
   readonly keyring: BaseKeyringInstance | undefined;
   readonly genesisHash?: string;
   symbol?: string;
-  addExternal: (publicKey: Uint8Array, meta?: KeyringPair$Meta) => CreateResult;
-  addPair: (pair: KeyringPair, password: string) => CreateResult;
+  addPair: (pair: EarthKeyringPair, password: string) => CreateResult;
   addUri: (suri: string, password?: string, meta?: KeyringPair$Meta, type?: KeypairType, symbol?: string) => Promise<CreateResult>;
   backupAccount: (pair: KeyringPair, password: string) => KeyringPair$Json;
   backupAccounts: (addresses: string[], password: string) => Promise<KeyringPairs$Json>
@@ -96,7 +95,7 @@ export interface KeyringStruct {
   loadAll: (options: KeyringOptions) => void;
   restoreAccount: (json: KeyringPair$Json, password: string) => KeyringPair;
   restoreAccounts: (json: EncryptedJson, password: string) => void;
-  saveAccount: (pair: KeyringPair, password?: string) => KeyringPair$Json;
+  saveAccount: (pair: EarthKeyringPair, password?: string) => KeyringPair$Json;
   saveAccountMeta: (pair: KeyringPair, meta: KeyringPair$Meta) => void;
   saveAddress: (address: string, meta: KeyringPair$Meta) => KeyringPair$Json;
   saveContract: (address: string, meta: KeyringPair$Meta) => KeyringPair$Json;

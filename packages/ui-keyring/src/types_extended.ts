@@ -1,6 +1,7 @@
 // Copyright 2017-2020 @earthwallet/ui-keyring authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import type { KeyringPair as KeyringPairWithIdentity } from '@earthwallet/sdk/build/main/types';
 import type { Prefix } from '@polkadot/util-crypto/address/types';
 import type { EncryptedJson } from '@polkadot/util-crypto/json/types';
 import type { Keypair, KeypairType } from '@polkadot/util-crypto/types';
@@ -10,7 +11,8 @@ export interface KeyringOptions {
   type?: KeypairType;
 }
 export declare type KeyringPair$Meta = Record<string, unknown>;
-export interface KeyringPair$Json extends EncryptedJson {
+
+export interface KeyringPair$Json extends Partial<EncryptedJson> {
   address: string;
   meta: KeyringPair$Meta;
 }
@@ -36,6 +38,9 @@ export interface KeyringPair {
   vrfSign(message: string | Uint8Array, context?: string | Uint8Array, extra?: string | Uint8Array): Uint8Array;
   vrfVerify(message: string | Uint8Array, vrfResult: Uint8Array, signerPublic: Uint8Array | string, context?: string | Uint8Array, extra?: string | Uint8Array): boolean;
 }
+
+export type EarthKeyringPair = KeyringPair & KeyringPairWithIdentity;
+
 export interface KeyringPairs {
   add: (pair: KeyringPair) => KeyringPair;
   all: () => KeyringPair[];
@@ -49,8 +54,8 @@ export interface KeyringInstance {
   decodeAddress(encoded: string | Uint8Array, ignoreChecksum?: boolean, ss58Format?: Prefix): Uint8Array;
   encodeAddress(key: Uint8Array | string, ss58Format?: Prefix): string;
   setSS58Format(ss58Format: Prefix): void;
-  addPair(pair: KeyringPair): KeyringPair;
-  addFromAddress(address: string | Uint8Array, meta?: KeyringPair$Meta, encoded?: Uint8Array | null, type?: KeypairType, ignoreChecksum?: boolean): KeyringPair;
+  addPair(pair: EarthKeyringPair): EarthKeyringPair;
+  addFromAddress(address: string, meta?: KeyringPair$Meta, encoded?: Uint8Array | null, type?: KeypairType, ignoreChecksum?: boolean): KeyringPair;
   addFromJson(pair: KeyringPair$Json, ignoreChecksum?: boolean): KeyringPair;
   addFromMnemonic(mnemonic: string, meta?: KeyringPair$Meta, type?: KeypairType): KeyringPair;
   addFromPair(pair: Keypair, meta?: KeyringPair$Meta, type?: KeypairType): KeyringPair;

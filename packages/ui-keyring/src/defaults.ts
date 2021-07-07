@@ -19,7 +19,7 @@ const accountKey = (address: string): string =>
   `${ACCOUNT_PREFIX}${address}`;
 
 const addressKey = (address: string): string =>
-  `${ADDRESS_PREFIX}${toHex(address)}`;
+  `${ADDRESS_PREFIX}${address}`;
 
 const contractKey = (address: string): string =>
   `${CONTRACT_PREFIX}${toHex(address)}`;

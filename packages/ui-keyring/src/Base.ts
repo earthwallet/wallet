@@ -109,14 +109,13 @@ export class Base {
       this.setDevMode(options.isDevelopment);
     }
 
-    this.#keyring = keyring;
+    this.#keyring = keyring as KeyringInstance;
     this._genesisHash = options.genesisHash && (
       isString(options.genesisHash)
         ? options.genesisHash.toString()
         : options.genesisHash.toHex()
     );
     this._store = options.store || this._store;
-
     this.addAccountPairs();
   }
 

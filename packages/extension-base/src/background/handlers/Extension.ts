@@ -3,9 +3,9 @@
 
 import type { MetadataDef } from '@earthwallet/sdk/build/main/inject/types';
 import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
-import type { KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@earthwallet/ui-keyring/types_extended';
+import type { EarthKeyringPair, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@earthwallet/ui-keyring/types_extended';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
-import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, MetadataRequest, RequestAccountBatchExport, RequestAccountChangePassword, RequestAccountCreateExternal, RequestAccountCreateHardware, RequestAccountCreateSuri, RequestAccountEdit, RequestAccountExport, RequestAccountForget, RequestAccountShow, RequestAccountTie, RequestAccountValidate, RequestAuthorizeApprove, RequestAuthorizeReject, RequestBatchRestore, RequestDeriveCreate, RequestDeriveValidate, RequestJsonRestore, RequestMetadataApprove, RequestMetadataReject, RequestSeedCreate, RequestSeedValidate, RequestSigningApprovePassword, RequestSigningApproveSignature, RequestSigningCancel, RequestSigningIsLocked, RequestTypes, ResponseAccountExport, ResponseAccountsExport, ResponseAuthorizeList, ResponseDeriveValidate, ResponseJsonGetAccountInfo, ResponseSeedCreate, ResponseSeedValidate, ResponseSigningIsLocked, ResponseType, SigningRequest } from '../types';
+import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, MetadataRequest, RequestAccountBatchExport, RequestAccountChangePassword, RequestAccountCreateSuri, RequestAccountEdit, RequestAccountExport, RequestAccountForget, RequestAccountShow, RequestAccountTie, RequestAccountValidate, RequestAuthorizeApprove, RequestAuthorizeReject, RequestBatchRestore, RequestDeriveCreate, RequestDeriveValidate, RequestJsonRestore, RequestMetadataApprove, RequestMetadataReject, RequestSeedCreate, RequestSeedValidate, RequestSigningApprovePassword, RequestSigningApproveSignature, RequestSigningCancel, RequestSigningIsLocked, RequestTypes, ResponseAccountExport, ResponseAccountsExport, ResponseAuthorizeList, ResponseDeriveValidate, ResponseJsonGetAccountInfo, ResponseSeedCreate, ResponseSeedValidate, ResponseSigningIsLocked, ResponseType, SigningRequest } from '../types';
 
 import { ALLOWED_PATH, PASSWORD_EXPIRY_MS } from '@earthwallet/extension-base/defaults';
 import chrome from '@earthwallet/sdk/build/main/inject/chrome';
@@ -47,18 +47,6 @@ export default class Extension {
   constructor (state: State) {
     this.#cachedUnlocks = {};
     this.#state = state;
-  }
-
-  private accountsCreateExternal ({ address, genesisHash, name }: RequestAccountCreateExternal): boolean {
-    keyring.addExternal(address, { genesisHash, name });
-
-    return true;
-  }
-
-  private accountsCreateHardware ({ accountIndex, address, addressOffset, genesisHash, hardwareType, name }: RequestAccountCreateHardware): boolean {
-    keyring.addHardware(address, hardwareType, { accountIndex, addressOffset, genesisHash, name });
-
-    return true;
   }
 
   private accountsCreateSuri ({ genesisHash, name, password, suri, symbol, type }: RequestAccountCreateSuri): boolean {
@@ -493,7 +481,7 @@ export default class Extension {
       suri
     });
 
-    keyring.addPair(childPair, password);
+    keyring.addPair(childPair as EarthKeyringPair, password);
 
     return true;
   }
@@ -520,12 +508,6 @@ export default class Extension {
 
       case 'ewpri(authorize.requests)':
         return this.authorizeSubscribe(id, port);
-
-      case 'ewpri(accounts.create.external)':
-        return this.accountsCreateExternal(request as RequestAccountCreateExternal);
-
-      case 'ewpri(accounts.create.hardware)':
-        return this.accountsCreateHardware(request as RequestAccountCreateHardware);
 
       case 'ewpri(accounts.create.suri)':
         return this.accountsCreateSuri(request as RequestAccountCreateSuri);
