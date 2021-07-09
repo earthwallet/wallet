@@ -3,7 +3,7 @@
 
 /* eslint-disable no-use-before-define */
 
-import type { InjectedAccount, InjectedMetadataKnown, MetadataDef, ProviderList, ProviderMeta } from '@earthwallet/sdk/build/main/inject/types';
+import type { InjectedAccount, InjectedMetadataKnown, ProviderList, ProviderMeta } from '@earthwallet/sdk/build/main/inject/types';
 import type { KeyringPairs$Json } from '@earthwallet/ui-keyring/types';
 import type { KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@earthwallet/ui-keyring/types_extended';
 import type { JsonRpcResponse } from '@polkadot/rpc-provider/types';
@@ -81,12 +81,6 @@ export interface AuthorizeRequest {
   url: string;
 }
 
-export interface MetadataRequest {
-  id: string;
-  request: MetadataDef;
-  url: string;
-}
-
 export interface SigningRequest {
   account: AccountJson;
   id: string;
@@ -119,11 +113,6 @@ export interface RequestSignatures {
   'ewpri(json.restore)': [RequestJsonRestore, void];
   'ewpri(json.batchRestore)': [RequestBatchRestore, void];
   'ewpri(json.account.info)': [KeyringPair$Json, ResponseJsonGetAccountInfo];
-  'ewpri(metadata.approve)': [RequestMetadataApprove, boolean];
-  'ewpri(metadata.get)': [string | null, MetadataDef | null];
-  'ewpri(metadata.reject)': [RequestMetadataReject, boolean];
-  'ewpri(metadata.requests)': [RequestMetadataSubscribe, boolean, MetadataRequest[]];
-  'ewpri(metadata.list)': [null, MetadataDef[]];
   'ewpri(seed.create)': [RequestSeedCreate, ResponseSeedCreate];
   'ewpri(seed.validate)': [RequestSeedValidate, ResponseSeedValidate];
   'ewpri(signing.approve.password)': [RequestSigningApprovePassword, boolean];
@@ -139,7 +128,6 @@ export interface RequestSignatures {
   'ewpub(bytes.sign)': [SignerPayloadRaw, ResponseSigning];
   'ewpub(extrinsic.sign)': [SignerPayloadJSON, ResponseSigning];
   'ewpub(metadata.list)': [null, InjectedMetadataKnown[]];
-  'ewpub(metadata.provide)': [MetadataDef, boolean];
   'ewpub(phishing.redirectIfDenied)': [null, boolean];
   'ewpub(rpc.listProviders)': [void, ResponseRpcListProviders];
   'ewpub(rpc.send)': [RequestRpcSend, JsonRpcResponse];
@@ -179,16 +167,6 @@ export interface RequestAuthorizeReject {
 }
 
 export type RequestAuthorizeSubscribe = null;
-
-export interface RequestMetadataApprove {
-  id: string;
-}
-
-export interface RequestMetadataReject {
-  id: string;
-}
-
-export type RequestMetadataSubscribe = null;
 
 export interface RequestAccountCreateExternal {
   address: string;

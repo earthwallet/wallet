@@ -13,7 +13,6 @@ import styled from 'styled-components';
 
 import logo from '../assets/icon_icp_details.png';
 import { Link } from '../components';
-import useMetadata from '../hooks/useMetadata';
 import useOutsideClick from '../hooks/useOutsideClick';
 import useTranslation from '../hooks/useTranslation';
 import { DEFAULT_TYPE } from '../util/defaultType';
@@ -59,8 +58,7 @@ function EarthAddress ({ address, children, className, genesisHash, isExternal, 
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
 
-  const [{ account, formatted, genesisHash: recodedGenesis, type }, setRecoded] = useState<Recoded>(defaultRecoded);
-  const chain = useMetadata(genesisHash || recodedGenesis, true);
+  const [{ account, formatted }, setRecoded] = useState<Recoded>(defaultRecoded);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [, setIsMovedMenu] = useState(false);
   const actionsRef = useRef<HTMLDivElement>(null);
@@ -82,7 +80,7 @@ function EarthAddress ({ address, children, className, genesisHash, isExternal, 
       : { account: accountByAddress, formatted: address, type: 'sr25519' } as Recoded;
 
     setRecoded(recoded || defaultRecoded);
-  }, [accounts, address, chain, givenType]);
+  }, [accounts, address, givenType]);
 
   useEffect(() => {
     if (!showActionsMenu) {
@@ -185,8 +183,7 @@ function EarthAddress ({ address, children, className, genesisHash, isExternal, 
                     isExternal: isExternal || undefined,
                     isHardware: isHardware || undefined,
                     name: name || undefined,
-                    suri,
-                    type
+                    suri
                   })
                   : {}}
                 to={'/wallet/details'}>

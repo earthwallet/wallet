@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { AccountJson } from '@earthwallet/extension-base/background/types';
+// import type { Chain } from '@earthwallet/extension-chains/types';
+// import type { SettingsStruct } from '@polkadot/ui-settings/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { ThemeProps } from '../types';
 
@@ -11,8 +13,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
+// import { decodeAddress } from '@polkadot/util-crypto';
 import { Link } from '../components';
-import useMetadata from '../hooks/useMetadata';
 import useOutsideClick from '../hooks/useOutsideClick';
 import useTranslation from '../hooks/useTranslation';
 import { DEFAULT_TYPE } from '../util/defaultType';
@@ -44,7 +46,6 @@ interface Recoded {
   type: KeypairType;
 }
 
-// find an account in our list
 function findAccountByAddress (accounts: AccountJson[], _address: string): AccountJson | null {
   return accounts.find(({ address }): boolean =>
     address === _address
@@ -54,12 +55,18 @@ function findAccountByAddress (accounts: AccountJson[], _address: string): Accou
 const ACCOUNTS_SCREEN_HEIGHT = 550;
 const defaultRecoded = { account: null, formatted: null, prefix: 42, type: DEFAULT_TYPE };
 
-function Address ({ address, children, className, genesisHash, isExternal, isFromAccount, isHardware, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
+function Address ({ address, children, className,
+  genesisHash,
+  isExternal,
+  isFromAccount,
+  isHardware, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
 
+  console.log(accounts);
   const [{ account, formatted, genesisHash: recodedGenesis, type }, setRecoded] = useState<Recoded>(defaultRecoded);
-  const chain = useMetadata(genesisHash || recodedGenesis, true);
+
+  console.log(recodedGenesis);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [, setIsMovedMenu] = useState(false);
   const actionsRef = useRef<HTMLDivElement>(null);
@@ -81,7 +88,7 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
       : { account: accountByAddress, formatted: address, type: 'sr25519' } as Recoded;
 
     setRecoded(recoded || defaultRecoded);
-  }, [accounts, address, chain, givenType]);
+  }, [accounts, address, givenType]);
 
   useEffect(() => {
     if (!showActionsMenu) {

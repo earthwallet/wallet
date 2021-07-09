@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccountJson, AccountsContext, AuthorizeRequest, MetadataRequest, NetworkJson, SigningRequest } from '@earthwallet/extension-base/background/types';
+import type { AccountJson, AccountsContext, AuthorizeRequest, NetworkJson, SigningRequest } from '@earthwallet/extension-base/background/types';
 
 import { PHISHING_PAGE_REDIRECT } from '@earthwallet/extension-base/defaults';
 import { canDerive } from '@earthwallet/extension-base/utils';
@@ -9,9 +9,9 @@ import React, { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router';
 
 import { ErrorBoundary, Loading } from '../components';
-import { AccountContext, ActionContext, AuthorizeReqContext, MediaContext, MetadataReqContext, NetworkContext, SelectedAccountContext, SelectedNetworkContext, SigningReqContext } from '../components/contexts';
+import { AccountContext, ActionContext, AuthorizeReqContext, MediaContext, NetworkContext, SelectedAccountContext, SelectedNetworkContext, SigningReqContext } from '../components/contexts';
 import ToastProvider from '../components/Toast/ToastProvider';
-import { subscribeAccounts, subscribeAuthorizeRequests, subscribeMetadataRequests, subscribeSigningRequests } from '../messaging';
+import { subscribeAccounts, subscribeAuthorizeRequests, subscribeSigningRequests } from '../messaging';
 import { buildHierarchy } from '../util/buildHierarchy';
 import Details from './Transactions/Details';
 import { defaultNetworkContext } from './Utils/Consts';
@@ -24,7 +24,6 @@ import Authorize from './Authorize';
 import CreateAccount from './CreateAccount';
 import Export from './Export';
 import ImportSeed from './ImportSeed';
-import Metadata from './Metadata';
 import PhishingDetected from './PhishingDetected';
 import Signing from './Signing';
 import Transactions from './Transactions';
@@ -62,7 +61,6 @@ export default function Popup (): React.ReactElement {
   const [accountCtx, setAccountCtx] = useState<AccountsContext>({ accounts: [], hierarchy: [] });
   const [authRequests, setAuthRequests] = useState<null | AuthorizeRequest[]>(null);
   const [mediaAllowed, setMediaAllowed] = useState(false);
-  const [metaRequests, setMetaRequests] = useState<null | MetadataRequest[]>(null);
   const [signRequests, setSignRequests] = useState<null | SigningRequest[]>(null);
   const [isWelcomeDone, setWelcomeDone] = useState(false);
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkJson>(defaultNetworkContext.selectedNetwork);
@@ -84,7 +82,6 @@ export default function Popup (): React.ReactElement {
     Promise.all([
       subscribeAccounts(setAccounts),
       subscribeAuthorizeRequests(setAuthRequests),
-      subscribeMetadataRequests(setMetaRequests),
       subscribeSigningRequests(setSignRequests)
     ]).catch(console.error);
 
@@ -114,51 +111,47 @@ export default function Popup (): React.ReactElement {
     return (isWelcomeDone
       ? authRequests && authRequests.length
         ? wrapWithErrorBoundary(<Authorize />, 'authorize')
-        : metaRequests && metaRequests.length
-          ? wrapWithErrorBoundary(<Metadata />, 'metadata')
-          : signRequests && signRequests.length
-            ? wrapWithErrorBoundary(<Signing />, 'signing')
-            : wrapWithErrorBoundary(<Accounts />, 'accounts')
+        : signRequests && signRequests.length
+          ? wrapWithErrorBoundary(<Signing />, 'signing')
+          : wrapWithErrorBoundary(<Accounts />, 'accounts')
       : wrapWithErrorBoundary(<Accounts />, 'accounts'));
   };
 
   return (
-    <Loading>{accounts && authRequests && metaRequests && signRequests && (
+    <Loading>{accounts && authRequests && signRequests && (
       <ActionContext.Provider value={_onAction}>
         <AccountContext.Provider value={accountCtx}>
           <AuthorizeReqContext.Provider value={authRequests}>
             <MediaContext.Provider value={cameraOn && mediaAllowed}>
-              <MetadataReqContext.Provider value={metaRequests}>
-                <SigningReqContext.Provider value={signRequests}>
-                  <NetworkContext.Provider value={{ networks: defaultNetworkContext.networks }}>
-                    <SelectedNetworkContext.Provider value={selectedNetworkValue}>
-                      <SelectedAccountContext.Provider value={selectedSelectedAccount}>
-                        <ToastProvider>
-                          <Switch>
-                            <Route path='/auth-list'>{wrapWithErrorBoundary(<AuthList />, 'auth-list')}</Route>
-                            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
-                            <Route path='/account/create'>{wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}</Route>
-                            <Route path='/account/export/:address'>{wrapWithErrorBoundary(<Export />, 'export-address')}</Route>
-                            <Route path='/account/import-seed'>{wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}</Route>
-                            <Route path='/wallet/details'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
-                            <Route path='/wallet/transactions/:address'>{wrapWithErrorBoundary(<Transactions />, 'transactions')}</Route>
-                            <Route path='/wallet/transaction/:txnId'>{wrapWithErrorBoundary(<Details />, 'transactions')}</Route>
-                            <Route path='/wallet/send'>{wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}</Route>
-                            <Route path='/wallet/receive'>{wrapWithErrorBoundary(<WalletReceiveTokens />, 'wallet-receive-token')}</Route>
-                            <Route path={`${PHISHING_PAGE_REDIRECT}/:website`}>{wrapWithErrorBoundary(<PhishingDetected />, 'phishing-page-redirect')}</Route>
-                            <Route
-                              exact
-                              path='/'
-                            >
-                              {Root()}
-                            </Route>
-                          </Switch>
-                        </ToastProvider>
-                      </SelectedAccountContext.Provider>
-                    </SelectedNetworkContext.Provider>
-                  </NetworkContext.Provider>
-                </SigningReqContext.Provider>
-              </MetadataReqContext.Provider>
+              <SigningReqContext.Provider value={signRequests}>
+                <NetworkContext.Provider value={{ networks: defaultNetworkContext.networks }}>
+                  <SelectedNetworkContext.Provider value={selectedNetworkValue}>
+                    <SelectedAccountContext.Provider value={selectedSelectedAccount}>
+                      <ToastProvider>
+                        <Switch>
+                          <Route path='/auth-list'>{wrapWithErrorBoundary(<AuthList />, 'auth-list')}</Route>
+                          <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
+                          <Route path='/account/create'>{wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}</Route>
+                          <Route path='/account/export/:address'>{wrapWithErrorBoundary(<Export />, 'export-address')}</Route>
+                          <Route path='/account/import-seed'>{wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}</Route>
+                          <Route path='/wallet/details'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
+                          <Route path='/wallet/transactions/:address'>{wrapWithErrorBoundary(<Transactions />, 'transactions')}</Route>
+                          <Route path='/wallet/transaction/:txnId'>{wrapWithErrorBoundary(<Details />, 'transactions')}</Route>
+                          <Route path='/wallet/send'>{wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}</Route>
+                          <Route path='/wallet/receive'>{wrapWithErrorBoundary(<WalletReceiveTokens />, 'wallet-receive-token')}</Route>
+                          <Route path={`${PHISHING_PAGE_REDIRECT}/:website`}>{wrapWithErrorBoundary(<PhishingDetected />, 'phishing-page-redirect')}</Route>
+                          <Route
+                            exact
+                            path='/'
+                          >
+                            {Root()}
+                          </Route>
+                        </Switch>
+                      </ToastProvider>
+                    </SelectedAccountContext.Provider>
+                  </SelectedNetworkContext.Provider>
+                </NetworkContext.Provider>
+              </SigningReqContext.Provider>
             </MediaContext.Provider>
           </AuthorizeReqContext.Provider>
         </AccountContext.Provider>

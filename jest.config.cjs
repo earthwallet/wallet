@@ -17,7 +17,6 @@ module.exports = {
   modulePathIgnorePatterns: [
     '<rootDir>/packages/extension/build',
     '<rootDir>/packages/extension-base/build',
-    '<rootDir>/packages/extension-chains/build',
     '<rootDir>/packages/extension-ui/build',
     '<rootDir>/packages/ui-keyring/build'
   ],

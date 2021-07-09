@@ -1,11 +1,10 @@
 // Copyright 2021 @earthwallet/extension authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { MetadataDef } from '@earthwallet/sdk/build/main/inject/types';
 import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
 import type { EarthKeyringPair, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@earthwallet/ui-keyring/types_extended';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
-import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, MetadataRequest, RequestAccountBatchExport, RequestAccountChangePassword, RequestAccountCreateSuri, RequestAccountEdit, RequestAccountExport, RequestAccountForget, RequestAccountShow, RequestAccountTie, RequestAccountValidate, RequestAuthorizeApprove, RequestAuthorizeReject, RequestBatchRestore, RequestDeriveCreate, RequestDeriveValidate, RequestJsonRestore, RequestMetadataApprove, RequestMetadataReject, RequestSeedCreate, RequestSeedValidate, RequestSigningApprovePassword, RequestSigningApproveSignature, RequestSigningCancel, RequestSigningIsLocked, RequestTypes, ResponseAccountExport, ResponseAccountsExport, ResponseAuthorizeList, ResponseDeriveValidate, ResponseJsonGetAccountInfo, ResponseSeedCreate, ResponseSeedValidate, ResponseSigningIsLocked, ResponseType, SigningRequest } from '../types';
+import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, RequestAccountBatchExport, RequestAccountChangePassword, RequestAccountCreateSuri, RequestAccountEdit, RequestAccountExport, RequestAccountForget, RequestAccountShow, RequestAccountTie, RequestAccountValidate, RequestAuthorizeApprove, RequestAuthorizeReject, RequestBatchRestore, RequestDeriveCreate, RequestDeriveValidate, RequestJsonRestore, RequestSeedCreate, RequestSeedValidate, RequestSigningApprovePassword, RequestSigningApproveSignature, RequestSigningCancel, RequestSigningIsLocked, RequestTypes, ResponseAccountExport, ResponseAccountsExport, ResponseAuthorizeList, ResponseDeriveValidate, ResponseJsonGetAccountInfo, ResponseSeedCreate, ResponseSeedValidate, ResponseSigningIsLocked, ResponseType, SigningRequest } from '../types';
 
 import { ALLOWED_PATH, PASSWORD_EXPIRY_MS } from '@earthwallet/extension-base/defaults';
 import chrome from '@earthwallet/sdk/build/main/inject/chrome';
@@ -206,54 +205,6 @@ export default class Extension {
     return true;
   }
 
-  private metadataApprove ({ id }: RequestMetadataApprove): boolean {
-    const queued = this.#state.getMetaRequest(id);
-
-    assert(queued, 'Unable to find request');
-
-    const { request, resolve } = queued;
-
-    this.#state.saveMetadata(request);
-
-    resolve(true);
-
-    return true;
-  }
-
-  private metadataGet (genesisHash: string | null): MetadataDef | null {
-    return this.#state.knownMetadata.find((result) => result.genesisHash === genesisHash) || null;
-  }
-
-  private metadataList (): MetadataDef[] {
-    return this.#state.knownMetadata;
-  }
-
-  private metadataReject ({ id }: RequestMetadataReject): boolean {
-    const queued = this.#state.getMetaRequest(id);
-
-    assert(queued, 'Unable to find request');
-
-    const { reject } = queued;
-
-    reject(new Error('Rejected'));
-
-    return true;
-  }
-
-  private metadataSubscribe (id: string, port: chrome.runtime.Port): boolean {
-    const cb = createSubscription<'ewpri(metadata.requests)'>(id, port);
-    const subscription = this.#state.metaSubject.subscribe((requests: MetadataRequest[]): void =>
-      cb(requests)
-    );
-
-    port.onDisconnect.addListener((): void => {
-      unsubscribe(id);
-      subscription.unsubscribe();
-    });
-
-    return true;
-  }
-
   private jsonRestore ({ file, password }: RequestJsonRestore): void {
     try {
       keyring.restoreAccount(file, password);
@@ -347,16 +298,8 @@ export default class Extension {
     const { payload } = request;
 
     if (isJsonPayload(payload)) {
-      // Get the metadata for the genesisHash
-      const currentMetadata = this.#state.knownMetadata.find((meta: MetadataDef) =>
-        meta.genesisHash === payload.genesisHash);
-
       // set the registry before calling the sign function
-      registry.setSignedExtensions(payload.signedExtensions, currentMetadata?.userExtensions);
-
-      if (currentMetadata) {
-        registry.register(currentMetadata?.types);
-      }
+      registry.setSignedExtensions(payload.signedExtensions, undefined);
     }
 
     const result = request.sign(registry, pair);
@@ -538,21 +481,6 @@ export default class Extension {
 
       case 'ewpri(accounts.validate)':
         return this.accountsValidate(request as RequestAccountValidate);
-
-      case 'ewpri(metadata.approve)':
-        return this.metadataApprove(request as RequestMetadataApprove);
-
-      case 'ewpri(metadata.get)':
-        return this.metadataGet(request as string);
-
-      case 'ewpri(metadata.list)':
-        return this.metadataList();
-
-      case 'ewpri(metadata.reject)':
-        return this.metadataReject(request as RequestMetadataReject);
-
-      case 'ewpri(metadata.requests)':
-        return this.metadataSubscribe(id, port);
 
       case 'ewpri(derivation.create)':
         return this.derivationCreate(request as RequestDeriveCreate);

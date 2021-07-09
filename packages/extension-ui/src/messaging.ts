@@ -1,20 +1,14 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, MessageTypesWithNoSubscriptions, MessageTypesWithNullRequest, MessageTypesWithSubscriptions, MetadataRequest, RequestTypes, ResponseAuthorizeList, ResponseDeriveValidate, ResponseJsonGetAccountInfo, ResponseSigningIsLocked, ResponseTypes, SeedLengths, SigningRequest, SubscriptionMessageTypes } from '@earthwallet/extension-base/background/types';
+import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, MessageTypesWithNoSubscriptions, MessageTypesWithNullRequest, MessageTypesWithSubscriptions, RequestTypes, ResponseAuthorizeList, ResponseDeriveValidate, ResponseJsonGetAccountInfo, ResponseSigningIsLocked, ResponseTypes, SeedLengths, SigningRequest, SubscriptionMessageTypes } from '@earthwallet/extension-base/background/types';
 import type { Message } from '@earthwallet/extension-base/types';
-import type { Chain } from '@earthwallet/extension-chains/types';
 import type { KeyringPairs$Json } from '@earthwallet/ui-keyring/types';
 import type { KeyringPair$Json } from '@earthwallet/ui-keyring/types_extended';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 
 import { PORT_EXTENSION } from '@earthwallet/extension-base/defaults';
-import { metadataExpand } from '@earthwallet/extension-chains';
 import chrome from '@earthwallet/sdk/build/main/inject/chrome';
-import { MetadataDef } from '@earthwallet/sdk/build/main/inject/types';
-
-import allChains from './util/chains';
-import { getSavedMeta, setSavedMeta } from './MetadataCache';
 
 interface Handler {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,10 +99,6 @@ export async function approveAuthRequest (id: string): Promise<boolean> {
   return sendMessage('ewpri(authorize.approve)', { id });
 }
 
-export async function approveMetaRequest (id: string): Promise<boolean> {
-  return sendMessage('ewpri(metadata.approve)', { id });
-}
-
 export async function cancelSignRequest (id: string): Promise<boolean> {
   return sendMessage('ewpri(signing.cancel)', { id });
 }
@@ -142,49 +132,8 @@ export async function createSeed (length?: SeedLengths, type?: KeypairType, symb
   return sendMessage('ewpri(seed.create)', { length, symbol, type });
 }
 
-export async function getAllMetadata (): Promise<MetadataDef[]> {
-  return sendMessage('ewpri(metadata.list)');
-}
-
-export async function getMetadata (genesisHash?: string | null, isPartial = false): Promise<Chain | null> {
-  if (!genesisHash) {
-    return null;
-  }
-
-  let request = getSavedMeta(genesisHash);
-
-  if (!request) {
-    request = sendMessage('ewpri(metadata.get)', genesisHash || null);
-    setSavedMeta(genesisHash, request);
-  }
-
-  const def = await request;
-
-  if (def) {
-    return metadataExpand(def, isPartial);
-  } else if (isPartial) {
-    const chain = allChains.find((chain) => chain.genesisHash === genesisHash);
-
-    if (chain) {
-      return metadataExpand({
-        ...chain,
-        specVersion: 0,
-        tokenDecimals: 15,
-        tokenSymbol: 'Unit',
-        types: {}
-      }, isPartial);
-    }
-  }
-
-  return null;
-}
-
 export async function rejectAuthRequest (id: string): Promise<boolean> {
   return sendMessage('ewpri(authorize.reject)', { id });
-}
-
-export async function rejectMetaRequest (id: string): Promise<boolean> {
-  return sendMessage('ewpri(metadata.reject)', { id });
 }
 
 export async function subscribeAccounts (cb: (accounts: AccountJson[]) => void): Promise<boolean> {
@@ -201,10 +150,6 @@ export async function getAuthList (): Promise<ResponseAuthorizeList> {
 
 export async function toggleAuthorization (url: string): Promise<ResponseAuthorizeList> {
   return sendMessage('ewpri(authorize.toggle)', url);
-}
-
-export async function subscribeMetadataRequests (cb: (accounts: MetadataRequest[]) => void): Promise<boolean> {
-  return sendMessage('ewpri(metadata.requests)', null, cb);
 }
 
 export async function subscribeSigningRequests (cb: (accounts: SigningRequest[]) => void): Promise<boolean> {

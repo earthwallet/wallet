@@ -1,18 +1,15 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { Chain } from '@earthwallet/extension-chains/types';
 import type { Call, ExtrinsicEra, ExtrinsicPayload } from '@polkadot/types/interfaces';
 import type { AnyJson, SignerPayloadJSON } from '@polkadot/types/types';
 
-import BN from 'bn.js';
 import { TFunction } from 'i18next';
 import React, { useMemo, useRef } from 'react';
 
 import { bnToBn, formatNumber } from '@polkadot/util';
 
 import { Table } from '../../components';
-import useMetadata from '../../hooks/useMetadata';
 import useTranslation from '../../hooks/useTranslation';
 
 interface Decoded {
@@ -25,31 +22,6 @@ interface Props {
   payload: ExtrinsicPayload;
   request: SignerPayloadJSON;
   url: string;
-}
-
-function displayDecodeVersion (message: string, chain: Chain, specVersion: BN): string {
-  return `${message}: chain=${chain.name}, specVersion=${chain.specVersion.toString()} (request specVersion=${specVersion.toString()})`;
-}
-
-function decodeMethod (data: string, chain: Chain, specVersion: BN): Decoded {
-  let args: AnyJson | null = null;
-  let method: Call | null = null;
-
-  try {
-    if (specVersion.eqn(chain.specVersion)) {
-      method = chain.registry.createType('Call', data);
-      args = (method.toHuman() as { args: AnyJson }).args;
-    } else {
-      console.log(displayDecodeVersion('Outdated metadata to decode', chain, specVersion));
-    }
-  } catch (error) {
-    console.error(`${displayDecodeVersion('Error decoding method', chain, specVersion)}:: ${(error as Error).message}`);
-
-    args = null;
-    method = null;
-  }
-
-  return { args, method };
 }
 
 function renderMethod (data: string, { args, method }: Decoded, t: TFunction): React.ReactNode {
@@ -109,13 +81,10 @@ function mortalityAsString (era: ExtrinsicEra, hexBlockNumber: string, t: TFunct
 
 function Extrinsic ({ className, payload: { era, nonce, tip }, request: { blockNumber, genesisHash, method, specVersion: hexSpec }, url }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const chain = useMetadata(genesisHash);
   const specVersion = useRef(bnToBn(hexSpec)).current;
   const decoded = useMemo(
-    () => chain && chain.hasMetadata
-      ? decodeMethod(method, chain, specVersion)
-      : { args: null, method: null },
-    [method, chain, specVersion]
+    () => ({ args: null, method: null }),
+    []
   );
 
   return (
@@ -126,10 +95,6 @@ function Extrinsic ({ className, payload: { era, nonce, tip }, request: { blockN
       <tr>
         <td className='label'>{t<string>('from')}</td>
         <td className='data'>{url}</td>
-      </tr>
-      <tr>
-        <td className='label'>{chain ? t<string>('chain') : t<string>('genesis')}</td>
-        <td className='data'>{chain ? chain.name : genesisHash}</td>
       </tr>
       <tr>
         <td className='label'>{t<string>('version')}</td>

@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { InjectedAccount, InjectedMetadataKnown, MetadataDef, ProviderMeta } from '@earthwallet/sdk/build/main/inject/types';
+import type { InjectedAccount, ProviderMeta } from '@earthwallet/sdk/build/main/inject/types';
 import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
 import type { KeyringPair } from '@earthwallet/ui-keyring/types_extended';
 import type { JsonRpcResponse } from '@polkadot/rpc-provider/types';
@@ -86,18 +86,6 @@ export default class Tabs {
     const pair = this.getSigningPair(address);
 
     return this.#state.sign(url, new RequestExtrinsicSign(request), { address, ...pair.meta });
-  }
-
-  private metadataProvide (url: string, request: MetadataDef): Promise<boolean> {
-    return this.#state.injectMetadata(url, request);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private metadataList (url: string): InjectedMetadataKnown[] {
-    return this.#state.knownMetadata.map(({ genesisHash, specVersion }) => ({
-      genesisHash,
-      specVersion
-    }));
   }
 
   private rpcListProviders (): Promise<ResponseRpcListProviders> {
@@ -192,12 +180,6 @@ export default class Tabs {
 
       case 'ewpub(extrinsic.sign)':
         return this.extrinsicSign(url, request as SignerPayloadJSON);
-
-      case 'ewpub(metadata.list)':
-        return this.metadataList(url);
-
-      case 'ewpub(metadata.provide)':
-        return this.metadataProvide(url, request as MetadataDef);
 
       case 'ewpub(rpc.listProviders)':
         return this.rpcListProviders();

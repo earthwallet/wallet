@@ -1,5 +1,5 @@
 {
-  "extends": "@polkadot/dev/config/tsconfig.json",
+  "extends": "./config/tsconfig.json",
   "exclude": ["build/**/*", "**/build/*", "**/build/**/*"],
   "compilerOptions": {
     "jsx": "react",
@@ -9,8 +9,6 @@
       "@earthwallet/extension/*": ["packages/extension/src/*"],
       "@earthwallet/extension-base": ["packages/extension-base/src"],
       "@earthwallet/extension-base/*": ["packages/extension-base/src/*"],
-      "@earthwallet/extension-chains": ["packages/extension-chains/src"],
-      "@earthwallet/extension-chains/*": ["packages/extension-chains/src/*"],
       "@earthwallet/extension-ui": ["packages/extension-ui/src"],
       "@earthwallet/extension-ui/*": ["packages/extension-ui/src/*"],
       "@earthwallet/ui-keyring": ["packages/ui-keyring/src"],
