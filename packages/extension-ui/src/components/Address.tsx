@@ -186,7 +186,7 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
                     type
                   })
                   : {}}
-                to={'/wallet/home'}>
+                to={'/wallet/details'}>
                 { getAddressComponent()}
               </Link>
               )

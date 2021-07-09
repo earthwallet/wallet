@@ -22,19 +22,12 @@ import Accounts from './Accounts';
 import AuthList from './AuthManagement';
 import Authorize from './Authorize';
 import CreateAccount from './CreateAccount';
-import Derive from './Derive';
 import Export from './Export';
-import ExportAll from './ExportAll';
-import Forget from './Forget';
-import ImportQr from './ImportQr';
 import ImportSeed from './ImportSeed';
 import Metadata from './Metadata';
 import PhishingDetected from './PhishingDetected';
-import RestoreJson from './RestoreJson';
 import Signing from './Signing';
 import Transactions from './Transactions';
-
-// import Welcome from './Welcome';
 
 // Request permission for video, based on access we can hide/show import
 async function requestMediaAccess (cameraOn: boolean): Promise<boolean> {
@@ -145,15 +138,9 @@ export default function Popup (): React.ReactElement {
                             <Route path='/auth-list'>{wrapWithErrorBoundary(<AuthList />, 'auth-list')}</Route>
                             <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
                             <Route path='/account/create'>{wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}</Route>
-                            <Route path='/account/forget/:address'>{wrapWithErrorBoundary(<Forget />, 'forget-address')}</Route>
                             <Route path='/account/export/:address'>{wrapWithErrorBoundary(<Export />, 'export-address')}</Route>
-                            <Route path='/account/export-all'>{wrapWithErrorBoundary(<ExportAll />, 'export-all-address')}</Route>
-                            <Route path='/account/import-qr'>{wrapWithErrorBoundary(<ImportQr />, 'import-qr')}</Route>
                             <Route path='/account/import-seed'>{wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}</Route>
-                            <Route path='/account/restore-json'>{wrapWithErrorBoundary(<RestoreJson />, 'restore-json')}</Route>
-                            <Route path='/account/derive/:address/locked'>{wrapWithErrorBoundary(<Derive isLocked />, 'derived-address-locked')}</Route>
-                            <Route path='/account/derive/:address'>{wrapWithErrorBoundary(<Derive />, 'derive-address')}</Route>
-                            <Route path='/wallet/home'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
+                            <Route path='/wallet/details'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
                             <Route path='/wallet/transactions/:address'>{wrapWithErrorBoundary(<Transactions />, 'transactions')}</Route>
                             <Route path='/wallet/transaction/:txnId'>{wrapWithErrorBoundary(<Details />, 'transactions')}</Route>
                             <Route path='/wallet/send'>{wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}</Route>

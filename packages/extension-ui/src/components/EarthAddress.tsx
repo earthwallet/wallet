@@ -189,7 +189,7 @@ function EarthAddress ({ address, children, className, genesisHash, isExternal, 
                     type
                   })
                   : {}}
-                to={'/wallet/home'}>
+                to={'/wallet/details'}>
                 { getAddressComponent()}
               </Link>
               )

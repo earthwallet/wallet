@@ -72,7 +72,7 @@ function CreateAccount({ className }: Props): React.ReactElement {
         createAccountSuri(name, password, account.seed, undefined, genesis, genesis === 'the_icp' ? 'ICP' : undefined)
           .then(() => {
             setSelectedAccount({ ...account, name: name, genesis: 'the_icp', symbol: 'ICP' });
-            history.replace('/wallet/home');
+            history.replace('/wallet/details');
           })
           .catch((error: Error): void => {
             setIsBusy(false);
