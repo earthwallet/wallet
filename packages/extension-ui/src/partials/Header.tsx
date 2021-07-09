@@ -6,19 +6,15 @@
 
 import type { ThemeProps } from '../types';
 
-import { faArrowLeft, faCog, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useCallback, useRef, useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import ICON_BACK from '../assets/icon_back.svg';
 import Link from '../components/Link';
-import useOutsideClick from '../hooks/useOutsideClick';
 import AccountSelector from './AccountSelector';
-import MenuAdd from './MenuAdd';
-import MenuSettings from './MenuSettings';
-import NetworkSelector from './NetworkSelector';
 
 interface Props extends ThemeProps {
   children?: React.ReactNode;
@@ -37,32 +33,7 @@ interface Props extends ThemeProps {
 }
 
 function Header ({ backOverride, centerText, children, className = '', showAccountsDropdown, showAdd, showBackArrow, showMenu, showNetworkDropdown, showSettings, smallMargin = false, text, type = '' }: Props): React.ReactElement<Props> {
-  const [isAddOpen, setShowAdd] = useState(false);
-  const [isSettingsOpen, setShowSettings] = useState(false);
-  const addRef = useRef(null);
-  const setRef = useRef(null);
   const history = useHistory();
-
-  useOutsideClick(addRef, (): void => {
-    isAddOpen && setShowAdd(!isAddOpen);
-  });
-
-  useOutsideClick(setRef, (): void => {
-    isSettingsOpen && setShowSettings(!isSettingsOpen);
-  });
-
-  const _toggleAdd = useCallback(
-    (): void => setShowAdd((isAddOpen) => !isAddOpen),
-    []
-  );
-
-  const _toggleSettings = useCallback(
-    (): void => setShowSettings((isSettingsOpen) => !isSettingsOpen),
-    []
-  );
-
-  // const blob = new Blob([toSvg('value', 100)], { type: 'image/svg+xml' });
-  //   const url = URL.createObjectURL(blob);
 
   return (
     <div className={`${className} ${smallMargin ? 'smallMargin' : ''} ${type === 'wallet' ? 'walletDiv' : ''}`}>
@@ -85,59 +56,9 @@ function Header ({ backOverride, centerText, children, className = '', showAccou
                 <div />
               )
             }
-
             {text && <span className='logoText'>{text || 'Earth Wallet'}</span>}
           </div>
-
-          {showNetworkDropdown && (<NetworkSelector/>)}
           {showAccountsDropdown && (<AccountSelector/>)}
-
-          <div className='popupMenus'>
-            {showAdd && (
-              <div
-                className='popupToggle'
-                onClick={_toggleAdd}
-              >
-                <FontAwesomeIcon
-                  className={`plusIcon ${isAddOpen ? 'selected' : ''}`}
-                  icon={faEllipsisV}
-                  size='lg'
-                />
-              </div>
-            )}
-            {showSettings && (
-              <div
-                className='popupToggle'
-                data-toggle-settings
-                onClick={_toggleSettings}
-              >
-                <FontAwesomeIcon
-                  className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
-                  icon={faCog}
-                  size='lg'
-                />
-              </div>
-            )}
-            {showMenu && (
-              <div
-                className='popupToggle'
-                data-toggle-settings
-                onClick={_toggleSettings}
-              >
-                <FontAwesomeIcon
-                  className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
-                  icon={faEllipsisV}
-                  size='lg'
-                />
-              </div>
-            )}
-          </div>
-          {isAddOpen && (
-            <MenuAdd reference={addRef}/>
-          )}
-          {isSettingsOpen && (
-            <MenuSettings reference={setRef}/>
-          )}
           {children}
         </div>
         : type === 'details'

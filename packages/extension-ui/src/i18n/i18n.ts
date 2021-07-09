@@ -1,7 +1,6 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import uiSettings from '@earthwallet/ui-settings';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
@@ -18,7 +17,7 @@ i18next
       escapeValue: false
     },
     keySeparator: false,
-    lng: uiSettings.i18nLang,
+    lng: 'default',
     load: 'languageOnly',
     nsSeparator: false,
     react: {
@@ -30,10 +29,5 @@ i18next
   .catch((error: Error): void =>
     console.log('i18n: failure', error)
   );
-
-uiSettings.on('change', (settings): void => {
-  i18next.changeLanguage(settings.i18nLang
-  ).catch(console.error);
-});
 
 export default i18next;

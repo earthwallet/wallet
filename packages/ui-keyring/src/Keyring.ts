@@ -18,8 +18,6 @@ import type { AddressSubject, SingleAddress } from './observable/types';
 import type { CreateResult, KeyringAddress, KeyringAddressType, KeyringItemType, KeyringJson, KeyringJson$Meta, KeyringOptions, KeyringPairs$Json, KeyringStruct } from './types';
 
 import { createWallet } from '@earthwallet/sdk';
-import { chains } from '@earthwallet/ui-settings/defaults/chains';
-// import BN from 'bn.js';
 import StringCrypto from 'string-crypto';
 
 import { createPair } from '@polkadot/keyring/pair';
@@ -280,9 +278,7 @@ export class Keyring extends Base implements KeyringStruct {
     }
 
     if (json && json.meta && this.genesisHash) {
-      const hashes: (string | null | undefined)[] = Object.values(chains).find((hashes): boolean =>
-        hashes.includes(this.genesisHash || '')
-      ) || [this.genesisHash];
+      const hashes: (string | null | undefined)[] = [this.genesisHash];
 
       if (json.meta.genesisHash) {
         return hashes.includes(json.meta.genesisHash);

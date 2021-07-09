@@ -1787,7 +1787,6 @@ __metadata:
     "@dfinity/rosetta-client": ^0.5.2
     "@earthwallet/extension-base": ^0.1.0
     "@earthwallet/sdk": ^0.1.14
-    "@earthwallet/ui-settings": ^0.1.0
     "@fortawesome/fontawesome-svg-core": ^1.2.35
     "@fortawesome/free-brands-svg-icons": ^5.15.3
     "@fortawesome/free-regular-svg-icons": ^5.15.3
@@ -1828,8 +1827,6 @@ __metadata:
     react-router-dom: ^5.2.0
     sinon-chrome: ^3.0.1
     styled-components: ^5.3.0
-  peerDependencies:
-    "@earthwallet/ui-settings": "*"
   languageName: unknown
   linkType: soft
 
@@ -1906,7 +1903,6 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.12.5
     "@earthwallet/sdk": ^0.1.14
-    "@earthwallet/ui-settings": ^0.1.0
     "@polkadot/keyring": ^5.0.1
     "@polkadot/ledger": ^0.63.1
     "@polkadot/types": ^3.0.1
@@ -1918,25 +1914,7 @@ __metadata:
     store: ^2.0.12
     string-crypto: ^2.0.1
   peerDependencies:
-    "@earthwallet/ui-settings": "*"
     "@polkadot/keyring": "*"
-    "@polkadot/util": "*"
-  languageName: unknown
-  linkType: soft
-
-"@earthwallet/ui-settings@^0.1.0, @earthwallet/ui-settings@workspace:packages/ui-settings":
-  version: 0.0.0-use.local
-  resolution: "@earthwallet/ui-settings@workspace:packages/ui-settings"
-  dependencies:
-    "@babel/runtime": ^7.12.5
-    "@polkadot/networks": ^5.0.1
-    "@polkadot/util": ^5.0.1
-    "@types/store": ^2.0.2
-    eventemitter3: ^4.0.7
-    store: ^2.0.12
-  peerDependencies:
-    "@earthwallet/ui-keyring": "*"
-    "@polkadot/networks": "*"
     "@polkadot/util": "*"
   languageName: unknown
   linkType: soft

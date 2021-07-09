@@ -11,7 +11,6 @@
     "@dfinity/rosetta-client": "^0.5.2",
     "@earthwallet/extension-base": "^0.1.0",
     "@earthwallet/sdk": "^0.1.14",
-    "@earthwallet/ui-settings": "^0.1.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-brands-svg-icons": "^5.15.3",
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
@@ -54,8 +53,5 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
     "sinon-chrome": "^3.0.1"
-  },
-  "peerDependencies": {
-    "@earthwallet/ui-settings": "*"
   }
 }
