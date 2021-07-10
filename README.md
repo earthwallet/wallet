@@ -20,8 +20,7 @@ Earth Wallet is still in Beta, so please use it at your own risk. We are always 
 
 ## Installation
 
-- On Chrome, install via [Chrome web store](https://chrome.google.com/webstore/detail/earthwallet%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd)
-- On Firefox, install via [Firefox add-ons](https://addons.mozilla.org/en-US/firefox/addon/earthwallet/)
+- Signup to the waiting list [here](https://earthwallet.io) for early access!
 
 ![interface screenshots](docs/screenshot.png)
 
