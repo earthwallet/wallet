@@ -13,8 +13,6 @@ const manifest = require('./manifest.json');
 const packages = [
   'extension',
   'extension-base',
-  'extension-chains',
-  'extension-inject',
   'extension-ui',
   'ui-keyring',
   'ui-settings'

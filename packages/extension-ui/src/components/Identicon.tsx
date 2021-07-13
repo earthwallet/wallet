@@ -1,7 +1,6 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { IconTheme } from '@polkadot/react-identicon/types';
 import type { ThemeProps } from '../types';
 
 import { toSvg } from 'jdenticon';
@@ -10,7 +9,6 @@ import styled from 'styled-components';
 
 interface Props {
   className?: string;
-  iconTheme?: IconTheme;
   isExternal?: boolean | null;
   onCopy?: () => void;
   prefix?: number;

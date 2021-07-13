@@ -1,17 +1,14 @@
 // Copyright 2021 @earthwallet/extension-bg authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { MetadataDef, ProviderMeta } from '@earthwallet/extension-inject/types';
+import type { MetadataDef, ProviderMeta } from '@earthwallet/sdk/build/main/inject/types';
 import type { JsonRpcResponse, ProviderInterface, ProviderInterfaceCallback } from '@polkadot/rpc-provider/types';
-import type { AccountJson, AuthorizeRequest, MetadataRequest, RequestAuthorizeTab, RequestRpcSend, RequestRpcSubscribe, RequestRpcUnsubscribe, RequestSign, ResponseRpcListProviders, ResponseSigning, SigningRequest } from '../types';
+import type { AccountJson, AuthorizeRequest, RequestAuthorizeTab, RequestRpcSend, RequestRpcSubscribe, RequestRpcUnsubscribe, RequestSign, ResponseRpcListProviders, ResponseSigning, SigningRequest } from '../types';
 
-import { addMetadata, knownMetadata } from '@earthwallet/extension-chains';
-import chrome from '@earthwallet/extension-inject/chrome';
+import chrome from '@earthwallet/sdk/build/main/inject/chrome';
 import { BehaviorSubject } from 'rxjs';
 
 import { assert } from '@polkadot/util';
-
-import { MetadataStore } from '../../stores';
 
 interface Resolver <T> {
   reject: (error: Error) => void;
@@ -81,8 +78,6 @@ export default class State {
 
   readonly #authRequests: Record<string, AuthRequest> = {};
 
-  readonly #metaStore = new MetadataStore();
-
   // Map of providers currently injected in tabs
   readonly #injectedProviders = new Map<chrome.runtime.Port, ProviderInterface>();
 
@@ -97,26 +92,16 @@ export default class State {
 
   public readonly authSubject: BehaviorSubject<AuthorizeRequest[]> = new BehaviorSubject<AuthorizeRequest[]>([]);
 
-  public readonly metaSubject: BehaviorSubject<MetadataRequest[]> = new BehaviorSubject<MetadataRequest[]>([]);
-
   public readonly signSubject: BehaviorSubject<SigningRequest[]> = new BehaviorSubject<SigningRequest[]>([]);
 
   constructor (providers: Providers = {}) {
     this.#providers = providers;
-
-    this.#metaStore.all((_key: string, def: MetadataDef): void => {
-      addMetadata(def);
-    });
 
     // retrieve previously set authorizations
     const authString = localStorage.getItem(AUTH_URLS_KEY) || '{}';
     const previousAuth = JSON.parse(authString) as AuthUrls;
 
     this.#authUrls = previousAuth;
-  }
-
-  public get knownMetadata (): MetadataDef[] {
-    return knownMetadata();
   }
 
   public get numAuthRequests (): number {
@@ -137,12 +122,6 @@ export default class State {
       .map(({ id, request, url }): AuthorizeRequest => ({ id, request, url }));
   }
 
-  public get allMetaRequests (): MetadataRequest[] {
-    return Object
-      .values(this.#metaRequests)
-      .map(({ id, request, url }): MetadataRequest => ({ id, request, url }));
-  }
-
   public get allSignRequests (): SigningRequest[] {
     return Object
       .values(this.#signRequests)
@@ -155,7 +134,7 @@ export default class State {
 
   private popupClose (): void {
     this.#windows.forEach((id: number): void =>
-      chrome.windows.remove(id)
+      chrome.windows.remove(id, console.log)
     );
     this.#windows = [];
   }
@@ -258,7 +237,9 @@ export default class State {
           : (signCount ? `${signCount}` : '')
     );
 
-    chrome.browserAction.setBadgeText({ text });
+    const callback = () => console.log('setBadgeText', text);
+
+    chrome.browserAction.setBadgeText({ text }, callback);
 
     if (shouldClose && text === '') {
       this.popupClose();
@@ -283,7 +264,6 @@ export default class State {
   }
 
   private updateIconMeta (shouldClose?: boolean): void {
-    this.metaSubject.next(this.allMetaRequests);
     this.updateIcon(shouldClose);
   }
 
@@ -430,9 +410,7 @@ export default class State {
   }
 
   public saveMetadata (meta: MetadataDef): void {
-    this.#metaStore.set(meta.genesisHash, meta);
 
-    addMetadata(meta);
   }
 
   public sign (url: string, request: RequestSign, account: AccountJson): Promise<ResponseSigning> {

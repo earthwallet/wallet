@@ -15,12 +15,11 @@ import styled from 'styled-components';
 
 // import { decodeAddress } from '@polkadot/util-crypto';
 import { Link } from '../components';
-import useMetadata from '../hooks/useMetadata';
 import useOutsideClick from '../hooks/useOutsideClick';
 import useTranslation from '../hooks/useTranslation';
 import { DEFAULT_TYPE } from '../util/defaultType';
 import getParentNameSuri from '../util/getParentNameSuri';
-import { AccountContext, SelectedAccountContext, SettingsContext } from './contexts';
+import { AccountContext, SelectedAccountContext } from './contexts';
 
 export interface Props {
   actions?: React.ReactNode;
@@ -47,51 +46,27 @@ interface Recoded {
   type: KeypairType;
 }
 
-// find an account in our list
-/* function findSubstrateAccount (accounts: AccountJson[], publicKey: Uint8Array): AccountJson | null {
-  const pkStr = publicKey.toString();
-
-  return accounts.find(({ address }): boolean =>
-    decodeAddress(address).toString() === pkStr
-  ) || null;
-} */
-
-// find an account in our list
 function findAccountByAddress (accounts: AccountJson[], _address: string): AccountJson | null {
   return accounts.find(({ address }): boolean =>
     address === _address
   ) || null;
 }
 
-// recodes an supplied address using the prefix/genesisHash, include the actual saved account & chain
-/* function recodeAddress (address: string, accounts: AccountWithChildren[], chain: Chain | null, settings: SettingsStruct): Recoded {
-  // decode and create a shortcut for the encoded address
-  const publicKey = decodeAddress(address);
-
-  // find our account using the actual publicKey, and then find the associated chain
-  const account = findSubstrateAccount(accounts, publicKey);
-  const prefix = chain ? chain.ss58Format : (settings.prefix === -1 ? 42 : settings.prefix);
-
-  // always allow the actual settings to override the display
-  return {
-    account,
-    formatted: encodeAddress(publicKey, prefix),
-    genesisHash: account?.genesisHash,
-    prefix,
-    type: account?.type || DEFAULT_TYPE
-  };
-} */
-
 const ACCOUNTS_SCREEN_HEIGHT = 550;
 const defaultRecoded = { account: null, formatted: null, prefix: 42, type: DEFAULT_TYPE };
 
-function Address ({ address, children, className, genesisHash, isExternal, isFromAccount, isHardware, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
+function Address ({ address, children, className,
+  genesisHash,
+  isExternal,
+  isFromAccount,
+  isHardware, name, parentName, suri, toggleActions, type: givenType }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { accounts } = useContext(AccountContext);
 
-  const settings = useContext(SettingsContext);
+  console.log(accounts);
   const [{ account, formatted, genesisHash: recodedGenesis, type }, setRecoded] = useState<Recoded>(defaultRecoded);
-  const chain = useMetadata(genesisHash || recodedGenesis, true);
+
+  console.log(recodedGenesis);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [, setIsMovedMenu] = useState(false);
   const actionsRef = useRef<HTMLDivElement>(null);
@@ -113,7 +88,7 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
       : { account: accountByAddress, formatted: address, type: 'sr25519' } as Recoded;
 
     setRecoded(recoded || defaultRecoded);
-  }, [accounts, address, chain, givenType, settings]);
+  }, [accounts, address, givenType]);
 
   useEffect(() => {
     if (!showActionsMenu) {
@@ -218,7 +193,7 @@ function Address ({ address, children, className, genesisHash, isExternal, isFro
                     type
                   })
                   : {}}
-                to={'/wallet/home'}>
+                to={'/wallet/details'}>
                 { getAddressComponent()}
               </Link>
               )

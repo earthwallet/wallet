@@ -54,8 +54,6 @@ The repo is split into a number of packages -
 
 - [extension](packages/extension/) - All the injection and background processing logic (the main entry)
 - [extension-ui](packages/extension-ui/) - The UI components for the extension, to build up the popup
-- [extension-dapp](packages/extension-dapp/) - A convenience wrapper to work with the injected objects, simplifying data extraction for any dapp that wishes to integrate the extension (or any extension that supports the interface)
-- [extension-inject](packages/extension-inject/) - A convenience wrapper that allows extension developers to inject their extension for use by any dapp
 
 ## Dapp developers
 
@@ -69,7 +67,7 @@ The extension injection interfaces are generic, i.e. it is designed to allow any
 
 From a dapp developer perspective, the only work needed is to include the [@earthwallet/extension-dapp](packages/extension-dapp/) package and call the appropriate enabling function to retrieve all the extensions and their associated interfaces.
 
-From an extension developer perspective, the only work required is to enable the extension via the razor-thin [@earthwallet/extension-inject](packages/extension-inject/) wrapper. Any dapp using the above interfaces will have access to the extension via this interface.
+From an extension developer perspective, the only work required is to enable the extension via the razor-thin [@earthwallet/sdk/inject] wrapper. Any dapp using the above interfaces will have access to the extension via this interface.
 
 When there is more than one extension, each will populate an entry via the injection interface and each will be made available to the dapp. The `Injected` interface, as returned via `enable`, contains the following information for any compliant extension -
 
@@ -110,7 +108,7 @@ interface Signer extends SignerInterface {
 
 ## Injection information
 
-The information contained in this section may change and evolve. It is therefore recommended that all access is done via the [@earthwallet/extension-dapp](packages/extension-dapp/) (for dapps) and [extension-inject](packages/extension-inject/) (for extensions) packages, which removes the need to work with the lower-level targets.
+The information contained in this section may change and evolve. It is therefore recommended that all access is done via the [@earthwallet/sdk/dapp] (for dapps) and [@earthwallet/sdk/inject] (for extensions) packages, which removes the need to work with the lower-level targets.
 
 The extension initializes web3 accounts by `initWeb3` into the global `window` object, exposing the following: (This is meant to be generic across extensions, allowing any dapp to utilize multiple signers, and pull accounts from multiples, as they are available.)
 

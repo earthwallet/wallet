@@ -35,15 +35,20 @@ export function genericSubject (keyCreator: (address: string) => string, withTes
   return {
     add: (store: KeyringStore, address: string, json: KeyringJson, type?: KeypairType): SingleAddress => {
       current = { ...current };
-
       current[address] = {
         json: { ...json, address },
-        option: createOptionItem(address, json.meta.name),
+        option: createOptionItem(address, json?.meta?.name),
         type
       };
 
+      // console.log('add current', current);
+
       // we do not store dev or injected accounts (external/transient)
       if (!json.meta.isInjected && (!json.meta.isTesting || env.isDevelopment())) {
+        store.set(keyCreator(address), json);
+      }
+
+      if (json.meta.genesisHash === 'the_icp') {
         store.set(keyCreator(address), json);
       }
 

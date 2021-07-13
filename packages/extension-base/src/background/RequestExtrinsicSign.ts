@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { KeyringPair } from '@polkadot/keyring/types';
+import type { KeyringPair } from '@earthwallet/ui-keyring/types_extended';
 import type { SignerPayloadJSON } from '@polkadot/types/types';
 import type { RequestSign } from './types';
 

@@ -17,12 +17,8 @@ module.exports = {
   modulePathIgnorePatterns: [
     '<rootDir>/packages/extension/build',
     '<rootDir>/packages/extension-base/build',
-    '<rootDir>/packages/extension-chains/build',
-    '<rootDir>/packages/extension-dapp/build',
-    '<rootDir>/packages/extension-inject/build',
     '<rootDir>/packages/extension-ui/build',
-    '<rootDir>/packages/ui-keyring/build',
-    '<rootDir>/packages/ui-settings/build'
+    '<rootDir>/packages/ui-keyring/build'
   ],
   transformIgnorePatterns: ['/node_modules/(?!(@polkadot|@babel/runtime/helpers/esm/))']
 };

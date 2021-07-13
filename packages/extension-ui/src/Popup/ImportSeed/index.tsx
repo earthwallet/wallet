@@ -49,7 +49,7 @@ function ImportSeed({ className }: Props): React.ReactElement {
       createAccountSuri(_name, password, account.suri, undefined, account.genesis, account.genesis === 'the_icp' ? 'ICP' : undefined)
         .then(() => {
           setSelectedAccount({ ...account, name: _name, genesis: 'the_icp', symbol: 'ICP' });
-          history.replace('/wallet/home');
+          history.replace('/wallet/details');
         }).catch((error): void => {
           setIsBusy(false);
           console.error(error);

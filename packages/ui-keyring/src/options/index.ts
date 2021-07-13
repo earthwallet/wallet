@@ -47,7 +47,6 @@ export class KeyringOption implements KeyringOptionInstance {
 
   public init (keyring: KeyringStruct): void {
     assert(!hasCalledInitOptions, 'Unable to initialise options more than once');
-
     obervableAll.subscribe((): void => {
       const opts = this.emptyOptions();
 

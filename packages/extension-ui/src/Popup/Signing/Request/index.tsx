@@ -13,7 +13,6 @@ import { ActionContext, Address, VerticalSpace } from '../../../components';
 import { approveSignSignature } from '../../../messaging';
 import Bytes from '../Bytes';
 import Extrinsic from '../Extrinsic';
-import LedgerSign from '../LedgerSign';
 import Qr from '../Qr';
 import SignArea from './SignArea';
 
@@ -38,7 +37,7 @@ function isRawPayload (payload: SignerPayloadJSON | SignerPayloadRaw): payload i
   return !!(payload as SignerPayloadRaw).data;
 }
 
-export default function Request ({ account: { accountIndex, addressOffset, isExternal, isHardware }, buttonText, isFirst, request, signId, url }: Props): React.ReactElement<Props> | null {
+export default function Request ({ account: { isExternal, isHardware }, buttonText, isFirst, request, signId, url }: Props): React.ReactElement<Props> | null {
   const onAction = useContext(ActionContext);
   const [{ hexBytes, payload }, setData] = useState<Data>({ hexBytes: null, payload: null });
   const [error, setError] = useState<string | null>(null);
@@ -101,17 +100,6 @@ export default function Request ({ account: { accountIndex, addressOffset, isExt
             />
           )
         }
-        {isHardware && (
-          <LedgerSign
-            accountIndex={accountIndex as number || 0}
-            addressOffset={addressOffset as number || 0}
-            error={error}
-            genesisHash={json.genesisHash}
-            onSignature={_onSignature}
-            payload={payload}
-            setError={setError}
-          />
-        )}
         <SignArea
           buttonText={buttonText}
           error={error}
