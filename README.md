@@ -65,7 +65,7 @@ The documentation for Dapp development is available [in the Earth Wallet docs](h
 
 The extension injection interfaces are generic, i.e. it is designed to allow any extension developer to easily inject extensions (that conforms to a specific interface) and at the same time, it allows for any dapp developer to easily enable the interfaces from multiple extensions at the same time. It is not an all-or-nothing approach, but rather it is an ecosystem where the user can choose which extensions fit their style best.
 
-From a dapp developer perspective, the only work needed is to include the [@earthwallet/extension-dapp](packages/extension-dapp/) package and call the appropriate enabling function to retrieve all the extensions and their associated interfaces.
+From a dapp developer perspective, the only work needed is to include the [@earthwallet/sdk/dapp] package and call the appropriate enabling function to retrieve all the extensions and their associated interfaces.
 
 From an extension developer perspective, the only work required is to enable the extension via the razor-thin [@earthwallet/sdk/inject] wrapper. Any dapp using the above interfaces will have access to the extension via this interface.
 
@@ -132,29 +132,8 @@ window.initWeb3 = {
 
 ### Using the mnemonic and password from the extension
 
-When you create a keypair via the extension, it supplies a 12-word mnemonic seed and asks you to create a password. This password only encrypts the private key on disk so that the password is required to spend funds in `earthwallet` or to import the account from backup. The password does not protect the mnemonic phrase. That is, if an attacker were to acquire the mnemonic phrase, they would be able to use it to spend funds without the password.
+When you create a keypair via the extension, it supplies a 12-word mnemonic seed and asks you to create a password. This password only encrypts the mnemonic and private key on disk so that the password is required to spend funds in `earthwallet` or to import the account from backup. The password does not protect the mnemonic phrase. That is, if an attacker were to acquire the mnemonic phrase, they would be able to use it to spend funds without the password.
 
-### Importing mnemonics from other key generation utilities
-
-Some key-generation tools, e.g. [Subkey](https://www.substrate.io/kb/integrate/subkey), support hard and soft key derivation as well as passwords that encrypt the mnemonic phrase such that the mnemonic phrase itself is insufficient to spend funds.
-
-The extension supports these advanced features. When you import an account from a seed, you can add these derivation paths or password to the end of the mnemonic in the following format:
-
-```
-<mnemonic phrase>//<hard>/<soft>///<password>
-```
-
-That is, hard-derivation paths are prefixed with `//`, soft paths with `/`, and the password with `///`.
-
-The extension will still ask you to enter a password for this account. As before, this password only encrypts the private key on disk. It is not required to be the same password as the one that encrypts the mnemonic phrase.
-
-Accounts can also be derived from existing accounts – `Derive New Account` option in account's dropdown menu should be selected. After providing the password of the parent account, along with name and password of the derived account, enter derivation path in the following format:
-
-```
-//<hard>/<soft>
-```
-
-The path will be added to the mnemonic phrase of the parent account.
 
 
 To Add a new package

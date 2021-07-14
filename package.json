@@ -29,6 +29,7 @@
     "build:zip:src": "rm -rf ./master-src.zip && zip -r -x '*build/*' -x '*node_modules*' -FS ./master-src.zip packages .editorconfig .eslintignore .eslintrc.js babel.config.cjs CHANGELOG.md CONTRIBUTING.md i18next-scanner.config.js jest.config.cjs LICENSE package.json README.md tsconfig.json yarn.lock",
     "lint": "polkadot-dev-run-lint",
     "lint:css": "stylelint './packages/**/src/**/*.tsx'",
+    "lint:cssfix": "stylelint --fix './packages/**/src/**/*.tsx'",
     "clean": "polkadot-dev-clean-build",
     "postinstall": "polkadot-dev-yarn-only",
     "start": "yarn watch",
