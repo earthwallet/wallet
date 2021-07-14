@@ -522,7 +522,7 @@ export default class Extension {
         return this.windowOpen(request as AllowedPath);
 
       default:
-        return console.log(`Unable to handle message of type ${type}`);
+        return console.log(`Unable to handle extension message of type ${type}`);
     }
   }
 }

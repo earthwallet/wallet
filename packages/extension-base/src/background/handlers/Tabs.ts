@@ -25,7 +25,6 @@ function transformAccounts (accounts: SubjectInfo, anyType = false): InjectedAcc
   return Object
     .values(accounts)
     .filter(({ json: { meta: { isHidden } } }) => !isHidden)
-    .filter(({ type }) => anyType ? true : canDerive(type))
     .sort((a, b) => (a.json.meta.whenCreated || 0) - (b.json.meta.whenCreated || 0))
     .map(({ json: { address, meta: { genesisHash, name } }, type }): InjectedAccount => ({
       address,
@@ -200,7 +199,7 @@ export default class Tabs {
         return this.rpcUnsubscribe(request as RequestRpcUnsubscribe, port);
 
       default:
-        return console.log(`Unable to handle message of type ${type}`);
+        return console.log(`Unable to handle tabs message of type ${type}`);
     }
   }
 }
