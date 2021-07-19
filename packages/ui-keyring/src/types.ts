@@ -4,7 +4,7 @@
 import type { EncryptedJson } from '@polkadot/util-crypto/json/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { AddressSubject, SingleAddress } from './observable/types';
-import type { EarthKeyringPair, KeyringInstance as BaseKeyringInstance, KeyringOptions as KeyringOptionsBase, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from './types_extended';
+import type { EarthKeyringPair, KeyringInstance as BaseKeyringInstance, KeyringOptions as KeyringOptionsBase, KeyringPair$Json, KeyringPair$Meta } from './types_extended';
 
 export interface ContractMeta {
   abi: string;
@@ -52,7 +52,7 @@ export interface KeyringOptions extends KeyringOptionsBase {
 export interface KeyringAddress {
   readonly address: string;
   readonly meta: KeyringJson$Meta;
-  readonly publicKey?: Uint8Array;
+  readonly publicKey?: string;
 }
 
 export type KeyringAddressType = 'address' | 'contract';
@@ -61,7 +61,7 @@ export type KeyringItemType = 'account' | KeyringAddressType;
 
 export interface CreateResult {
   json: KeyringPair$Json;
-  pair: KeyringPair;
+  pair: EarthKeyringPair;
 }
 
 export interface KeyringStruct {
@@ -73,30 +73,26 @@ export interface KeyringStruct {
   symbol?: string;
   addPair: (pair: EarthKeyringPair, password: string) => CreateResult;
   addUri: (suri: string, password?: string, meta?: KeyringPair$Meta, type?: KeypairType, symbol?: string) => Promise<CreateResult>;
-  backupAccount: (pair: KeyringPair, password: string) => KeyringPair$Json;
   backupAccounts: (addresses: string[], password: string) => Promise<KeyringPairs$Json>
-  createFromUri (suri: string, meta?: KeyringPair$Meta, type?: KeypairType, symbol?: string): Promise<KeyringPair>;
-  decodeAddress: (key: string | Uint8Array) => Uint8Array;
-  encodeAddress: (key: string | Uint8Array) => string;
-  encryptAccount: (pair: KeyringPair, password: string) => void;
+  createFromUri (suri: string, meta?: KeyringPair$Meta, type?: KeypairType, symbol?: string): Promise<EarthKeyringPair>;
   forgetAccount: (address: string) => void;
   forgetAddress: (address: string) => void;
   forgetContract: (address: string) => void;
-  getAccount: (address: string | Uint8Array) => KeyringAddress | undefined;
+  getAccount: (address: string) => KeyringAddress | undefined;
   getAccounts: () => KeyringAddress[];
-  getAddress: (address: string | Uint8Array, type: KeyringItemType | null) => KeyringAddress | undefined;
+  getAddress: (address: string, type: KeyringItemType | null) => KeyringAddress | undefined;
   getAddresses: () => KeyringAddress[];
-  getContract: (address: string | Uint8Array) => KeyringAddress | undefined;
+  getContract: (address: string) => KeyringAddress | undefined;
   getContracts: (genesisHash?: string) => KeyringAddress[];
-  getPair: (address: string | Uint8Array) => KeyringPair;
-  getPairs: () => KeyringPair[];
-  isAvailable: (address: string | Uint8Array) => boolean;
+  getPair: (address: string) => EarthKeyringPair;
+  getPairs: () => EarthKeyringPair[];
+  isAvailable: (address: string) => boolean;
   isPassValid: (password: string) => boolean;
   loadAll: (options: KeyringOptions) => void;
-  restoreAccount: (json: KeyringPair$Json, password: string) => KeyringPair;
+  restoreAccount: (json: KeyringPair$Json, password: string) => EarthKeyringPair;
   restoreAccounts: (json: EncryptedJson, password: string) => void;
   saveAccount: (pair: EarthKeyringPair, password?: string) => KeyringPair$Json;
-  saveAccountMeta: (pair: KeyringPair, meta: KeyringPair$Meta) => void;
+  saveAccountMeta: (pair: EarthKeyringPair, meta: KeyringPair$Meta) => void;
   saveAddress: (address: string, meta: KeyringPair$Meta) => KeyringPair$Json;
   saveContract: (address: string, meta: KeyringPair$Meta) => KeyringPair$Json;
   saveRecent: (address: string) => SingleAddress;

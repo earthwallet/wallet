@@ -1,18 +1,14 @@
 // Copyright 2017-2020 @earthwallet/ui-keyring authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { decodeAddress } from '@polkadot/keyring';
-import { u8aToHex } from '@polkadot/util';
+import { stringToHex } from '@polkadot/util';
 
 const ACCOUNT_PREFIX = 'account:';
 const ADDRESS_PREFIX = 'address:';
 const CONTRACT_PREFIX = 'contract:';
 
 function toHex (address: string): string {
-  return u8aToHex(
-    // When saving pre-checksum changes, ensure that we can decode
-    decodeAddress(address, true)
-  );
+  return stringToHex(address);
 }
 
 const accountKey = (address: string): string =>

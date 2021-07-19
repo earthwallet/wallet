@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { KeyringPair } from '@earthwallet/ui-keyring/types_extended';
+import type { EarthKeyringPair } from '@earthwallet/ui-keyring/types_extended';
 import type { SignerPayloadRaw } from '@polkadot/types/types';
 import type { RequestSign } from './types';
 
@@ -15,10 +15,10 @@ export default class RequestBytesSign implements RequestSign {
     this.payload = payload;
   }
 
-  sign (_registry: TypeRegistry, pair: KeyringPair): { signature: string } {
+  sign (_registry: TypeRegistry, pair: EarthKeyringPair): { signature: string } {
     return {
       signature: u8aToHex(
-        pair.sign(
+        pair.sign && pair.sign(
           hexToU8a(this.payload.data)
         )
       )

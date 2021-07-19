@@ -41,8 +41,6 @@ export function genericSubject (keyCreator: (address: string) => string, withTes
         type
       };
 
-      // console.log('add current', current);
-
       // we do not store dev or injected accounts (external/transient)
       if (!json.meta.isInjected && (!json.meta.isTesting || env.isDevelopment())) {
         store.set(keyCreator(address), json);
@@ -54,6 +52,9 @@ export function genericSubject (keyCreator: (address: string) => string, withTes
 
       next();
 
+      return current[address];
+    },
+    get: (address: string): SingleAddress => {
       return current[address];
     },
     remove: (store: KeyringStore, address: string): void => {

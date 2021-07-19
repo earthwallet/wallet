@@ -103,7 +103,6 @@ export default function Popup (): React.ReactElement {
   }, [cameraOn]);
 
   function wrapWithErrorBoundary(component: React.ReactElement, trigger?: string): React.ReactElement {
-    // console.log('wrapWithErrorBoundary', trigger);
     return <ErrorBoundary trigger={trigger}>{component}</ErrorBoundary>;
   }
 

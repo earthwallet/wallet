@@ -18,6 +18,7 @@ export interface SubjectInfo {
 
 export interface AddressSubject {
   add: (store: KeyringStore, address: string, json: KeyringJson, type?: KeypairType) => SingleAddress;
+  get: (address: string) => SingleAddress;
   remove: (store: KeyringStore, address: string) => void;
   subject: BehaviorSubject<SubjectInfo>;
 }

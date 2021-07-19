@@ -17,7 +17,6 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@polkadot/hw-ledger": "^6.3.2-10",
-    "@polkadot/keyring": "^6.3.2-10",
     "@polkadot/react-qr": "^0.75.2-1",
     "@polkadot/util": "^6.3.2-10",
     "@polkadot/util-crypto": "^6.3.2-10",

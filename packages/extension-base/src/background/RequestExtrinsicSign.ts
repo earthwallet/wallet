@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { KeyringPair } from '@earthwallet/ui-keyring/types_extended';
+import type { EarthKeyringPair } from '@earthwallet/ui-keyring/types_extended';
 import type { SignerPayloadJSON } from '@polkadot/types/types';
 import type { RequestSign } from './types';
 
@@ -14,7 +14,7 @@ export default class RequestExtrinsicSign implements RequestSign {
     this.payload = payload;
   }
 
-  sign (registry: TypeRegistry, pair: KeyringPair): { signature: string } {
+  sign (registry: TypeRegistry, pair: EarthKeyringPair): { signature: string } {
     return registry
       .createType('ExtrinsicPayload', this.payload, { version: this.payload.version })
       .sign(pair);

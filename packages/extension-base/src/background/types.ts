@@ -5,7 +5,7 @@
 
 import type { InjectedAccount, InjectedMetadataKnown, ProviderList, ProviderMeta } from '@earthwallet/sdk/build/main/inject/types';
 import type { KeyringPairs$Json } from '@earthwallet/ui-keyring/types';
-import type { KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@earthwallet/ui-keyring/types_extended';
+import type { EarthKeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@earthwallet/ui-keyring/types_extended';
 import type { JsonRpcResponse } from '@polkadot/rpc-provider/types';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
@@ -91,25 +91,18 @@ export interface SigningRequest {
 // [MessageType]: [RequestType, ResponseType, SubscriptionMessageType?]
 export interface RequestSignatures {
   // private/internal requests, i.e. from a popup
-  'ewpri(accounts.create.external)': [RequestAccountCreateExternal, boolean];
-  'ewpri(accounts.create.hardware)': [RequestAccountCreateHardware, boolean];
   'ewpri(accounts.create.suri)': [RequestAccountCreateSuri, boolean];
   'ewpri(accounts.edit)': [RequestAccountEdit, boolean];
-  'ewpri(accounts.export)': [RequestAccountExport, ResponseAccountExport];
   'ewpri(accounts.batchExport)': [RequestAccountBatchExport, ResponseAccountsExport]
   'ewpri(accounts.forget)': [RequestAccountForget, boolean];
   'ewpri(accounts.show)': [RequestAccountShow, boolean];
   'ewpri(accounts.tie)': [RequestAccountTie, boolean];
   'ewpri(accounts.subscribe)': [RequestAccountSubscribe, boolean, AccountJson[]];
-  'ewpri(accounts.validate)': [RequestAccountValidate, boolean];
-  'ewpri(accounts.changePassword)': [RequestAccountChangePassword, boolean];
   'ewpri(authorize.approve)': [RequestAuthorizeApprove, boolean];
   'ewpri(authorize.list)': [null, ResponseAuthorizeList];
   'ewpri(authorize.reject)': [RequestAuthorizeReject, boolean];
   'ewpri(authorize.requests)': [RequestAuthorizeSubscribe, boolean, AuthorizeRequest[]];
   'ewpri(authorize.toggle)': [string, ResponseAuthorizeList];
-  'ewpri(derivation.create)': [RequestDeriveCreate, boolean];
-  'ewpri(derivation.validate)': [RequestDeriveValidate, ResponseDeriveValidate];
   'ewpri(json.restore)': [RequestJsonRestore, void];
   'ewpri(json.batchRestore)': [RequestBatchRestore, void];
   'ewpri(json.account.info)': [KeyringPair$Json, ResponseJsonGetAccountInfo];
@@ -218,11 +211,6 @@ export interface RequestAccountTie {
   genesisHash: string | null;
 }
 
-export interface RequestAccountValidate {
-  address: string;
-  password: string;
-}
-
 export interface RequestDeriveCreate {
   name: string;
   genesisHash?: string | null;
@@ -237,12 +225,6 @@ export interface RequestDeriveValidate {
   parentAddress: string;
   parentPassword: string;
 }
-
-export interface RequestAccountExport {
-  address: string;
-  password: string;
-}
-
 export interface RequestAccountBatchExport {
   addresses: string[];
   password: string;
@@ -340,11 +322,6 @@ export interface ResponseSigning {
   signature: string;
 }
 
-export interface ResponseDeriveValidate {
-  address: string;
-  suri: string;
-}
-
 export interface ResponseSeedCreate {
   address: string;
   seed: string;
@@ -376,8 +353,7 @@ export type MessageTypesWithNoSubscriptions = Exclude<MessageTypes, keyof Subscr
 
 export interface RequestSign {
   readonly payload: SignerPayloadJSON | SignerPayloadRaw;
-
-  sign (registry: TypeRegistry, pair: KeyringPair): { signature: string };
+  sign (registry: TypeRegistry, pair: EarthKeyringPair): { signature: string };
 }
 
 export interface RequestJsonRestore {

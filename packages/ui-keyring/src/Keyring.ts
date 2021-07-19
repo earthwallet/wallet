@@ -11,19 +11,18 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 
-import type { EarthKeyringPair, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@earthwallet/ui-keyring/types_extended';
+import type { EarthKeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@earthwallet/ui-keyring/types_extended';
 import type { EncryptedJson } from '@polkadot/util-crypto/json/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 import type { AddressSubject, SingleAddress } from './observable/types';
 import type { CreateResult, KeyringAddress, KeyringAddressType, KeyringItemType, KeyringJson, KeyringJson$Meta, KeyringOptions, KeyringPairs$Json, KeyringStruct } from './types';
 
-import { createWallet } from '@earthwallet/sdk';
 import StringCrypto from 'string-crypto';
 
-import { createPair } from '@polkadot/keyring/pair';
-import { isString, stringToU8a, u8aToString } from '@polkadot/util';
+import { stringToU8a, u8aToString } from '@polkadot/util';
 import { jsonDecrypt, jsonEncrypt } from '@polkadot/util-crypto';
 
+import { createPair } from './keyring/pair';
 // import { pairs } from '@polkadot/x-rxjs';
 import { env } from './observable/env';
 import { Base } from './Base';
@@ -31,8 +30,6 @@ import { accountKey, accountRegex, addressKey, addressRegex, contractKey, contra
 import { KeyringOption } from './options';
 
 const { encryptString } = new StringCrypto();
-
-const RECENT_EXPIRY = 24 * 60 * 60;
 
 // No accounts (or test accounts) should be loaded until after the chain determination.
 // Chain determination occurs outside of Keyring. Loading `keyring.loadAll({ type: 'ed25519' | 'sr25519' })` is triggered
@@ -61,7 +58,7 @@ export class Keyring extends Base implements KeyringStruct {
 
     if (symbol === 'ICP') {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      wallet = await createWallet(suri, symbol);
+      wallet = await this.keyring.addFromUri(suri, meta, type);
 
       if (password !== '') {
         window.localStorage.setItem(wallet?.address + '_icpjson', encryptString(JSON.stringify(wallet.identity.toJSON()), password));
@@ -69,13 +66,11 @@ export class Keyring extends Base implements KeyringStruct {
       }
     }
 
-    const pair = this.keyring.addFromUri(suri, meta, type);
-
     if (symbol === 'ICP') {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-      newPair = { ...pair, ...wallet, type: 'ethereum' };
+      newPair = { ...wallet, type: 'ethereum' };
     } else {
-      newPair = { ...pair };
+      newPair = { ...wallet };
     }
 
     return {
@@ -83,16 +78,6 @@ export class Keyring extends Base implements KeyringStruct {
       json: this.saveAccount(newPair as EarthKeyringPair, password, wallet?.address),
       pair: newPair
     };
-  }
-
-  public backupAccount (pair: KeyringPair, password: string): KeyringPair$Json {
-    if (!pair.isLocked) {
-      pair.lock();
-    }
-
-    pair.decodePkcs8(password);
-
-    return pair.toJson(password);
   }
 
   public async backupAccounts (addresses: string[], password: string): Promise<KeyringPairs$Json> {
@@ -113,30 +98,22 @@ export class Keyring extends Base implements KeyringStruct {
     };
   }
 
-  public createFromJson (json: KeyringPair$Json, meta: KeyringPair$Meta = {}): KeyringPair {
+  public createFromJson (json: KeyringPair$Json, meta: KeyringPair$Meta = {}): EarthKeyringPair {
     return this.keyring.createFromJson({ ...json, meta: { ...(json.meta || {}), meta } });
   }
 
-  public async createFromUri (suri: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol?: string): Promise<KeyringPair> {
+  public async createFromUri (suri: string, meta: KeyringPair$Meta = {}, type?: KeypairType, symbol?: string): Promise<EarthKeyringPair> {
     if (symbol === 'ICP') {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const wallet = await createWallet(suri, symbol);
-      const pair = this.keyring.addFromUri(suri, meta, type);
+      const pair = await this.keyring.addFromUri(suri, meta, type);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-      return { ...pair, address: wallet?.address, type: 'ethereum' };
+      return { ...pair, address: pair?.address, type: 'ethereum' };
     }
 
-    return this.keyring.createFromUri(suri, meta, type);
-  }
+    const pair = await this.keyring.createFromUri(suri, meta, type);
 
-  public encryptAccount (pair: KeyringPair, password: string): void {
-    const json = pair.toJson(password);
-
-    json.meta.whenEdited = Date.now();
-
-    this.keyring.addFromJson(json);
-    this.accounts.add(this._store, pair.address, json, pair.type);
+    return pair;
   }
 
   public forgetAccount (address: string): void {
@@ -152,7 +129,7 @@ export class Keyring extends Base implements KeyringStruct {
     this.contracts.remove(this._store, address);
   }
 
-  public getAccount (address: string | Uint8Array): KeyringAddress | undefined {
+  public getAccount (address: string): KeyringAddress | undefined {
     return this.getAddress(address, 'account');
   }
 
@@ -165,10 +142,8 @@ export class Keyring extends Base implements KeyringStruct {
       .filter((account) => env.isDevelopment() || account.meta.isTesting !== true);
   }
 
-  public getAddress (_address: string | Uint8Array, type: KeyringItemType | null = null): KeyringAddress | undefined {
-    const address = isString(_address)
-      ? _address
-      : this.encodeAddress(_address);
+  public getAddress (_address: string, type: KeyringItemType | null = null): KeyringAddress | undefined {
+    const address = _address;
     const stores = type
       ? [this.#stores[type]]
       : Object.values(this.#stores);
@@ -190,7 +165,7 @@ export class Keyring extends Base implements KeyringStruct {
       .map((address): KeyringAddress => this.getAddress(address) as KeyringAddress);
   }
 
-  public getContract (address: string | Uint8Array): KeyringAddress | undefined {
+  public getContract (address: string): KeyringAddress | undefined {
     return this.getAddress(address, 'contract');
   }
 
@@ -227,14 +202,24 @@ export class Keyring extends Base implements KeyringStruct {
     this.rewriteKey(json, key, hexAddr.trim(), accountKey);
   }
 
-  private loadAddress (json: KeyringJson, key: string): void {
-    const { isRecent, whenCreated = 0 } = json.meta;
+  private initAccount (json: KeyringJson, key: string): void {
+    const [, hexAddr] = key.split(':');
 
-    if (isRecent && (Date.now() - whenCreated) > RECENT_EXPIRY) {
+    this.keyring.addFromJson(json as KeyringPair$Json, true);
+    this.accounts.add(this._store, hexAddr, json, 'ethereum');
+
+    this.rewriteKey(json, key, hexAddr.trim(), accountKey);
+  }
+  //  private initAccount
+
+  private loadAddress (json: KeyringJson, key: string): void {
+    // const { isRecent, whenCreated = 0 } = json.meta;
+
+    /*  if (isRecent && (Date.now() - whenCreated) > RECENT_EXPIRY) {
       this._store.remove(key);
 
       return;
-    }
+    } */
 
     // We assume anything hex that is not 32bytes (64 + 2 bytes hex) is an Ethereum-like address
     // (this caters for both H160 addresses as well as full or compressed publicKeys) - in the case
@@ -247,9 +232,7 @@ export class Keyring extends Base implements KeyringStruct {
   }
 
   private loadContract (json: KeyringJson, key: string): void {
-    const address = this.encodeAddress(
-      this.decodeAddress(json.address)
-    );
+    const address = json.address;
     const [, hexAddr] = key.split(':');
 
     // move genesisHash to top-level (TODO Remove from contracts section?)
@@ -259,7 +242,7 @@ export class Keyring extends Base implements KeyringStruct {
     this.rewriteKey(json, key, hexAddr, contractKey);
   }
 
-  private loadInjected (address: string, meta: KeyringJson$Meta): void {
+  /* private loadInjected (address: string, meta: KeyringJson$Meta): void {
     const json = {
       address,
       meta: {
@@ -271,7 +254,7 @@ export class Keyring extends Base implements KeyringStruct {
 
     this.accounts.add(this._store, pair.address, json, pair.type);
   }
-
+ */
   private allowGenesis (json?: KeyringJson | { meta: KeyringJson$Meta } | null): boolean {
     if (json?.meta.genesisHash === 'the_icp') {
       return true;
@@ -303,9 +286,7 @@ export class Keyring extends Base implements KeyringStruct {
             } else if (contractRegex.test(key)) {
               this.loadContract(json, key);
             } else if (json.meta.genesisHash === 'the_icp') {
-              const [, hexAddr] = key.split(':');
-
-              this.accounts.add(this._store, hexAddr, json, 'ethereum');
+              this.initAccount(json, key);
             }
           }
         } catch (error) {
@@ -315,38 +296,24 @@ export class Keyring extends Base implements KeyringStruct {
       }
     });
 
-    injected.forEach((account): void => {
+    /*     injected.forEach((account): void => {
       if (this.allowGenesis(account)) {
-        try {
-          this.loadInjected(account.address, account.meta);
-        } catch (error) {
-          // ignore
-        }
       }
-    });
+    }); */
 
     this.keyringOption.init(this);
   }
 
   public restoreAccount (json: KeyringPair$Json, password: string): EarthKeyringPair {
-    const cryptoType = Array.isArray(json?.encoding?.content) ? json?.encoding?.content[1] : 'ed25519';
-    const pair = createPair(
-      { toSS58: this.encodeAddress, type: cryptoType as KeypairType },
-      { publicKey: this.decodeAddress(json.address, true) },
-      json.meta
-    );
+    const pair = createPair(json, password);
 
     // unlock, save account and then lock (locking cleans secretKey, so needs to be last)
-    pair.decodePkcs8(password);
-    this.addPair(pair as EarthKeyringPair, password);
-    pair.lock();
+    this.addPair(pair, password);
 
-    return pair as EarthKeyringPair;
+    return pair;
   }
 
   public restoreAccounts (json: EncryptedJson, password: string): void {
-    console.log('restoreAccounts');
-
     const accounts: KeyringJson[] = JSON.parse(u8aToString(jsonDecrypt(json, password))) as KeyringJson[];
 
     accounts.forEach((account) => {
@@ -355,24 +322,25 @@ export class Keyring extends Base implements KeyringStruct {
   }
 
   public saveAccount (pair: EarthKeyringPair, password?: string, icpAddress?: string): KeyringPair$Json {
-    this.addTimestamp(pair);
     const json: KeyringPair$Json = { address: pair.address,
       meta: { identity: pair.identity.toJSON(password),
+        whenCreated: Date.now(),
+        genesisHash: 'the_icp',
         ...pair.meta } };
 
-    // this.keyring.addFromJson(json);
+    this.keyring.addFromJson(json);
 
     this.accounts.add(this._store, icpAddress || pair.address, json, pair.type);
 
     return json;
   }
 
-  public saveAccountMeta (pair: KeyringPair, meta: KeyringPair$Meta): void {
+  public saveAccountMeta (pair: EarthKeyringPair, meta: KeyringPair$Meta): void {
     const address = pair.address;
 
     this._store.get(accountKey(address), (json: KeyringJson): void => {
-      pair.setMeta(meta);
-      json.meta = pair.meta;
+      pair.setMeta && pair.setMeta(meta);
+      json.meta = pair.meta || {};
 
       this.accounts.add(this._store, address, json, pair.type);
     });

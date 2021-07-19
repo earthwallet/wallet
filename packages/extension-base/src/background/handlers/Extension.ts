@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
-import type { EarthKeyringPair, KeyringPair, KeyringPair$Json, KeyringPair$Meta } from '@earthwallet/ui-keyring/types_extended';
+import type { EarthKeyringPair, KeyringPair$Json } from '@earthwallet/ui-keyring/types_extended';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
-import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, RequestAccountBatchExport, RequestAccountChangePassword, RequestAccountCreateSuri, RequestAccountEdit, RequestAccountExport, RequestAccountForget, RequestAccountShow, RequestAccountTie, RequestAccountValidate, RequestAuthorizeApprove, RequestAuthorizeReject, RequestBatchRestore, RequestDeriveCreate, RequestDeriveValidate, RequestJsonRestore, RequestSeedCreate, RequestSeedValidate, RequestSigningApprovePassword, RequestSigningApproveSignature, RequestSigningCancel, RequestSigningIsLocked, RequestTypes, ResponseAccountExport, ResponseAccountsExport, ResponseAuthorizeList, ResponseDeriveValidate, ResponseJsonGetAccountInfo, ResponseSeedCreate, ResponseSeedValidate, ResponseSigningIsLocked, ResponseType, SigningRequest } from '../types';
+import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, RequestAccountBatchExport, RequestAccountCreateSuri, RequestAccountEdit, RequestAccountForget, RequestAccountShow, RequestAccountTie, RequestAuthorizeApprove, RequestAuthorizeReject, RequestBatchRestore, RequestJsonRestore, RequestSeedCreate, RequestSeedValidate, RequestSigningApprovePassword, RequestSigningApproveSignature, RequestSigningCancel, RequestSigningIsLocked, RequestTypes, ResponseAccountsExport, ResponseAuthorizeList, ResponseJsonGetAccountInfo, ResponseSeedCreate, ResponseSeedValidate, ResponseSigningIsLocked, ResponseType, SigningRequest } from '../types';
 
 import { ALLOWED_PATH, PASSWORD_EXPIRY_MS } from '@earthwallet/extension-base/defaults';
 import chrome from '@earthwallet/sdk/build/main/inject/chrome';
@@ -55,26 +55,6 @@ export default class Extension {
     return true;
   }
 
-  private accountsChangePassword ({ address, newPass, oldPass }: RequestAccountChangePassword): boolean {
-    const pair = keyring.getPair(address);
-
-    assert(pair, 'Unable to find pair');
-
-    try {
-      if (!pair.isLocked) {
-        pair.lock();
-      }
-
-      pair.decodePkcs8(oldPass);
-    } catch (error) {
-      throw new Error('oldPass is invalid');
-    }
-
-    keyring.encryptAccount(pair, newPass);
-
-    return true;
-  }
-
   private accountsEdit ({ address, name }: RequestAccountEdit): boolean {
     const pair = keyring.getPair(address);
 
@@ -83,10 +63,6 @@ export default class Extension {
     keyring.saveAccountMeta(pair, { ...pair.meta, name });
 
     return true;
-  }
-
-  private accountsExport ({ address, password }: RequestAccountExport): ResponseAccountExport {
-    return { exportedJson: keyring.backupAccount(keyring.getPair(address), password) };
   }
 
   private async accountsBatchExport ({ addresses, password }: RequestAccountBatchExport): Promise<ResponseAccountsExport> {
@@ -101,7 +77,7 @@ export default class Extension {
     return true;
   }
 
-  private refreshAccountPasswordCache (pair: KeyringPair): number {
+  private refreshAccountPasswordCache (pair: EarthKeyringPair): number {
     const { address } = pair;
 
     const savedExpiry = this.#cachedUnlocks[address] || 0;
@@ -109,7 +85,6 @@ export default class Extension {
 
     if (remainingTime < 0) {
       this.#cachedUnlocks[address] = 0;
-      pair.lock();
 
       return 0;
     }
@@ -135,16 +110,6 @@ export default class Extension {
     keyring.saveAccountMeta(pair, { ...pair.meta, genesisHash });
 
     return true;
-  }
-
-  private accountsValidate ({ address, password }: RequestAccountValidate): boolean {
-    try {
-      keyring.backupAccount(keyring.getPair(address), password);
-
-      return true;
-    } catch (e) {
-      return false;
-    }
   }
 
   // FIXME This looks very much like what we have in Tabs
@@ -223,7 +188,9 @@ export default class Extension {
 
   private jsonGetAccountInfo (json: KeyringPair$Json): ResponseJsonGetAccountInfo {
     try {
-      const { address, meta: { genesisHash, name }, type } = keyring.createFromJson(json);
+      const { address, meta, type } = keyring.createFromJson(json);
+      const genesisHash = meta?.genesisHash || 'the_icp';
+      const name = meta?.name || '';
 
       return {
         address,
@@ -291,10 +258,6 @@ export default class Extension {
       reject(new Error('Password needed to unlock the account'));
     }
 
-    if (pair.isLocked) {
-      pair.decodePkcs8(password);
-    }
-
     const { payload } = request;
 
     if (isJsonPayload(payload)) {
@@ -306,8 +269,6 @@ export default class Extension {
 
     if (savePass) {
       this.#cachedUnlocks[address] = Date.now() + PASSWORD_EXPIRY_MS;
-    } else {
-      pair.lock();
     }
 
     resolve({
@@ -355,7 +316,7 @@ export default class Extension {
     const remainingTime = this.refreshAccountPasswordCache(pair);
 
     return {
-      isLocked: pair.isLocked,
+      isLocked: pair.isLocked || false,
       remainingTime
     };
   }
@@ -391,44 +352,6 @@ export default class Extension {
     return true;
   }
 
-  private derive (parentAddress: string, suri: string, password: string, metadata: KeyringPair$Meta): KeyringPair {
-    const parentPair = keyring.getPair(parentAddress);
-
-    try {
-      parentPair.decodePkcs8(password);
-    } catch (e) {
-      throw new Error('invalid password');
-    }
-
-    try {
-      return parentPair.derive(suri, metadata);
-    } catch (err) {
-      throw new Error(`"${suri}" is not a valid derivation path`);
-    }
-  }
-
-  private derivationValidate ({ parentAddress, parentPassword, suri }: RequestDeriveValidate): ResponseDeriveValidate {
-    const childPair = this.derive(parentAddress, suri, parentPassword, {});
-
-    return {
-      address: childPair.address,
-      suri
-    };
-  }
-
-  private derivationCreate ({ genesisHash, name, parentAddress, parentPassword, password, suri }: RequestDeriveCreate): boolean {
-    const childPair = this.derive(parentAddress, suri, parentPassword, {
-      genesisHash,
-      name,
-      parentAddress,
-      suri
-    });
-
-    keyring.addPair(childPair as EarthKeyringPair, password);
-
-    return true;
-  }
-
   private toggleAuthorization (url: string): ResponseAuthorizeList {
     return { list: this.#state.toggleAuthorization(url) };
   }
@@ -455,14 +378,8 @@ export default class Extension {
       case 'ewpri(accounts.create.suri)':
         return this.accountsCreateSuri(request as RequestAccountCreateSuri);
 
-      case 'ewpri(accounts.changePassword)':
-        return this.accountsChangePassword(request as RequestAccountChangePassword);
-
       case 'ewpri(accounts.edit)':
         return this.accountsEdit(request as RequestAccountEdit);
-
-      case 'ewpri(accounts.export)':
-        return this.accountsExport(request as RequestAccountExport);
 
       case 'ewpri(accounts.batchExport)':
         return this.accountsBatchExport(request as RequestAccountBatchExport);
@@ -478,15 +395,6 @@ export default class Extension {
 
       case 'ewpri(accounts.tie)':
         return this.accountsTie(request as RequestAccountTie);
-
-      case 'ewpri(accounts.validate)':
-        return this.accountsValidate(request as RequestAccountValidate);
-
-      case 'ewpri(derivation.create)':
-        return this.derivationCreate(request as RequestDeriveCreate);
-
-      case 'ewpri(derivation.validate)':
-        return this.derivationValidate(request as RequestDeriveValidate);
 
       case 'ewpri(json.restore)':
         return this.jsonRestore(request as RequestJsonRestore);

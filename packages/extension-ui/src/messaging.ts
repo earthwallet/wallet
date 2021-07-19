@@ -1,7 +1,7 @@
 // Copyright 2021 @earthwallet/extension-ui authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, MessageTypesWithNoSubscriptions, MessageTypesWithNullRequest, MessageTypesWithSubscriptions, RequestTypes, ResponseAuthorizeList, ResponseDeriveValidate, ResponseJsonGetAccountInfo, ResponseSigningIsLocked, ResponseTypes, SeedLengths, SigningRequest, SubscriptionMessageTypes } from '@earthwallet/extension-base/background/types';
+import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, MessageTypesWithNoSubscriptions, MessageTypesWithNullRequest, MessageTypesWithSubscriptions, RequestTypes, ResponseAuthorizeList, ResponseJsonGetAccountInfo, ResponseSigningIsLocked, ResponseTypes, SeedLengths, SigningRequest, SubscriptionMessageTypes } from '@earthwallet/extension-base/background/types';
 import type { Message } from '@earthwallet/extension-base/types';
 import type { KeyringPairs$Json } from '@earthwallet/ui-keyring/types';
 import type { KeyringPair$Json } from '@earthwallet/ui-keyring/types_extended';
@@ -79,16 +79,8 @@ export async function tieAccount (address: string, genesisHash: string | null): 
   return sendMessage('ewpri(accounts.tie)', { address, genesisHash });
 }
 
-export async function exportAccount (address: string, password: string): Promise<{ exportedJson: KeyringPair$Json }> {
-  return sendMessage('ewpri(accounts.export)', { address, password });
-}
-
 export async function exportAccounts (addresses: string[], password: string): Promise<{ exportedJson: KeyringPairs$Json }> {
   return sendMessage('ewpri(accounts.batchExport)', { addresses, password });
-}
-
-export async function validateAccount (address: string, password: string): Promise<boolean> {
-  return sendMessage('ewpri(accounts.validate)', { address, password });
 }
 
 export async function forgetAccount (address: string): Promise<boolean> {
@@ -115,16 +107,7 @@ export async function approveSignSignature (id: string, signature: string): Prom
   return sendMessage('ewpri(signing.approve.signature)', { id, signature });
 }
 
-export async function createAccountExternal (name: string, address: string, genesisHash: string): Promise<boolean> {
-  return sendMessage('ewpri(accounts.create.external)', { address, genesisHash, name });
-}
-
-export async function createAccountHardware (address: string, hardwareType: string, accountIndex: number, addressOffset: number, name: string, genesisHash: string): Promise<boolean> {
-  return sendMessage('ewpri(accounts.create.hardware)', { accountIndex, address, addressOffset, genesisHash, hardwareType, name });
-}
-
 export async function createAccountSuri (name: string, password: string, suri: string, type?: KeypairType, genesisHash?: string, symbol?: string): Promise<boolean> {
-//   console.log('createAccountSuri', genesisHash, name, password, suri, type);
   return sendMessage('ewpri(accounts.create.suri)', { genesisHash, name, password, suri, type, symbol });
 }
 
@@ -158,14 +141,6 @@ export async function subscribeSigningRequests (cb: (accounts: SigningRequest[])
 
 export async function validateSeed (suri: string, type?: KeypairType, symbol?: string): Promise<{ address: string; suri: string }> {
   return sendMessage('ewpri(seed.validate)', { suri, type, symbol });
-}
-
-export async function validateDerivationPath (parentAddress: string, suri: string, parentPassword: string): Promise<ResponseDeriveValidate> {
-  return sendMessage('ewpri(derivation.validate)', { parentAddress, parentPassword, suri });
-}
-
-export async function deriveAccount (parentAddress: string, suri: string, parentPassword: string, name: string, password: string, genesisHash: string | null): Promise<boolean> {
-  return sendMessage('ewpri(derivation.create)', { genesisHash, name, parentAddress, parentPassword, password, suri });
 }
 
 export async function windowOpen (path: AllowedPath): Promise<boolean> {

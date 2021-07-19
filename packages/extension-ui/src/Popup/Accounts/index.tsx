@@ -46,7 +46,6 @@ function Accounts ({ className }: Props): React.ReactElement {
                 {hierarchy
                   .filter(({ genesisHash }) => selectedNetwork.genesisHash.length ? genesisHash === selectedNetwork.genesisHash : true)
                   .map((json, index): React.ReactNode => {
-                    //   console.log('hierarchy', json);
                     return (
                       <AccountsTree
                         {...json}

@@ -3,13 +3,12 @@
 
 import type { InjectedAccount, ProviderMeta } from '@earthwallet/sdk/build/main/inject/types';
 import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
-import type { KeyringPair } from '@earthwallet/ui-keyring/types_extended';
+import type { EarthKeyringPair } from '@earthwallet/ui-keyring/types_extended';
 import type { JsonRpcResponse } from '@polkadot/rpc-provider/types';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
 import type { MessageTypes, RequestAccountList, RequestAuthorizeTab, RequestRpcSend, RequestRpcSubscribe, RequestRpcUnsubscribe, RequestTypes, ResponseRpcListProviders, ResponseSigning, ResponseTypes, SubscriptionMessageTypes } from '../types';
 
 import { PHISHING_PAGE_REDIRECT } from '@earthwallet/extension-base/defaults';
-import { canDerive } from '@earthwallet/extension-base/utils';
 import keyring from '@earthwallet/ui-keyring';
 import { accounts as accountsObservable } from '@earthwallet/ui-keyring/observable/accounts';
 
@@ -65,7 +64,7 @@ export default class Tabs {
     return true;
   }
 
-  private getSigningPair (address: string): KeyringPair {
+  private getSigningPair (address: string): EarthKeyringPair {
     const pair = keyring.getPair(address);
 
     assert(pair, 'Unable to find keypair');

@@ -9,8 +9,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@earthwallet/sdk": "^0.1.14",
-    "@polkadot/keyring": "^5.0.1",
+    "@dfinity/rosetta-client": "^0.5.2",
+    "@earthwallet/sdk": "^0.1.15",
     "@polkadot/ledger": "^0.63.1",
     "@polkadot/util": "^5.0.1",
     "@polkadot/x-rxjs": "^3.0.1",
@@ -24,7 +24,6 @@
     "@types/store": "^2.0.2"
   },
   "peerDependencies": {
-    "@polkadot/keyring": "*",
     "@polkadot/util": "*"
   }
 }

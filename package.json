@@ -9,7 +9,6 @@
   ],
   "resolutions": {
     "@polkadot/api": "^4.9.3-11",
-    "@polkadot/keyring": "^6.3.2-10",
     "@polkadot/types": "^4.9.3-11",
     "@polkadot/util": "^6.3.2-10",
     "@polkadot/util-crypto": "^6.3.2-10",
@@ -47,6 +46,7 @@
     "stylelint-config-styled-components": "^0.1.1"
   },
   "dependencies": {
+    "@earthwallet/sdk": "^0.1.15",
     "file-saver": "^2.0.5",
     "moment": "2.24.0",
     "react-spinners": "^0.11.0"
