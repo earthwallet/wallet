@@ -5,8 +5,6 @@ import type { EarthKeyringPair } from '@earthwallet/ui-keyring/types_extended';
 import type { SignerPayloadJSON } from '@polkadot/types/types';
 import type { RequestSign } from './types';
 
-import { TypeRegistry } from '@polkadot/types';
-
 export default class RequestExtrinsicSign implements RequestSign {
   public readonly payload: SignerPayloadJSON;
 
@@ -14,9 +12,7 @@ export default class RequestExtrinsicSign implements RequestSign {
     this.payload = payload;
   }
 
-  sign (registry: TypeRegistry, pair: EarthKeyringPair): { signature: string } {
-    return registry
-      .createType('ExtrinsicPayload', this.payload, { version: this.payload.version })
-      .sign(pair);
+  sign (pair: EarthKeyringPair): { signature: string } {
+    return { signature: JSON.stringify(pair.sign && pair.sign('STUB')) };
   }
 }

@@ -1,7 +1,7 @@
 // Copyright 2017-2020 @earthwallet/ui-keyring authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { EarthKeyringPair as EKP } from '@earthwallet/sdk/build/main/types';
+import type { EarthKeyringPair as EKP } from '@earthwallet/sdk';
 import type { Prefix } from '@polkadot/util-crypto/address/types';
 import type { EncryptedJson } from '@polkadot/util-crypto/json/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';

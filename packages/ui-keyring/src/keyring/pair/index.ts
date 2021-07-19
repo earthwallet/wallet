@@ -12,6 +12,7 @@ import type { EarthKeyringPair, KeyringPair$Json, KeyringPair$Meta } from '../ty
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 // @ts-ignore
 import { address_to_hex as addToHex } from '@dfinity/rosetta-client';
+import { EarthKeyringPair$Json } from '@earthwallet/sdk';
 import { principal_id_to_address as principalToAddress } from '@earthwallet/sdk/build/main/util/icp';
 import * as nacl from 'tweetnacl';
 
@@ -77,7 +78,7 @@ export function createPair (json: KeyringPair$Json, password: string): EarthKeyr
         u8aToU8a(message),
         u8aToU8a('0x' + keyPair.toJSON()[1])
       ),
-    toJson: (passphrase?: string): KeyringPair$Json => json,
+    toJson: (passphrase?: string): EarthKeyringPair$Json => json,
     verify: (message: string | Uint8Array, signature: Uint8Array, _signerPublic: string | Uint8Array): boolean => false
   };
 }

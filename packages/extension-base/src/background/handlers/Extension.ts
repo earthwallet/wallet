@@ -3,7 +3,6 @@
 
 import type { SubjectInfo } from '@earthwallet/ui-keyring/observable/types';
 import type { EarthKeyringPair, KeyringPair$Json } from '@earthwallet/ui-keyring/types_extended';
-import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
 import type { AccountJson, AllowedPath, AuthorizeRequest, MessageTypes, RequestAccountBatchExport, RequestAccountCreateSuri, RequestAccountEdit, RequestAccountForget, RequestAccountShow, RequestAccountTie, RequestAuthorizeApprove, RequestAuthorizeReject, RequestBatchRestore, RequestJsonRestore, RequestSeedCreate, RequestSeedValidate, RequestSigningApprovePassword, RequestSigningApproveSignature, RequestSigningCancel, RequestSigningIsLocked, RequestTypes, ResponseAccountsExport, ResponseAuthorizeList, ResponseJsonGetAccountInfo, ResponseSeedCreate, ResponseSeedValidate, ResponseSigningIsLocked, ResponseType, SigningRequest } from '../types';
 
 import { ALLOWED_PATH, PASSWORD_EXPIRY_MS } from '@earthwallet/extension-base/defaults';
@@ -11,7 +10,6 @@ import chrome from '@earthwallet/sdk/build/main/inject/chrome';
 import keyring from '@earthwallet/ui-keyring';
 import { accounts as accountsObservable } from '@earthwallet/ui-keyring/observable/accounts';
 
-import { TypeRegistry } from '@polkadot/types';
 import { assert, isHex } from '@polkadot/util';
 import { keyExtractSuri, mnemonicGenerate, mnemonicValidate } from '@polkadot/util-crypto';
 
@@ -23,19 +21,12 @@ type CachedUnlocks = Record<string, number>;
 const SEED_DEFAULT_LENGTH = 12;
 const SEED_LENGTHS = [12, 15, 18, 21, 24];
 
-// a global registry to use internally
-const registry = new TypeRegistry();
-
 function transformAccounts (accounts: SubjectInfo): AccountJson[] {
   return Object.values(accounts).map(({ json: { address, meta }, type }): AccountJson => ({
     address,
     ...meta,
     type
   }));
-}
-
-function isJsonPayload (value: SignerPayloadJSON | SignerPayloadRaw): value is SignerPayloadJSON {
-  return (value as SignerPayloadJSON).genesisHash !== undefined;
 }
 
 export default class Extension {
@@ -260,12 +251,9 @@ export default class Extension {
 
     const { payload } = request;
 
-    if (isJsonPayload(payload)) {
-      // set the registry before calling the sign function
-      registry.setSignedExtensions(payload.signedExtensions, undefined);
-    }
+    console.log('deprecated:', payload);
 
-    const result = request.sign(registry, pair);
+    const result = request.sign(pair);
 
     if (savePass) {
       this.#cachedUnlocks[address] = Date.now() + PASSWORD_EXPIRY_MS;

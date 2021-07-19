@@ -5,7 +5,6 @@ import type { EarthKeyringPair } from '@earthwallet/ui-keyring/types_extended';
 import type { SignerPayloadRaw } from '@polkadot/types/types';
 import type { RequestSign } from './types';
 
-import { TypeRegistry } from '@polkadot/types';
 import { hexToU8a, u8aToHex } from '@polkadot/util';
 
 export default class RequestBytesSign implements RequestSign {
@@ -15,7 +14,7 @@ export default class RequestBytesSign implements RequestSign {
     this.payload = payload;
   }
 
-  sign (_registry: TypeRegistry, pair: EarthKeyringPair): { signature: string } {
+  sign (pair: EarthKeyringPair): { signature: string } {
     return {
       signature: u8aToHex(
         pair.sign && pair.sign(

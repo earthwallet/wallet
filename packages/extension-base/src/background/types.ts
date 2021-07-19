@@ -10,8 +10,6 @@ import type { JsonRpcResponse } from '@polkadot/rpc-provider/types';
 import type { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types';
 import type { KeypairType } from '@polkadot/util-crypto/types';
 
-import { TypeRegistry } from '@polkadot/types';
-
 import { ALLOWED_PATH } from '../defaults';
 import { AuthUrls } from './handlers/State';
 
@@ -353,7 +351,7 @@ export type MessageTypesWithNoSubscriptions = Exclude<MessageTypes, keyof Subscr
 
 export interface RequestSign {
   readonly payload: SignerPayloadJSON | SignerPayloadRaw;
-  sign (registry: TypeRegistry, pair: EarthKeyringPair): { signature: string };
+  sign (pair: EarthKeyringPair): { signature: string };
 }
 
 export interface RequestJsonRestore {
