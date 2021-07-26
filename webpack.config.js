@@ -59,10 +59,10 @@ module.exports = {
 
   entry: {
     manifest: path.join(__dirname, 'manifest.json'),
-    background: path.join(sourcePath, 'Background', 'index.ts'),
-    contentScript: path.join(sourcePath, 'ContentScript', 'index.ts'),
-    popup: path.join(sourcePath, 'Popup', 'index.tsx'),
-    options: path.join(sourcePath, 'Options', 'index.tsx'),
+    background: path.join(sourcePath, 'scripts/Background', 'index.ts'),
+    contentScript: path.join(sourcePath, 'scripts/ContentScript', 'index.ts'),
+    popup: path.join(sourcePath, 'pages/Popup', 'index.tsx'),
+    options: path.join(sourcePath, 'pages/Options', 'index.tsx'),
   },
 
   output: {
@@ -76,6 +76,13 @@ module.exports = {
       'webextension-polyfill-ts': path.resolve(
         path.join(__dirname, 'node_modules', 'webextension-polyfill-ts')
       ),
+      '~assets': path.resolve(__dirname, 'source/assets'),
+      '~components': path.resolve(__dirname, 'source/components'),
+      '~scripts': path.resolve(__dirname, 'source/scripts'),
+      '~pages': path.resolve(__dirname, 'source/pages'),
+      '~state': path.resolve(__dirname, 'source/state'),
+      '~utils': path.resolve(__dirname, 'source/utils'),
+      '~hooks': path.resolve(__dirname, 'source/hooks'),
     },
   },
 
@@ -106,7 +113,11 @@ module.exports = {
           {
             loader: 'css-loader', // Takes the CSS files and returns the CSS with imports and url(...) for Webpack
             options: {
+              import: true,
               sourceMap: true,
+              modules: {
+                localIdentName: '[name]__[local]___[hash:base64:5]',
+              },
             },
           },
           {
@@ -126,6 +137,13 @@ module.exports = {
           },
           'resolve-url-loader', // Rewrites relative paths in url() statements
           'sass-loader', // Takes the Sass/SCSS file and compiles to the CSS
+          {
+            loader: 'sass-resources-loader',
+            options: {
+              // Provide path to the file with resources
+              resources: './source/assets/styles/index.scss',
+            },
+          },
         ],
       },
     ],

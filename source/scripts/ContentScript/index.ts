@@ -1,6 +1,6 @@
 import { providerManager } from './inject';
 
-import { Script } from 'scripts/Provider/Script';
+import { Script } from '~scripts/Provider/Script';
 
 new Script().start();
 

@@ -9,7 +9,23 @@
     /* Additional Checks */
     "useDefineForClassFields": true,
     "skipLibCheck": true,
-    "baseUrl": "source"
+    "baseUrl": "source",
+    "paths": {
+      "~assets/*": ["assets/*"],
+      "~assets": ["assets"],
+      "~components/*": ["components/*"],
+      "~components": ["components"],
+      "~pages/*": ["pages/*"],
+      "~pages": ["pages"],
+      "~state/*": ["state/*"],
+      "~state": ["state"],
+      "~scripts/*": ["scripts/*"],
+      "~scripts": ["scripts"],
+      "~utils/*": ["utils/*"],
+      "~utils": ["utils"],
+      "~hooks/*": ["hooks/*"],
+      "~hooks": ["hooks"]
+    }
   },
   "include": ["source", "webpack.config.js"]
 }
