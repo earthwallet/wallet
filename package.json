@@ -1,14 +1,9 @@
 {
-  "name": "web-extension-starter",
+  "name": "earth-wallet",
   "version": "2.0.0",
-  "description": "Web extension starter using react and typescript",
+  "description": "Earth wallet",
   "private": true,
-  "repository": "https://github.com/abhijithvijayan/web-extension-starter.git",
-  "author": {
-    "name": "abhijithvijayan",
-    "email": "email@abhijithvijayan.in",
-    "url": "https://abhijithvijayan.in"
-  },
+  "repository": "https://github.com/earthwallet/extension",
   "license": "MIT",
   "engines": {
     "node": ">=10.0.0",

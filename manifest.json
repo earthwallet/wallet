@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Sample WebExtension",
-  "version": "0.0.0",
+  "name": "Earth Wallet",
+  "version": "2.0.0",
 
   "icons": {
     "16": "assets/icons/favicon-16.png",
@@ -9,22 +9,17 @@
     "48": "assets/icons/favicon-48.png",
     "128": "assets/icons/favicon-128.png"
   },
-  "description": "Sample description",
-  "homepage_url": "https://github.com/abhijithvijayan/web-extension-starter",
+  "description": "Browser Extension Wallet",
+  "homepage_url": "https://github.com/earthwallet/extension",
   "short_name": "Sample Name",
 
-  "permissions": [
-    "activeTab",
-    "storage",
-    "http://*/*",
-    "https://*/*"
-  ],
+  "permissions": ["activeTab", "storage", "http://*/*", "https://*/*"],
 
   "content_security_policy": "script-src 'self'; object-src 'self'",
 
-  "__chrome|firefox__author": "abhijithvijayan",
+  "__chrome|firefox__author": "earth",
   "__opera__developer": {
-    "name": "abhijithvijayan"
+    "name": "earth"
   },
 
   "__firefox__applications": {
@@ -57,19 +52,14 @@
   },
 
   "background": {
-    "scripts": [
-      "js/background.bundle.js"
-    ],
+    "scripts": ["js/background.bundle.js"],
     "__chrome|opera__persistent": false
   },
 
-  "content_scripts": [{
-    "matches": [
-      "http://*/*",
-      "https://*/*"
-    ],
-    "js": [
-      "js/contentScript.bundle.js"
-    ]
-  }]
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["js/contentScript.bundle.js"]
+    }
+  ]
 }
