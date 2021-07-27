@@ -25,7 +25,9 @@
       "~utils/*": ["utils/*"],
       "~utils": ["utils"],
       "~hooks/*": ["hooks/*"],
-      "~hooks": ["hooks"]
+      "~hooks": ["hooks"],
+      "~global/*": ["global/*"],
+      "~global": ["global"]
     }
   },
   "include": ["source", "webpack.config.js"]

@@ -20,13 +20,34 @@
     │     │    └──  navigation              # Navigation related components
     │     │           ├── Header
     │     │           └── ...
+    │     ├──  containers                   # Container components
+    │     │    ├──  DApp
+    │     │    ├──  Hardware
+    │     │    ├──  Popup
+    │     │    │      ├── custom.d.ts
+    │     │    │      ├── index.tsx
+    │     │    │      └── router.tsx
     │     ├──  pages                        # Page components
+    │     │    ├──  dapp
+    │     │    ├──  hardware
+    │     │    │      └── HardwareWalletPage
+    │     │    ├──  popup
+    │     │    │      ├── signed
+    │     │    │      │      └── HomePage
+    │     │    │      ├── started
+    │     │    │      │      └── StarterPage
+    │     │    │      └── ...
+    │     │    └──  ...
     │     ├──  scripts                      # Script files
     │     │    ├──  Background
     │     │    ├──  ContentScript
     │     │    └──  Provider
     │     ├──  utils                        # Util functions
     │     ├──  services                     # Service functions
+    │     ├──  global                       # Global files
+    │     │    ├──  constant.ts
+    │     │    ├──  types.ts
+    │     │    └──  ...
     │     ├──  state                        # Redux state files
     │     │    ├──  app                     # Reducer files
     │     │    ├──  ...
