@@ -1,11 +1,40 @@
-
 # Earth Wallet (Multichain Support)
 
-## Browser Support
+## Project structure
 
-| [![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)](/) | [![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)](/) | [![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png)](/) | [![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png)](/) | [![Yandex](https://raw.github.com/alrra/browser-logos/master/src/yandex/yandex_48x48.png)](/) | [![Brave](https://raw.github.com/alrra/browser-logos/master/src/brave/brave_48x48.png)](/) | [![vivaldi](https://raw.github.com/alrra/browser-logos/master/src/vivaldi/vivaldi_48x48.png)](/) |
-| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| 49 & later ✔                                                                                  | 52 & later ✔                                                                                     | 36 & later ✔                                                                               | 79 & later ✔                                                                            | Latest ✔                                                                                      | Latest ✔                                                                                   | Latest ✔                                                                                         |
+    .
+    ├── extension                           # Compiled files
+    ├── source                              # Soruce files
+    │     ├──  assets                       # Assets Folder
+    │     │    ├──  fonts                   # Font assets
+    │     │    ├──  images                  # Image assets
+    │     │    └──  styles                  # Style assets
+    │     ├──  components                   # Components folder
+    │     │    ├──  based                   # Basic/Reusable components
+    │     │    │      ├── Button
+    │     │    │      └── ...
+    │     │    ├──  feature                 # Feature related components
+    │     │    │      ├── transaction
+    │     │    │      │      └── TxProgressBar
+    │     │    │      └── ...
+    │     │    └──  navigation              # Navigation related components
+    │     │           ├── Header
+    │     │           └── ...
+    │     ├──  pages                        # Page components
+    │     ├──  scripts                      # Script files
+    │     │    ├──  Background
+    │     │    ├──  ContentScript
+    │     │    └──  Provider
+    │     ├──  utils                        # Util functions
+    │     ├──  services                     # Service functions
+    │     ├──  state                        # Redux state files
+    │     │    ├──  app                     # Reducer files
+    │     │    ├──  ...
+    │     │    ├──  store.ts
+    │     │    └──  localStorage.ts
+    │     └──  hooks                        # React custom Hooks
+    ├── views                         # Popup HTML files
+    └── README.md
 
 ## Used by extensions in production that has over 100,000+ users.
 
