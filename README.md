@@ -33,7 +33,10 @@
     │     │    ├──  store.ts
     │     │    └──  localStorage.ts
     │     └──  hooks                        # React custom Hooks
-    ├── views                         # Popup HTML files
+    ├── views                               # Popup HTML files
+    │     ├──  popup.html
+    │     ├──  app.html
+    │     └──  ...
     └── README.md
 
 ## Used by extensions in production that has over 100,000+ users.
