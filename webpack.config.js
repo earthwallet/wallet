@@ -20,18 +20,18 @@ const targetBrowser = process.env.TARGET_BROWSER;
 const extensionReloaderPlugin =
   nodeEnv === 'development'
     ? new ExtensionReloader({
-        port: 9090,
-        reloadPage: true,
-        entries: {
-          // TODO: reload manifest on update
-          contentScript: 'contentScript',
-          background: 'background',
-          extensionPage: ['popup'],
-        },
-      })
+      port: 9090,
+      reloadPage: true,
+      entries: {
+        // TODO: reload manifest on update
+        contentScript: 'contentScript',
+        background: 'background',
+        extensionPage: ['popup'],
+      },
+    })
     : () => {
-        this.apply = () => {};
-      };
+      this.apply = () => { };
+    };
 
 const getExtensionFileType = (browser) => {
   if (browser === 'opera') {
@@ -89,6 +89,19 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.(jpg|png|gif|woff|eot|ttf|svg)/,
+        use: {
+          loader: 'url-loader', // this need file-loader
+          options: {
+            limit: 50000
+          }
+        }
+      },
+      {
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
+      },
+      {
         type: 'javascript/auto', // prevent webpack handling json with its own loaders,
         test: /manifest\.json$/,
         use: {
@@ -114,6 +127,7 @@ module.exports = {
             loader: 'css-loader', // Takes the CSS files and returns the CSS with imports and url(...) for Webpack
             options: {
               import: true,
+              url:false,
               sourceMap: true,
               modules: {
                 localIdentName: '[name]__[local]___[hash:base64:5]',

@@ -12,6 +12,8 @@ haters/
 .idea/**/dictionaries
 .idea/**/shelf
 
+.DS_Store
+
 # Generated files
 .idea/**/contentModel.xml
 

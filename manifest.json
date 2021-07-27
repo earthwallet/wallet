@@ -4,10 +4,10 @@
   "version": "2.0.0",
 
   "icons": {
-    "16": "assets/icons/favicon-16.png",
-    "32": "assets/icons/favicon-32.png",
-    "48": "assets/icons/favicon-48.png",
-    "128": "assets/icons/favicon-128.png"
+    "16": "assets/images/favicon-16.png",
+    "32": "assets/images/favicon-32.png",
+    "48": "assets/images/favicon-48.png",
+    "128": "assets/images/favicon-128.png"
   },
   "description": "Browser Extension Wallet",
   "homepage_url": "https://github.com/earthwallet/extension",
@@ -34,10 +34,10 @@
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "assets/icons/favicon-16.png",
-      "32": "assets/icons/favicon-32.png",
-      "48": "assets/icons/favicon-48.png",
-      "128": "assets/icons/favicon-128.png"
+      "16": "assets/images/favicon-16.png",
+      "32": "assets/images/favicon-32.png",
+      "48": "assets/images/favicon-48.png",
+      "128": "assets/images/favicon-128.png"
     },
     "default_title": "tiny title",
     "__chrome|opera__chrome_style": false,

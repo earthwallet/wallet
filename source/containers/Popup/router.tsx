@@ -2,14 +2,24 @@ import React from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
 import StarterPage from '~pages/popup/started/StarterPage';
-import HomePage from '~pages/popup/signed/HomePage';
+//import Page from '~pages/popup/signed/Page';
+import Accounts from '~pages/popup/signed/Accounts';
+import CreateAccount from '~pages/popup/signed/CreateAccount';
+import Details from '~pages/popup/signed/Details';
+import Export from '~pages/popup/signed/Export';
+import ImportSeed from '~pages/popup/signed/ImportSeed';
+import Transactions from '~pages/popup/signed/Transactions';
+import Wallet from '~pages/popup/signed/Wallet';
+import WalletSendTokens from '~pages/popup/signed/WalletSendTokens';
+import WalletReceiveTokens from '~pages/popup/signed/WalletReceiveTokens';
+import Portfolio from '~pages/popup/signed/Portfolio';
 
 //import { ErrorBoundary, Loading } from '../components';
 
 function wrapWithErrorBoundary(component: React.ReactElement, trigger?: string): React.ReactElement {
   // console.log('wrapWithErrorBoundary', trigger);
- // return <ErrorBoundary trigger={trigger}>{component}</ErrorBoundary>;
- console.log(trigger)
+  // return <ErrorBoundary trigger={trigger}>{component}</ErrorBoundary>;
+  console.log(trigger)
   return <div>{component}</div>;
 
 }
@@ -37,17 +47,19 @@ const PopupRouter = () => {
           key={key}
         >
           <Switch location={item}>
-            <Route path="/popup.html" component={StarterPage} exact />
-            <Route path="/auth-list" component={HomePage} exact />
-            <Route path='/accounts'>{wrapWithErrorBoundary(<StarterPage />, 'accounts')}</Route>
-            <Route path='/account/create'>{wrapWithErrorBoundary(<StarterPage />, 'account-creation')}</Route>
-            <Route path='/account/export/:address'>{wrapWithErrorBoundary(<StarterPage />, 'export-address')}</Route>
-            <Route path='/account/import-seed'>{wrapWithErrorBoundary(<StarterPage />, 'import-seed')}</Route>
-            <Route path='/wallet/details'>{wrapWithErrorBoundary(<StarterPage />, 'wallet')}</Route>
-            <Route path='/wallet/transactions/:address'>{wrapWithErrorBoundary(<StarterPage />, 'transactions')}</Route>
-            <Route path='/wallet/transaction/:txnId'>{wrapWithErrorBoundary(<StarterPage />, 'transactions')}</Route>
-            <Route path='/wallet/send'>{wrapWithErrorBoundary(<StarterPage />, 'wallet-send-token')}</Route>
-            <Route path='/wallet/receive'>{wrapWithErrorBoundary(<StarterPage />, 'wallet-receive-token')}</Route>
+             <Route path='/starter'>{wrapWithErrorBoundary(<StarterPage />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
+            <Route path='/popup.html'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
+            <Route path='/portfolio'>{wrapWithErrorBoundary(<Portfolio />, 'accounts')}</Route>
+            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
+            <Route path='/account/create'>{wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}</Route>
+            <Route path='/account/export/:address'>{wrapWithErrorBoundary(<Export />, 'export-address')}</Route>
+            <Route path='/account/import-seed'>{wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}</Route>
+            <Route path='/wallet/details'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
+            <Route path='/wallet/transactions/:address'>{wrapWithErrorBoundary(<Transactions />, 'transactions')}</Route>
+            <Route path='/wallet/transaction/:txnId'>{wrapWithErrorBoundary(<Details />, 'transactions')}</Route>
+            <Route path='/wallet/send'>{wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}</Route>
+            <Route path='/wallet/receive'>{wrapWithErrorBoundary(<WalletReceiveTokens />, 'wallet-receive-token')}</Route>
+
           </Switch>
         </animated.div>
       ))}
