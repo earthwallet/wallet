@@ -1,0 +1,8 @@
+.button {
+  text-transform: none;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}

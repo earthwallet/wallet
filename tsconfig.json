@@ -9,6 +9,7 @@
     /* Additional Checks */
     "useDefineForClassFields": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "baseUrl": "source",
     "paths": {
       "~assets/*": ["assets/*"],
