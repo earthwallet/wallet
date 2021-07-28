@@ -3,7 +3,7 @@ import styles from './index.scss';
 import { Link } from 'react-router-dom';
 //~pages import ICON_ADD from '../../../assets/images/icon_add_account.svg';
 import ICON_ADD from '~assets/images/icon_add_account.svg';
-import classNames from 'classnames';
+import clsx from 'clsx';
 const Page = () => {
   //const hierarchy = [{}];
 
@@ -42,7 +42,7 @@ const Page = () => {
                   })} */}
 
               <Link className={styles.link} to={'/account/create'}>
-                <div className={classNames(styles.createButton, styles.earthButton)}>
+                <div className={clsx(styles.createButton, styles.earthButton)}>
                   <div>Create an Account </div>
                   <img className='iconCopy'
                     src={ICON_ADD} />

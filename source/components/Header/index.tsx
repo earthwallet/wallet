@@ -12,7 +12,7 @@ import { useHistory } from 'react-router-dom';
 import ICON_BACK from '~assets/images/icon_back.svg';
 import { Link } from 'react-router-dom';
 import AccountSelector from '../AccountSelector';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import styles from './index.scss';
 
 interface Props {
@@ -35,10 +35,11 @@ function Header({ backOverride, centerText, children, className = '', showAccoun
   const history = useHistory();
 
   return (
-    <div 
-    className={classNames(className, smallMargin && styles.smallMargin, type === 'wallet' && styles.walletDiv)}>      {type !== 'wallet' && type !== 'details'
-        ? <div className={styles.container}>
-          <div className={styles.branding}>
+    <>
+      {type !== 'wallet' && type !== 'details'
+        ? <div 
+        className={clsx(className, styles.container, smallMargin && styles.smallMargin, type === 'wallet' && styles.walletDiv)}>
+        <div className={styles.branding}>
             {showBackArrow
               ? (
                 <Link
@@ -61,16 +62,16 @@ function Header({ backOverride, centerText, children, className = '', showAccoun
           {children}
         </div>
         : type === 'details'
-          ? <div 
-          className={classNames(styles.container, styles.containerDetails)}>
+          ? <div
+            className={clsx(styles.container, styles.containerDetails)}>
             <div
-              className={classNames(styles.backButtonCont, styles.backButtonContDetails)}
+              className={clsx(styles.backButtonCont, styles.backButtonContDetails)}
               onClick={() => history.goBack()}>
-              <div className={classNames(styles.backButtonIcon, styles.backButtonIconDetails)}>
+              <div className={clsx(styles.backButtonIcon, styles.backButtonIconDetails)}>
                 <img src={ICON_BACK} /> <div className={styles.backText}>Back</div>
               </div>
             </div>
-            {text && <div className={classNames(styles.headerText, centerText && styles.headerTextCenter)}>{text}</div>}
+            {text && <div className={clsx(styles.headerText, centerText && styles.headerTextCenter)}>{text}</div>}
             {children}
           </div>
           : <div className={styles.container}>
@@ -90,13 +91,13 @@ function Header({ backOverride, centerText, children, className = '', showAccoun
                 </div>
               </div>
             }
-            {text && <div className={classNames(styles.headerText, centerText && styles.headerTextCenter)}>{text}</div>}
+            {text && <div className={clsx(styles.headerText, centerText && styles.headerTextCenter)}>{text}</div>}
             {centerText && <div />}
             {children}
             {showAccountsDropdown && (<AccountSelector />)}
           </div>
       }
-    </div>
+    </>
   );
 }
 
