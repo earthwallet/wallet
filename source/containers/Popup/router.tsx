@@ -48,7 +48,7 @@ const PopupRouter = () => {
         >
           <Switch location={item}>
             <Route path='/starter'>{wrapWithErrorBoundary(<StarterPage />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
-            <Route path='/popup.html'>{wrapWithErrorBoundary(<Wallet />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
+            <Route path='/popup.html'>{wrapWithErrorBoundary(<WalletReceiveTokens />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
             <Route path='/portfolio'>{wrapWithErrorBoundary(<Portfolio />, 'accounts')}</Route>
             <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
             <Route path='/account/create'>{wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}</Route>
