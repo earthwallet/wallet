@@ -89,6 +89,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
+      },
+      {
         test: /\.(jpg|png|gif|woff|eot|ttf|svg)/,
         use: {
           loader: 'url-loader', // this need file-loader
@@ -96,10 +100,6 @@ module.exports = {
             limit: 50000
           }
         }
-      },
-      {
-        test: /\.svg$/,
-        use: ['@svgr/webpack'],
       },
       {
         type: 'javascript/auto', // prevent webpack handling json with its own loaders,

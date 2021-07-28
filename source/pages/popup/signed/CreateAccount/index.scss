@@ -1,5 +1,9 @@
 .page {
     display: block;
+    background: url('../../../../assets/images/bg_mnemonic.png'); 
+    height: 600px;
+    width: $appWidth;
+    display: flex;
   }
   
   .link{

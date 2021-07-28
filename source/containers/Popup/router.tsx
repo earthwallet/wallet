@@ -20,7 +20,7 @@ function wrapWithErrorBoundary(component: React.ReactElement, trigger?: string):
   // console.log('wrapWithErrorBoundary', trigger);
   // return <ErrorBoundary trigger={trigger}>{component}</ErrorBoundary>;
   console.log(trigger)
-  return <div>{component}</div>;
+  return <>{component}</>;
 
 }
 
@@ -47,8 +47,8 @@ const PopupRouter = () => {
           key={key}
         >
           <Switch location={item}>
-             <Route path='/starter'>{wrapWithErrorBoundary(<StarterPage />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
-            <Route path='/popup.html'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
+            <Route path='/starter'>{wrapWithErrorBoundary(<StarterPage />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
+            <Route path='/popup.html'>{wrapWithErrorBoundary(<CreateAccount />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
             <Route path='/portfolio'>{wrapWithErrorBoundary(<Portfolio />, 'accounts')}</Route>
             <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
             <Route path='/account/create'>{wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}</Route>

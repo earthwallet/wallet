@@ -8,3 +8,7 @@
   border: 0;
   outline: 0;
 }
+
+img:not([alt]), img:not([height]), img:not([width]) {
+  filter: unset;
+}
