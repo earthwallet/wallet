@@ -3,8 +3,8 @@
 
 import React, { useEffect, useState } from 'react';
 
-import useIsMounted from '../../hooks/useIsMounted';
-import { Result, Validator } from '../../util/validators';
+import useIsMounted from '~hooks/useIsMounted';
+import { Result, Validator } from '~utils/validators';
 import Warning from '../Warning';
 import {Props as InputProps} from '../InputWithLabel';
 

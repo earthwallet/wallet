@@ -1,10 +1,4 @@
-// Copyright 2021 @earthwallet/extension-ui authors & contributors
-// SPDX-License-Identifier: Apache-2.0
 
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-//import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import React from 'react';
 import { useHistory } from 'react-router-dom';

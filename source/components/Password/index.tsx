@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import InputWithLabel from '../InputWithLabel';
 import ValidatedInput from '../ValidatedInput';
-import { allOf, isNotShorterThan, isSameAs, Validator } from '../../util/validators';
+import { allOf, isNotShorterThan, isSameAs, Validator } from '~utils/validators';
 
 interface Props {
   className?: string;
