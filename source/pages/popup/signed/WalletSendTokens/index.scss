@@ -1,7 +1,298 @@
 .page {
-    display: block;
+  width: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(71, 134, 255, 0.4) 0%,
+    rgba(71, 134, 255, 0) 100%
+  );
+}
+.assetSelectionDivCont {
+  width: 100%;
+}
+
+.buttonCont {
+  display: flex;
+  flex-direction: row;
+  /* background: #212226; */
+  /* border-top: 1px solid #43444b; */
+  padding: 12px 24px;
+  margin-left: 50px;
+  margin-right: 50px;
+  position: fixed;
+  width: calc(100% - 50px);
+  bottom: 0;
+}
+
+.topBarDiv {
+  width: 100%;
+  display: flex;
+  flex-direction: rows;
+  align-items: center;
+  justify-content: center;
+}
+
+.earthInputLabel {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  color: #ffffff;
+  text-align: left;
+  width: calc(100% - 48px);
+  padding: 27px 24px 13px;
+}
+.paymentDone {
+  width: calc(100% - 58px);
+  text-align: center;
+  border: 1px solid #216321;
+  margin: 12px;
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.earthlink {
+  font-size: 14px;
+  background: rgb(8, 1, 128);
+  background: linear-gradient(
+    0deg,
+    rgba(126, 43, 217, 1) 0%,
+    rgba(23, 23, 224, 1) 35%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.earthinput {
+  background-image: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  background: rgba(8, 25, 39, 0.65);
+  border: 2px solid rgba(36, 150, 255, 0.5);
+  padding: 16px 12px;
+  border-radius: 8px;
+
+  &:focus-visible {
+    outline: none;
   }
-  
-  .link{
-    color: aquamarine;
+}
+
+.topBarDivCenterItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0.5;
+  color: $subTextColor;
+  font-family: $fontFamily;
+  font-size: 20px;
+}
+
+.topBarDivSideItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0.25;
+}
+
+.topBarDivCancelItem {
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: $buttonBackground;
+  font-family: $fontFamily;
+  font-size: 12px;
+  &:hover {
+    color: $buttonBackgroundHover;
   }
+}
+
+.recipientAddress {
+  color: $subTextColor;
+  font-family: $fontFamily;
+  font-size: $fontSize;
+  width: -webkit-fill-available;
+  margin: 0px 24px;
+}
+
+.transactionDetail {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 16px;
+}
+
+.assetSelectionDiv {
+  width: -webkit-fill-available;
+  display: flex;
+  flex-direction: row;
+  flex-flow: row;
+  margin: 0px 24px;
+  align-items: center;
+  justify-content: space-between;
+  height: fit-content;
+}
+
+.assetSelectionLabel {
+  color: $subTextColor;
+  font-family: $fontFamily;
+  font-size: 16px;
+  margin: 0px 34px;
+}
+
+.tokenSelectionDiv {
+  display: flex;
+  flex-direction: row;
+  margin-left: 24px;
+  align-items: center;
+}
+
+.selectedNetworkDiv {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 240px;
+  border-radius: 4px;
+  padding: 0 6px;
+  background: #5a597e63;
+  backdrop-filter: blur(7px);
+  border-radius: 14px;
+  height: 72px;
+  width: calc(100% - 40px);
+}
+
+.tokenLogo {
+  height: 50px;
+  width: 50px;
+  margin: 0px 12px;
+}
+.tokenLogoConfirm {
+  margin: 0px 12px 6px;
+}
+
+.tokenSelectionLabelDiv {
+  display: flex;
+  flex-direction: Column;
+  flex: 1;
+}
+
+.tokenLabel {
+  color: $subTextColor;
+  font-family: $fontFamily;
+  line-height: 1.2;
+  font-size: 20px;
+}
+
+.tokenBalance {
+  color: $subTextColor;
+  font-family: $fontFamily;
+  line-height: 1;
+  font-size: 14px;
+}
+.tokenBalanceText {
+  opacity: 0.54;
+}
+
+.cancelButton {
+  background: $backButtonBackground;
+  &:not(:disabled):hover {
+    background: $backButtonBackgroundHover;
+  }
+}
+
+.dropDownIcon {
+  margin: 6px;
+}
+
+.tokenSelectionDropDown {
+  background: $addAccountImageBackground;
+  border-radius: 4px;
+  border: 1px solid $boxBorderColor;
+  box-sizing: border-box;
+  box-shadow: 0 0 10px $boxShadow;
+  margin-top: 0px;
+  position: absolute;
+  max-height: 300px;
+  overflow: auto;
+  z-index: 2;
+  display: flex;
+  flex-direction: Column;
+}
+
+.tokenSelectionDropDownItem {
+  display: flex;
+  flex-direction: row;
+  padding: 4px;
+  width: 240px;
+  height: 52px;
+  align-items: center;
+  padding: 6px;
+  &:hover {
+    background-color: $buttonBackgroundHover;
+    cursor: pointer;
+  }
+}
+
+.tokenText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 150%;
+  text-align: center;
+  color: #fafbfb;
+  opacity: 0.7;
+  margin-bottom: 3px;
+}
+.tokenAmount {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 34px;
+  line-height: 44px;
+  text-align: center;
+  color: #fafbfb;
+  text-shadow: 0px 0px 11.4544px rgba(177, 204, 255, 0.89);
+  margin-bottom: 3px;
+}
+.confirmPage {
+  padding: 0 24px;
+  width: 100vw;
+  box-sizing: border-box;
+}
+.confirmAmountCont {
+  width: 327px;
+
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+
+  border-radius: 14px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 27px 0 24px 0;
+}
+.tokenValue {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 150%;
+  /* identical to box height, or 24px */
+
+  text-align: center;
+
+  /* Brand / Moonlight Grey / 20% */
+
+  color: #fafbfb;
+
+  opacity: 0.51;
+}
