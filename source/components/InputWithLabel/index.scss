@@ -13,9 +13,9 @@
   line-height: 150%;
   letter-spacing: 0.05em;
   color: #dbe4f2;
-  margin-bottom: 10px;
+  margin: 25px 24px 10px;
+  display: inline-block;
   text-transform: uppercase;
-  margin-left: 24px;
 }
 
 .withoutMargin {
@@ -25,7 +25,8 @@
   margin-top: 6px;
 }
 
-.input {
+.input,
+.textarea {
   background: #0c3254;
   border-radius: $borderRadius;
   border: 1px solid #0c3254;
@@ -36,13 +37,23 @@
   font-family: $fontFamily;
   font-size: $fontSize;
   height: 45px;
+  font-weight: normal;
   outline: none;
   padding: 0.5rem 0.75rem;
   resize: none;
   width: 100%;
 }
 
+.textarea {
+  height: 60px;
+}
+
 .input::placeholder {
+  color: #dbe4f2;
+  opacity: 0.25;
+}
+
+.textarea::placeholder {
   color: #dbe4f2;
   opacity: 0.25;
 }
