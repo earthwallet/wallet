@@ -204,3 +204,5 @@ dist/
 !.yarn/releases
 !.yarn/plugins
 .pnp.*
+
+.DS_Store

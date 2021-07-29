@@ -8,7 +8,7 @@ import ICON_SEND from '~assets/images/icon_send_status.svg';
 import { useHistory } from 'react-router-dom';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-//import { getBalance, getTransactions } from '@earthwallet/sdk';
+import { getBalance } from '@earthwallet/sdk';
 import moment from 'moment-mini';
 import { getShortAddress } from '~utils/common';
 
@@ -70,18 +70,9 @@ const Transactions = ({ match: { params: { address = 'd3e13d4777e22367532053190b
     const loadBalance = async (address: string) => {
       console.log(address)
       setLoading(true);
-      const balance: keyable = {
-        balances: [
-          {
-            value: '134891000',
-            currency: {
-              symbol: 'ICP',
-              decimals: 8,
-            },
-          },
-        ],
-      };
-
+      const balance: keyable = await getBalance(address, 'ICP');
+     // const balance: keyable = {};
+      console.log(balance, 'balance');
       setLoading(false);
 
       if (balance && balance?.balances != null) {

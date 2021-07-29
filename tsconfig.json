@@ -30,5 +30,5 @@
       "~global": ["global"]
     }
   },
-  "include": ["source", "webpack.config.js"]
+  "include": ["source", "webpack.config.cjs"]
 }
