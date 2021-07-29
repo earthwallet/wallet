@@ -1,7 +1,469 @@
 .page {
-    display: block;
-  }
-  
-  .link{
-    color: aquamarine;
-  }
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: -webkit-fill-available;
+  background: linear-gradient(
+    0deg,
+    rgba(71, 134, 255, 0.4) 0%,
+    rgba(71, 134, 255, 0) 100%
+  );
+}
+
+.headerIcon {
+  position: static;
+  width: 33px;
+  height: 33px;
+
+  background: rgba(255, 255, 255, 0.17);
+  border-radius: 21px;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #131a28;
+  cursor: pointer;
+  user-select: none;
+}
+
+.headerIconFirst {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.headerIcons {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: row;
+}
+.header {
+  width: 375px;
+  max-width: 375px;
+  padding: 24px 24px;
+}
+
+.backTransButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.backTransButton:active {
+  opacity: 0.7;
+}
+
+.transColIcon {
+  margin-right: 8px;
+  margin-top: 2px;
+}
+
+.transCont {
+  backdrop-filter: blur(7px);
+  height: 568px;
+  width: 343px;
+  margin: 16px;
+  border: 1px solid #2496ff;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.transTitle {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  /* identical to box height, or 24px */
+
+  text-align: center;
+
+  /* Brand / Moonlight Grey / 100% */
+  color: #e6e9ed;
+}
+
+.transItem {
+  border-bottom: 1px solid #ffffff1a;
+  padding: 23px 0;
+  display: flex;
+  width: calc(340px - 32px);
+  overflow: hidden;
+}
+
+.transColStatus {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  margin-right: 21px;
+}
+.transSubColTime {
+  display: flex;
+  flex-direction: row;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  color: #fafbfb;
+
+  opacity: 0.54;
+  display: flex;
+  align-items: center;
+}
+
+.transSubColPrice {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  color: #fafbfb;
+
+  opacity: 0.54;
+}
+
+.transColAction {
+  display: flex;
+  align-self: center;
+}
+
+.transColValue {
+  align-items: flex-end;
+  margin-right: 16px;
+  display: flex;
+  flex-direction: column;
+  text-align: end;
+  flex: 1;
+}
+.transSubColDot {
+  width: 2px;
+  height: 2px;
+  margin: 0 3px;
+  border-radius: 6px;
+  background: #989da9;
+}
+
+.transItems {
+  height: 502px;
+  overflow: hidden scroll;
+  width: 317px;
+}
+
+.transAccount {
+  margin-top: 24px;
+  margin-bottom: 8px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+}
+
+.transAddress {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  color: #fafbfb;
+
+  opacity: 0.54;
+}
+
+.transAddressCont {
+  display: flex;
+  align-items: center;
+}
+
+.transAddress {
+  margin-left: 10px;
+}
+
+.transCol1,
+.transCol2 {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 21px;
+  /* identical to box height */
+
+  color: #ffffff;
+
+  opacity: 0.54;
+}
+
+.transRow {
+  display: flex;
+  justify-content: space-between;
+  height: 40px;
+  border-bottom: 1px solid #ffffff1a;
+  align-items: center;
+}
+
+.transError {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 21px;
+  /* identical to box height */
+
+  color: #ffffff;
+
+  opacity: 0.54;
+  word-break: break-all;
+}
+
+.transErrorCont {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app {
+  text-align: center;
+  width: 375px;
+  height: 600px;
+  background-color: #282c34;
+}
+
+.pillet {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 144px;
+  height: 29px;
+  background: #55d171;
+  border-radius: 25px;
+  font-family: Poppins, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 15px;
+  text-align: center;
+  color: #fff;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.cardcont {
+  width: 327px;
+
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  flex-direction: column;
+  background: linear-gradient(0deg, #3c5367, #3c5367),
+    linear-gradient(
+      206.09deg,
+      rgba(255, 255, 255, 0.12) 6.74%,
+      rgba(255, 255, 255, 0.06) 39.61%
+    );
+  backdrop-filter: blur(10px);
+  /* Note: backdrop-filter has minimal browser support */
+  border-radius: 12px;
+
+  padding: 2px;
+  margin: 0 24px;
+}
+
+.cardcontinner {
+  background: linear-gradient(
+      344.1deg,
+      rgba(58, 96, 213, 0.1) 24.49%,
+      rgba(121, 207, 255, 0) 75.65%
+    ),
+    #282d3f;
+  opacity: 0.9;
+  border-radius: 12px 12px 0 0;
+
+  width: 100%;
+  padding: 30px 0 0 0;
+  backdrop-filter: blur(10px);
+}
+
+.stats {
+  font-family: DM Mono, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  /* identical to box height, or 123% */
+
+  display: flex;
+  align-items: flex-end;
+  text-align: right;
+
+  /* Brand / Forest Green / 100% */
+
+  color: #55d171;
+  margin-bottom: 20px;
+}
+
+.value {
+  font-family: DM Mono, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 42px;
+  /* identical to box height */
+
+  display: flex;
+  align-items: flex-end;
+  text-align: center;
+
+  /* Brand / Moonlight Grey / 20% */
+
+  color: #fafbfb;
+  margin-bottom: 7px;
+}
+.cardinfo {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.networktitle {
+  font-family: Poppins, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 120.2%;
+  /* or 19px */
+
+  display: flex;
+  align-items: flex-end;
+
+  color: #ffffff;
+  padding: 17px 10px 0 10px;
+}
+
+.cardnetworks {
+  background: linear-gradient(
+      344.1deg,
+      rgba(58, 96, 213, 0.1) 24.49%,
+      rgba(121, 207, 255, 0) 75.65%
+    ),
+    #282d3f;
+  opacity: 0.9;
+  border-radius: 12px;
+  border-radius: 0 0 12px 12px;
+  width: 100%;
+}
+
+.netname {
+  font-family: Poppins, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 15px;
+  /* identical to box height, or 107% */
+
+  color: #fafbfb;
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  text-align: left;
+  margin: 4px 0px;
+}
+
+.netassets {
+  font-family: Poppins, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  color: #fafbfb;
+  opacity: 0.54;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  text-align: left;
+}
+
+.netvalue {
+  font-family: DM Mono, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  text-align: right;
+
+  color: #fafbfb;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 4px 0px;
+}
+
+.netstats {
+  font-family: DM Mono, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 12px;
+
+  text-align: right;
+  letter-spacing: -0.01em;
+
+  color: #55d171;
+}
+
+.netcard {
+  display: grid;
+  grid-template-columns: 32px 130px auto;
+  padding: 0 10px;
+  height: 60px;
+  border-bottom: 1px solid #ffffff17;
+  grid-gap: 10px 10px;
+  align-items: center;
+}
+
+.netmid,
+.netlast {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.networklogo {
+  background-color: aliceblue;
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+}
+
+.cards {
+  height: 510px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  min-height: 510px;
+}

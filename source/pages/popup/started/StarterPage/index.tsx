@@ -7,7 +7,7 @@ const StarterPage = () => {
   const history = useHistory();
 
   return <div className={styles.page}>
-    <h1> Welcome to Starter Page </h1>
+    <h1> Welcome to Earth Wallet Page </h1>
     <div
       className={styles.link}
       onClick={() => history.push(`/accounts`)}
@@ -42,7 +42,7 @@ const StarterPage = () => {
       className={styles.link}
       onClick={() => history.push(`/wallet/transactions/d3e13d4777e22367532053190b6c6ccf57444a61337e996242b1abfb52cf92c8`)}
     >
-            Transactions
+      Transactions
     </div>
     <div
       className={styles.link}
@@ -50,7 +50,7 @@ const StarterPage = () => {
     >
       Transactions Details
     </div>
- 
+
     <div
       className={styles.link}
       onClick={() => history.push(`/wallet/send`)}

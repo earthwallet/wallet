@@ -57,7 +57,7 @@ function Header({ backOverride, centerText, children, className = '', showAccoun
         </div>
         : type === 'details'
           ? <div
-            className={clsx(styles.container, styles.containerDetails)}>
+            className={clsx(styles.container, styles.containerDetails, className)}>
             <div
               className={clsx(styles.backButtonCont, styles.backButtonContDetails)}
               onClick={() => history.goBack()}>
