@@ -33,4 +33,9 @@ export default class AssetsController implements IAssetsController {
       return false;
     }
   }
+
+  usedAssetSymbols() {
+    // TODO: These asset info should be added first to the Redux State and currently mockup info is used
+    return ['ICP', 'KSM', 'DOT', 'ETH', 'BNB', 'BTC', 'LTC', 'BCH'];
+  }
 }

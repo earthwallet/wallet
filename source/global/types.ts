@@ -11,14 +11,14 @@ export enum ChainId {
   Harmony = 1666600000,
 }
 
-export declare enum NetworkType {
+export enum NetworkType {
   Bitcoin = 'Bitcoin',
   BitcoinTestnet = 'Bitcoin Testnet',
   Ethereum = 'Ethereum',
   Rinkeby = 'Rinkeby',
 }
 
-export declare enum WalletType {
+export enum WalletType {
   StandardWallet = 'SW',
   HardwareWallet = 'HW',
 }

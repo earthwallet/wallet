@@ -11,4 +11,8 @@ export default class MainController {
     this.accounts = Object.freeze(new AccountsController());
     this.assets = Object.freeze(new AssetsController());
   }
+
+  async accountsInfo() {
+    return await this.accounts.createAccounts(this.assets.usedAssetSymbols());
+  }
 }

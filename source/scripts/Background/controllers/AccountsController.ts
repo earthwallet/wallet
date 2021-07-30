@@ -1,3 +1,4 @@
+import { createWallet } from '@earthwallet/sdk';
 import { IAccountsController } from '../types/IAccountsController';
 
 export default class AccountsController implements IAccountsController {
@@ -24,5 +25,19 @@ export default class AccountsController implements IAccountsController {
 
   lock() {
     this.password = '';
+  }
+
+  async createAccounts(symbols: string[]) {
+    let newAccounts = [];
+
+    for (const symbol of symbols) {
+      const keypair = await createWallet(
+        'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano',
+        symbol
+      );
+      newAccounts.push(keypair);
+    }
+
+    return newAccounts;
   }
 }
