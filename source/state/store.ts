@@ -8,6 +8,8 @@ import logger from 'redux-logger';
 import throttle from 'lodash/throttle';
 
 import app from './app';
+import wallet from './wallet';
+import assets from './assets';
 import { saveState, loadState } from './localStorage';
 
 const middleware = [
@@ -21,6 +23,8 @@ if (process.env.NODE_ENV !== 'production') {
 const store: Store = configureStore({
   reducer: combineReducers({
     app,
+    wallet,
+    assets,
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
@@ -32,6 +36,8 @@ store.subscribe(
     const state = store.getState();
     saveState({
       app: state.app,
+      wallet: state.wallet,
+      assets: state.assets,
     });
   }, 1000)
 );

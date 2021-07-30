@@ -1,6 +1,9 @@
 export type AppStatusType = 'none' | 'loading' | 'error';
 
-export interface AppStateProps {
+export type AppThemeType = 'light' | 'dark';
+
+export interface IAppState {
   version: string;
   status: AppStatusType;
+  theme: AppThemeType;
 }

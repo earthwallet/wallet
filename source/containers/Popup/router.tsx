@@ -16,12 +16,14 @@ import Portfolio from '~pages/popup/signed/Portfolio';
 
 //import { ErrorBoundary, Loading } from '../components';
 
-function wrapWithErrorBoundary(component: React.ReactElement, trigger?: string): React.ReactElement {
+function wrapWithErrorBoundary(
+  component: React.ReactElement,
+  trigger?: string
+): React.ReactElement {
   // console.log('wrapWithErrorBoundary', trigger);
   // return <ErrorBoundary trigger={trigger}>{component}</ErrorBoundary>;
-  console.log(trigger)
+  console.log(trigger);
   return <>{component}</>;
-
 }
 
 const PopupRouter = () => {
@@ -47,19 +49,51 @@ const PopupRouter = () => {
           key={key}
         >
           <Switch location={item}>
-            <Route path='/starter'>{wrapWithErrorBoundary(<StarterPage />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
-            <Route path='/popup.html'>{wrapWithErrorBoundary(<StarterPage />, 'accounts')}</Route>            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
-            <Route path='/portfolio'>{wrapWithErrorBoundary(<Portfolio />, 'accounts')}</Route>
-            <Route path='/accounts'>{wrapWithErrorBoundary(<Accounts />, 'accounts')}</Route>
-            <Route path='/account/create'>{wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}</Route>
-            <Route path='/account/export/:address'>{wrapWithErrorBoundary(<Export />, 'export-address')}</Route>
-            <Route path='/account/import-seed'>{wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}</Route>
-            <Route path='/wallet/details'>{wrapWithErrorBoundary(<Wallet />, 'wallet')}</Route>
-            <Route path='/wallet/transactions/:address'>{wrapWithErrorBoundary(<Transactions />, 'transactions')}</Route>
-            <Route path='/wallet/transaction/:txnId'>{wrapWithErrorBoundary(<Details />, 'transactions')}</Route>
-            <Route path='/wallet/send'>{wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}</Route>
-            <Route path='/wallet/receive'>{wrapWithErrorBoundary(<WalletReceiveTokens />, 'wallet-receive-token')}</Route>
-
+            <Route path="/starter">
+              {wrapWithErrorBoundary(<StarterPage />, 'accounts')}
+            </Route>{' '}
+            <Route path="/accounts">
+              {wrapWithErrorBoundary(<Accounts />, 'accounts')}
+            </Route>
+            <Route path="/popup.html">
+              {wrapWithErrorBoundary(<StarterPage />, 'accounts')}
+            </Route>{' '}
+            <Route path="/accounts">
+              {wrapWithErrorBoundary(<Accounts />, 'accounts')}
+            </Route>
+            <Route path="/portfolio">
+              {wrapWithErrorBoundary(<Portfolio />, 'accounts')}
+            </Route>
+            <Route path="/accounts">
+              {wrapWithErrorBoundary(<Accounts />, 'accounts')}
+            </Route>
+            <Route path="/account/create">
+              {wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}
+            </Route>
+            <Route path="/account/export/:address">
+              {wrapWithErrorBoundary(<Export />, 'export-address')}
+            </Route>
+            <Route path="/account/import-seed">
+              {wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}
+            </Route>
+            <Route path="/wallet/details">
+              {wrapWithErrorBoundary(<Wallet />, 'wallet')}
+            </Route>
+            <Route path="/wallet/transactions/:address">
+              {wrapWithErrorBoundary(<Transactions />, 'transactions')}
+            </Route>
+            <Route path="/wallet/transaction/:txnId">
+              {wrapWithErrorBoundary(<Details />, 'transactions')}
+            </Route>
+            <Route path="/wallet/send">
+              {wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}
+            </Route>
+            <Route path="/wallet/receive">
+              {wrapWithErrorBoundary(
+                <WalletReceiveTokens />,
+                'wallet-receive-token'
+              )}
+            </Route>
           </Switch>
         </animated.div>
       ))}
