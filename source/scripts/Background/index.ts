@@ -4,8 +4,8 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { STATE_PORT } from '~global/constant';
 import store from '~state/store';
-import MasterController from './controllers/MasterController';
-import { IMasterController } from './types/IMasterController';
+import MainController from './controllers/MainController';
+import { IMainController } from './types/IMainController';
 
 browser.runtime.onInstalled.addListener((): void => {
   console.emoji('🦄', 'extension installed');
@@ -13,12 +13,12 @@ browser.runtime.onInstalled.addListener((): void => {
 
 declare global {
   interface Window {
-    controller: Readonly<IMasterController>;
+    controller: Readonly<IMainController>;
   }
 }
 
 if (!window.controller) {
-  window.controller = Object.freeze(new MasterController());
+  window.controller = Object.freeze(new MainController());
 }
 
 wrapStore(store, { portName: STATE_PORT });

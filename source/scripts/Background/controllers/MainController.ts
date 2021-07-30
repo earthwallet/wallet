@@ -3,7 +3,7 @@ import { IAssetsController } from '../types/IAssetsController';
 import AccountsController from './AccountsController';
 import AssetsController from './AssetsController';
 
-export default class MasterController {
+export default class MainController {
   accounts: Readonly<IAccountsController>;
   assets: Readonly<IAssetsController>;
 
