@@ -1,5 +1,5 @@
-import { EarthKeyringPair } from '@earthwallet/sdk';
-import {
+import type { EarthKeyringPair } from '@earthwallet/sdk';
+import type {
   ActiveAcccountState,
   NetworkType,
   // WalletAccounts,

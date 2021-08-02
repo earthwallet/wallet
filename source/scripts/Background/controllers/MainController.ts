@@ -1,5 +1,5 @@
-import { IAccountsController } from '../types/IAccountsController';
-import { IAssetsController } from '../types/IAssetsController';
+import type { IAccountsController } from '../types/IAccountsController';
+import type { IAssetsController } from '../types/IAssetsController';
 import AccountsController from './AccountsController';
 import AssetsController from './AssetsController';
 

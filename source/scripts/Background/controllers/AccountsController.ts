@@ -1,7 +1,7 @@
 import { createWallet } from '@earthwallet/sdk';
 import store from '~state/store';
 import { updateAccounts } from '~state/wallet';
-import { IAccountsController } from '../types/IAccountsController';
+import type { IAccountsController } from '../types/IAccountsController';
 
 export default class AccountsController implements IAccountsController {
   private password: string;
@@ -10,7 +10,7 @@ export default class AccountsController implements IAccountsController {
     this.password = '';
   }
 
-  checkPassowrd(pwd: string) {
+  checkPassword(pwd: string) {
     return this.password === pwd;
   }
 

@@ -2,7 +2,7 @@ import { CGECKO_PRICE_API } from '~global/constant';
 import { updateFiatPrice } from '~state/assets';
 import { IAssetState } from '~state/assets/types';
 import store from '~state/store';
-import { IAssetsController } from '../types/IAssetsController';
+import type { IAssetsController } from '../types/IAssetsController';
 
 export default class AssetsController implements IAssetsController {
   async fetchFiatPrice(currency = 'USD') {
