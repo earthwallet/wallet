@@ -1,4 +1,6 @@
 import { createWallet } from '@earthwallet/sdk';
+import store from '~state/store';
+import { updateAccounts } from '~state/wallet';
 import { IAccountsController } from '../types/IAccountsController';
 
 export default class AccountsController implements IAccountsController {
@@ -38,6 +40,6 @@ export default class AccountsController implements IAccountsController {
       newAccounts.push(keypair);
     }
 
-    return newAccounts;
+    store.dispatch(updateAccounts(newAccounts));
   }
 }

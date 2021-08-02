@@ -1,10 +1,11 @@
+import { EarthKeyringPair } from '@earthwallet/sdk';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NetworkType, WalletAccounts } from '~global/types';
+import { NetworkType } from '~global/types';
 
 import { IWalletState } from './types';
 
 const initialState: IWalletState = {
-  accounts: {},
+  accounts: [],
   activeAccount: null,
   activeNetwork: NetworkType.Ethereum,
 };
@@ -13,7 +14,10 @@ const WalletState = createSlice({
   name: 'wallet',
   initialState,
   reducers: {
-    updateAccounts(state: IWalletState, action: PayloadAction<WalletAccounts>) {
+    updateAccounts(
+      state: IWalletState,
+      action: PayloadAction<EarthKeyringPair[]>
+    ) {
       state.accounts = action.payload;
     },
   },

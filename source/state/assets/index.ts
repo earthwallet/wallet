@@ -12,7 +12,7 @@ const AssetState = createSlice({
   name: 'assets',
   initialState,
   reducers: {
-    updateAccounts(state: IAssetState, action: PayloadAction<WalletAssets>) {
+    updateAssets(state: IAssetState, action: PayloadAction<WalletAssets>) {
       state.assetList = action.payload;
     },
     updateFiatPrice(state: IAssetState, action: PayloadAction<AssetPriceInfo>) {
@@ -25,6 +25,6 @@ const AssetState = createSlice({
   },
 });
 
-export const { updateAccounts, updateFiatPrice } = AssetState.actions;
+export const { updateAssets, updateFiatPrice } = AssetState.actions;
 
 export default AssetState.reducer;

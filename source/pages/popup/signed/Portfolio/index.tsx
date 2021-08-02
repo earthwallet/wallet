@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import styles from './index.scss';
 //import { useHistory } from 'react-router-dom';
-import { EarthKeyringPair } from '@earthwallet/sdk';
 const symbols = ['ICP', 'KSM', 'DOT', 'ETH', 'BNB', 'BTC', 'LTC', 'BCH'];
 import Header from '~components/Header';
 //import ICON_CHECKED from '~assets/images/icon_checkbox_checked.svg';
@@ -12,26 +11,19 @@ import ICON_SCROLL from '~assets/images/icon_scrollable.svg';
 import clsx from 'clsx';
 import { getShortAddress } from '~utils/common';
 import { useController } from '~hooks/useController';
+import { useSelector } from 'react-redux';
+import { AppState } from '~state/store';
+import { IWalletState } from '~state/wallet/types';
 
 const Page = () => {
   //const history = useHistory();
-  const [accounts, setAccounts] = useState<EarthKeyringPair[] | null>();
   const controller = useController();
+  const { accounts }: IWalletState = useSelector(
+    (state: AppState) => state.wallet
+  );
 
   useEffect(() => {
-    const loadTransactionDetails = async () => {
-      /*    const walletObj = await createWallet(
-           'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano',
-           'ICP'
-         ); */
-
-      let newAccounts = await controller.accountsInfo();
-
-      console.log(newAccounts);
-      setAccounts(newAccounts);
-    };
-
-    loadTransactionDetails();
+    controller.accountsInfo();
   }, []);
   return (
     <div className={styles.page}>

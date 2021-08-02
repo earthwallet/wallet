@@ -1,11 +1,13 @@
+import { EarthKeyringPair } from '@earthwallet/sdk';
 import {
   ActiveAcccountState,
   NetworkType,
-  WalletAccounts,
+  // WalletAccounts,
 } from '~global/types';
 
 export interface IWalletState {
-  accounts: WalletAccounts;
+  // accounts: WalletAccounts;
+  accounts: EarthKeyringPair[];
   activeAccount: ActiveAcccountState | null;
   activeNetwork: NetworkType;
 }

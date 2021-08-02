@@ -13,6 +13,6 @@ export default class MainController {
   }
 
   async accountsInfo() {
-    return await this.accounts.createAccounts(this.assets.usedAssetSymbols());
+    this.accounts.createAccounts(this.assets.usedAssetSymbols());
   }
 }
