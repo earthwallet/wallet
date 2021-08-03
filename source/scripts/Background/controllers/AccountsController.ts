@@ -1,7 +1,14 @@
-import { createWallet } from '@earthwallet/sdk';
+import { createWallet, newMnemonic } from '@earthwallet/sdk';
 import store from '~state/store';
-import { updateAccounts } from '~state/wallet';
+import {
+  updateAccounts,
+  updateActiveAccount,
+  updateNewMnemonic,
+  updateError,
+  updateLoading,
+} from '~state/wallet';
 import type { IAccountsController } from '../types/IAccountsController';
+import { EarthKeyringPair } from '@earthwallet/sdk';
 
 export default class AccountsController implements IAccountsController {
   private password: string;
@@ -29,6 +36,42 @@ export default class AccountsController implements IAccountsController {
     this.password = '';
   }
 
+  async createNewMnemonic() {
+    store.dispatch(updateLoading(true));
+
+    try {
+      const _newMnemonic = await newMnemonic();
+      if (_newMnemonic !== false) {
+        store.dispatch(updateNewMnemonic(_newMnemonic));
+        store.dispatch(updateLoading(false));
+      } else {
+        store.dispatch(updateLoading(false));
+        store.dispatch(updateError('Unable to generate mnemonic'));
+      }
+    } catch (error) {
+      store.dispatch(updateLoading(false));
+      store.dispatch(updateError('Unable to generate mnemonic'));
+      console.log(error);
+    }
+  }
+
+  async createAccount(mnemonic: string, symbol: string) {
+    const available: EarthKeyringPair[] = store.getState().accounts;
+    const existingActiveAccount = store.getState().activeAccount;
+
+    const keypair = await createWallet(mnemonic, symbol);
+    console.log('symbol', symbol, available);
+
+    if (existingActiveAccount.address !== keypair.address) {
+      store.dispatch(updateActiveAccount(keypair));
+    }
+
+    if (!available.some((_account) => _account.address === keypair.address)) {
+      available.push(keypair);
+      store.dispatch(updateAccounts(available));
+    }
+  }
+
   async createAccounts(symbols: string[]) {
     let newAccounts = [];
 
@@ -39,7 +82,7 @@ export default class AccountsController implements IAccountsController {
       );
       newAccounts.push(keypair);
     }
-
+    store.dispatch(updateActiveAccount(newAccounts[0]));
     store.dispatch(updateAccounts(newAccounts));
   }
 }

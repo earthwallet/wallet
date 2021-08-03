@@ -1,6 +1,5 @@
 import type { EarthKeyringPair } from '@earthwallet/sdk';
 import type {
-  ActiveAcccountState,
   NetworkType,
   // WalletAccounts,
 } from '~global/types';
@@ -8,6 +7,9 @@ import type {
 export interface IWalletState {
   // accounts: WalletAccounts;
   accounts: EarthKeyringPair[];
-  activeAccount: ActiveAcccountState | null;
+  activeAccount: EarthKeyringPair | null;
   activeNetwork: NetworkType;
+  newMnemonic: string;
+  error: string;
+  loading: boolean;
 }

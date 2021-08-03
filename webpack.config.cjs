@@ -57,6 +57,10 @@ module.exports = {
 
   mode: nodeEnv,
 
+  watchOptions: {
+    ignored: '**/node_modules',
+  },
+
   entry: {
     manifest: path.join(__dirname, 'manifest.json'),
     background: path.join(sourcePath, 'scripts/Background', 'index.ts'),
@@ -217,6 +221,7 @@ module.exports = {
     minimize: true,
     minimizer: [
       new TerserPlugin({
+        cache: true,
         parallel: true,
         terserOptions: {
           format: {

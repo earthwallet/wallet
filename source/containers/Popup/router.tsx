@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, useLocation } from 'react-router-dom';
+import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
 import StarterPage from '~pages/popup/started/StarterPage';
 //import Page from '~pages/popup/signed/Page';
@@ -56,7 +56,7 @@ const PopupRouter = () => {
               {wrapWithErrorBoundary(<Accounts />, 'accounts')}
             </Route>
             <Route path="/popup.html">
-              {wrapWithErrorBoundary(<StarterPage />, 'accounts')}
+              <Redirect to="/accounts" />
             </Route>{' '}
             <Route path="/accounts">
               {wrapWithErrorBoundary(<Accounts />, 'accounts')}
