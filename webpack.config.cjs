@@ -218,7 +218,7 @@ module.exports = {
   ],
 
   optimization: {
-    minimize: true,
+    minimize: nodeEnv === 'development' ? false : true,
     minimizer: [
       new TerserPlugin({
         cache: true,
