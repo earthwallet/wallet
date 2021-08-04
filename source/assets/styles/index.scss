@@ -9,3 +9,27 @@
 
 // variable styles
 @import 'variable';
+
+* {
+  scrollbar-color: rgba(#fff, 0.25) transparent;
+  scrollbar-width: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 2px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(#fff, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(#fff, 0.2);
+}

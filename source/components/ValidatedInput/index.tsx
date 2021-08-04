@@ -6,8 +6,7 @@ import React, { useEffect, useState } from 'react';
 import useIsMounted from '~hooks/useIsMounted';
 import { Result, Validator } from '~utils/validators';
 import Warning from '../Warning';
-import {Props as InputProps} from '../InputWithLabel';
-
+import { Props as InputProps } from '../InputWithLabel';
 
 type Props = {
   className?: string;
@@ -23,9 +22,19 @@ type Props = {
   placeholder?: string;
 } & InputProps;
 
-const ValidatedInput = ({ className, component: Input, defaultValue, onValidatedChange, validator, label, ...props }: Props) => {
+const ValidatedInput = ({
+  className,
+  component: Input,
+  defaultValue,
+  onValidatedChange,
+  validator,
+  label,
+  ...props
+}: Props) => {
   const [value, setValue] = useState(defaultValue || '');
-  const [validationResult, setValidationResult] = useState<Result<string>>(Result.ok(''));
+  const [validationResult, setValidationResult] = useState<Result<string>>(
+    Result.ok('')
+  );
   const isMounted = useIsMounted();
 
   useEffect(() => {
@@ -53,22 +62,19 @@ const ValidatedInput = ({ className, component: Input, defaultValue, onValidated
   return (
     <div className={className}>
       <Input
-        {...props as InputProps}
+        {...(props as InputProps)}
         isError={Result.isError(validationResult)}
         onChange={setValue}
         value={value}
         label={label}
       />
       {Result.isError(validationResult) && (
-        <Warning
-          isBelowInput
-          isDanger
-        >
+        <Warning isBelowInput isDanger>
           {validationResult.error.errorDescription}
         </Warning>
       )}
     </div>
   );
-}
+};
 
 export default ValidatedInput;

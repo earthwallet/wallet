@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState } from 'react';
 
 import Label from './Label';
@@ -24,7 +23,22 @@ export interface Props {
   withoutMargin?: boolean;
 }
 
-function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused, isReadOnly, label = '', onBlur, onChange, onEnter, placeholder, type = 'text', value, withoutMargin }: Props): React.ReactElement<Props> {
+function InputWithLabel({
+  className,
+  defaultValue,
+  disabled,
+  isError,
+  isFocused,
+  isReadOnly,
+  label = '',
+  onBlur,
+  onChange,
+  onEnter,
+  placeholder,
+  type = 'text',
+  value,
+  withoutMargin,
+}: Props): React.ReactElement<Props> {
   const [isCapsLock, setIsCapsLock] = useState(false);
 
   const _checkKey = useCallback(
@@ -51,13 +65,17 @@ function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused
 
   return (
     <Label
-      className={clsx(className, withoutMargin ? styles.withoutMargin : styles.noop, styles.labelStyle)}
+      className={clsx(
+        className,
+        withoutMargin ? styles.withoutMargin : styles.noop,
+        styles.labelStyle
+      )}
       label={label}
     >
       <div className={styles.inputCont}>
         <Input
-          autoCapitalize='off'
-          autoCorrect='off'
+          autoCapitalize="off"
+          autoCorrect="off"
           autoFocus={isFocused}
           defaultValue={defaultValue || undefined}
           disabled={disabled}
@@ -72,8 +90,8 @@ function InputWithLabel ({ className, defaultValue, disabled, isError, isFocused
           withError={isError}
         />
       </div>
-      { isCapsLock && (
-        <Warning isBelowInput>{('Warning: Caps lock is on')}</Warning>
+      {isCapsLock && (
+        <Warning isBelowInput>{'Warning: Caps lock is on'}</Warning>
       )}
     </Label>
   );
