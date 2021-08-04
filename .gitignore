@@ -205,4 +205,4 @@ dist/
 !.yarn/plugins
 .pnp.*
 
-.DS_Store
+.DS_Store.DS_Store

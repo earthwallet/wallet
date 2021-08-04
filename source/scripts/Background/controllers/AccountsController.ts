@@ -60,7 +60,6 @@ export default class AccountsController implements IAccountsController {
     const existingActiveAccount = store.getState().activeAccount;
 
     const keypair = await createWallet(mnemonic, symbol);
-    console.log('symbol', symbol, available);
 
     if (existingActiveAccount.address !== keypair.address) {
       store.dispatch(updateActiveAccount(keypair));

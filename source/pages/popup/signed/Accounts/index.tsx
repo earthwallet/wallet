@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './index.scss';
 import { Link } from 'react-router-dom';
 //~pages import ICON_ADD from '../../../assets/images/icon_add_account.svg';
@@ -6,6 +6,8 @@ import ICON_ADD from '~assets/images/icon_add_account.svg';
 import clsx from 'clsx';
 const Page = () => {
   //const hierarchy = [{}];
+  useEffect(() => {
+  }, []);
 
   return <div className={styles.page}>
     {true

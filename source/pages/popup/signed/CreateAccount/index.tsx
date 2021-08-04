@@ -8,7 +8,7 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable camelcase */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './index.scss';
 //import { saveAs } from 'file-saver';
 //import { useHistory } from 'react-router-dom';
@@ -51,6 +51,10 @@ const Page = () => {
 
   //const _onNextStep= () => console.log();
   const _onPreviousStep = () => console.log();
+
+  useEffect(() => {
+    // throw new Error("something goes wrong?");
+  }, []);
 
   return <div
     className={styles.page}
@@ -139,8 +143,8 @@ const Page = () => {
             <div
               className={clsx(styles.earthInputCont, styles.earthInputContPassword)}
             >
-              <Password 
-              onChange={console.log}
+              <Password
+                onChange={console.log}
               />
               <div className={styles.nextCont}>
                 <div className={styles.checkboxCont}>

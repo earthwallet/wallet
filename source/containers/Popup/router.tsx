@@ -13,17 +13,13 @@ import Wallet from '~pages/popup/signed/Wallet';
 import WalletSendTokens from '~pages/popup/signed/WalletSendTokens';
 import WalletReceiveTokens from '~pages/popup/signed/WalletReceiveTokens';
 import Portfolio from '~pages/popup/signed/Portfolio';
-
-//import { ErrorBoundary, Loading } from '../components';
+import ErrorBoundary from '~components/ErrorBoundary';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
   trigger?: string
 ): React.ReactElement {
-  // console.log('wrapWithErrorBoundary', trigger);
-  // return <ErrorBoundary trigger={trigger}>{component}</ErrorBoundary>;
-  console.log(trigger);
-  return <>{component}</>;
+  return <ErrorBoundary trigger={trigger}>{component}</ErrorBoundary>;
 }
 
 const PopupRouter = () => {
@@ -49,23 +45,20 @@ const PopupRouter = () => {
           key={key}
         >
           <Switch location={item}>
-            <Route path="/starter">
-              {wrapWithErrorBoundary(<StarterPage />, 'accounts')}
-            </Route>{' '}
-            <Route path="/accounts">
-              {wrapWithErrorBoundary(<Accounts />, 'accounts')}
-            </Route>
             <Route path="/popup.html">
               <Redirect to="/accounts" />
-            </Route>{' '}
+            </Route>
+            <Route path="/home">
+              <Redirect to="/accounts" />
+            </Route>
+            <Route path="/starter">
+              {wrapWithErrorBoundary(<StarterPage />, 'starterPage')}
+            </Route>
             <Route path="/accounts">
               {wrapWithErrorBoundary(<Accounts />, 'accounts')}
             </Route>
             <Route path="/portfolio">
-              {wrapWithErrorBoundary(<Portfolio />, 'accounts')}
-            </Route>
-            <Route path="/accounts">
-              {wrapWithErrorBoundary(<Accounts />, 'accounts')}
+              {wrapWithErrorBoundary(<Portfolio />, 'portfolio')}
             </Route>
             <Route path="/account/create">
               {wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}
