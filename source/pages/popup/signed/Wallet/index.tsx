@@ -15,6 +15,7 @@ import clsx from 'clsx';
 const Page = () => {
   const loading = false;
   const [selectedTab, setSelectedTab] = useState('Transactions');
+  console.log(setSelectedTab)
   //const _onCopy = useCallback((): void => show('Copied'), [show]);
   const _onCopy = console.log;
 

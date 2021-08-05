@@ -16,7 +16,7 @@ const Page = () => {
   console.log(accounts);
   //  const accounts = [];
   //const hierarchy = [{}];
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
     <div className={styles.page}>
