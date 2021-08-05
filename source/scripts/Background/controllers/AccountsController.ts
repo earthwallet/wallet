@@ -10,6 +10,11 @@ import {
 import type { IAccountsController } from '../types/IAccountsController';
 import StringCrypto from 'string-crypto';
 import { storeEntities } from '~state/entities';
+import {
+  getBalance as _getBalance,
+  getTransactions as _getTransactions,
+  send as _send,
+} from '@earthwallet/sdk';
 
 const { encryptString } = new StringCrypto();
 
@@ -104,7 +109,27 @@ export default class AccountsController implements IAccountsController {
     );
   }
 
-  async createAccounts(symbols: string[]) {
+  getBalance = async (address: string, symbol = 'ICP') => {
+    console.log(address, symbol);
+    await _getBalance(address, symbol);
+  };
+
+  getTransactions = async (address: string, symbol = 'ICP') => {
+    console.log(address, symbol);
+    await _getTransactions(address, symbol);
+  };
+
+  send = async (address: string, symbol = 'ICP') => {
+    console.log(address);
+    const id = '';
+    const to_addres = '';
+    const from_address = '';
+    const amount = 0;
+
+    await _send(id, to_addres, from_address, amount, symbol);
+  };
+
+  createAccounts = async (symbols: string[]) => {
     let newAccounts = [];
 
     for (const symbol of symbols) {
@@ -116,5 +141,5 @@ export default class AccountsController implements IAccountsController {
     }
     store.dispatch(updateActiveAccount(newAccounts[0]));
     store.dispatch(updateAccounts(newAccounts));
-  }
+  };
 }
