@@ -27,6 +27,7 @@ import { useController } from '~hooks/useController';
 import { IWalletState } from '~state/wallet/types';
 import { AppState } from '~state/store';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 const Page = () => {
   const controller = useController();
@@ -34,6 +35,7 @@ const Page = () => {
   const { newMnemonic }: IWalletState = useSelector(
     (state: AppState) => state.wallet
   );
+  const history = useHistory();
 
   const [isBusy, setIsBusy] = useState(false);
   const [checked, setChecked] = useState(false);
@@ -43,7 +45,7 @@ const Page = () => {
   const [step, setStep] = useState(1);
   //const type = 'DEFAULT_TYPE';
   const [name, setName] = useState('');
-  //const [password, setPassword] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
   console.log(setStep, setIsBusy);
   //const history = useHistory();
 
@@ -54,7 +56,21 @@ const Page = () => {
 
 
 
-  //const _onCreate = () => console.log();;
+  const _onCreate = useCallback(
+    (): void => {
+      console.log('createAccount');
+
+      // this should always be the case
+      if (name && password && newMnemonic) {
+        console.log('createAccount');
+        setIsBusy(true);
+        controller.accounts.createAccount(newMnemonic, 'ICP').then(() => {
+          history.replace('/wallet/details');
+        });
+      }
+    },
+    [name, password, newMnemonic]
+  );
 
   const backupKeystore = () => console.log();
 
@@ -71,7 +87,7 @@ const Page = () => {
   >
     <HeaderWithSteps backOverride={step === 1 ? undefined : _onPreviousStep}
       step={step}
-      text={('Create an account')}
+      text={'Create an account ' + password}
     />{newMnemonic !== '' &&
       (step === 1
         ? (
@@ -155,9 +171,7 @@ const Page = () => {
             <div
               className={clsx(styles.earthInputCont, styles.earthInputContPassword)}
             >
-              <Password
-                onChange={console.log}
-              />
+              <Password onChange={setPassword} />
               <div className={styles.nextCont}>
                 <div className={styles.checkboxCont}>
                   {secondChecked
@@ -174,7 +188,8 @@ const Page = () => {
                   <div className={styles.checkboxTitle}>I understand that I will lose access to the account if I lose this mnemonic phrase.</div>
                 </div>
                 <NextStepButton
-                  disabled
+                  disabled={!secondChecked || !password}
+                  onClick={!secondChecked ? console.log : _onCreate}
                 >
                   {'Create an Account'}
                 </NextStepButton>

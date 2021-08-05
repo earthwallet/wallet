@@ -17,8 +17,32 @@ type TaProps = React.ComponentProps<typeof TextField> & ComponentProps;
 import clsx from 'clsx';
 
 
-const _Input = ({ type, withError }: IpProps) => <input type={type} className={clsx(styles.input, withError && styles.errorinput)} />;
-const _TextArea = ({ className, withError, placeholder }: TaProps) => <textarea placeholder={placeholder} className={clsx(className, styles.textarea, withError && styles.errortextarea)} />;
+const _Input = ({ type, withError,
+    autoCapitalize,
+    autoCorrect,
+    autoFocus,
+    disabled,
+    onBlur,
+    onChange,
+    onKeyPress,
+    placeholder,
+    readOnly,
+    spellCheck }: IpProps) =>
+    <input
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        autoFocus={autoFocus}
+        onBlur={onBlur}
+        onChange={onChange}
+        onKeyPress={onKeyPress}
+        disabled={disabled}
+        placeholder={placeholder}
+        readOnly={readOnly}
+        spellCheck={spellCheck}
+        type={type}
+        className={clsx(styles.input, withError && styles.errorinput)} />;
+const _TextArea = ({ className, withError, placeholder }: TaProps) => <textarea
+    placeholder={placeholder} className={clsx(className, styles.textarea, withError && styles.errortextarea)} />;
 
 export const TextArea = _TextArea;
 export const Input = _Input;

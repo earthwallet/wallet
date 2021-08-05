@@ -57,16 +57,25 @@ export default class AccountsController implements IAccountsController {
   }
 
   async createAccount(mnemonic: string, symbol: string) {
-    const available: EarthKeyringPair[] = store.getState().accounts;
+    console.log('createAccount', mnemonic, symbol);
+    const available: EarthKeyringPair[] = store.getState().accounts || [];
     const existingActiveAccount = store.getState().activeAccount;
 
     const keypair = await createWallet(mnemonic, symbol);
 
-    if (existingActiveAccount.address !== keypair.address) {
+    if (
+      existingActiveAccount !== null &&
+      existingActiveAccount?.address !== keypair.address
+    ) {
       store.dispatch(updateActiveAccount(keypair));
     }
 
-    if (!available.some((_account) => _account.address === keypair.address)) {
+    if (
+      !(
+        available !== undefined &&
+        available.some((_account) => _account.address === keypair.address)
+      )
+    ) {
       available.push(keypair);
       store.dispatch(updateAccounts(available));
     }
