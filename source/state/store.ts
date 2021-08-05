@@ -27,7 +27,7 @@ const store: Store = configureStore({
     app,
     wallet,
     assets,
-    entities
+    entities,
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
@@ -37,10 +37,12 @@ const store: Store = configureStore({
 store.subscribe(
   throttle(() => {
     const state = store.getState();
+    //white list
     saveState({
       app: state.app,
       wallet: state.wallet,
       assets: state.assets,
+      entities: state.entities,
     });
   }, 1000)
 );
