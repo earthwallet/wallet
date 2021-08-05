@@ -8,7 +8,7 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable camelcase */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styles from './index.scss';
 //import { saveAs } from 'file-saver';
 //import { useHistory } from 'react-router-dom';
@@ -23,19 +23,28 @@ import HeaderWithSteps from '~components/HeaderWithSteps';
 import Password from '~components/Password';
 import clsx from 'clsx';
 
+import { useController } from '~hooks/useController';
+import { IWalletState } from '~state/wallet/types';
+import { AppState } from '~state/store';
+import { useSelector } from 'react-redux';
 
 const Page = () => {
+  const controller = useController();
+
+  const { newMnemonic }: IWalletState = useSelector(
+    (state: AppState) => state.wallet
+  );
+
   const [isBusy, setIsBusy] = useState(false);
   const [checked, setChecked] = useState(false);
   const [secondChecked, setSecondChecked] = useState(false);
   //const { setSelectedAccount } = useContext(SelectedAccountContext);
 
   const [step, setStep] = useState(1);
-  const [account, setAccount] = useState<null | { address: string; seed: string }>({ address: '5xxxx', seed: "twinkle twinkle little star" });
   //const type = 'DEFAULT_TYPE';
   const [name, setName] = useState('');
   //const [password, setPassword] = useState<string | null>(null);
-  console.log(setStep, setAccount, setIsBusy);
+  console.log(setStep, setIsBusy);
   //const history = useHistory();
 
   //const genesis = "ICP";
@@ -49,11 +58,12 @@ const Page = () => {
 
   const backupKeystore = () => console.log();
 
-  //const _onNextStep= () => console.log();
-  const _onPreviousStep = () => console.log();
+  const _onNextStep = useCallback(() => setStep((step) => step + 1), []);
+  const _onPreviousStep = useCallback(() => setStep((step) => step - 1), []);
+
 
   useEffect(() => {
-    // throw new Error("something goes wrong?");
+    controller.accounts.createNewMnemonic();
   }, []);
 
   return <div
@@ -62,7 +72,7 @@ const Page = () => {
     <HeaderWithSteps backOverride={step === 1 ? undefined : _onPreviousStep}
       step={step}
       text={('Create an account')}
-    />{account &&
+    />{newMnemonic !== '' &&
       (step === 1
         ? (
           <div>
@@ -84,13 +94,13 @@ const Page = () => {
               <div className={styles.labelText}>Mnemonic Seed</div>
               <div className={styles.mnemonicContWrap}>
                 <div className={styles.mnemonicCont}>
-                  {account.seed.split(' ').map((word, index) => <div className='{styles.mnemonicWords'
+                  {newMnemonic.split(' ').map((word, index) => <div className={styles.mnemonicWords}
                     key={index}>
                     {word}
                   </div>)}
                   <div className={styles.mnemonicActionsCont}>
                     <CopyToClipboard
-                      text={account.seed || ''}
+                      text={newMnemonic || ''}
                     >
                       <div
                         className={styles.mnemonicAction}
@@ -130,6 +140,8 @@ const Page = () => {
               </div>
               <div className={styles.nextCont}>
                 <NextStepButton
+                  disabled={!checked}
+                  onClick={!checked ? console.log : _onNextStep}
                 >
                   {('Next step')}
                 </NextStepButton>

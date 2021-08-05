@@ -9,3 +9,9 @@ export function useFetchAssetPrice() {
 
   return controller.assets.fetchFiatPrice();
 }
+
+export function useNewMnemonic() {
+  const controller = useController();
+
+  return controller.accounts.createNewMnemonic();
+}

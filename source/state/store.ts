@@ -10,6 +10,8 @@ import throttle from 'lodash/throttle';
 import app from './app';
 import wallet from './wallet';
 import assets from './assets';
+import entities from './entities';
+
 import { saveState, loadState } from './localStorage';
 
 const middleware = [
@@ -25,6 +27,7 @@ const store: Store = configureStore({
     app,
     wallet,
     assets,
+    entities
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',

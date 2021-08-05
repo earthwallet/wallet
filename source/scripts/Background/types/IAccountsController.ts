@@ -3,4 +3,5 @@ export interface IAccountsController {
   unlock: (pwd: string) => void;
   lock: (pwd: string) => void;
   createAccounts: (symbols: string[]) => Promise<void>;
+  createNewMnemonic: () => Promise<void>;
 }

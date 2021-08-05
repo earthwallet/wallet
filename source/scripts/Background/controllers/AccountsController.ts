@@ -37,6 +37,7 @@ export default class AccountsController implements IAccountsController {
   }
 
   async createNewMnemonic() {
+    console.log('createNewMnemonic');
     store.dispatch(updateLoading(true));
 
     try {
