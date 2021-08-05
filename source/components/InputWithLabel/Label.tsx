@@ -1,16 +1,19 @@
-
 import React from 'react';
- 
+
 interface Props {
   children: React.ReactNode;
   className?: string;
   label: string;
 }
 
-function Label ({ children, className, label }: Props): React.ReactElement<Props> {
+function Label({
+  children,
+  className,
+  label,
+}: Props): React.ReactElement<Props> {
   return (
-    < >
-      { label !== '' && <label className={className}>{label}</label>}
+    <>
+      {label !== '' && <label className={className}>{label}</label>}
       {children}
     </>
   );

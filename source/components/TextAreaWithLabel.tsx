@@ -18,7 +18,17 @@ interface Props {
   placeholder?: string;
 }
 
-export default function TextAreaWithLabel({ containerClass, isError, isFocused, isReadOnly, label, onChange, placeholder, rowsCount, value }: Props): React.ReactElement<Props> {
+export default function TextAreaWithLabel({
+  containerClass,
+  isError,
+  isFocused,
+  isReadOnly,
+  label,
+  onChange,
+  placeholder,
+  rowsCount,
+  value,
+}: Props): React.ReactElement<Props> {
   const _onChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>): void => {
       onChange && onChange(value);
@@ -27,15 +37,11 @@ export default function TextAreaWithLabel({ containerClass, isError, isFocused, 
   );
 
   return (
-    <Label
-      label={label}
-    >
-      <div
-        className={containerClass}
-      >
+    <Label label={label}>
+      <div className={containerClass}>
         <TextArea
-          autoCapitalize='off'
-          autoCorrect='off'
+          autoCapitalize="off"
+          autoCorrect="off"
           autoFocus={isFocused}
           onChange={_onChange}
           placeholder={placeholder}
@@ -44,7 +50,6 @@ export default function TextAreaWithLabel({ containerClass, isError, isFocused, 
           spellCheck={false}
           value={value}
           withError={isError}
-
         />
       </div>
     </Label>

@@ -1,4 +1,11 @@
 .container {
-    color: $greyWhite;
-  }
-  
+  color: $greyWhite;
+  background: rgba(255, 255, 255, 0.17);
+  border-radius: 33px;
+  display: flex;
+  align-items: center;
+  height: 33px;
+  padding: 0 10px;
+  border: 2px solid rgba(5, 12, 18, 0.4);
+  backdrop-filter: blur(20px);
+}

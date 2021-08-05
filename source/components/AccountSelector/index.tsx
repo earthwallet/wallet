@@ -2,9 +2,8 @@ import React from 'react';
 
 import styles from './index.scss';
 
-
-const Component = () => {
+const AccountSelector = () => {
   return <div className={styles.container}>Component</div>;
 };
 
-export default Component;
+export default AccountSelector;

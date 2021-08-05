@@ -20,18 +20,18 @@ const targetBrowser = process.env.TARGET_BROWSER;
 const extensionReloaderPlugin =
   nodeEnv === 'development'
     ? new ExtensionReloader({
-      port: 9090,
-      reloadPage: true,
-      entries: {
-        // TODO: reload manifest on update
-        contentScript: 'contentScript',
-        background: 'background',
-        extensionPage: ['popup'],
-      },
-    })
+        port: 9090,
+        reloadPage: true,
+        entries: {
+          // TODO: reload manifest on update
+          contentScript: 'contentScript',
+          background: 'background',
+          extensionPage: ['popup'],
+        },
+      })
     : () => {
-      this.apply = () => { };
-    };
+        this.apply = () => {};
+      };
 
 const getExtensionFileType = (browser) => {
   if (browser === 'opera') {
@@ -79,8 +79,8 @@ module.exports = {
       crypto: require.resolve('crypto-browserify'),
       path: require.resolve('path-browserify'),
       stream: require.resolve('stream-browserify'),
-      assert: require.resolve("assert/"),
-      os: require.resolve("os-browserify/browser") 
+      assert: require.resolve('assert/'),
+      os: require.resolve('os-browserify/browser'),
     },
     alias: {
       'webextension-polyfill-ts': path.resolve(
@@ -108,9 +108,9 @@ module.exports = {
         use: {
           loader: 'url-loader', // this need file-loader
           options: {
-            limit: 50000
-          }
-        }
+            limit: 50000,
+          },
+        },
       },
       {
         type: 'javascript/auto', // prevent webpack handling json with its own loaders,
@@ -138,7 +138,7 @@ module.exports = {
             loader: 'css-loader', // Takes the CSS files and returns the CSS with imports and url(...) for Webpack
             options: {
               import: true,
-              url:false,
+              url: false,
               sourceMap: true,
               modules: {
                 localIdentName: '[name]__[local]___[hash:base64:5]',
@@ -179,7 +179,7 @@ module.exports = {
       Buffer: ['buffer', 'Buffer'],
       assert: 'assert',
       process: 'process/browser.js',
-      nodeinspectextracted: 'node-inspect-extracted'
+      nodeinspectextracted: 'node-inspect-extracted',
     }),
     // Plugin to not generate js bundle for manifest entry
     new WextManifestWebpackPlugin(),

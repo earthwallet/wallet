@@ -1,8 +1,12 @@
-
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import InputWithLabel from '../InputWithLabel';
 import ValidatedInput from '../ValidatedInput';
-import { allOf, isNotShorterThan, isSameAs, Validator } from '~utils/validators';
+import {
+  allOf,
+  isNotShorterThan,
+  isSameAs,
+  Validator,
+} from '~utils/validators';
 
 interface Props {
   className?: string;
@@ -12,14 +16,25 @@ interface Props {
 
 const MIN_LENGTH = 6;
 
-function Password({ className, isFocussed, onChange }: Props): React.ReactElement<Props> {
+function Password({
+  className,
+  isFocussed,
+  onChange,
+}: Props): React.ReactElement<Props> {
   const [pass1, setPass1] = useState<string | null>(null);
   const [pass2, setPass2] = useState<string | null>(null);
-  const isFirstPasswordValid = useMemo(() => isNotShorterThan(MIN_LENGTH, ('Password is too short')), []);
-  const isSecondPasswordValid = useCallback((firstPassword: string): Validator<string> => allOf(
-    isNotShorterThan(MIN_LENGTH, ('Password is too short')),
-    isSameAs(firstPassword, ('Passwords do not match'))
-  ), []);
+  const isFirstPasswordValid = useMemo(
+    () => isNotShorterThan(MIN_LENGTH, 'Password is too short'),
+    []
+  );
+  const isSecondPasswordValid = useCallback(
+    (firstPassword: string): Validator<string> =>
+      allOf(
+        isNotShorterThan(MIN_LENGTH, 'Password is too short'),
+        isSameAs(firstPassword, 'Passwords do not match')
+      ),
+    []
+  );
 
   useEffect((): void => {
     onChange(pass1 && pass2 ? pass1 : null);
@@ -32,10 +47,10 @@ function Password({ className, isFocussed, onChange }: Props): React.ReactElemen
         component={InputWithLabel}
         data-input-password
         isFocussed={isFocussed}
-        label={('A new password for this account')}
+        label={'A new password for this account'}
         onValidatedChange={setPass1}
         placeholder={'REQUIRED'}
-        type='password'
+        type="password"
         validator={isFirstPasswordValid}
       />
       {pass1 && (
@@ -43,10 +58,10 @@ function Password({ className, isFocussed, onChange }: Props): React.ReactElemen
           className={className}
           component={InputWithLabel}
           data-input-repeat-password
-          label={('Repeat password for verification')}
+          label={'Repeat password for verification'}
           onValidatedChange={setPass2}
           placeholder="REQUIRED"
-          type='password'
+          type="password"
           validator={isSecondPasswordValid(pass1)}
         />
       )}

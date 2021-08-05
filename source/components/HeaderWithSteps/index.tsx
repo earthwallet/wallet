@@ -11,20 +11,21 @@ interface Props {
 }
 
 const Component = ({ backOverride, className, step, text }: Props) => {
-  return <Header
-  backOverride={backOverride}
-  className={className}
-  text={text}
-  type={'wallet'}
->
-  <div className={styles.steps}>
-    <div>
-      <span className={styles.current}>{step}</span>
-      <span className={styles.total}>/2</span>
-    </div>
-
-  </div>
-</Header>;
+  return (
+    <Header
+      backOverride={backOverride}
+      className={className}
+      text={text}
+      type={'wallet'}
+    >
+      <div className={styles.steps}>
+        <div>
+          <span className={styles.current}>{step}</span>
+          <span className={styles.total}>/2</span>
+        </div>
+      </div>
+    </Header>
+  );
 };
 
 export default Component;

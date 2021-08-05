@@ -19,48 +19,45 @@ const Page = () => {
   const _onCopy = console.log;
 
   const selectedAccount = { address: '5xxx', name: 'asdf' };
-  return <div className={styles.page}>
+  return (
+    <div className={styles.page}>
       <Header
         className={styles.header}
         showAccountsDropdown
         showMenu
-        type={'wallet'} />
-      <img
-        className={styles.networklogo}
-        src={icpLogo}
+        type={'wallet'}
       />
+      <img className={styles.networklogo} src={icpLogo} />
       <div className={styles.networktext}>Internet Computer</div>
       <div className={styles.primaryBalanceLabel}>
-        {loading
-          ? <SkeletonTheme color="#222"
-            highlightColor="#000">
+        {loading ? (
+          <SkeletonTheme color="#222" highlightColor="#000">
             <Skeleton width={150} />
           </SkeletonTheme>
-          : <div className={styles.primaryBalanceLabel}>{'0 ICP'}</div>
-        }</div>
+        ) : (
+          <div className={styles.primaryBalanceLabel}>{'0 ICP'}</div>
+        )}
+      </div>
       <div className={styles.secondaryBalanceLabel}>
-        {loading
-          ? <SkeletonTheme color="#222"
-            highlightColor="#000">
+        {loading ? (
+          <SkeletonTheme color="#222" highlightColor="#000">
             <Skeleton width={100} />
           </SkeletonTheme>
-          : <span className={styles.secondaryBalanceLabel}>10</span>}
+        ) : (
+          <span className={styles.secondaryBalanceLabel}>10</span>
+        )}
       </div>
 
-      <CopyToClipboard
-        text={selectedAccount?.address || ''} >
-        <div
-          className={styles.copyActionsView}
-          onClick={_onCopy}>
+      <CopyToClipboard text={selectedAccount?.address || ''}>
+        <div className={styles.copyActionsView} onClick={_onCopy}>
           <div className={styles.copyCont}>
             <div className={styles.copyName}>{selectedAccount?.name}</div>
-            <div className={styles.copyAddress}>{getShortAddress(selectedAccount?.address || '')}</div>
+            <div className={styles.copyAddress}>
+              {getShortAddress(selectedAccount?.address || '')}
+            </div>
           </div>
           <div className={styles.copyButton}>
-            <img
-              className={styles.iconCopy}
-              src={icon_copy}
-            />
+            <img className={styles.iconCopy} src={icon_copy} />
           </div>
         </div>
       </CopyToClipboard>
@@ -69,53 +66,43 @@ const Page = () => {
         <div
           className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
         >
-          <Link  className={styles.transactionsCont} to='/wallet/receive'>
-            <div
-              className={styles.tokenActionButton}
-            >
-              <img
-                className={styles.iconActions}
-                src={icon_rec}
-              />
+          <Link className={styles.transactionsCont} to="/wallet/receive">
+            <div className={styles.tokenActionButton}>
+              <img className={styles.iconActions} src={icon_rec} />
               <div className={styles.tokenActionLabel}>Receive</div>
             </div>
-
           </Link>
-
         </div>
 
-        <div
-          className={clsx(styles.tokenActionView, styles.sendTokenAction)}
-        >
-          <Link to='/wallet/send'>
-            <div
-              className={styles.tokenActionButton}
-            >
-              <img
-                className={styles.iconActions}
-                src={icon_send}
-              />
+        <div className={clsx(styles.tokenActionView, styles.sendTokenAction)}>
+          <Link to="/wallet/send">
+            <div className={styles.tokenActionButton}>
+              <img className={styles.iconActions} src={icon_send} />
               <div className={styles.tokenActionLabel}>Send</div>
             </div>
           </Link>
         </div>
       </div>
 
-      <Link to={`/wallet/transactions/${selectedAccount?.address}`} >
-
+      <Link
+        to={`/wallet/transactions/d3e13d4777e22367532053190b6c6ccf57444a61337e996242b1abfb52cf92c8`}
+      >
         <div className={styles.assetsAndActivityDiv}>
           <div className={styles.tabsPill}></div>
           <div className={styles.tabsView}>
             <div
-              className={clsx(styles.tabView, selectedTab === 'Transactions' && styles.selectedTabView)}
-              onClick={() => setSelectedTab('Transactions')}
+              className={clsx(
+                styles.tabView,
+                selectedTab === 'Transactions' && styles.selectedTabView
+              )}
             >
               Transactions {0}
             </div>
           </div>
         </div>
       </Link>
-  </div>;
+    </div>
+  );
 };
 
 export default Page;

@@ -3,20 +3,16 @@
 
 import React from 'react';
 
-
 interface Props {
   children?: React.ReactNode;
 }
 
-export default function Loading ({ children }: Props): React.ReactElement<Props> {
-
+export default function Loading({
+  children,
+}: Props): React.ReactElement<Props> {
   if (!children) {
-    return (
-      <div>{'... loading ...'}</div>
-    );
+    return <div>{'... loading ...'}</div>;
   }
 
-  return (
-    <>{children}</>
-  );
+  return <>{children}</>;
 }
