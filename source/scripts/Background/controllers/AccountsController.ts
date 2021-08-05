@@ -8,7 +8,10 @@ import {
   updateLoading,
 } from '~state/wallet';
 import type { IAccountsController } from '../types/IAccountsController';
-import { EarthKeyringPair } from '@earthwallet/sdk';
+import StringCrypto from 'string-crypto';
+import { storeEntities } from '~state/entities';
+
+const { encryptString } = new StringCrypto();
 
 export default class AccountsController implements IAccountsController {
   private password: string;
@@ -56,9 +59,13 @@ export default class AccountsController implements IAccountsController {
     }
   }
 
-  async createAccount(mnemonic: string, symbol: string) {
+  async createAccount(
+    mnemonic: string,
+    symbol: string,
+    name: string,
+    password: string
+  ) {
     console.log('createAccount', mnemonic, symbol);
-    const available: EarthKeyringPair[] = store.getState().accounts || [];
     const existingActiveAccount = store.getState().activeAccount;
 
     const keypair = await createWallet(mnemonic, symbol);
@@ -70,15 +77,31 @@ export default class AccountsController implements IAccountsController {
       store.dispatch(updateActiveAccount(keypair));
     }
 
-    if (
-      !(
-        available !== undefined &&
-        available.some((_account) => _account.address === keypair.address)
-      )
-    ) {
-      available.push(keypair);
-      store.dispatch(updateAccounts(available));
-    }
+    store.dispatch(
+      storeEntities({
+        entity: 'accounts',
+        data: [
+          {
+            meta: {
+              name,
+              createdAt: Math.round(new Date().getTime() / 1000),
+              publicKey: keypair.publicKey,
+              type: keypair.type,
+            },
+            vault: {
+              encryptedMnemonic: encryptString(mnemonic, password),
+              encryptedJson: encryptString(
+                JSON.stringify(keypair.identity.toJSON()),
+                password
+              ),
+              encryptionType: 'PBKDF2',
+            },
+            symbol,
+            id: keypair.address,
+          },
+        ],
+      })
+    );
   }
 
   async createAccounts(symbols: string[]) {

@@ -1,14 +1,13 @@
 import merge from 'lodash/merge';
 import { createSlice } from '@reduxjs/toolkit';
+import type { IEntityState } from './types';
 
-const initialState: Entity = {
+const initialState: IEntityState = {
   accounts: { byId: {} },
   transactions: { byId: {} },
   prices: { byId: {} },
   addresses: { byId: {} },
 };
-
-export declare type Entity = Record<string, Record<string, any>>;
 
 export const entitiesState = createSlice({
   name: 'entities',

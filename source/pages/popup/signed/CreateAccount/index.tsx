@@ -35,6 +35,7 @@ const Page = () => {
   const { newMnemonic }: IWalletState = useSelector(
     (state: AppState) => state.wallet
   );
+
   const history = useHistory();
 
   const [isBusy, setIsBusy] = useState(false);
@@ -64,7 +65,7 @@ const Page = () => {
       if (name && password && newMnemonic) {
         console.log('createAccount');
         setIsBusy(true);
-        controller.accounts.createAccount(newMnemonic, 'ICP').then(() => {
+        controller.accounts.createAccount(newMnemonic, 'ICP', name, password).then(() => {
           history.replace('/wallet/details');
         });
       }

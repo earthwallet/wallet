@@ -2,7 +2,9 @@ import { EarthKeyringPair } from '@earthwallet/sdk';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NetworkType } from '~global/types';
 
-import { IWalletState } from './types';
+import type { IWalletState } from './types';
+//import type { StoreInterface } from '~state/IStore';
+import { AppState } from '~state/store';
 
 const initialState: IWalletState = {
   accounts: [],
@@ -48,5 +50,10 @@ export const {
   updateError,
   updateLoading,
 } = WalletState.actions;
+
+export const selectAccounts = (state: AppState) =>
+  Object.keys(state.entities.accounts.byId).map(
+    (id) => state.entities.accounts.byId[id]
+  );
 
 export default WalletState.reducer;

@@ -4,13 +4,21 @@ import { Link } from 'react-router-dom';
 //~pages import ICON_ADD from '../../../assets/images/icon_add_account.svg';
 import ICON_ADD from '~assets/images/icon_add_account.svg';
 import clsx from 'clsx';
+import { useSelector } from "react-redux";
+import { selectAccounts } from '~state/wallet';
+
 const Page = () => {
+
+  const accounts = useSelector(selectAccounts);
+
+  console.log(accounts);
+  //  const accounts = [];
   //const hierarchy = [{}];
   useEffect(() => {
   }, []);
 
   return <div className={styles.page}>
-    {true
+    {accounts.length === 0
       ? <div >
         <div className={styles.subtitle}>bringing crypto back to earth</div>
         <div className={styles.noAccountsActions}>
@@ -31,22 +39,14 @@ const Page = () => {
           <>
             <div className={styles.accountTitle}>Select Account</div>
             <div className={styles.accountsCont}>
-              {/* {hierarchy
-                  .filter(({ genesisHash }) => selectedNetwork.genesisHash.length ? genesisHash === selectedNetwork.genesisHash : true)
-                  .map((json, index): React.ReactNode => {
-                    //   console.log('hierarchy', json);
-                    return (
-                      <AccountsTree
-                        {...json}
-                        key={`${index}:${json.address}`}
-                      />
-                    );
-                  })} */}
+              {accounts.map((account: any) => <div>
+                {account?.id}
+              </div>)}
 
               <Link className={styles.link} to={'/account/create'}>
-                <div className={clsx(styles.createButton, styles.earthButton)}>
+                <div className={clsx(styles.createButton, styles.earthButton, styles.createAccountTableButton, styles.earthButtonTable)}>
                   <div>Create an Account </div>
-                  <img className='iconCopy'
+                  <img className={styles.iconCopy}
                     src={ICON_ADD} />
                 </div>
               </Link>

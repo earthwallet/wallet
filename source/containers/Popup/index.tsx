@@ -13,13 +13,17 @@ import AppRouter from './router';
 
 const store = new Store({ portName: STATE_PORT });
 
-ReactDOM.render(
-  <Provider store={store}>
-    <AppContainer>
-      <BrowserRouter>
-        <AppRouter />
-      </BrowserRouter>
-    </AppContainer>
-  </Provider>,
-  document.getElementById('popup-root')
-);
+store.ready().then(() => {
+  // The store implements the same interface as Redux's store
+  // so you can use tools like `react-redux` no problem!
+  ReactDOM.render(
+    <Provider store={store}>
+      <AppContainer>
+        <BrowserRouter>
+          <AppRouter />
+        </BrowserRouter>
+      </AppContainer>
+    </Provider>,
+    document.getElementById('popup-root')
+  );
+});
