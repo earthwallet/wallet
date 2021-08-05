@@ -109,7 +109,6 @@
 
   text-align: center;
   color: #fafbfb;
-  
 }
 .earthButtonCont:active {
   opacity: 0.7;
@@ -138,7 +137,6 @@
   justify-content: space-between;
 }
 
-
 .link {
   align-items: center;
   color: #fff;
@@ -153,11 +151,10 @@
   opacity: 0.85;
   text-decoration: none;
   vertical-align: middle;
-  
 }
 .link:hover {
   color: #fff;
-  opacity: 1.0;
+  opacity: 1;
 }
 
 .link:visited {
@@ -166,4 +163,51 @@
 
 .link.isDisabled {
   opacity: 0.4;
+}
+
+.info {
+  max-width: 348px;
+  padding-left: 16px;
+}
+
+.infoRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  height: 72px;
+  border-radius: 4px;
+}
+
+img {
+  max-width: 50px;
+  max-height: 50px;
+  border-radius: 50%;
+}
+
+.name {
+  font-size: 16px;
+  line-height: 22px;
+  margin: 2px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 244px;
+  white-space: nowrap;
+
+  &.displaced {
+    padding-top: 10px;
+  }
+}
+
+.addressLink {
+  background: rgba(8, 25, 39, 0.7);
+  border-bottom: 2px solid rgba(36, 150, 255, 0.5);
+  box-sizing: border-box;
+  position: relative;
+  display: block;
+  color: #ffffff;
+  &:hover {
+    background-color: $buttonBackgroundHover;
+    cursor: pointer;
+  }
 }
