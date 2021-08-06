@@ -4,9 +4,8 @@
 
 ```js
 const handleEarthEnable = () => {
-    window.earth.
-      .enable()
-      .then((account) => {
+    window.earth
+    .enable().then((account) => {
         console.log("Successfully connected to Earth wallet.🌍", account);
         onConnect();
       })
