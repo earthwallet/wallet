@@ -140,11 +140,8 @@ const Page = () => {
                 </div>
                 <div className={styles.mnemonicHelp}>
                   <div className={styles.mnemonicHelpTitle}>
-                    <span>
-                      This is a generated 12-word
-                      <br />
-                      mnemonic seed.
-                    </span>
+                    This is a generated 12-word
+                    mnemonic seed.
                     {/* <small>
                       Please write down your wallet’s mnemonic seed and keep it
                       in a safe place. The mnemonic can be used to restore your
