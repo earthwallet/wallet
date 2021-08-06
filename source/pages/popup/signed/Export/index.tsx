@@ -1,9 +1,17 @@
+<<<<<<< HEAD
 import { validateMnemonic } from '@earthwallet/keyring';
+=======
+import { validateMnemonic } from 'bip39';
+>>>>>>> 8285f75 (Add export account)
 import { saveAs } from 'file-saver';
 import React, { useCallback, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useHistory } from 'react-router-dom';
+<<<<<<< HEAD
+=======
+import StringCrypto from 'string-crypto';
+>>>>>>> 8285f75 (Add export account)
 import styles from './index.scss';
 import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
@@ -19,7 +27,12 @@ import InputWithLabel from '~components/InputWithLabel';
 import NextStepButton from '~components/NextStepButton';
 import Header from '~components/Header';
 import { getShortAddress } from '~utils/common';
+<<<<<<< HEAD
 import { decryptString } from '~utils/vault';
+=======
+
+const { decryptString } = new StringCrypto();
+>>>>>>> 8285f75 (Add export account)
 
 const MIN_LENGTH = 6;
 
@@ -63,6 +76,7 @@ function Export({ match: { params: { address } } }: Props): React.ReactElement<P
   const _onExportButtonClick = useCallback(
     (): void => {
       setIsBusy(true);
+<<<<<<< HEAD
       let mnemonicSecret = '';
       try {
         mnemonicSecret = decryptString(selectedAccount?.vault.encryptedMnemonic, pass);
@@ -70,6 +84,9 @@ function Export({ match: { params: { address } } }: Props): React.ReactElement<P
         setError('Wrong password! Please try again');
         setIsBusy(false);
       }
+=======
+      const mnemonicSecret = decryptString(selectedAccount?.vault.encryptedMnemonic, pass);
+>>>>>>> 8285f75 (Add export account)
 
       if (validateMnemonic(mnemonicSecret)) {
         setMnemonic(mnemonicSecret);
