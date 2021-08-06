@@ -28,7 +28,7 @@ const StarterPage = () => {
     </div>
     <div
       className={styles.link}
-      onClick={() => history.push(`/account/import-seed`)}
+      onClick={() => history.push(`/account/import`)}
     >
       Import Seed
     </div>

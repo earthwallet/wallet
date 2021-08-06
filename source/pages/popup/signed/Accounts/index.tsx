@@ -24,7 +24,7 @@ const Page = () => {
             </div>
             <div className={styles.footerCont}>
               <div className={styles.orSep}>or</div>
-              <Link className={styles.link} to={'/account/import-seed'}>
+              <Link className={styles.link} to={'/account/import'}>
                 <div className={styles.earthLink}>import seed phrase</div>
               </Link>
             </div>
@@ -40,7 +40,7 @@ const Page = () => {
                   <div className={styles.address}>
                     <div
                       className={styles.addressLink}
-                      onClick={() => history.push('/account/details' + account.id)}
+                      onClick={() => history.push('/account/details/' + account.id)}
                     >
                       <div className={styles.infoRow}>
                         <div className={styles.info}>
@@ -76,7 +76,7 @@ const Page = () => {
           </>
           <div className={styles.footerCont}>
             <div className={styles.orSep}>or</div>
-            <Link className={styles.link} to={'/account/import-seed'}>
+            <Link className={styles.link} to={'/account/import'}>
               <div className={styles.earthLink}>import seed phrase</div>
             </Link>
           </div>

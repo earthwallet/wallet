@@ -56,4 +56,9 @@ export const selectAccounts = (state: AppState) =>
     (id) => state.entities.accounts.byId[id]
   );
 
+export const selectAccountById = (address: string) => (state: AppState) =>
+  state.entities.accounts.byId[address];
+
+export const selectActiveAccount = (state: AppState) => state.activeAccount;
+
 export default WalletState.reducer;

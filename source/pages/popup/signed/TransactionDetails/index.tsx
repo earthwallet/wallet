@@ -87,11 +87,11 @@ const Details = ({
           : operations[1].account.address,
       amount: Math.abs(
         operations[0].amount.value /
-          Math.pow(10, operations[0].amount.currency.decimals)
+        Math.pow(10, operations[0].amount.currency.decimals)
       ),
       fees: Math.abs(
         operations[2].amount.value /
-          Math.pow(10, operations[2].amount.currency.decimals)
+        Math.pow(10, operations[2].amount.currency.decimals)
       ),
       time: moment(timestamp / 1000000).format('mm:ss on MMM DD YY'),
     };

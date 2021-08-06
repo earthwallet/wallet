@@ -226,6 +226,7 @@
   text-align: center;
   color: #e6e9ed;
   opacity: 0.75;
+  text-decoration: none;
 }
 
 .transactions-div {
@@ -295,4 +296,12 @@
   object-fit: contain;
   object-position: center;
   margin-top: 90px;
+}
+
+.resetLink {
+  text-decoration: none;
+}
+.resetLink:hover {
+  opacity: 0.9;
+  text-decoration: none;
 }
