@@ -15,10 +15,9 @@ import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
 import { getBalance, getTransactions } from '@earthwallet/keyring';
 
-interface Props extends RouteComponentProps<{ address: string }> {
-}
+interface Props extends RouteComponentProps<{ address: string }> {}
 interface keyable {
-  [key: string]: any
+  [key: string]: any;
 }
 
 const Wallet = ({
@@ -26,11 +25,8 @@ const Wallet = ({
     params: { address },
   },
 }: Props) => {
-
-
   //const _onCopy = useCallback((): void => show('Copied'), [show]);
   const _onCopy = console.log;
-
 
   const selectedAccount = useSelector(selectAccountById(address));
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,16 +46,21 @@ const Wallet = ({
     const requestOptions: RequestInit = {
       method: 'GET',
       headers: fetchHeaders,
-      redirect: 'follow'
+      redirect: 'follow',
     };
 
-    const factor: keyable = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd', requestOptions)
+    const factor: keyable = await fetch(
+      'https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd',
+      requestOptions
+    )
       .then((response) => response.json())
       .catch((error) => console.log('error', error));
 
-    setUsdValue((balance / Math.pow(10, decimals)) * parseFloat(factor['internet-computer'].usd));
+    setUsdValue(
+      (balance / Math.pow(10, decimals)) *
+        parseFloat(factor['internet-computer'].usd)
+    );
   };
-
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
@@ -93,20 +94,31 @@ const Wallet = ({
         showMenu
         type={'wallet'}
       />
-      <img className={styles.networklogo} src={getSymbol(selectedAccount.symbol)?.icon} />
-      <div className={styles.networktext}>{getSymbol(selectedAccount.symbol)?.name}</div>
+      <img
+        className={styles.networklogo}
+        src={getSymbol(selectedAccount.symbol)?.icon}
+      />
+      <div className={styles.networktext}>
+        {getSymbol(selectedAccount.symbol)?.name}
+      </div>
       <div className={styles.primaryBalanceLabel}>
         {loading ? (
           <SkeletonTheme color="#222" highlightColor="#000">
             <Skeleton width={150} />
           </SkeletonTheme>
+        ) : selectedAccount.symbol !== 'ICP' ? (
+          <div className={styles.primaryBalanceLabel}>
+            0 {selectedAccount.symbol}
+          </div>
         ) : (
-          selectedAccount.symbol !== 'ICP'
-            ? <div className={styles.primaryBalanceLabel}>0 {selectedAccount.symbol}</div>
-            : <div className={styles.primaryBalanceLabel}>{walletBalance && walletBalance?.balances[0] &&
-              `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} ${walletBalance?.balances[0]?.currency?.symbol}`
-            }</div>
-
+          <div className={styles.primaryBalanceLabel}>
+            {walletBalance &&
+              walletBalance?.balances[0] &&
+              `${
+                walletBalance?.balances[0]?.value /
+                Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)
+              } ${walletBalance?.balances[0]?.currency?.symbol}`}
+          </div>
         )}
       </div>
       <div className={styles.secondaryBalanceLabel}>
@@ -115,7 +127,9 @@ const Wallet = ({
             <Skeleton width={100} />
           </SkeletonTheme>
         ) : (
-          <span className={styles.secondaryBalanceLabel}>${usdValue.toFixed(3)}</span>
+          <span className={styles.secondaryBalanceLabel}>
+            ${usdValue.toFixed(3)}
+          </span>
         )}
       </div>
 
@@ -137,7 +151,10 @@ const Wallet = ({
         <div
           className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
         >
-          <Link className={styles.transactionsCont} to={"/account/receive/" + selectedAccount?.id}>
+          <Link
+            className={styles.transactionsCont}
+            to={'/account/receive/' + selectedAccount?.id}
+          >
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_rec} />
               <div className={styles.tokenActionLabel}>Receive</div>
@@ -146,7 +163,10 @@ const Wallet = ({
         </div>
 
         <div className={clsx(styles.tokenActionView, styles.sendTokenAction)}>
-          <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
+          <Link
+            className={styles.transactionsCont}
+            to={'/account/send/' + selectedAccount?.id}
+          >
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_send} />
               <div className={styles.tokenActionLabel}>Send</div>
@@ -162,13 +182,12 @@ const Wallet = ({
         <div className={styles.assetsAndActivityDiv}>
           <div className={styles.tabsPill}></div>
           <div className={styles.tabsView}>
-            <div
-              className={clsx(
-                styles.tabView,
-                styles.selectedTabView
-              )}
-            >
-              Transactions {walletTransactions?.transactions?.length === 0 || walletTransactions?.transactions === undefined ? '' : `(${walletTransactions?.transactions?.length})`}
+            <div className={clsx(styles.tabView, styles.selectedTabView)}>
+              Transactions{' '}
+              {walletTransactions?.transactions?.length === 0 ||
+              walletTransactions?.transactions === undefined
+                ? ''
+                : `(${walletTransactions?.transactions?.length})`}
             </div>
           </div>
         </div>

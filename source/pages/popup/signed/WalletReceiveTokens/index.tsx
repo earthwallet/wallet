@@ -11,8 +11,7 @@ import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-interface Props extends RouteComponentProps<{ address: string }> {
-}
+interface Props extends RouteComponentProps<{ address: string }> {}
 const WalletReceiveTokens = ({
   match: {
     params: { address },
@@ -32,7 +31,11 @@ const WalletReceiveTokens = ({
             <div className={styles.addressDisplay}>
               {getShortAddress(selectedAccount?.id)}
               <CopyToClipboard text={selectedAccount?.id}>
-                <img src={ICON_COPY} className={styles.copyIcon} onClick={_onCopy} />
+                <img
+                  src={ICON_COPY}
+                  className={styles.copyIcon}
+                  onClick={_onCopy}
+                />
               </CopyToClipboard>
             </div>
           )}

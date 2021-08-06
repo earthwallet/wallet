@@ -21,16 +21,13 @@ interface keyable {
 }
 const Transactions = ({
   match: {
-    params: {
-      address,
-    },
+    params: { address },
   },
 }: Props) => {
   const history = useHistory();
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [usdValue, setUsdValue] = useState<number>(0);
-
 
   const getTransactionDetail = (transaction: any): any => {
     const operations = transaction.transaction.operations
@@ -103,7 +100,6 @@ const Transactions = ({
     setWalletTransactions(transactions);
   };
 
-
   const statusToIcon = (status: string) => {
     switch (status) {
       case 'Receive':
@@ -116,24 +112,24 @@ const Transactions = ({
         return <div />;
     }
   };
-  if (loading) return (
-    <div className={styles.page}>
-      <div className={styles.transCont}>
-        <div
-          className={styles.backTransButton}
-          onClick={() => history.goBack()}
-        >
-          <img src={ICON_CARET} />
+  if (loading)
+    return (
+      <div className={styles.page}>
+        <div className={styles.transCont}>
+          <div
+            className={styles.backTransButton}
+            onClick={() => history.goBack()}
+          >
+            <img src={ICON_CARET} />
 
-          <div className={styles.transTitle}>Transactions</div>
-        </div>
-        <div className={styles.pageloading}>
-          <ClipLoader color={'#fffff'}
-            size={15} />
+            <div className={styles.transTitle}>Transactions</div>
+          </div>
+          <div className={styles.pageloading}>
+            <ClipLoader color={'#fffff'} size={15} />
+          </div>
         </div>
       </div>
-    </div>
-  )
+    );
   return (
     <div className={styles.page}>
       <div className={styles.transCont}>
