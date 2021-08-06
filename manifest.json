@@ -1,17 +1,18 @@
 {
   "manifest_version": 2,
   "name": "Earth Wallet",
-  "version": "2.0.0",
+  "version": "2.0.1",
 
   "icons": {
-    "16": "assets/images/favicon-16.png",
-    "32": "assets/images/favicon-32.png",
-    "48": "assets/images/favicon-48.png",
-    "128": "assets/images/favicon-128.png"
+    "16": "assets/images/icon-16.png",
+    "32": "assets/images/icon-32.png",
+    "48": "assets/images/icon-48.png",
+    "64": "assets/images/icon-64.png",
+    "128": "assets/images/icon-128.png"
   },
-  "description": "Browser Extension Wallet",
+  "description": "Your Keys to Web3.",
   "homepage_url": "https://github.com/earthwallet/extension",
-  "short_name": "Sample Name",
+  "short_name": "Earth Wallet",
 
   "permissions": ["activeTab", "storage", "http://*/*", "https://*/*"],
 
@@ -34,12 +35,13 @@
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "assets/images/favicon-16.png",
-      "32": "assets/images/favicon-32.png",
-      "48": "assets/images/favicon-48.png",
-      "128": "assets/images/favicon-128.png"
+      "16": "assets/images/icon-16.png",
+      "32": "assets/images/icon-32.png",
+      "48": "assets/images/icon-48.png",
+      "64": "assets/images/icon-64.png",
+      "128": "assets/images/icon-128.png"
     },
-    "default_title": "tiny title",
+    "default_title": "Earth Wallet",
     "__chrome|opera__chrome_style": false,
     "__firefox__browser_style": false
   },
