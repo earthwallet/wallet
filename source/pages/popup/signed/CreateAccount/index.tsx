@@ -187,7 +187,7 @@ const Page = () => {
                 styles.earthInputContPassword
               )}
             >
-              <Password onChange={setPassword} />
+              <Password className={styles.password} onChange={setPassword} />
               <div className={styles.nextCont}>
                 <div className={styles.checkboxCont}>
                   {secondChecked ? (
