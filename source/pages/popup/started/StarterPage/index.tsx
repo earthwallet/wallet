@@ -34,32 +34,32 @@ const StarterPage = () => {
     </div>
     <div
       className={styles.link}
-      onClick={() => history.push(`/wallet/details`)}
+      onClick={() => history.push(`/account/details`)}
     >
       Account Details
     </div>
     <div
       className={styles.link}
-      onClick={() => history.push(`/wallet/transactions/d3e13d4777e22367532053190b6c6ccf57444a61337e996242b1abfb52cf92c8`)}
+      onClick={() => history.push(`/account/transactions/d3e13d4777e22367532053190b6c6ccf57444a61337e996242b1abfb52cf92c8`)}
     >
       Transactions
     </div>
     <div
       className={styles.link}
-      onClick={() => history.push(`/wallet/transaction/25cc95c15f11b46a316fa4112056ec8b142a5b82a4ad1dce5cabefa8baf05eb9`)}
+      onClick={() => history.push(`/account/transaction/25cc95c15f11b46a316fa4112056ec8b142a5b82a4ad1dce5cabefa8baf05eb9`)}
     >
       Transactions Details
     </div>
 
     <div
       className={styles.link}
-      onClick={() => history.push(`/wallet/send`)}
+      onClick={() => history.push(`/account/send`)}
     >
       WalletSendTokens
     </div>
     <div
       className={styles.link}
-      onClick={() => history.push(`/wallet/receive`)}
+      onClick={() => history.push(`/account/receive`)}
     >
       WalletReceiveTokens
     </div>

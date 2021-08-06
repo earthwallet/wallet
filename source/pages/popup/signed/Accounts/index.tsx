@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styles from './index.scss';
 import { Link } from 'react-router-dom';
-//~pages import ICON_ADD from '../../../assets/images/icon_add_account.svg';
 import ICON_ADD from '~assets/images/icon_add_account.svg';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
@@ -10,13 +9,7 @@ import { useHistory } from 'react-router-dom';
 
 const Page = () => {
   const history = useHistory();
-
   const accounts = useSelector(selectAccounts);
-
-  console.log(accounts);
-  //  const accounts = [];
-  //const hierarchy = [{}];
-  useEffect(() => { }, []);
 
   return (
     <div className={styles.page}>
@@ -44,22 +37,20 @@ const Page = () => {
             <div className={styles.accountsCont}>
               {accounts.map((account: any) => (
                 <div key={account.id}>
-                  <div className="Account-sc-1apu8mn-0 iqToGG">
-                    <div className={styles.address}>
-                      <div
-                        className={styles.addressLink}
-                        onClick={() => history.push('/wallet/details')}
-                      >
-                        <div className={styles.infoRow}>
-                          <div className={styles.info}>
-                            <div className={styles.name}>
-                              <span>{account.meta.name}</span>
-                            </div>
-                            <div className={styles.addressDisplay}>
-                              <div className={styles.fullAddress}>
-                                {account.id}
-                              </div>
-                            </div>
+                  <div className={styles.address}>
+                    <div
+                      className={styles.addressLink}
+                      onClick={() => history.push('/account/details' + account.id)}
+                    >
+                      <div className={styles.infoRow}>
+                        <div className={styles.info}>
+                          <div className={styles.name}>
+                            <span>{account.meta.name}</span>
+                          </div>
+                          <div className={styles.addressDisplay}>
+                            <span className={styles.fullAddress}>
+                              {account.id}
+                            </span>
                           </div>
                         </div>
                       </div>

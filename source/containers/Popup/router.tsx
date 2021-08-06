@@ -5,7 +5,7 @@ import StarterPage from '~pages/popup/started/StarterPage';
 //import Page from '~pages/popup/signed/Page';
 import Accounts from '~pages/popup/signed/Accounts';
 import CreateAccount from '~pages/popup/signed/CreateAccount';
-import Details from '~pages/popup/signed/Details';
+import TransactionDetails from '~pages/popup/signed/TransactionDetails';
 import Export from '~pages/popup/signed/Export';
 import ImportSeed from '~pages/popup/signed/ImportSeed';
 import Transactions from '~pages/popup/signed/Transactions';
@@ -66,22 +66,22 @@ const PopupRouter = () => {
             <Route path="/account/export/:address">
               {wrapWithErrorBoundary(<Export />, 'export-address')}
             </Route>
-            <Route path="/account/import-seed">
+            <Route path="/account/import-seed/:address">
               {wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}
             </Route>
-            <Route path="/wallet/details">
+            <Route path="/account/details/:address">
               {wrapWithErrorBoundary(<Wallet />, 'wallet')}
             </Route>
-            <Route path="/wallet/transactions/:address">
+            <Route path="/account/transactions/:address">
               {wrapWithErrorBoundary(<Transactions />, 'transactions')}
             </Route>
-            <Route path="/wallet/transaction/:txnId">
-              {wrapWithErrorBoundary(<Details />, 'transactions')}
+            <Route path="/account/transaction/:txnId">
+              {wrapWithErrorBoundary(<TransactionDetails />, 'transactions')}
             </Route>
-            <Route path="/wallet/send">
+            <Route path="/account/send/:address">
               {wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}
             </Route>
-            <Route path="/wallet/receive">
+            <Route path="/account/receive/:address">
               {wrapWithErrorBoundary(
                 <WalletReceiveTokens />,
                 'wallet-receive-token'

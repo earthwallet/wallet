@@ -66,7 +66,7 @@ const Page = () => {
       controller.accounts
         .createAccount(newMnemonic, 'ICP', name, password)
         .then(() => {
-          history.replace('/wallet/details');
+          history.replace('/account/details');
         });
     }
   }, [name, password, newMnemonic]);

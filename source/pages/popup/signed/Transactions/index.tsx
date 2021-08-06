@@ -223,7 +223,7 @@ const Transactions = ({
                   key={index}
                   onClick={() =>
                     history.push(
-                      `/wallet/transaction/${transaction?.transaction?.transaction_identifier?.hash}`
+                      `/account/transaction/${transaction?.transaction?.transaction_identifier?.hash}`
                     )
                   }
                 >

@@ -67,7 +67,7 @@ const Page = () => {
         <div
           className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
         >
-          <Link className={styles.transactionsCont} to="/wallet/receive">
+          <Link className={styles.transactionsCont} to="/account/receive">
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_rec} />
               <div className={styles.tokenActionLabel}>Receive</div>
@@ -76,7 +76,7 @@ const Page = () => {
         </div>
 
         <div className={clsx(styles.tokenActionView, styles.sendTokenAction)}>
-          <Link to="/wallet/send">
+          <Link to="/account/send">
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_send} />
               <div className={styles.tokenActionLabel}>Send</div>
@@ -86,7 +86,7 @@ const Page = () => {
       </div>
 
       <Link
-        to={`/wallet/transactions/d3e13d4777e22367532053190b6c6ccf57444a61337e996242b1abfb52cf92c8`}
+        to={`/account/transactions/d3e13d4777e22367532053190b6c6ccf57444a61337e996242b1abfb52cf92c8`}
       >
         <div className={styles.assetsAndActivityDiv}>
           <div className={styles.tabsPill}></div>

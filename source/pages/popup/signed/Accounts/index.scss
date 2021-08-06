@@ -191,7 +191,7 @@
   margin: 2px 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 244px;
+  max-width: 270px;
   white-space: nowrap;
 
   &.displaced {
@@ -206,8 +206,17 @@
   position: relative;
   display: block;
   color: #ffffff;
+  backdrop-filter: blur(15px);
   &:hover {
     background-color: $buttonBackgroundHover;
     cursor: pointer;
   }
+}
+
+.addressDisplay {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 270px;
+  white-space: nowrap;
+  opacity: 0.7;
 }
