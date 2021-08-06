@@ -53,7 +53,6 @@ const Page = () => {
           step={step1 ? 1 : 2}
           text={'Import account'}
         />
-        {seed}
         {step1 ? (
           <div>
             <div className={styles.earthInputCont}>
