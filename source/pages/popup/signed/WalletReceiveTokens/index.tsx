@@ -15,7 +15,7 @@ interface Props extends RouteComponentProps<{ address: string }> {
 }
 const WalletReceiveTokens = ({
   match: {
-    params: { address = '' },
+    params: { address },
   },
 }: Props) => {
   const history = useHistory();
