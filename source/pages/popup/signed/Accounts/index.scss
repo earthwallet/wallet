@@ -29,7 +29,7 @@
   line-height: 150%;
   color: #fff;
   width: 100%;
-  padding-left: 40px;
+  padding-left: 24px;
 }
 
 .accountsCont {
@@ -135,6 +135,8 @@
   cursor: pointer;
   display: flex;
   justify-content: space-between;
+  font-size: 14px;
+  line-height: 26px;
 }
 
 .link {
@@ -206,7 +208,6 @@
   position: relative;
   display: block;
   color: #ffffff;
-  backdrop-filter: blur(15px);
   &:hover {
     background-color: $buttonBackgroundHover;
     cursor: pointer;
