@@ -66,13 +66,10 @@
 
 .mnemonicHelpTitle {
   font-weight: 500;
-  font-size: 16px;
+  font-size: 12px;
   line-height: 129%;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-
-  color: #dbe4f2;
+  color: rgb(219, 228, 242);
   margin-bottom: 12px;
 
   & > small {
