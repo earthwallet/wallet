@@ -48,6 +48,7 @@ const WalletSendTokens = ({
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
   const [usdValue, setUsdValue] = useState<number>(0);
   const [walletBalance, setWalletBalance] = useState<any | null | keyable>(null);
+<<<<<<< HEAD
   const [selectCredit, setSelectCredit] = useState<boolean>(true);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -140,11 +141,99 @@ const WalletSendTokens = ({
 
     return true;
   };
+=======
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isBusy, setIsBusy] = useState(false);
+  const [paymentHash, setPaymentHash] = useState<string>('');
+  const selectedNetwork = 'ICP';
+>>>>>>> 60b7fb8 (Update send tokens)
+
+  const getICPUSDValue = async () => {
+    const fetchHeaders = new Headers();
+
+    fetchHeaders.append('accept', 'application/json');
+
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      headers: fetchHeaders,
+      redirect: 'follow'
+    };
+
+    const factor: keyable = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd', requestOptions)
+      .then((response) => response.json())
+      .catch((error) => console.log('error', error));
+
+    setUsdValue(parseFloat(factor['internet-computer'].usd));
+  };
+
+  const loadBalance = async (address: string) => {
+    setLoading(true);
+    const balance: keyable = await getBalance(address, 'ICP');
+
+    setLoading(false);
+
+    if (balance && balance?.balances != null) { setWalletBalance(balance); }
+  };
+
+  useEffect(() => {
+
+
+    if (selectedAccount && selectedAccount?.id) {
+      loadBalance(selectedAccount?.id);
+      getICPUSDValue();
+    }
+  }, [selectedAccount]);
+
+
+  const sendTx = async () => {
+    setIsBusy(true);
+
+    const json_secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
+
+    if (isJsonString(json_secret)) {
+      const currentIdentity = Ed25519KeyIdentity.fromJSON(json_secret);
+      const address = address_to_hex(
+        principal_id_to_address(currentIdentity.getPrincipal())
+      );
+
+      setLoadingSend(true);
+
+      try {
+        if (selectedAmount === 0) {
+          alert('Amount cannot be 0');
+        }
+
+        const hash: any = await send(
+          currentIdentity,
+          selectedRecp,
+          address,
+          selectedAmount,
+          'ICP'
+        );
+
+        await loadBalance(address);
+        setLoadingSend(false);
+        setPaymentHash(hash || '');
+        setIsBusy(false);
+      } catch (error) {
+        console.log(error);
+        setLoadingSend(false);
+        setIsBusy(false);
+      }
+    } else {
+      setError('Wrong password! Please try again');
+      setIsBusy(false);
+    }
+
+    return true;
+  };
 
   const onPassChange = useCallback(
     (password: string) => {
       setPass(password);
       setError('');
+<<<<<<< HEAD
 
       let secret = '';
       try {
@@ -157,6 +246,11 @@ const WalletSendTokens = ({
       }
       console.log(secret, selectedAccount?.vault.encryptedJson, selectedAccount, 'onPassChange');
       if (selectedAccount.symbol === 'ICP' ? !isJsonString(secret) : !validateMnemonic(secret)) {
+=======
+      const json_secret = decryptString(selectedAccount?.vault.encryptedJson, password);
+      console.log(json_secret, 'onPassChange');
+      if (!isJsonString(json_secret)) {
+>>>>>>> 60b7fb8 (Update send tokens)
         setError('Wrong password! Please try again');
       }
     }
@@ -209,12 +303,19 @@ const WalletSendTokens = ({
                         highlightColor="#000">
                         <Skeleton width={150} />
                       </SkeletonTheme>
+<<<<<<< HEAD
                       : selectedAccount?.symbol !== 'ICP'
                         ? <span className={styles.tokenBalanceText}>Balance: 0 {selectedAccount?.symbol}</span>
                         : <span className={styles.tokenBalanceText}>Balance: {walletBalance && walletBalance?.balances[0] &&
                           `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} 
                         ${walletBalance?.balances[0]?.currency?.symbol}`
                         }</span>
+=======
+                      : <span className={styles.tokenBalanceText}>Balance: {walletBalance && walletBalance?.balances[0] &&
+                        `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} 
+                        ${walletBalance?.balances[0]?.currency?.symbol}`
+                      }</span>
+>>>>>>> 60b7fb8 (Update send tokens)
                     }
                   </div>
                 </div>

@@ -1251,6 +1251,22 @@
     node-forge "^0.10.0"
     tweetnacl "^1.0.3"
 
+"@dfinity/rosetta-client@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/rosetta-client/-/rosetta-client-0.6.0.tgz#eae81b41b1501b083c3fae50abaac31b78bc789c"
+  integrity sha512-md35P5/Na0r1fU83ADKbSa7O/xokNG0V8Q2SoGyVmhlXvt/7xcQawOQllxovgIfrwSz1lYlJMbrhOkz9wQ+XUw==
+  dependencies:
+    "@dfinity/candid" "^0.9.1"
+    "@dfinity/principal" "^0.9.1"
+    axios "^0.21.1"
+    cbor "^7.0.5"
+    crc "^3.8.0"
+    google-protobuf "^3.17.3"
+    js-sha256 "^0.9.0"
+    json-bigint "^1.0.0"
+    node-forge "^0.10.0"
+    tweetnacl "^1.0.3"
+
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.3.tgz#90420f9f9c6d3987f176a19a7d8e764271a2f55d"
@@ -6846,7 +6862,7 @@ globule@^1.0.0:
     lodash "~4.17.10"
     minimatch "~3.0.2"
 
-google-protobuf@^3.17.1:
+google-protobuf@^3.17.1, google-protobuf@^3.17.3:
   version "3.17.3"
   resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.17.3.tgz#f87595073545a77946c8f0b67c302c5f7646d700"
   integrity sha512-OVPzcSWIAJ+d5yiHyeaLrdufQtrvaBrF4JQg+z8ynTkbO3uFcujqXszTumqg1cGsAsjkWnI+M5B1xZ19yR4Wyg==
