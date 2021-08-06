@@ -1,5 +1,21 @@
 # Earth Wallet (Multichain Support)
 
+## Dapp Injections for loading web3 accounts
+
+```js
+const handleEarthEnable = () => {
+    window.earth.
+      .enable()
+      .then((account) => {
+        console.log("Successfully connected to Earth wallet.🌍", account);
+        onConnect();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+  ```
+
 ## Project structure
 
     .
