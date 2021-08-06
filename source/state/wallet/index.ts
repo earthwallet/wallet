@@ -12,7 +12,7 @@ const initialState: IWalletState = {
   newMnemonic: '',
   loading: false,
   error: '',
-  activeNetwork: NetworkType.Ethereum,
+  activeNetwork: NetworkType.ICP,
 };
 
 const WalletState = createSlice({

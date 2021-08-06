@@ -12,6 +12,7 @@ export enum ChainId {
 }
 
 export enum NetworkType {
+  ICP = 'Internet Computer',
   Bitcoin = 'Bitcoin',
   BitcoinTestnet = 'Bitcoin Testnet',
   Ethereum = 'Ethereum',
@@ -79,4 +80,14 @@ export interface AssetPriceInfo {
   id: string;
   price: number;
   priceChange: number;
+}
+
+export interface DAppInfo {
+  origin: string;
+  logo: string;
+  title: string;
+}
+
+export interface ConnectedDApps {
+  [dappId: string]: DAppInfo;
 }

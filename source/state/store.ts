@@ -11,6 +11,7 @@ import app from './app';
 import wallet from './wallet';
 import assets from './assets';
 import entities from './entities';
+import dapp from './dapp';
 
 import { saveState, loadState } from './localStorage';
 
@@ -28,6 +29,7 @@ const store: Store = configureStore({
     wallet,
     assets,
     entities,
+    dapp,
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
@@ -43,6 +45,7 @@ store.subscribe(
       wallet: state.wallet,
       assets: state.assets,
       entities: state.entities,
+      dapp: state.dapp,
     });
   }, 1000)
 );
