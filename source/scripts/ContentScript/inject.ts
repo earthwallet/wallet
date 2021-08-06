@@ -164,4 +164,61 @@ ${
 }
 `;
 
-export { providerManager, ethereumProvider };
+const earthProvider = () => `
+
+const REQUEST_MAP = {
+  isConnected: 'wallet.isConnected',
+  getNetwork: 'wallet.getNetwork',
+  getAddress: 'wallet.getAddress',
+  getBalance: 'wallet.getBalance',
+  signMessage: 'wallet.signMessage',
+  sendTransaction: 'wallet.sendTransaction',
+}
+
+async function handleRequest (req) {
+  const icp = window.providerManager.getProviderFor('ICP')
+  if (req.method === 'wallet_sendTransaction') {
+    const to = req.params[0].to
+    const value = req.params[0].value.toString(16)
+    return icp.getMethod('wallet.sendTransaction')({ to, value })
+  }
+  const method = REQUEST_MAP[req.method] || req.method
+  return icp.getMethod(method)(...req.params)
+}
+
+window.earth = {
+  evtRegMap: {},
+  isConnected: async () => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.isConnected')()
+  },
+  enable: async () => {
+    const accepted = await window.providerManager.enable()
+    if (!accepted) throw new Error('User rejected')
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.getAddress')()
+  },
+  request: async (req) => {
+    const params = req.params || []
+    return handleRequest({
+      method: req.method, params
+    })
+  },
+  on: (method, callback) => {
+    const id = Date.now() + '.' + Math.random();
+    
+    window.earth.evtRegMap[id] = callback;
+
+    window.addEventListener(id, ({detail}) => {
+      const rCallback = window.earth.evtRegMap[id];
+      if (rCallback) {
+        rCallback(JSON.parse(detail));
+      }
+    })
+
+    window.postMessage({ id, type: 'EARTH_EVENT_MESSAGE', data: { method } }, '*')
+  }
+}
+`;
+
+export { providerManager, ethereumProvider, earthProvider };

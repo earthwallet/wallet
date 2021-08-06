@@ -25,7 +25,7 @@ export class Script {
         const { id, type, data } = event.data;
         if (!id || !type) return;
 
-        if (type === 'EARTH_EVENT_REG') {
+        if (type === 'EARTH_EVENT_MESSAGE') {
           this.emitter.on(id, (result) => {
             //console.log('Script - emitter', id, result);
             window.dispatchEvent(

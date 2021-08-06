@@ -1,21 +1,28 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { WalletDapps, WalletDappState } from '~global/types';
+import { ConnectedDApps, DAppInfo } from '~global/types';
 
-const initialState: WalletDapps = {};
+const initialState: ConnectedDApps = {};
 
-const AssetState = createSlice({
-  name: 'assets',
+// createSlice comes with immer produce so we don't need to take care of immutational update
+const DAppState = createSlice({
+  name: 'dapp',
   initialState,
   reducers: {
-    connectDapp(state: WalletDapps, action: PayloadAction<WalletDappState>) {
+    listNewDapp(
+      state: ConnectedDApps,
+      action: PayloadAction<{ id: string; dapp: DAppInfo }>
+    ) {
       return {
         ...state,
-        [action.payload.id]: action.payload,
+        [action.payload.id]: action.payload.dapp,
       };
+    },
+    unlistDapp(state: ConnectedDApps, action: PayloadAction<{ id: string }>) {
+      delete state[action.payload.id];
     },
   },
 });
 
-export const { connectDapp } = AssetState.actions;
+export const { listNewDapp, unlistDapp } = DAppState.actions;
 
-export default AssetState.reducer;
+export default DAppState.reducer;
