@@ -2,7 +2,6 @@ import React from 'react';
 import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
 import StarterPage from '~pages/popup/started/StarterPage';
-//import Page from '~pages/popup/signed/Page';
 import Accounts from '~pages/popup/signed/Accounts';
 import CreateAccount from '~pages/popup/signed/CreateAccount';
 import TransactionDetails from '~pages/popup/signed/TransactionDetails';

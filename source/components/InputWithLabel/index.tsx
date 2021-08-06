@@ -91,7 +91,7 @@ function InputWithLabel({
         />
       </div>
       {isCapsLock && (
-        <Warning isBelowInput>{'Warning: Caps lock is on'}</Warning>
+        <Warning className={styles.warning} isBelowInput>{'Warning: Caps lock is on'}</Warning>
       )}
     </Label>
   );

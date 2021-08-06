@@ -7,10 +7,20 @@ import ICON_COPY from '~assets/images/icon_copy.svg';
 import Header from '~components/Header';
 import QRCode from 'qrcode.react';
 import NextStepButton from '~components/NextStepButton';
+import { selectAccountById } from '~state/wallet';
+import { useSelector } from 'react-redux';
+import { RouteComponentProps, withRouter } from 'react-router';
 
-const Page = () => {
+interface Props extends RouteComponentProps<{ address: string }> {
+}
+const WalletReceiveTokens = ({
+  match: {
+    params: { address = '' },
+  },
+}: Props) => {
   const history = useHistory();
-  const selectedAccount = { address: '5xxx', name: 'assd' };
+  const selectedAccount = useSelector(selectAccountById(address));
+  const _onCopy = console.log;
 
   return (
     <div className={styles.page}>
@@ -18,11 +28,11 @@ const Page = () => {
       <div>
         <div className={styles.accountShare}>Share your Public Address</div>
         <div className={styles.accountDetail}>
-          {selectedAccount?.address && (
+          {selectedAccount?.id && (
             <div className={styles.addressDisplay}>
-              {getShortAddress(selectedAccount?.address)}
-              <CopyToClipboard text={selectedAccount?.address}>
-                <img src={ICON_COPY} />
+              {getShortAddress(selectedAccount?.id)}
+              <CopyToClipboard text={selectedAccount?.id}>
+                <img src={ICON_COPY} className={styles.copyIcon} onClick={_onCopy} />
               </CopyToClipboard>
             </div>
           )}
@@ -32,7 +42,7 @@ const Page = () => {
               bgColor="#0000"
               fgColor="#DDD"
               size={184}
-              value={selectedAccount?.address || 'xxx'}
+              value={selectedAccount?.id || 'xxx'}
             />
           </div>
         </div>
@@ -49,7 +59,7 @@ const Page = () => {
         <NextStepButton
           disabled={false}
           onClick={() =>
-            history.push(`/account/export/${selectedAccount?.address || ''}`)
+            history.push(`/account/export/${selectedAccount?.id || ''}`)
           }
         >
           {'Export Account'}
@@ -59,4 +69,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default withRouter(WalletReceiveTokens);

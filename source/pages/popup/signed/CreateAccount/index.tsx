@@ -85,15 +85,14 @@ const Page = () => {
       <HeaderWithSteps
         backOverride={step === 1 ? undefined : _onPreviousStep}
         step={step}
-        text={'Create an account ' + password}
+        text={'Create an account'}
       />
       {newMnemonic !== '' &&
         (step === 1 ? (
           <div>
             <div className={styles.earthInputCont}>
               <div className={styles.labelText}>
-                Account name {name}
-                {isBusy}
+                Account name
               </div>
               <input
                 autoCapitalize="off"
@@ -214,6 +213,7 @@ const Page = () => {
                   </div>
                 </div>
                 <NextStepButton
+                  loading={isBusy}
                   disabled={!secondChecked || !password}
                   onClick={!secondChecked ? console.log : _onCreate}
                 >

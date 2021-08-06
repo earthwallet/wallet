@@ -13,11 +13,10 @@ import { getShortAddress } from '~utils/common';
 import clsx from 'clsx';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
-import { selectActiveAccount, selectAccountById } from '~state/wallet';
+import { selectAccountById } from '~state/wallet';
 import { getBalance, getTransactions } from '@earthwallet/sdk';
 
-interface Props extends RouteComponentProps<{ address?: string }> {
-  className?: string;
+interface Props extends RouteComponentProps<{ address: string }> {
 }
 interface keyable {
   [key: string]: any
@@ -25,7 +24,7 @@ interface keyable {
 
 const Wallet = ({
   match: {
-    params: { address = '' },
+    params: { address },
   },
 }: Props) => {
 
@@ -33,10 +32,8 @@ const Wallet = ({
   //const _onCopy = useCallback((): void => show('Copied'), [show]);
   const _onCopy = console.log;
 
-  const selectedAccountFromRouter = useSelector(selectAccountById(address));
-  const selectedAccountFromRedux = useSelector(selectActiveAccount);
 
-  const selectedAccount = address === '' ? selectedAccountFromRedux : selectedAccountFromRouter;
+  const selectedAccount = useSelector(selectAccountById(address));
   const [loading, setLoading] = useState<boolean>(false);
   const [usdValue, setUsdValue] = useState<number>(0);
   const [walletBalance, setWalletBalance] = useState<any | null>(null);
