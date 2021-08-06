@@ -64,17 +64,16 @@ const Wallet = ({
     setUsdValue((balance / Math.pow(10, decimals)) * parseFloat(factor['internet-computer'].usd));
   };
 
-  const loadTransactions = async (address: string) => {
-    const transactions = await getTransactions(address, 'ICP');
-
-    setWalletTransactions(transactions);
-  };
 
   useEffect(() => {
+    const loadTransactions = async (address: string) => {
+      const transactions = await getTransactions(address, 'ICP');
+      setWalletTransactions(transactions);
+    };
+
     const loadBalance = async (address: string) => {
       setLoading(true);
       const balance: keyable = await getBalance(address, 'ICP');
-
       setLoading(false);
 
       if (balance && balance?.balances != null) {
@@ -83,9 +82,9 @@ const Wallet = ({
       }
     };
 
-    if (selectedAccount && selectedAccount?.address) {
-      loadBalance(selectedAccount?.address);
-      loadTransactions(selectedAccount?.address);
+    if (selectedAccount && selectedAccount?.id) {
+      loadBalance(selectedAccount?.id);
+      loadTransactions(selectedAccount?.id);
     }
   }, [selectedAccount]);
 
@@ -138,7 +137,7 @@ const Wallet = ({
         <div
           className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
         >
-          <Link className={styles.transactionsCont} to={"/account/receive/" + selectedAccount.id}>
+          <Link className={styles.transactionsCont} to={"/account/receive/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_rec} />
               <div className={styles.tokenActionLabel}>Receive</div>
@@ -147,7 +146,7 @@ const Wallet = ({
         </div>
 
         <div className={clsx(styles.tokenActionView, styles.sendTokenAction)}>
-          <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount.id}>
+          <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_send} />
               <div className={styles.tokenActionLabel}>Send</div>
@@ -158,7 +157,7 @@ const Wallet = ({
 
       <Link
         className={styles.resetLink}
-        to={`/account/transactions/d3e13d4777e22367532053190b6c6ccf57444a61337e996242b1abfb52cf92c8`}
+        to={`/account/transactions/${selectedAccount?.id}`}
       >
         <div className={styles.assetsAndActivityDiv}>
           <div className={styles.tabsPill}></div>

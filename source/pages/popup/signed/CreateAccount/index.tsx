@@ -63,10 +63,10 @@ const Page = () => {
     if (name && password && newMnemonic) {
       console.log('createAccount');
       setIsBusy(true);
+      const callback = (address: string) => history.replace('/account/details/' + address);
       controller.accounts
-        .createAccount(newMnemonic, 'ICP', name, password)
+        .createOrUpdateAccount(newMnemonic, 'ICP', name, password, callback)
         .then(() => {
-          history.replace('/account/details');
         });
     }
   }, [name, password, newMnemonic]);

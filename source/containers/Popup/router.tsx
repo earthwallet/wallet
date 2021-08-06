@@ -66,7 +66,7 @@ const PopupRouter = () => {
             <Route path="/account/export/:address">
               {wrapWithErrorBoundary(<Export />, 'export-address')}
             </Route>
-            <Route path="/account/import/:address">
+            <Route path="/account/import">
               {wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}
             </Route>
             <Route path="/account/details/:address">

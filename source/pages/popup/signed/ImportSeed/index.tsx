@@ -5,18 +5,18 @@ import styles from './index.scss';
 import HeaderWithSteps from '~components/HeaderWithSteps';
 import SeedAndPath from './SeedAndPath';
 import AccountNamePasswordCreation from './AccountNamePasswordCreation';
+import { useController } from '~hooks/useController';
+import { useHistory } from 'react-router-dom';
 
-export interface AccountInfo {
-  address: string;
-  genesis?: string;
-  suri: string;
-}
+
 
 const Page = () => {
   //  const history = useHistory();
-  const [_name, setName] = useState<string | null>(null);
+  const [seed, setSeed] = useState<string | null>(null);
   const [step1, setStep1] = useState(true);
-  const [account, setAccount] = useState<AccountInfo | null>(null);
+  const [isBusy, setIsBusy] = useState(false);
+  const controller = useController();
+  const history = useHistory();
 
   const _onNextStep = useCallback(() => {
     setStep1(false);
@@ -24,7 +24,26 @@ const Page = () => {
   const _onBackClick = useCallback(() => {
     setStep1(true);
   }, []);
-  console.log(account, _name);
+
+
+
+  const _onCreate = useCallback((name: string, password: string): void => {
+    console.log('createAccount');
+
+    // this should always be the case
+    if (name && password && seed) {
+      console.log('createAccount');
+      setIsBusy(true);
+      const callback = (address: string) => history.replace('/account/details/' + address);
+
+      controller.accounts
+        .createOrUpdateAccount(seed, 'ICP', name, password, callback)
+        .then(() => {
+        });
+    }
+  }, [seed]);
+
+
 
   return (
     <div className={styles.page}>
@@ -34,6 +53,7 @@ const Page = () => {
           step={step1 ? 1 : 2}
           text={'Import account'}
         />
+        {seed}
         {step1 ? (
           <div>
             <div className={styles.earthInputCont}>
@@ -41,7 +61,7 @@ const Page = () => {
                 Enter your Mnemonic Seed phrase
               </div>
               <SeedAndPath
-                onAccountChange={setAccount}
+                onSeedChange={setSeed}
                 onNextStep={_onNextStep}
               />
             </div>
@@ -49,10 +69,9 @@ const Page = () => {
         ) : (
           <AccountNamePasswordCreation
             buttonLabel={'Add account'}
-            isBusy={false}
+            isBusy={isBusy}
             onBackClick={_onBackClick}
-            onCreate={console.log}
-            onNameChange={setName}
+            onCreate={_onCreate}
           />
         )}
       </div>

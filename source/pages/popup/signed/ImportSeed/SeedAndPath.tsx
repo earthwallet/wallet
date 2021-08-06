@@ -1,34 +1,44 @@
-// Copyright 2021 @earthwallet/extension-ui authors & contributors
-// SPDX-License-Identifier: Apache-2.0
 
-
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './index.scss';
 
 import NextStepButton from '~components/NextStepButton';
 import TextAreaWithLabel from '~components/TextAreaWithLabel';
 import Warning from '~components/Warning';
+import { validateMnemonic } from 'bip39';
 
-interface AccountInfo {
-    address: string;
-    genesis?: string;
-    suri: string;
-}
+
 interface Props {
     className?: string;
     onNextStep: () => void;
-    onAccountChange: (account: AccountInfo | null) => void;
+    onSeedChange: (seed: string | null) => void;
 }
 
 
-function SeedAndPath({ onNextStep }: Props): React.ReactElement {
-    const address = '';
+function SeedAndPath({ onNextStep, onSeedChange }: Props): React.ReactElement {
+
     const [seed, setSeed] = useState<string | null>(null);
+    const [isValidSeed, setIsValidSeed] = useState<boolean>(false);
+
     const error = '';
-    //const genesis = 'the_icp';
 
 
+    useEffect(() => {
+        // No need to validate an empty seed
+        // we have a dedicated error for this
+        if (!seed) {
+            onSeedChange(null);
+            setIsValidSeed(false);
+            return;
+        }
+        if (validateMnemonic(seed)) {
+            setIsValidSeed(true);
+        }
+        onSeedChange(seed);
+    }, [seed, onSeedChange]);
+
+
+    console.log('isValidSeed', isValidSeed);
     return (
         <div>
             <>
@@ -62,13 +72,6 @@ function SeedAndPath({ onNextStep }: Props): React.ReactElement {
                         {('Mnemonic needs to contain 12, 15, 18, 21, 24 words')}
                     </Warning>
                 )}
-                {/*   <Dropdown
-          className='genesisSelection'
-          label={('Network')}
-          onChange={setGenesis}
-          options={genesisOptions}
-          value={genesis}
-        /> */}
                 {!!error && !!seed && (
                     <Warning
                         isDanger
@@ -79,7 +82,7 @@ function SeedAndPath({ onNextStep }: Props): React.ReactElement {
             </>
             <div className={styles.nextCont}>
                 <NextStepButton
-                    disabled={!address || !!error}
+                    disabled={!isValidSeed || !!error}
                     onClick={onNextStep}
                 >
                     {('Next')}

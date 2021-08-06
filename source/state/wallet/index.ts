@@ -36,7 +36,7 @@ const WalletState = createSlice({
     },
     updateActiveAccount(
       state: IWalletState,
-      action: PayloadAction<EarthKeyringPair>
+      action: PayloadAction<EarthKeyringPair & { id: string }>
     ) {
       state.activeAccount = action.payload;
     },

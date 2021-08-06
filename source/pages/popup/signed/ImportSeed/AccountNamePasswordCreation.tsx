@@ -11,10 +11,9 @@ interface Props {
   isBusy: boolean;
   onBackClick: () => void;
   onCreate: (name: string, password: string) => void | Promise<void | boolean>;
-  onNameChange: (name: string) => void;
 }
 
-function AccountNamePasswordCreation ({ buttonLabel, isBusy, onCreate, onNameChange }: Props): React.ReactElement<Props> {
+function AccountNamePasswordCreation({ buttonLabel, isBusy, onCreate }: Props): React.ReactElement<Props> {
   const [name, setName] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
 
@@ -23,26 +22,21 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onCreate, onNameCha
     [name, password, onCreate]
   );
 
-  const _onNameChange = useCallback(
-    (name: string | null) => {
-      onNameChange(name || '');
-      setName(name);
-    },
-    [onNameChange]
-  );
 
   return (
     <>
       <Name
         isFocused
-        onChange={_onNameChange}
+        onChange={setName}
       />
       <Password onChange={setPassword} />
-      <div style={{ padding: '0 27px',
+      <div style={{
+        padding: '0 27px',
         marginBottom: 30,
         position: 'absolute',
         bottom: 0,
-        left: 0 }}>
+        left: 0
+      }}>
         <NextStepButton
           data-button-action='add new root'
           disabled={!password || !name}

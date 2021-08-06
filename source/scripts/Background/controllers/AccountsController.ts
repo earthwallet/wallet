@@ -64,13 +64,13 @@ export default class AccountsController implements IAccountsController {
     }
   }
 
-  async createAccount(
+  async createOrUpdateAccount(
     mnemonic: string,
     symbol: string,
     name: string,
-    password: string
+    password: string,
+    callback?: (address: string) => void
   ) {
-    console.log('createAccount', mnemonic, symbol);
     const existingActiveAccount = store.getState().activeAccount;
 
     const keypair = await createWallet(mnemonic, symbol);
@@ -79,7 +79,7 @@ export default class AccountsController implements IAccountsController {
       existingActiveAccount !== null &&
       existingActiveAccount?.address !== keypair.address
     ) {
-      store.dispatch(updateActiveAccount(keypair));
+      store.dispatch(updateActiveAccount({ id: keypair.address, ...keypair }));
     }
 
     store.dispatch(
@@ -107,6 +107,7 @@ export default class AccountsController implements IAccountsController {
         ],
       })
     );
+    callback && callback(keypair.address);
   }
 
   getBalance = async (address: string, symbol = 'ICP') => {
@@ -137,7 +138,7 @@ export default class AccountsController implements IAccountsController {
         'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano',
         symbol
       );
-      newAccounts.push(keypair);
+      newAccounts.push({ id: keypair.address, ...keypair });
     }
     store.dispatch(updateActiveAccount(newAccounts[0]));
     store.dispatch(updateAccounts(newAccounts));

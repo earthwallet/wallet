@@ -15,14 +15,3 @@ export function useNewMnemonic() {
 
   return controller.accounts.createNewMnemonic();
 }
-
-export function useCreateAccount(
-  mnemonic: string,
-  symbol: string,
-  name: string,
-  password: string
-) {
-  const controller = useController();
-
-  return controller.accounts.createAccount(mnemonic, symbol, name, password);
-}

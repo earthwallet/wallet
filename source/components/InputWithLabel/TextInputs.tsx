@@ -43,9 +43,27 @@ const _Input = ({
     className={clsx(styles.input, withError && styles.errorinput)}
   />
 );
-const _TextArea = ({ className, withError, placeholder }: TaProps) => (
+const _TextArea = ({ className,
+  withError,
+  autoCapitalize,
+  autoCorrect,
+  autoFocus,
+  disabled,
+  onBlur,
+  onChange,
+  placeholder,
+  readOnly,
+  spellCheck, }: TaProps) => (
   <textarea
+    autoCapitalize={autoCapitalize}
+    autoCorrect={autoCorrect}
+    autoFocus={autoFocus}
+    onBlur={onBlur}
+    onChange={onChange}
+    disabled={disabled}
     placeholder={placeholder}
+    readOnly={readOnly}
+    spellCheck={spellCheck}
     className={clsx(
       className,
       styles.textarea,
