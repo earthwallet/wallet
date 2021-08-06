@@ -25,11 +25,16 @@ function AccountNamePasswordCreation({ buttonLabel, isBusy, onCreate }: Props): 
 
   return (
     <>
-      <Name
-        isFocused
-        onChange={setName}
-      />
-      <Password onChange={setPassword} />
+      <div style={{
+        margin: '0 24px'
+      }}>
+        <Name
+          isFocused
+          onChange={setName}
+        />
+        <Password onChange={setPassword} />
+      </div>
+
       <div style={{
         padding: '0 27px',
         marginBottom: 30,
