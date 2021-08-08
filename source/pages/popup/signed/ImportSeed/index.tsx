@@ -28,11 +28,9 @@ const Page = () => {
 
 
   const _onCreate = useCallback((name: string, password: string): void => {
-    console.log('createAccount');
 
     // this should always be the case
     if (name && password && seed) {
-      console.log('createAccount');
       setIsBusy(true);
       const callback = (address: string) => history.replace('/account/details/' + address);
 

@@ -36,7 +36,6 @@ const Details = ({
   const [usdValue, setUsdValue] = useState<number>(0);
   const [transDetail, setTransDetail] = useState<any | null>(null);
 
-  console.log(loading, usdValue);
 
   const fetchTransactionDetail = async (transactionId: string) => {
     const myHeaders = new Headers();

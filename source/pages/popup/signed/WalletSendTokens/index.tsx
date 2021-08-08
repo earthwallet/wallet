@@ -140,7 +140,6 @@ const WalletSendTokens = ({
       setPass(password);
       setError('');
       const json_secret = decryptString(selectedAccount?.vault.encryptedJson, password);
-      console.log(json_secret, 'onPassChange');
       if (!isJsonString(json_secret)) {
         setError('Wrong password! Please try again');
       }
