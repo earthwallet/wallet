@@ -53,11 +53,17 @@ const Page = () => {
   const _onCreate = useCallback((): void => {
     if (name && password && newMnemonic) {
       setIsBusy(true);
-      const callback = (address: string) => history.replace('/portfolio?hightlight=' + address);
+      const callback = (address: string) =>
+        history.replace('/portfolio?hightlight=' + address);
       controller.accounts
-        .createOrUpdateAccounts(newMnemonic, DEFAULT_SYMBOLS.map(symbolObj => symbolObj.symbol), name, password, callback)
-        .then(() => {
-        });
+        .createOrUpdateAccounts(
+          newMnemonic,
+          DEFAULT_SYMBOLS.map((symbolObj) => symbolObj.symbol),
+          name,
+          password,
+          callback
+        )
+        .then(() => {});
     }
   }, [name, password, newMnemonic]);
 
@@ -81,9 +87,7 @@ const Page = () => {
         (step === 1 ? (
           <div>
             <div className={styles.earthInputCont}>
-              <div className={styles.labelText}>
-                Account name
-              </div>
+              <div className={styles.labelText}>Account name</div>
               <input
                 autoCapitalize="off"
                 autoCorrect="off"
@@ -130,8 +134,7 @@ const Page = () => {
                 </div>
                 <div className={styles.mnemonicHelp}>
                   <div className={styles.mnemonicHelpTitle}>
-                    This is a generated 12-word
-                    mnemonic seed.
+                    This is a generated 12-word mnemonic seed.
                     {/* <small>
                       Please write down your wallet’s mnemonic seed and keep it
                       in a safe place. The mnemonic can be used to restore your

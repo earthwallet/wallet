@@ -237,14 +237,11 @@ const WalletSendTokens = ({
     (password: string) => {
       setPass(password);
       setError('');
-
-      let secret = '';
-      try {
-        secret =
-          selectedAccount.symbol !== 'ICP'
-            ? decryptString(selectedAccount?.vault.encryptedMnemonic, password)
-            : decryptString(selectedAccount?.vault.encryptedJson, password);
-      } catch (error) {
+      const json_secret = decryptString(
+        selectedAccount?.vault.encryptedJson,
+        password
+      );
+      if (!isJsonString(json_secret)) {
         setError('Wrong password! Please try again');
       }
       console.log(
