@@ -45,7 +45,6 @@ export default class AccountsController implements IAccountsController {
   }
 
   async createNewMnemonic() {
-    console.log('createNewMnemonic');
     store.dispatch(updateLoading(true));
 
     try {
@@ -111,25 +110,13 @@ export default class AccountsController implements IAccountsController {
   }
 
   getBalance = async (address: string, symbol = 'ICP') => {
-    console.log(address, symbol);
     await _getBalance(address, symbol);
   };
 
   getTransactions = async (address: string, symbol = 'ICP') => {
-    console.log(address, symbol);
     await _getTransactions(address, symbol);
   };
-
-  send = async (address: string, symbol = 'ICP') => {
-    console.log(address);
-    const id = '';
-    const to_addres = '';
-    const from_address = '';
-    const amount = 0;
-
-    await _send(id, to_addres, from_address, amount, symbol);
-  };
-
+ 
   createAccounts = async (symbols: string[]) => {
     let newAccounts = [];
 

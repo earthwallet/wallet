@@ -38,7 +38,6 @@ function SeedAndPath({ onNextStep, onSeedChange }: Props): React.ReactElement {
     }, [seed, onSeedChange]);
 
 
-    console.log('isValidSeed', isValidSeed);
     return (
         <div>
             <>

@@ -30,7 +30,6 @@ const Transactions = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [usdValue, setUsdValue] = useState<number>(0);
 
-  console.log(loading, address);
 
   const getTransactionDetail = (transaction: any): any => {
     const operations = transaction.transaction.operations
@@ -81,11 +80,9 @@ const Transactions = ({
 
   useEffect(() => {
     const loadBalance = async (address: string) => {
-      console.log(address);
       setLoading(true);
       const balance: keyable = await getBalance(address, 'ICP');
       // const balance: keyable = {};
-      console.log(balance, 'balance');
       setLoading(false);
 
       if (balance && balance?.balances != null) {

@@ -3,8 +3,26 @@
 ## Dapp Injections for loading web3 accounts
 
 ```js
+
+const injectEarth = () => {
+  return new Promise((resolve, reject) => {
+    window.addEventListener('load', () => {
+      if (window.earth) {
+        console.log('resolve(window.earth)')
+        resolve(window.earth);
+      } else {
+        reject(new Error('Earth not found!'));
+      }
+    });
+  });
+};
+
 const handleEarthEnable = () => {
-    window.earth
+  
+  //window.earth is injected
+  await injectEarth();
+
+    window?.earth
     .enable().then((account) => {
         console.log("Successfully connected to Earth wallet.🌍", account);
         onConnect();

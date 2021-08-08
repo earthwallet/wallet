@@ -57,11 +57,9 @@ const Page = () => {
   const _onCopy = () => console.log();
 
   const _onCreate = useCallback((): void => {
-    console.log('createAccount');
 
     // this should always be the case
     if (name && password && newMnemonic) {
-      console.log('createAccount');
       setIsBusy(true);
       const callback = (address: string) => history.replace('/account/details/' + address);
       controller.accounts

@@ -1,6 +1,6 @@
 {
   "name": "earth-wallet",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Earth wallet",
   "private": false,
   "type": "module",
