@@ -11,6 +11,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { getBalance, getTransactions } from '@earthwallet/sdk';
 import moment from 'moment-mini';
 import { getShortAddress } from '~utils/common';
+import { ClipLoader } from 'react-spinners';
 
 interface Props extends RouteComponentProps<{ address: string }> {
   className?: string;
@@ -115,7 +116,24 @@ const Transactions = ({
         return <div />;
     }
   };
+  if (loading) return (
+    <div className={styles.page}>
+      <div className={styles.transCont}>
+        <div
+          className={styles.backTransButton}
+          onClick={() => history.goBack()}
+        >
+          <img src={ICON_CARET} />
 
+          <div className={styles.transTitle}>Transactions</div>
+        </div>
+        <div className={styles.pageloading}>
+          <ClipLoader color={'#fffff'}
+            size={15} />
+        </div>
+      </div>
+    </div>
+  )
   return (
     <div className={styles.page}>
       <div className={styles.transCont}>

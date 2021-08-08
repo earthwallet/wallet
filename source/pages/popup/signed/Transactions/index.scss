@@ -7,8 +7,13 @@
   //assets/bg_wallet_details.png
   background: url('../../../../assets/images/bg_wallet_details.png');
 }
-
-
+.pageloading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: -webkit-fill-available;
+  width: auto;
+}
 
 .backTransButton {
   display: flex;
