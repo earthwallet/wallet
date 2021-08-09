@@ -184,12 +184,19 @@ Then run the following:
 Note: By default the `manifest.json` is set with version `0.0.0`. The webpack loader will update the version in the build with that of the `package.json` version. In order to release a new version, update version in `package.json` and run script.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 # ♾️ Contributors
 
 =======
 
 # Contributors
+
+=======
+
+# ♾️ Contributors
+
+> > > > > > > 209bbab (Add links)
 
 > > > > > > > 56671ff (Update readme)
 
@@ -199,12 +206,19 @@ If you want to contribute code please join our [Developer Server](https://discor
 Thanks to all the people who contribute!
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 # 🈚 License
 
 =======
 
 # License
+
+=======
+
+# 🈚 License
+
+> > > > > > > 209bbab (Add links)
 
 > > > > > > > 56671ff (Update readme)
 
