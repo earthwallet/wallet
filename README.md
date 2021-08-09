@@ -16,7 +16,12 @@ Earth Wallet is a next generation self custody wallet built for the Internet Com
 
 ## 🎉 Now in Beta with over 3000 users!
 
+<<<<<<< HEAD
 We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking for a full time role please [apply to Earth Association](https://discord.gg/aemgEpMye3)!
+=======
+We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking apply to [join the Earth Association](https://discord.gg/aemgEpMye3)!
+
+> > > > > > > 897716f (Update readme)
 
 :white_check_mark: Self Custody (your keys, your crypto) <br/>
 :white_check_mark: 100% Open Source <br/>
