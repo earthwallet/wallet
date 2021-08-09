@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Earth Wallet",
-  "version": "2.0.1",
+  "version": "0.2.1",
 
   "icons": {
     "16": "assets/images/icon-16.png",
@@ -11,7 +11,7 @@
     "128": "assets/images/icon-128.png"
   },
   "description": "Your Keys to Web3.",
-  "homepage_url": "https://github.com/earthwallet/extension",
+  "homepage_url": "https://github.com/earth-association/wallet",
   "short_name": "Earth Wallet",
 
   "permissions": ["activeTab", "storage", "http://*/*", "https://*/*"],
