@@ -1,13 +1,13 @@
-[![Earth Wallet](https://img.shields.io/badge/Earth-Wallet-blue?style=flat-square)](https://earthwallet.io)
+[![Discord](https://img.shields.io/badge/Association-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/aemgEpMye3)
+[![Telegram](https://img.shields.io/badge/Community-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/earthwallet)
+[![Twitter](https://img.shields.io/badge/@earthwallet-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
+[![Earth Wallet](https://img.shields.io/badge/earthwallet.io-blue?style=flat-square)](https://earthwallet.io)
 ![License](https://img.shields.io/badge/License-MIT-success?logo=MIT&style=flat-square)
 [![SDK](https://img.shields.io/npm/v/@earthwallet/sdk?logo=npm&style=flat-square)](https://www.npmjs.com/package/@earthwallet/sdk)
-[![Telegram](https://img.shields.io/badge/Community-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/earthwallet)
-[![Discord](https://img.shields.io/badge/Association-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/aemgEpMye3)
-[![Twitter](https://img.shields.io/badge/@earthwallet-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
 
-![Earth Wallet](https://i.imgur.com/3W75PIL.png)
+![Earth Wallet](https://i.imgur.com/eIZaUbx.png)
 
-Earth Wallet is a next generation digital asset wallet built for the Internet Computer and other next generation blockchains and protocols. Designed and developed from the ground up to make the transition to next generation blockchains/protocols as seamless as possible while giving you super powers that other self-custody wallets don't have! Our mission is to bring crypto back to Earth by creating open source, secure, decentralized technology that can help create a better planet for all life on Earth.
+Earth Wallet is a next generation self custody wallet built for the Internet Computer and other next generation blockchains and protocols. Designed and developed from the ground up to make the transition to next generation of the internet as seamless as possible while giving you super powers that other self-custody wallets don't have! Join the mission to bring crypto back to Earth with the worlds best open source, secure, decentralized wallet and create a better planet for all life on Earth.
 
 ## Browser Support
 
@@ -17,7 +17,7 @@ Earth Wallet is a next generation digital asset wallet built for the Internet Co
 
 ## 🎉 Currently in Beta with over 2500 users!
 
-We are still in Beta, so please use it at your own risk. Early users and contributors may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet) today! Or if you are interested in helping bring crypto back down to Earth you can apply to [join the Earth Association](https://discord.gg/aemgEpMye3)!
+We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking apply to [join the Earth Association](https://discord.gg/aemgEpMye3)!
 
 :white_check_mark: Self Custody (your keys, your crypto) <br/>
 :white_check_mark: 100% Open Source <br/>
