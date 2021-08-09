@@ -178,13 +178,29 @@ Then run the following:
 
 Note: By default the `manifest.json` is set with version `0.0.0`. The webpack loader will update the version in the build with that of the `package.json` version. In order to release a new version, update version in `package.json` and run script.
 
+<<<<<<< HEAD
+
 # ♾️ Contributors
+
+=======
+
+# Contributors
+
+> > > > > > > 56671ff (Update readme)
 
 The best way to submit feedback and report bugs is to [open a GitHub issue](https://github.com/earth-association/wallet/issues/new).
 If you want to contribute code please join our [Developer Server](https://discord.gg/gmgPCBnvJd).
 
 Thanks to all the people who contribute!
 
+<<<<<<< HEAD
+
 # 🈚 License
+
+=======
+
+# License
+
+> > > > > > > 56671ff (Update readme)
 
 Earth Wallet is available under the MIT license. See the [LICENSE](LICENSE) file for more info.

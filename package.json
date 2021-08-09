@@ -1,7 +1,7 @@
 {
   "name": "earth-wallet",
-  "version": "2.0.1",
-  "description": "Earth wallet",
+  "version": "0.2.1",
+  "description": "Earth Wallet",
   "private": false,
   "type": "module",
   "repository": "https://github.com/earth-association/wallet",
