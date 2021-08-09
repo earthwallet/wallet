@@ -1,9 +1,8 @@
-[![Discord](https://img.shields.io/badge/Association-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/aemgEpMye3)
-[![Telegram](https://img.shields.io/badge/Community-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/earthwallet)
-[![Twitter](https://img.shields.io/badge/@earthwallet-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
-[![Earth Wallet](https://img.shields.io/badge/earthwallet.io-blue?style=flat-square)](https://earthwallet.io)
-![License](https://img.shields.io/badge/License-MIT-success?logo=MIT&style=flat-square)
-[![SDK](https://img.shields.io/npm/v/@earthwallet/sdk?logo=npm&style=flat-square)](https://www.npmjs.com/package/@earthwallet/sdk)
+[![Telegram](https://img.shields.io/badge/Live_Support-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/earthwallet)
+[![Discord](https://img.shields.io/badge/Developers-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/aemgEpMye3)
+[![Twitter](https://img.shields.io/badge/Updates-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
+![License](https://img.shields.io/npm/l/sdk?color=blueviolet)
+[![SDK](https://img.shields.io/npm/v/@earthwallet/sdk?color=brightgreen)](https://www.npmjs.com/package/@earthwallet/sdk)
 
 ![Earth Wallet](https://i.imgur.com/eIZaUbx.png)
 
