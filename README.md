@@ -1,11 +1,11 @@
-# Earth Wallet (Beta)
-
 [![Earth Wallet](https://img.shields.io/badge/Earth-Wallet-blue?style=flat-square)](https://earthwallet.io)
 ![License](https://img.shields.io/badge/License-MIT-success?logo=MIT&style=flat-square)
 [![SDK](https://img.shields.io/npm/v/@earthwallet/sdk?logo=npm&style=flat-square)](https://www.npmjs.com/package/@earthwallet/sdk)
 [![Telegram](https://img.shields.io/badge/Community-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/earthwallet)
 [![Discord](https://img.shields.io/badge/Association-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/aemgEpMye3)
 [![Twitter](https://img.shields.io/badge/@earthwallet-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
+
+![Earth Wallet](https://i.imgur.com/3W75PIL.png)
 
 Earth Wallet is a next generation digital asset wallet built for the Internet Computer and other next generation blockchains and protocols. Designed and developed from the ground up to make the transition to next generation blockchains/protocols as seamless as possible while giving you super powers that other self-custody wallets don't have! Our mission is to bring crypto back to Earth by creating open source, secure, decentralized technology that can help create a better planet for all life on Earth.
 
