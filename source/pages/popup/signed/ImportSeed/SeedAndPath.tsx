@@ -5,7 +5,7 @@ import styles from './index.scss';
 import NextStepButton from '~components/NextStepButton';
 import TextAreaWithLabel from '~components/TextAreaWithLabel';
 import Warning from '~components/Warning';
-import { validateMnemonic } from 'bip39';
+import { validateMnemonic } from '@earthwallet/sdk';
 
 
 interface Props {
