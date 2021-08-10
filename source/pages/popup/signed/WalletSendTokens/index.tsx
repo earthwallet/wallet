@@ -196,7 +196,7 @@ const WalletSendTokens = ({
     );
 
     if (isJsonString(json_secret)) {
-      const currentIdentity = Ed25519KeyIdentity.fromJSON(json_secret);
+      const currentIdentity = Secp256k1KeyIdentity.fromJSON(json_secret);
       const address = address_to_hex(
         principal_id_to_address(currentIdentity.getPrincipal())
       );

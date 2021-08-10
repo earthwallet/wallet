@@ -1251,22 +1251,6 @@
     node-forge "^0.10.0"
     tweetnacl "^1.0.3"
 
-"@dfinity/rosetta-client@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@dfinity/rosetta-client/-/rosetta-client-0.6.0.tgz#eae81b41b1501b083c3fae50abaac31b78bc789c"
-  integrity sha512-md35P5/Na0r1fU83ADKbSa7O/xokNG0V8Q2SoGyVmhlXvt/7xcQawOQllxovgIfrwSz1lYlJMbrhOkz9wQ+XUw==
-  dependencies:
-    "@dfinity/candid" "^0.9.1"
-    "@dfinity/principal" "^0.9.1"
-    axios "^0.21.1"
-    cbor "^7.0.5"
-    crc "^3.8.0"
-    google-protobuf "^3.17.3"
-    js-sha256 "^0.9.0"
-    json-bigint "^1.0.0"
-    node-forge "^0.10.0"
-    tweetnacl "^1.0.3"
-
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.3.tgz#90420f9f9c6d3987f176a19a7d8e764271a2f55d"
@@ -2556,7 +2540,6 @@
   resolved "https://registry.yarnpkg.com/@types/file-saver/-/file-saver-2.0.3.tgz#b734c4f5a04d20615eaed3dc106e2ab321082009"
   integrity sha512-MBIou8pd/41jkff7s97B47bc9+p0BszqqDJsO51yDm49uUxeKzrfuNl5fSLC6BpLEWKA8zlwyqALVmXrFwoBHQ==
 
-<<<<<<< HEAD
 "@types/filesystem@*":
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@types/filesystem/-/filesystem-0.0.32.tgz#307df7cc084a2293c3c1a31151b178063e0a8edf"
@@ -2569,8 +2552,6 @@
   resolved "https://registry.yarnpkg.com/@types/filewriter/-/filewriter-0.0.29.tgz#a48795ecadf957f6c0d10e0c34af86c098fa5bee"
   integrity sha512-BsPXH/irW0ht0Ji6iw/jJaK8Lj3FJemon2gvEqHKpCdDCeemHa+rI3WBGq5z7cDMZgoLjY40oninGxqk+8NzNQ==
 
-=======
->>>>>>> 8285f75 (Add export account)
 "@types/glob@^7.1.1":
   version "7.1.4"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.4.tgz#ea59e21d2ee5c517914cb4bc8e4153b99e566672"
@@ -6865,7 +6846,7 @@ globule@^1.0.0:
     lodash "~4.17.10"
     minimatch "~3.0.2"
 
-google-protobuf@^3.17.1, google-protobuf@^3.17.3:
+google-protobuf@^3.17.1:
   version "3.17.3"
   resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.17.3.tgz#f87595073545a77946c8f0b67c302c5f7646d700"
   integrity sha512-OVPzcSWIAJ+d5yiHyeaLrdufQtrvaBrF4JQg+z8ynTkbO3uFcujqXszTumqg1cGsAsjkWnI+M5B1xZ19yR4Wyg==
