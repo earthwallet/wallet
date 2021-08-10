@@ -1,4 +1,4 @@
-import { validateMnemonic } from 'bip39';
+import { validateMnemonic } from '@earthwallet/sdk';
 import { saveAs } from 'file-saver';
 import React, { useCallback, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';

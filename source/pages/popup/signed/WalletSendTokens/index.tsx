@@ -12,11 +12,10 @@ import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import { getBalance, send } from '@earthwallet/sdk';
 import StringCrypto from 'string-crypto';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import Secp256k1KeyIdentity from '@earthwallet/sdk/build/main/util/icp/secpk256k1/identity';
 import { isJsonString } from '~utils/common';
-import { principal_id_to_address } from '@earthwallet/sdk/build/main/util/icp';
+import { principal_id_to_address, address_to_hex } from '@earthwallet/sdk/build/main/util/icp';
 
-const { address_to_hex } = require('@dfinity/rosetta-client');
 const { decryptString } = new StringCrypto();
 
 
@@ -98,7 +97,7 @@ const WalletSendTokens = ({
     const json_secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
 
     if (isJsonString(json_secret)) {
-      const currentIdentity = Ed25519KeyIdentity.fromJSON(json_secret);
+      const currentIdentity = Secp256k1KeyIdentity.fromJSON(json_secret);
       const address = address_to_hex(
         principal_id_to_address(currentIdentity.getPrincipal())
       );
