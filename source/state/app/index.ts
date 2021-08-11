@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IAppState, AppStatusType, AppThemeType } from './types';
 import { hydrateWallet } from '~state/wallet';
 import { hydrateEntities } from '~state/entities';
+import { browser } from 'webextension-polyfill-ts';
 
 const initialState: IAppState = {
   version: '2.0',
@@ -11,26 +12,13 @@ const initialState: IAppState = {
   hydrated: false,
 };
 
-function readLocalStorage(key: any) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(key, function (result) {
-      if (true) {
-        resolve(result);
-      } else {
-        reject();
-      }
-    });
-  });
-}
 export const preloadStateAsync = createAsyncThunk(
   'state/preloadStateAsync',
   async (_, thunkAPI) => {
-    console.log('preloadStateAsync');
-    const state: any = await readLocalStorage(null);
-    console.log('preloadStateAsync', state);
-    thunkAPI.dispatch(hydrateWallet(state.wallet));
-    thunkAPI.dispatch(hydrateEntities(state.entities));
-    thunkAPI.dispatch(hydrateApp(state.app));
+    const state: any = await browser.storage.local.get(null);
+    state?.wallet && thunkAPI.dispatch(hydrateWallet(state?.wallet));
+    state?.entities && thunkAPI.dispatch(hydrateEntities(state?.entities));
+    state?.app && thunkAPI.dispatch(hydrateApp(state?.app));
 
     return true;
   }
@@ -50,15 +38,7 @@ const AppState = createSlice({
     hydrateApp(state: IAppState, action: PayloadAction<IAppState>) {
       Object.assign(state, action.payload);
     },
-  } /* ,
-  extraReducers: (builder) => {
-    builder.addCase(preloadStateAsync.fulfilled, (state, { payload }) => {
-      console.log('me me', payload);
-      Object.assign(state, payload.app);
-
-      //state.hydrated = true;
-    });
-  }, */,
+  },
 });
 
 export const { updateState, updateTheme, hydrateApp } = AppState.actions;

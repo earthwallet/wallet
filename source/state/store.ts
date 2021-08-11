@@ -12,8 +12,7 @@ import wallet from './wallet';
 import assets from './assets';
 import entities from './entities';
 import dapp from './dapp';
-
-//import { loadState } from './localStorage';
+import { browser } from 'webextension-polyfill-ts';
 
 const middleware = [
   ...getDefaultMiddleware({ thunk: true, serializableCheck: false }),
@@ -42,10 +41,10 @@ const saveState = () => {
 
   const state = store.getState();
   if (state.app.hydrated === false) {
-    console.info('Not saving state to chrome.storage.local as being hydrated');
+    console.info('Not saving state to browser.storage.local/chrome.storage.local as state is being re-hydrated');
   } else {
-    chrome.storage.local.set(JSON.parse(JSON.stringify(state)));
-    console.info('Saving state to chrome.storage.local');
+    browser.storage.local.set(JSON.parse(JSON.stringify(state)));
+    console.info('Saving state to browser.storage.local/chrome.storage.local');
   }
 };
 
