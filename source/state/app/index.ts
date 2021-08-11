@@ -16,11 +16,13 @@ export const preloadStateAsync = createAsyncThunk(
   'state/preloadStateAsync',
   async (_, thunkAPI) => {
     const state: any = await browser.storage.local.get(null);
+
     state?.wallet && thunkAPI.dispatch(hydrateWallet(state?.wallet));
     state?.entities && thunkAPI.dispatch(hydrateEntities(state?.entities));
     state?.app && thunkAPI.dispatch(hydrateApp(state?.app));
+    state?.app && thunkAPI.dispatch(hydrateApp(state?.app));
 
-    return true;
+    return thunkAPI.dispatch(updateHydrated(true));
   }
 );
 
@@ -35,12 +37,16 @@ const AppState = createSlice({
     updateTheme(state: IAppState, action: PayloadAction<AppThemeType>) {
       state.theme = action.payload;
     },
+    updateHydrated(state: IAppState, action: PayloadAction<boolean>) {
+      state.hydrated = action.payload;
+    },
     hydrateApp(state: IAppState, action: PayloadAction<IAppState>) {
       Object.assign(state, action.payload);
     },
   },
 });
 
-export const { updateState, updateTheme, hydrateApp } = AppState.actions;
+export const { updateState, updateTheme, hydrateApp, updateHydrated } =
+  AppState.actions;
 
 export default AppState.reducer;
