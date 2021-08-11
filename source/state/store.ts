@@ -48,7 +48,7 @@ const saveState = () => {
   }
 };
 
-const throttledSave = throttle(saveState, 10000, {
+const throttledSave = throttle(saveState, 1000, {
   trailing: true,
   leading: true,
 });
