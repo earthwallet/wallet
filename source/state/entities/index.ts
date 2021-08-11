@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { IEntityState } from './types';
 
 const initialState: IEntityState = {
@@ -67,6 +67,9 @@ export const entitiesState = createSlice({
         };
       }
     },
+    hydrateEntities(state: IEntityState, action: PayloadAction<IEntityState>) {
+      Object.assign(state, action.payload);
+    },
     resetEntities: () => initialState,
   },
 });
@@ -77,6 +80,7 @@ export const {
   replaceEntities,
   removeEntityKey,
   resetEntities,
+  hydrateEntities
 } = entitiesState.actions;
 
 export default entitiesState.reducer;

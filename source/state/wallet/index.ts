@@ -40,6 +40,9 @@ const WalletState = createSlice({
     ) {
       state.activeAccount = action.payload;
     },
+    hydrateWallet(state: IWalletState, action: PayloadAction<IWalletState>) {
+      Object.assign(state, action.payload);
+    },
   },
 });
 
@@ -49,6 +52,7 @@ export const {
   updateNewMnemonic,
   updateError,
   updateLoading,
+  hydrateWallet
 } = WalletState.actions;
 
 export const selectAccounts = (state: AppState) =>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
 import Accounts from '~pages/popup/signed/Accounts';
@@ -12,6 +12,7 @@ import WalletSendTokens from '~pages/popup/signed/WalletSendTokens';
 import WalletReceiveTokens from '~pages/popup/signed/WalletReceiveTokens';
 import Portfolio from '~pages/popup/signed/Portfolio';
 import ErrorBoundary from '~components/ErrorBoundary';
+import { useController } from '~hooks/useController';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -22,6 +23,7 @@ function wrapWithErrorBoundary(
 
 const PopupRouter = () => {
   const location = useLocation();
+  const controller = useController();
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
@@ -29,6 +31,10 @@ const PopupRouter = () => {
     leave: { opacity: 0 },
     config: { duration: 100 },
   });
+
+  useEffect(() => {
+    controller.preloadState();
+  }, []);
 
   return (
     <>

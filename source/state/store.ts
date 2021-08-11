@@ -6,17 +6,17 @@ import {
 } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import throttle from 'lodash/throttle';
-
+//import omit from 'lodash/omit';
 import app from './app';
 import wallet from './wallet';
 import assets from './assets';
 import entities from './entities';
 import dapp from './dapp';
 
-import { saveState, loadState } from './localStorage';
+//import { loadState } from './localStorage';
 
 const middleware = [
-  ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
+  ...getDefaultMiddleware({ thunk: true, serializableCheck: false }),
 ];
 
 if (process.env.NODE_ENV !== 'production') {
@@ -33,22 +33,28 @@ const store: Store = configureStore({
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
-  preloadedState: loadState(),
 });
 
-store.subscribe(
-  throttle(() => {
-    const state = store.getState();
-    //white list
-    saveState({
-      app: state.app,
-      wallet: state.wallet,
-      assets: state.assets,
-      entities: state.entities,
-      dapp: state.dapp,
-    });
-  }, 1000)
-);
+const saveState = () => {
+  if (!store) {
+    return;
+  }
+
+  const state = store.getState();
+  if (state.app.hydrated === false) {
+    console.info('Not saving state to chrome.storage.local as being hydrated');
+  } else {
+    chrome.storage.local.set(JSON.parse(JSON.stringify(state)));
+    console.info('Saving state to chrome.storage.local');
+  }
+};
+
+const throttledSave = throttle(saveState, 10000, {
+  trailing: true,
+  leading: true,
+});
+
+store.subscribe(throttledSave);
 
 export type AppState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

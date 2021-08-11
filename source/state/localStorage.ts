@@ -7,13 +7,13 @@ export const saveState = (appState: any) => {
   }
 };
 
-export const loadState = () => {
+export const loadState = async () => {
   try {
-    const serializedState = localStorage.getItem('state');
+    const serializedState = await chrome.storage.local.get('state');
     if (serializedState === null) {
       return undefined;
     }
-    return JSON.parse(serializedState);
+    return JSON.parse(serializedState?.state);
   } catch (e) {
     console.error('<= State is fetched:', e);
     return null;
