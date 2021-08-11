@@ -8,18 +8,15 @@ import {
   updateLoading,
 } from '~state/wallet';
 import type { IAccountsController } from '../types/IAccountsController';
-import StringCrypto from 'string-crypto';
 import { storeEntities } from '~state/entities';
 import {
   getBalance as _getBalance,
   getTransactions as _getTransactions,
   send as _send,
 } from '@earthwallet/sdk';
-
-const { encryptString } = new StringCrypto();
+import { encryptString } from '~utils/vault';
 
 export default class AccountsController implements IAccountsController {
-
   async createNewMnemonic() {
     store.dispatch(updateLoading(true));
 
@@ -74,7 +71,7 @@ export default class AccountsController implements IAccountsController {
                 JSON.stringify(keypair.identity.toJSON()),
                 password
               ),
-              encryptionType: 'PBKDF2',
+              encryptionType: 'AES',
             },
             symbol,
             id: keypair.address,
@@ -92,7 +89,7 @@ export default class AccountsController implements IAccountsController {
   getTransactions = async (address: string, symbol = 'ICP') => {
     await _getTransactions(address, symbol);
   };
- 
+
   createAccounts = async (symbols: string[]) => {
     let newAccounts = [];
 
