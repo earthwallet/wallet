@@ -11,13 +11,11 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import { getBalance, send } from '@earthwallet/sdk';
-import StringCrypto from 'string-crypto';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
+import Secp256k1KeyIdentity from '@earthwallet/sdk/build/main/util/icp/secpk256k1/identity';
 import { isJsonString } from '~utils/common';
-import { principal_id_to_address } from '@earthwallet/sdk/build/main/util/icp';
+import { principal_id_to_address, address_to_hex } from '@earthwallet/sdk/build/main/util/icp';
 
-const { address_to_hex } = require('@dfinity/rosetta-client');
-const { decryptString } = new StringCrypto();
+import { decryptString } from '~utils/vault';
 
 
 const MIN_LENGTH = 6;
@@ -95,10 +93,17 @@ const WalletSendTokens = ({
   const sendTx = async () => {
     setIsBusy(true);
 
-    const json_secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
+    let json_secret = '';
+
+    try {
+      json_secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
+    } catch (error) {
+      setError('Wrong password! Please try again');
+      setIsBusy(false);
+    }
 
     if (isJsonString(json_secret)) {
-      const currentIdentity = Ed25519KeyIdentity.fromJSON(json_secret);
+      const currentIdentity = Secp256k1KeyIdentity.fromJSON(json_secret);
       const address = address_to_hex(
         principal_id_to_address(currentIdentity.getPrincipal())
       );
@@ -139,7 +144,15 @@ const WalletSendTokens = ({
     (password: string) => {
       setPass(password);
       setError('');
-      const json_secret = decryptString(selectedAccount?.vault.encryptedJson, password);
+
+      let json_secret = '';
+      try {
+        json_secret = decryptString(selectedAccount?.vault.encryptedJson, password);
+      }
+      catch (error) {
+        setError('Wrong password! Please try again');
+      }
+
       if (!isJsonString(json_secret)) {
         setError('Wrong password! Please try again');
       }

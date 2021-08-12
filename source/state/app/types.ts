@@ -6,4 +6,5 @@ export interface IAppState {
   version: string;
   status: AppStatusType;
   theme: AppThemeType;
+  hydrated: boolean;
 }
