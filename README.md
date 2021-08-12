@@ -11,12 +11,12 @@ Earth Wallet is a next generation self custody wallet built for the Internet Com
 # Download it Here:
 
 | [![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Yandex](https://raw.github.com/alrra/browser-logos/master/src/yandex/yandex_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Brave](https://raw.github.com/alrra/browser-logos/master/src/brave/brave_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![vivaldi](https://raw.github.com/alrra/browser-logos/master/src/vivaldi/vivaldi_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) |
-| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| 49 & later ✔                                                                                  | 52 & later ✔                                                                                     | 36 & later ✔                                                                               | 79 & later ✔                                                                            | Latest ✔                                                                                      | Latest ✔                                                                                   | Latest ✔                                                                                         |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 49 & later ✔                                                                                                                                                                                         | 52 & later ✔                                                                                                                                                                                            | 36 & later ✔                                                                                                                                                                                      | 79 & later ✔                                                                                                                                                                                   | Latest ✔                                                                                                                                                                                             | Latest ✔                                                                                                                                                                                          | Latest ✔                                                                                                                                                                                                |
 
-## 🎉 Now in Beta with over 2500 users!
+## 🎉 Now in Beta with over 3000 users!
 
-We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking apply to [join the Earth Association](https://discord.gg/aemgEpMye3)!
+We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking for a full time role please [apply to Earth Association](https://discord.gg/aemgEpMye3)!
 
 :white_check_mark: Self Custody (your keys, your crypto) <br/>
 :white_check_mark: 100% Open Source <br/>
@@ -51,15 +51,16 @@ const injectEarth = () => {
 // Connect to Earth Wallet (i.e. show accounts available, etc)
 const handleEarthEnable = () => {
   await injectEarth();
-    window?.earth
-    .enable().then((account) => {
-        console.log("Successfully connected to Earth Wallet 🌍", account);
-        onConnect();
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+  window?.earth
+    .enable()
+    .then((account) => {
+      console.log('Successfully connected to Earth Wallet 🌍', account);
+      onConnect();
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
 ```
 
 ## 🚀 Auditors / Bug Hunters - $10k USD+ Available!!
