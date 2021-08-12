@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { IMainController } from '../types/IMainController';
 
@@ -19,7 +20,7 @@ export const messagesHandler = (
         const { id, result } = response;
         port.postMessage({ id, data: { result } });
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log('messagesHandler.ERROR', e.type, e.message, e.detail);
       console.log(JSON.stringify(e, null, 2));
       port.postMessage({ id: e.type, data: { error: e.detail } });
@@ -42,12 +43,18 @@ export const messagesHandler = (
 
     const allowed = mainController.dapp.fromPageConnectDApp(origin, title);
 
+    console.log('===> allowed', allowed);
+
     if (message.type === 'EARTH_EVENT_MESSAGE') {
       if (message.data && message.data.method) {
         //
       }
     } else if (message.type === 'ENABLE_REQUEST') {
-      //
+      const windowId = uuid();
+      const popup = await mainController.createPopup(windowId);
+      if (popup) {
+        return Promise.resolve(null);
+      }
       return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;

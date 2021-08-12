@@ -22,3 +22,23 @@
     @content;
   }
 }
+
+// gradient border
+@mixin gradientBorder {
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: double 4px transparent;
+    @content;
+    -webkit-mask: linear-gradient($textColor 0 0) padding-box,
+      linear-gradient($textColor 0 0);
+    mask: linear-gradient($textColor 0 0) padding-box,
+      linear-gradient($textColor 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+  }
+}

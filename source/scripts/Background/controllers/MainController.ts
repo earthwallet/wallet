@@ -1,3 +1,4 @@
+import { browser } from 'webextension-polyfill-ts';
 import { EarthProvider } from '~scripts/Provider/EarthProvider';
 import type { IAccountsController } from '../types/IAccountsController';
 import type { IAssetsController } from '../types/IAssetsController';
@@ -22,5 +23,23 @@ export default class MainController {
 
   async preloadState() {
     await store.dispatch(preloadStateAsync() as any);
+  }
+
+  async accountsInfo() {
+    this.accounts.createAccounts(this.assets.usedAssetSymbols());
+  }
+
+  async createPopup(windowId: string) {
+    const _window = await browser.windows.getCurrent();
+    if (!_window || !_window.width) return null;
+
+    return await browser.windows.create({
+      url: `/dapp.html#${windowId}`,
+      width: 375,
+      height: 630,
+      type: 'popup',
+      top: 0,
+      left: _window.width - 375,
+    });
   }
 }

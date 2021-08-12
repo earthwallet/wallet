@@ -1,0 +1,17 @@
+body {
+  .actionButton {
+    height: 56px;
+    font-size: 16px;
+    color: $textColor !important;
+    border-radius: 8px;
+
+    &.primary {
+      background: $primaryColor;
+    }
+
+    &.secondary {
+      background: transparent;
+      border: 2px solid $primaryColor;
+    }
+  }
+}
