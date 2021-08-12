@@ -4,7 +4,6 @@ import React, { useCallback, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useHistory } from 'react-router-dom';
-import StringCrypto from 'string-crypto';
 import styles from './index.scss';
 import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
@@ -20,8 +19,7 @@ import InputWithLabel from '~components/InputWithLabel';
 import NextStepButton from '~components/NextStepButton';
 import Header from '~components/Header';
 import { getShortAddress } from '~utils/common';
-
-const { decryptString } = new StringCrypto();
+import { decryptString } from '~utils/vault';
 
 const MIN_LENGTH = 6;
 
@@ -65,7 +63,13 @@ function Export({ match: { params: { address } } }: Props): React.ReactElement<P
   const _onExportButtonClick = useCallback(
     (): void => {
       setIsBusy(true);
-      const mnemonicSecret = decryptString(selectedAccount?.vault.encryptedMnemonic, pass);
+      let mnemonicSecret = '';
+      try {
+        mnemonicSecret = decryptString(selectedAccount?.vault.encryptedMnemonic, pass);
+      } catch (error) {
+        setError('Wrong password! Please try again');
+        setIsBusy(false);
+      }
 
       if (validateMnemonic(mnemonicSecret)) {
         setMnemonic(mnemonicSecret);

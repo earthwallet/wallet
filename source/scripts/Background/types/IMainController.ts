@@ -8,5 +8,6 @@ export interface IMainController {
   assets: Readonly<IAssetsController>;
   dapp: Readonly<IDAppController>;
   provider: Readonly<EarthProvider>;
+  preloadState: () => Promise<void>;
   accountsInfo: () => Promise<void>;
 }

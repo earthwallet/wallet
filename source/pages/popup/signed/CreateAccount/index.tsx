@@ -42,23 +42,14 @@ const Page = () => {
   const [isBusy, setIsBusy] = useState(false);
   const [checked, setChecked] = useState(false);
   const [secondChecked, setSecondChecked] = useState(false);
-  //const { setSelectedAccount } = useContext(SelectedAccountContext);
 
   const [step, setStep] = useState(1);
-  //const type = 'DEFAULT_TYPE';
   const [name, setName] = useState('');
   const [password, setPassword] = useState<string | null>(null);
-  console.log(setStep, setIsBusy);
-  //const history = useHistory();
 
-  //const genesis = "ICP";
-
-  //const show = console.log;
   const _onCopy = () => console.log();
 
   const _onCreate = useCallback((): void => {
-
-    // this should always be the case
     if (name && password && newMnemonic) {
       setIsBusy(true);
       const callback = (address: string) => history.replace('/account/details/' + address);
