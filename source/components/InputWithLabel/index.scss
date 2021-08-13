@@ -1,0 +1,69 @@
+.inputCont {
+  border: 2px solid #175b98;
+  border-radius: 8px;
+  margin: 0 0px 16px 0px;
+}
+
+.warning {
+  margin: 0 24px;
+}
+
+.labelStyle {
+  opacity: 0.65;
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 150%;
+  letter-spacing: 0.05em;
+  color: #dbe4f2;
+  margin: 25px 0px 10px;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.withoutMargin {
+  margin-bottom: 0px;
+}
+.danger {
+  margin-top: 6px;
+}
+
+.input,
+.textarea {
+  background: #0c3254;
+  border-radius: $borderRadius;
+  border: 1px solid #0c3254;
+  border-color: #0c3254;
+  box-sizing: border-box;
+  color: $textColor;
+  display: block;
+  font-family: $fontFamily;
+  font-size: $fontSize;
+  height: 45px;
+  font-weight: normal;
+  outline: none;
+  padding: 0.5rem 0.75rem;
+  resize: none;
+  width: 100%;
+}
+
+.textarea {
+  height: 60px;
+}
+
+.input::placeholder {
+  color: #dbe4f2;
+  opacity: 0.25;
+}
+
+.textarea::placeholder {
+  color: #dbe4f2;
+  opacity: 0.25;
+}
+
+.input:read-only {
+  background: $readonlyInputBackground;
+  box-shadow: none;
+  outline: none;
+}

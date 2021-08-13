@@ -1,166 +1,132 @@
-# ![Earth Wallet](docs/logo.png)
+[![Telegram](https://img.shields.io/badge/Live_Support-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/earthwallet)
+[![Discord](https://img.shields.io/badge/Developers-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/aemgEpMye3)
+[![Twitter](https://img.shields.io/badge/Updates-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
+![License](https://img.shields.io/badge/Code-MIT%20Licence-blueviolet)
+[![SDK](https://img.shields.io/npm/v/@earthwallet/sdk?color=success)](https://www.npmjs.com/package/@earthwallet/sdk)
 
-[![earthwallet](https://img.shields.io/badge/earth-wallet-blue?style=flat-square)](https://earthwallet.io)
-![license](https://img.shields.io/badge/License-Apache%202.0-blue?logo=apache&style=flat-square)
-[![npm](https://img.shields.io/npm/v/@earthwallet/extension?logo=npm&style=flat-square)](https://www.npmjs.com/package/@earthwallet/extension)
-[![beta](https://img.shields.io/npm/v/@earthwallet/extension/beta?label=beta&logo=npm&style=flat-square)](https://www.npmjs.com/package/@earthwallet/extension)
-[![maintainability](https://img.shields.io/codeclimate/maintainability-percentage/polkadot-js/extension?logo=code-climate&style=flat-square)](https://codeclimate.com/github/polkadot-js/extension)
+![Earth Wallet](https://i.imgur.com/eIZaUbx.png)
 
-Earth Wallet is a next generation digital asset wallet built for next generation blockchains. It enables developers and users to access:
+Earth Wallet is a next generation self custody wallet built for the Internet Computer and other next generation blockchains and protocols. Designed and developed from the ground up to make the transition to next generation of the internet as seamless as possible while giving you super powers that other self-custody wallets don't have! Join the mission to bring crypto back to Earth with open source, decentralized technology to create a better planet for all life on Earth.
 
-- Lower transaction fees and faster settlement
-- Next generation protocols for DeFi, DAOs and more
-- Multi-chain interoperability within a single user experience
+# Download it Here:
 
-Veteran crypto users will feel right as home, as Earth Wallet was designed to keep the user experience similar to the popular Ethereum key management tool, Metamask. However, it was also designed and developed from the ground up to make the transition to next generation blockchains/protocols as seamless as possible for both veteran and new users.
+| [![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Yandex](https://raw.github.com/alrra/browser-logos/master/src/yandex/yandex_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Brave](https://raw.github.com/alrra/browser-logos/master/src/brave/brave_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![vivaldi](https://raw.github.com/alrra/browser-logos/master/src/vivaldi/vivaldi_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 49 & later ✔                                                                                                                                                                                         | 52 & later ✔                                                                                                                                                                                            | 36 & later ✔                                                                                                                                                                                      | 79 & later ✔                                                                                                                                                                                   | Latest ✔                                                                                                                                                                                             | Latest ✔                                                                                                                                                                                          | Latest ✔                                                                                                                                                                                                |
 
-Developers will also find a similar experience to what they are used to, with a very simple browser extension api, to delegate key management and transaction signing to Earth Wallet. To make it easier, we've also developed [@earthwallet/sdk](https://github.com/earthwallet/sdk) for additional helper functions.
+## 🎉 Now in Beta with over 3000 users!
 
-Earth Wallet is still in Beta, so please use it at your own risk. We are always hiring auditors and developers, contact us at gaurdians@earthwallet.io if interested.
+We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking for a full time role please [apply to Earth Association](https://discord.gg/aemgEpMye3)!
 
-## Installation
+:white_check_mark: Self Custody (your keys, your crypto) <br/>
+:white_check_mark: 100% Open Source <br/>
+:white_check_mark: Decentralized App Developer SDK <br/>
+:white_check_mark: Internet Computer Protocol Support <br/>
+:black_square_button: Bitcoin, Ethereum, and other multichain support (Q3) <br/>
+:black_square_button: NFTs, Tokens, and other DeFi Protocol support (Q3) <br/>
+:black_square_button: Robust Security Audits (Q3/Q4) <br/>
+:black_square_button: Core Code Freeze (Q4) <br/>
+:black_square_button: Earth Protocol (🙊)
 
-- Signup to the waiting list [here](https://earthwallet.io) for early access!
+## 🌎 Decentralized App Developer SDK
 
-![interface screenshots](docs/screenshot.png)
-
-## Documentation and examples
-
-Find out more about how to use the extension as a Dapp developper, cookbook, as well as answers to most frequent questions in the [Earth Wallet Documentation](https://docs.earthwallet.io/).
-
-## Development version
-
-Steps to build the extension and view your changes in a browser:
-
-1. Build via `yarn build` or `yarn watch`
-2. Install the extension
-
-- Chrome:
-  - go to `chrome://extensions/`
-  - ensure you have the Development flag set
-  - "Load unpacked" and point to `packages/extension/build`
-  - if developing, after making changes - refresh the extension
-- Firefox:
-  - go to `about:debugging#addons`
-  - check "Enable add-on debugging"
-  - click on "Load Temporary Add-on" and point to `packages/extension/build/manifest.json`
-  - if developing, after making changes - reload the extension
-
-3. When visiting a Web3.0 project like `https://social.network` it will inject the extension
-
-## Development
-
-The repo is split into a number of packages -
-
-- [extension](packages/extension/) - All the injection and background processing logic (the main entry)
-- [extension-ui](packages/extension-ui/) - The UI components for the extension, to build up the popup
-
-## Dapp developers
-
-The actual in-depth technical breakdown is given in the next section for any dapp developer wishing to work with the raw objects injected into the window. However, convenience wrappers are provided that allows for any dapp to use this extension (or any other extension that conforms to the interface) without having to manage any additional info.
-
-The documentation for Dapp development is available [in the Earth Wallet docs](https://docs.earthwallet.io).
-
-## API interface
-
-The extension injection interfaces are generic, i.e. it is designed to allow any extension developer to easily inject extensions (that conforms to a specific interface) and at the same time, it allows for any dapp developer to easily enable the interfaces from multiple extensions at the same time. It is not an all-or-nothing approach, but rather it is an ecosystem where the user can choose which extensions fit their style best.
-
-From a dapp developer perspective, the only work needed is to include the [@earthwallet/extension-dapp](packages/extension-dapp/) package and call the appropriate enabling function to retrieve all the extensions and their associated interfaces.
-
-From an extension developer perspective, the only work required is to enable the extension via the razor-thin [@earthwallet/sdk/inject] wrapper. Any dapp using the above interfaces will have access to the extension via this interface.
-
-When there is more than one extension, each will populate an entry via the injection interface and each will be made available to the dapp. The `Injected` interface, as returned via `enable`, contains the following information for any compliant extension -
+Looking to build on the Internet Computer? The Earth Wallet SDK lets you delegate to a secure, user friendly key signer, to give your application the best user experience possible. This gives both you and your users the peace of mind that their private keys are not exposed to applications, and lets them decide which dapps to sign into. To use this, simply add the following code to your dapp:
 
 ```js
-interface Injected {
-  // the interface for Accounts, as detailed below
-  readonly accounts: Accounts;
-  // the standard Signer interface for the API, as detailed below
-  readonly signer: Signer;
-  // not injected as of yet, subscribable provider for polkadot-js API injection,
-  // this can be passed to the API itself upon construction in the dapp
-  // readonly provider?: Provider
-}
-
-interface Account = {
-  // ss-58 encoded address
-  readonly address: string;
-  // the genesisHash for this account (empty if applicable to all)
-  readonly genesisHash?: string;
-  // (optional) name for display
-  readonly name?: string;
+// This will inject the Earth Wallet listener if it is installed.
+const injectEarth = () => {
+  return new Promise((resolve, reject) => {
+    window.addEventListener('load', () => {
+      if (window.earth) {
+        // Handle Earth Wallet Events here.
+        resolve(window.earth);
+      } else {
+        // Earth Wallet is not installed.
+        reject(new Error('Earth Wallet not installed.'));
+      }
+    });
+  });
 };
 
-// exposes accounts
-interface Accounts {
-  // retrieves the list of accounts for right now
-  get: () => Promise<Account[]>;
-  // (optional) subscribe to all accounts, updating as they change
-  subscribe?: (cb: (accounts: Account[]) => any) => () => void
-}
-
-// a signer that communicates with the extension via sendMessage
-interface Signer extends SignerInterface {
-  // no specific signer extensions, exposes the `sign` interface for use by
-  // the polkadot-js API, confirming the Signer interface for this API
-}
+// Connect to Earth Wallet (i.e. show accounts available, etc)
+const handleEarthEnable = () => {
+  await injectEarth();
+  window?.earth
+    .enable()
+    .then((account) => {
+      console.log('Successfully connected to Earth Wallet 🌍', account);
+      onConnect();
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
 ```
 
-## Injection information
+## 🚀 Auditors / Bug Hunters - $10k USD+ Available!!
 
-The information contained in this section may change and evolve. It is therefore recommended that all access is done via the [@earthwallet/sdk/dapp] (for dapps) and [@earthwallet/sdk/inject] (for extensions) packages, which removes the need to work with the lower-level targets.
+We have an on going bug bounty campaign for $10,000 USD, as well as full time positions available. If you find a bug, or simply have an idea of how to make the code better/faster/more secure, please [join our Developer Server](https://discord.gg/aemgEpMye3). Help create the most secure open source digital asset wallet and own a piece the future!
 
-The extension initializes web3 accounts by `initWeb3` into the global `window` object, exposing the following: (This is meant to be generic across extensions, allowing any dapp to utilize multiple signers, and pull accounts from multiples, as they are available.)
+To get started, ensure you have:
 
-```js
-window.initWeb3 = {
-  // this is the name for this extension, there could be multiples injected,
-  // each with their own keys, here `earthwallet` is for this extension
-  'earthwallet': {
-    // semver for the package
-    version: '0.1.0',
+- [Node.js](https://nodejs.org) 10 or later installed
+- [Yarn](https://yarnpkg.com) v1 or v2 installed
 
-    // this is called to enable the injection, and returns an injected
-    // object containing the accounts, signer and provider interfaces
-    // (or it will reject if not authorized)
-    enable (originName: string): Promise<Injected>
-  }
-}
-```
+Then run the following:
 
-## Mnemonics, Passwords, and Imports/Exports
+- `yarn install` to install dependencies.
+- `yarn run dev:chrome` to start the development server for chrome extension
+- `yarn run dev:firefox` to start the development server for firefox addon
+- `yarn run dev:opera` to start the development server for opera extension
+- `yarn run build:chrome` to build chrome extension
+- `yarn run build:firefox` to build firefox addon
+- `yarn run build:opera` to build opera extension
+- `yarn run build` builds and packs extensions all at once to extension/ directory
 
-### Using the mnemonic and password from the extension
+### Running Locally
 
-When you create a keypair via the extension, it supplies a 12-word mnemonic seed and asks you to create a password. This password only encrypts the private key on disk so that the password is required to spend funds in `earthwallet` or to import the account from backup. The password does not protect the mnemonic phrase. That is, if an attacker were to acquire the mnemonic phrase, they would be able to use it to spend funds without the password.
+- `yarn install` to install dependencies.
+- To watch file changes in development
 
-### Importing mnemonics from other key generation utilities
+  - Chrome
+    - `yarn run dev:chrome`
+  - Firefox
+    - `yarn run dev:firefox`
+  - Opera
+    - `yarn run dev:opera`
 
-Some key-generation tools, e.g. [Subkey](https://www.substrate.io/kb/integrate/subkey), support hard and soft key derivation as well as passwords that encrypt the mnemonic phrase such that the mnemonic phrase itself is insufficient to spend funds.
+- **Load extension in browser**
 
-The extension supports these advanced features. When you import an account from a seed, you can add these derivation paths or password to the end of the mnemonic in the following format:
+- ### Chrome
 
-```
-<mnemonic phrase>//<hard>/<soft>///<password>
-```
+  - Go to the browser address bar and type `chrome://extensions`
+  - Check the `Developer Mode` button to enable it.
+  - Click on the `Load Unpacked Extension…` button.
+  - Select your extension’s extracted directory.
 
-That is, hard-derivation paths are prefixed with `//`, soft paths with `/`, and the password with `///`.
+- ### Firefox
 
-The extension will still ask you to enter a password for this account. As before, this password only encrypts the private key on disk. It is not required to be the same password as the one that encrypts the mnemonic phrase.
+  - Load the Add-on via `about:debugging` as temporary Add-on.
+  - Choose the `manifest.json` file in the extracted directory
 
-Accounts can also be derived from existing accounts – `Derive New Account` option in account's dropdown menu should be selected. After providing the password of the parent account, along with name and password of the derived account, enter derivation path in the following format:
+- ### Opera
 
-```
-//<hard>/<soft>
-```
+  - Load the extension via `opera:extensions`
+  - Check the `Developer Mode` and load as unpacked from extension’s extracted directory.
 
-The path will be added to the mnemonic phrase of the parent account.
+### Build and Install the Extension
 
+- `yarn run build` builds the extension for all the browsers to `extension/BROWSER` directory respectively.
 
-To Add a new package
-1) Add package to /tsconfig.json
-2) Add package to /packages/extension/webpack.shared.cjs
+Note: By default the `manifest.json` is set with version `0.0.0`. The webpack loader will update the version in the build with that of the `package.json` version. In order to release a new version, update version in `package.json` and run script.
 
+# ♾️ Contributors
 
-To Run Dapp
-yarn build && yarn dapp
+The best way to submit feedback and report bugs is to [open a GitHub issue](https://github.com/earth-association/wallet/issues/new).
+If you want to contribute code please join our [Developer Server](https://discord.gg/gmgPCBnvJd).
+
+Thanks to all the people who contribute!
+
+# 🈚 License
+
+Earth Wallet is available under the MIT license. See the [LICENSE](LICENSE) file for more info.

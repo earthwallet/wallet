@@ -1,0 +1,29 @@
+.container {
+  color: $greyWhite;
+}
+
+.current {
+  font-size: $labelFontSize;
+  line-height: $labelLineHeight;
+  color: $primaryColor;
+  margin-right: 6px;
+}
+
+.total {
+  letter-spacing: 6px;
+}
+
+.steps {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+  padding-left: 1em;
+  margin-top: 3px;
+}
+
+.total {
+  font-size: $labelFontSize;
+  line-height: $labelLineHeight;
+  color: $textColor;
+}

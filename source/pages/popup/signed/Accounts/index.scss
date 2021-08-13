@@ -1,0 +1,223 @@
+.page {
+  height: $appHeight;
+  overflow-y: scroll;
+  scrollbar-width: none;
+
+  //import BG_WALLET_LIST from '../../assets/bg_wallet_list.png';
+
+  background: url('../../../../assets/images/bg_wallet_list.png');
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.createAccountTableButton {
+  width: 291px;
+  height: 54px;
+  left: 2px;
+  top: 56px;
+
+  background: linear-gradient(101.54deg, #2496ff 10.81%, #1b63a6 139.52%);
+}
+
+.accountTitle {
+  margin-top: 320px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  text-align: left;
+  line-height: 150%;
+  color: #fff;
+  width: 100%;
+  padding-left: 24px;
+}
+
+.accountsCont {
+  //backdrop-filter: blur(20px);
+  height: 190px;
+  overflow: scroll;
+  margin-top: 10px;
+  width: calc(100vw - 40px);
+  border: 2px solid rgba(36, 150, 255, 0.5);
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+.footerCont {
+  display: flex;
+  margin-top: 18px;
+}
+
+.orSep {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 160%;
+  /* or 22px */
+
+  /* 🌍 Earth Wallet/Kashmir Blue */
+
+  color: #56708f;
+
+  opacity: 0.8;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px 6px;
+}
+
+.earthButton {
+  width: 295px;
+  height: 50px;
+  background: linear-gradient(101.54deg, #2496ff 10.81%, #1b63a6 139.52%);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.earthLink {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 160%;
+  color: #2496ff;
+}
+
+.noAccountsActions {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.earthButtonCont {
+  width: 295px;
+  height: 56px;
+  background: linear-gradient(0deg, #1f75c4 10.81%, #64a3de 139.52%);
+  border-radius: 8px;
+  padding: 3px;
+  cursor: pointer;
+  margin-top: 280px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  text-align: center;
+  color: #fafbfb;
+}
+.earthButtonCont:active {
+  opacity: 0.7;
+  user-select: none;
+}
+
+.subtitle {
+  margin-top: 180px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 150%;
+  text-align: center;
+  text-transform: capitalize;
+  color: #ffffff;
+  opacity: 0.46;
+}
+
+.earthButtonTable {
+  height: 74px;
+  width: 100%;
+  border-radius: 0;
+  padding: 0 17px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  line-height: 26px;
+}
+
+.link {
+  align-items: center;
+  color: #fff;
+  display: flex;
+  opacity: 0.85;
+  text-decoration: none;
+  vertical-align: middle;
+  -webkit-box-align: center;
+  align-items: center;
+  color: rgb(255, 255, 255);
+  display: flex;
+  opacity: 0.85;
+  text-decoration: none;
+  vertical-align: middle;
+}
+.link:hover {
+  color: #fff;
+  opacity: 1;
+}
+
+.link:visited {
+  color: #fff;
+}
+
+.link.isDisabled {
+  opacity: 0.4;
+}
+
+.info {
+  max-width: 348px;
+  padding-left: 16px;
+}
+
+.infoRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  height: 72px;
+  border-radius: 4px;
+}
+
+.img {
+  max-width: 50px;
+  max-height: 50px;
+  border-radius: 50%;
+}
+
+.name {
+  font-size: 16px;
+  line-height: 22px;
+  margin: 2px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 270px;
+  white-space: nowrap;
+
+  &.displaced {
+    padding-top: 10px;
+  }
+}
+
+.addressLink {
+  background: rgba(8, 25, 39, 0.7);
+  border-bottom: 2px solid rgba(36, 150, 255, 0.5);
+  box-sizing: border-box;
+  position: relative;
+  display: block;
+  color: #ffffff;
+  &:hover {
+    background-color: $buttonBackgroundHover;
+    cursor: pointer;
+  }
+}
+
+.addressDisplay {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 270px;
+  white-space: nowrap;
+  opacity: 0.7;
+}

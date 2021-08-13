@@ -1,0 +1,204 @@
+.page {
+  //background: url(${BG_MNEMONIC});
+  height: 600px;
+  position: relative;
+  background: url('../../../../assets/images/bg_mnemonic.png');
+  display: inline-block;
+}
+
+.checkboxTitle {
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 150%;
+  color: #ffffff;
+  margin-left: 12px;
+}
+.checkboxIcon {
+  cursor: pointer;
+  user-select: none;
+}
+.checkboxCont {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 135px 0px 24px 0;
+}
+
+.labelText {
+  font-family: DM Sans;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 150%;
+  /* identical to box height, or 18px */
+
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  color: #dbe4f2;
+  margin-bottom: 10px;
+  margin-top: 16px;
+}
+
+.mnemonicCont {
+  background: rgba(36, 150, 255, 0.22);
+  backdrop-filter: blur(8px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  flex-wrap: wrap;
+  display: flex;
+  padding: 16px;
+  border: 1px solid #3a60d4;
+}
+
+.mnemonicContWrap {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    rgba(36, 150, 255, 0.47);
+  backdrop-filter: blur(5px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+}
+
+.mnemonicHelpTitle {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 129%;
+  /* or 21px */
+
+  text-align: center;
+
+  color: #dbe4f2;
+  margin-bottom: 12px;
+}
+
+.mnemonicHelpSubTitle {
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 150%;
+  /* or 18px */
+
+  text-align: center;
+  letter-spacing: 0.02em;
+
+  color: #dbe4f2;
+
+  opacity: 0.8;
+}
+.mnemonicActionsCont {
+  display: flex;
+  flex-direction: row;
+  margin-top: 16px;
+}
+.mnemonicActionIcon {
+  height: 16px;
+  width: 16px;
+  margin-right: 10px;
+}
+.mnemonicAction {
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 3px;
+  padding: 4px 9px;
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin-right: 16px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 12px;
+  /* identical to box height, or 92% */
+
+  text-align: center;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.mnemonicHelp {
+  padding: 16px;
+}
+
+.mnemonicWords {
+  background: rgba(0, 0, 0, 0.31);
+  border-radius: 5px;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px 8px 5px 0px;
+  padding: 4px 13px;
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  text-align: center;
+
+  color: #ffffff;
+}
+
+.actionArea {
+  padding: 10px 24px;
+}
+
+.center {
+  margin: auto;
+}
+
+.nextCont {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: 20px 30px;
+}
+
+.export-button {
+  margin-top: 6px;
+}
+
+.movedWarning {
+  margin-top: 8px;
+}
+
+.withMarginTop {
+  margin-top: 4px;
+}
+
+.addressDisplay {
+  background: rgba(8, 25, 39, 0.65);
+  border: 2px solid rgba(36, 150, 255, 0.5);
+  box-sizing: border-box;
+  border-radius: 8px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  width: calc(100% - 48px);
+  margin: 16px 24px;
+  padding: 16px;
+  font-family: DM Mono;
+  font-size: 15px;
+  line-height: 20px;
+  justify-content: space-between;
+  backdrop-filter: blur(10px);
+}
+.copyIcon {
+  margin-left: 4px;
+}
+
+.copyIcon:active {
+  opacity: 0.7;
+}

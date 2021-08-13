@@ -1,0 +1,15 @@
+// fonts styles
+@import 'fonts';
+
+// mixins
+@import 'mixins';
+
+// reset styles
+@import 'reset';
+
+// variable styles
+@import 'variable';
+
+* {
+    font-family: Poppins, sans-serif;
+}

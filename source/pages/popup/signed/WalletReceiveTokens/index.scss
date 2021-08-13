@@ -1,0 +1,105 @@
+.page {
+  width: auto;
+  height: 100%;
+  display: inline-block;
+  background: url('../../../../assets/images/bg_receive.png');
+}
+
+.qrCodeCont {
+  display: flex;
+  background: #5a597e66;
+  backdrop-filter: blur(15px);
+  border-radius: 14px;
+  width: calc(100% - 48px);
+  padding: 40px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.accountShare {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 27px;
+  /* identical to box height */
+
+  color: #ffffff;
+  padding: 24px 24px 0 24px;
+  text-align: center;
+}
+
+.topBarDiv {
+  width: 100%;
+  display: flex;
+  flex-direction: rows;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0;
+  border-bottom: 1px solid $addAccountImageBackground;
+}
+
+.topBarDivCenterItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0.5;
+  color: $subTextColor;
+  font-family: $fontFamily;
+  font-size: 20px;
+}
+
+.topBarDivSideItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0.25;
+}
+
+.topBarDivCancelItem {
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: $buttonBackground;
+  font-family: $fontFamily;
+  font-size: 12px;
+  &:hover {
+    color: $buttonBackgroundHover;
+  }
+}
+
+.accountDetail {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 420px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.addressDisplay {
+  background: rgba(8, 25, 39, 0.65);
+  border: 2px solid rgba(36, 150, 255, 0.5);
+  box-sizing: border-box;
+  border-radius: 8px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  width: calc(100% - 48px);
+  margin: 16px 24px;
+  padding: 16px;
+  font-family: DM Mono;
+  font-size: 15px;
+  line-height: 20px;
+  justify-content: space-between;
+  backdrop-filter: blur(10px);
+}
+.copyIcon {
+  margin-left: 4px;
+}
+
+.copyIcon:active {
+  opacity: 0.7;
+}

@@ -1,19 +1,34 @@
 {
-  "extends": "./config/tsconfig.json",
-  "exclude": ["build/**/*", "**/build/*", "**/build/**/*"],
+  "extends": "@abhijithvijayan/tsconfig",
   "compilerOptions": {
-    "jsx": "react",
-    "baseUrl": ".",
+    "target": "ESNEXT", // ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'.
+    "module": "esnext", // Module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'.
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "declaration": false,
+    "isolatedModules": true,
+    /* Additional Checks */
+    "useDefineForClassFields": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "baseUrl": "source",
     "paths": {
-      "@earthwallet/extension": ["packages/extension/src"],
-      "@earthwallet/extension/*": ["packages/extension/src/*"],
-      "@earthwallet/extension-base": ["packages/extension-base/src"],
-      "@earthwallet/extension-base/*": ["packages/extension-base/src/*"],
-      "@earthwallet/extension-ui": ["packages/extension-ui/src"],
-      "@earthwallet/extension-ui/*": ["packages/extension-ui/src/*"],
-      "@earthwallet/ui-keyring": ["packages/ui-keyring/src"],
-      "@earthwallet/ui-keyring/*": ["packages/ui-keyring/src/*"],
-    },
-    "skipLibCheck": true
-  }
+      "~assets/*": ["assets/*"],
+      "~assets": ["assets"],
+      "~components/*": ["components/*"],
+      "~components": ["components"],
+      "~pages/*": ["pages/*"],
+      "~pages": ["pages"],
+      "~state/*": ["state/*"],
+      "~state": ["state"],
+      "~scripts/*": ["scripts/*"],
+      "~scripts": ["scripts"],
+      "~utils/*": ["utils/*"],
+      "~utils": ["utils"],
+      "~hooks/*": ["hooks/*"],
+      "~hooks": ["hooks"],
+      "~global/*": ["global/*"],
+      "~global": ["global"]
+    }
+  },
+  "include": ["source", "webpack.config.cjs"]
 }

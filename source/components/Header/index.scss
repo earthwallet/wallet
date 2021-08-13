@@ -1,0 +1,176 @@
+.container {
+  color: $greyWhite;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-weight: normal;
+  margin: 0;
+  position: relative;
+}
+
+.backText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 150%;
+  /* identical to box height, or 21px */
+
+  color: #ffffff;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  margin: 0px 8px;
+}
+
+.backButtonCont {
+  background: rgba(5, 12, 18, 0.4);
+  //backdrop-filter: blur(20px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 30px;
+  width: 39px;
+  height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.backButtonCont:active {
+  opacity: 0.7;
+}
+
+.headerText {
+  font-style: normal;
+  /* font-weight: 600; */
+  font-size: 16px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+}
+
+.backButtonIcon {
+  width: 33px;
+  height: 33px;
+  background: rgba(255, 255, 255, 0.17);
+  border-radius: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.branding {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $labelColor;
+  font-family: $fontFamily;
+  text-align: center;
+}
+.logoText {
+  color: $textColor;
+  font-family: $fontFamily;
+  font-size: 18px;
+  margin-left: 12px;
+  align-items: center;
+}
+
+.header-logo {
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  background-color: #1b63a6;
+}
+
+.header-logo:hover {
+  cursor: pointer;
+  -moz-box-shadow: 0 0 5px 5px rgba(43, 115, 255, 0.7);
+  -webkit-box-shadow: 0 0 5px 5px rgba(43, 115, 255, 0.7);
+  box-shadow: 0 0 5px 5px rgba(43, 115, 255, 0.7);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  width: 100vw;
+  margin: 24px 0 0 0;
+  padding: 0 24px;
+}
+
+.addressDropdown select {
+  border-radius: 32px;
+}
+
+.popupMenus {
+  align-self: center;
+}
+
+.popupToggle {
+  margin-left: 8px;
+}
+
+.popupToggle {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.popupToggle:last-child {
+  margin-right: 24px;
+}
+
+.popupToggle:hover {
+  cursor: pointer;
+}
+
+.plusIcon,
+.cogIcon {
+  color: $iconNeutralColor;
+}
+.plusIcon .selected {
+  color: $primaryColor;
+}
+.cogIcon .selected {
+  color: $primaryColor;
+}
+
+.arrowLeftIcon {
+  color: $labelColor;
+  margin-right: 1rem;
+}
+
+.backlink {
+  color: $labelColor;
+  min-height: 52px;
+  text-decoration: underline;
+  width: min-content;
+}
+
+.backlink:visited {
+  color: $labelColor;
+}
+
+.smallMargin {
+  margin-bottom: 15px;
+}
+
+.headerTextCenter {
+  margin-left: -34px;
+}
+
+.backButtonIconDetails {
+  padding: 0 10px;
+  width: auto;
+}
+.containerDetails {
+  margin: 0;
+  width: 317px;
+  max-width: 317px;
+  padding: 0px 0 0 0px;
+}
+
+.backButtonContDetails {
+  width: 86px;
+}
