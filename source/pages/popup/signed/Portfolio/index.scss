@@ -12,6 +12,16 @@
   width: $appWidth;
 }
 
+.pageFirstTime {
+  height: $appHeight;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  background: url('../../../../assets/images/bg_wallet_list.png');
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .headerIcon {
   position: static;
   width: 33px;
@@ -475,4 +485,102 @@
 
 .noop {
   display: none;
+}
+
+.subtitle {
+  margin-top: 180px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 150%;
+  text-align: center;
+  text-transform: capitalize;
+  color: #ffffff;
+  opacity: 0.46;
+}
+
+.noAccountsActions {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.earthButtonCont {
+  width: 295px;
+  height: 56px;
+  background: linear-gradient(0deg, #1f75c4 10.81%, #64a3de 139.52%);
+  border-radius: 8px;
+  padding: 3px;
+  cursor: pointer;
+  margin-top: 280px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  text-align: center;
+  color: #fafbfb;
+}
+.earthButtonCont:active {
+  opacity: 0.7;
+  user-select: none;
+}
+
+.link {
+  align-items: center;
+  color: #fff;
+  display: flex;
+  opacity: 0.85;
+  text-decoration: none;
+  vertical-align: middle;
+  -webkit-box-align: center;
+  align-items: center;
+  color: rgb(255, 255, 255);
+  display: flex;
+  opacity: 0.85;
+  text-decoration: none;
+  vertical-align: middle;
+}
+.link:hover {
+  color: #fff;
+  opacity: 1;
+}
+
+.link:visited {
+  color: #fff;
+}
+
+.link.isDisabled {
+  opacity: 0.4;
+}
+
+.earthButton {
+  width: 295px;
+  height: 50px;
+  background: linear-gradient(101.54deg, #2496ff 10.81%, #1b63a6 139.52%);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footerCont {
+  display: flex;
+  margin-top: 18px;
+}
+
+.orSep {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 160%;
+  color: #56708f;
+
+  opacity: 0.8;
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px 6px;
 }
