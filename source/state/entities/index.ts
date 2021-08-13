@@ -80,7 +80,7 @@ export const {
   replaceEntities,
   removeEntityKey,
   resetEntities,
-  hydrateEntities
+  hydrateEntities,
 } = entitiesState.actions;
 
 export default entitiesState.reducer;

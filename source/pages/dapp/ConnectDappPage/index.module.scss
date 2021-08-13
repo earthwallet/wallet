@@ -45,8 +45,19 @@
     flex-direction: column;
 
     section.header {
-      display: block;
-      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      & > label {
+        display: block;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 400;
+        line-height: 15.85px;
+        color: $textColor;
+        margin-top: 20px;
+      }
     }
 
     section.content {
@@ -55,6 +66,103 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
+
+      .dapp {
+        display: flex;
+        flex-direction: column;
+        font-size: 16px;
+        width: 100%;
+
+        & > i {
+          display: flex;
+          align-items: center;
+          height: 48px;
+          backdrop-filter: blur(7px);
+          border-radius: 14px;
+          background: rgba(90, 89, 126, 0.39);
+          padding: 12px;
+          box-sizing: border-box;
+          margin-top: 13px;
+          font-size: 13px;
+          color: rgba($textColor, 0.51);
+          font-style: normal;
+
+          & > img {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+          }
+        }
+      }
+
+      .connectWith {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        & > label {
+          font-size: 16px;
+          margin: 16px 0;
+        }
+
+        & > .row {
+          background: rgba(90, 89, 126, 0.39);
+          backdrop-filter: blur(7px);
+          padding: 18px 12px;
+          box-sizing: border-box;
+          height: 68px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-bottom: 1px solid rgba($textColor, 0.1);
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &:hover {
+            background: rgba($textColor, 0.1);
+          }
+
+          & > span {
+            display: flex;
+            align-items: center;
+
+            & > img {
+              width: 36px;
+              height: 36px;
+              margin-right: 12px;
+            }
+
+            & > label {
+              display: flex;
+              flex-direction: column;
+              font-size: 14px;
+              font-weight: 400;
+              color: #fafafb;
+
+              & > small {
+                font-size: 12px;
+                opacity: 0.54;
+                width: 100px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                display: block;
+              }
+            }
+          }
+
+          &:first-child {
+            border-top-left-radius: 14px;
+            border-top-right-radius: 14px;
+          }
+
+          &:last-child {
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+            border-bottom: none;
+          }
+        }
+      }
 
       .url {
         border-radius: 14px;
@@ -71,12 +179,30 @@
           backdrop-filter: blur(7px);
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
           border-radius: 8px;
           height: 57px;
           font-size: 18px;
           line-height: 27px;
           color: rgba($textColor, 0.51);
+          padding: 8px;
+          box-sizing: border-box;
+
+          & > i {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #292d3d;
+            margin-right: 14px;
+            border-radius: 50%;
+
+            & > img {
+              width: 24px;
+              height: 24px;
+            }
+          }
         }
       }
 

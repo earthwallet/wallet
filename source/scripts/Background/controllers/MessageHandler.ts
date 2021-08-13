@@ -43,16 +43,35 @@ export const messagesHandler = (
 
     const allowed = mainController.dapp.fromPageConnectDApp(origin, title);
 
-    console.log('===> allowed', allowed);
-
     if (message.type === 'EARTH_EVENT_MESSAGE') {
       if (message.data && message.data.method) {
         //
       }
     } else if (message.type === 'ENABLE_REQUEST') {
+      if (origin && allowed) {
+        return Promise.resolve({ id: message.id, result: origin && allowed });
+      }
+
       const windowId = uuid();
       const popup = await mainController.createPopup(windowId);
       if (popup) {
+        window.addEventListener(
+          'connectWallet',
+          (ev: any) => {
+            console.log('Connect window addEventListener', ev.detail);
+            if (ev.detail.substring(1) === windowId) {
+              port.postMessage({ id: message.id, data: { result: true } });
+            }
+          },
+          { once: true, passive: true }
+        );
+
+        browser.windows.onRemoved.addListener((id) => {
+          if (id === popup.id) {
+            port.postMessage({ id: message.id, data: { result: false } });
+            console.log('Connect window is closed');
+          }
+        });
         return Promise.resolve(null);
       }
       return Promise.resolve({ id: message.id, result: origin && allowed });

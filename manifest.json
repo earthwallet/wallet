@@ -14,9 +14,15 @@
   "homepage_url": "https://github.com/earth-association/wallet",
   "short_name": "Earth Wallet",
 
-  "permissions": ["activeTab", "storage", "http://*/*", "https://*/*"],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "http://*/*",
+    "https://*/*",
+    "chrome://favicon/"
+  ],
 
-  "content_security_policy": "script-src 'self' blob: 'unsafe-eval' 'wasm-eval'; object-src 'self'",
+  "content_security_policy": "script-src 'self' blob: 'unsafe-eval' 'wasm-eval'; object-src 'self'; img-src chrome://favicon;",
 
   "__chrome|firefox__author": "earth",
   "__opera__developer": {

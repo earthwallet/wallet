@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IAppState, AppStatusType, AppThemeType } from './types';
 import { hydrateWallet } from '~state/wallet';
 import { hydrateEntities } from '~state/entities';
+import { hydrateDapp } from '~state/dapp';
 import { browser } from 'webextension-polyfill-ts';
 
 const initialState: IAppState = {
@@ -22,7 +23,7 @@ export const preloadStateAsync = createAsyncThunk(
     state?.wallet && thunkAPI.dispatch(hydrateWallet(state?.wallet));
     state?.entities && thunkAPI.dispatch(hydrateEntities(state?.entities));
     state?.app && thunkAPI.dispatch(hydrateApp(state?.app));
-    state?.app && thunkAPI.dispatch(hydrateApp(state?.app));
+    state?.dapp && thunkAPI.dispatch(hydrateDapp(state?.dapp));
 
     thunkAPI.dispatch(updateHydrating(false));
 

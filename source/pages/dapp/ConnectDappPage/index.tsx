@@ -1,37 +1,124 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ActionButton from '~components/composed/ActionButton';
 import NavButton from '~components/composed/NavButton';
+import { useConnectWalletToDApp, useCurrentDapp } from '~hooks/useController';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import AccountImage from '~assets/images/icon_icp_details.png';
 
 import styles from './index.module.scss';
+import { useSelector } from 'react-redux';
+import { selectAccounts } from '~state/wallet';
+import { isUndefined } from 'lodash';
+
+enum ConnectStep {
+  Accounts,
+  Confirm,
+}
 
 export default function ConnectDappPage() {
+  const dapp = useCurrentDapp();
+  const connctWalletToDapp = useConnectWalletToDApp();
+  const accounts = useSelector(selectAccounts);
+
+  const [step, setStep] = useState(ConnectStep.Accounts);
+  const [accountIndex, setAccountIndex] = useState<number>();
+
+  const handleSubmit = () => {
+    if (step === ConnectStep.Accounts && accountIndex) {
+      setStep(ConnectStep.Confirm);
+      return;
+    }
+    connctWalletToDapp();
+    window.close();
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.inner}>
         <section className={styles.header}>
-          <NavButton>Internet Computer</NavButton>
+          {step === ConnectStep.Accounts ? (
+            <label>Select Account</label>
+          ) : (
+            <>
+              <NavButton onClick={() => setStep(ConnectStep.Accounts)}>
+                <ChevronLeftIcon />
+                Back
+              </NavButton>
+              <NavButton>Internet Computer</NavButton>
+            </>
+          )}
         </section>
         <section className={styles.content}>
-          <div className={styles.url}>
-            <span>
-              <img src="#" />
-              pancakeswap.finance
-            </span>
-          </div>
-          <label>Allow This Connection?</label>
-          <span>
-            This will grant the website access to view the public key you
-            selected here:
-          </span>
-          <div className={styles.accounts}>
-            <NavButton>0xO2EF...dD45</NavButton>
-          </div>
+          {step === ConnectStep.Accounts ? (
+            <>
+              <div className={styles.dapp}>
+                <span>You are connecting to:</span>
+                <i>
+                  <img src={dapp.logo} />
+                  {dapp.origin}
+                </i>
+              </div>
+              <div className={styles.connectWith}>
+                <label>Connect With:</label>
+                {accounts.map((account, index) => (
+                  <div
+                    className={styles.row}
+                    key={account.id}
+                    onClick={() => {
+                      setAccountIndex(index);
+                      setStep(ConnectStep.Confirm);
+                    }}
+                  >
+                    <span>
+                      <img src={AccountImage} />
+                      <label>
+                        {account.meta.name}
+                        <small>{account.id}</small>
+                      </label>
+                    </span>
+                    <ChevronRightIcon />
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className={styles.url}>
+                <span>
+                  <i>
+                    <img src={dapp.logo} />
+                  </i>
+                  {dapp.title}
+                </span>
+              </div>
+              <label>Allow This Connection?</label>
+              <span>
+                This will grant the website access to view the public key you
+                selected here:
+              </span>
+              <div className={styles.accounts}>
+                <NavButton>
+                  {!isUndefined(accountIndex) &&
+                    accounts[accountIndex].meta.name}
+                </NavButton>
+              </div>
+            </>
+          )}
         </section>
         <section className={styles.footer}>
-          <div className={styles.info}>Only connect with sites you trust.</div>
+          {step === ConnectStep.Confirm && (
+            <div className={styles.info}>
+              Only connect with sites you trust.
+            </div>
+          )}
           <div className={styles.actions}>
-            <ActionButton actionType="secondary">Cancel</ActionButton>
-            <ActionButton>Connect</ActionButton>
+            <ActionButton actionType="secondary" onClick={() => window.close()}>
+              Cancel
+            </ActionButton>
+            <ActionButton onClick={handleSubmit}>
+              {step === ConnectStep.Accounts ? 'Next' : 'Connect'}
+            </ActionButton>
           </div>
         </section>
       </div>
