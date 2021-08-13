@@ -1,5 +1,11 @@
 export interface IAccountsController {
-  createAccounts: (symbols: string[]) => Promise<void>;
+  createAccounts: (
+    mnemonic: string,
+    symbols: string[],
+    name: string,
+    password: string,
+    callback?: (address: string) => void
+  ) => Promise<void>;
   createOrUpdateAccount: (
     mnemonic: string,
     symbol: string,

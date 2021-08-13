@@ -25,6 +25,6 @@ export default class MainController {
   }
 
   async accountsInfo() {
-    this.accounts.createAccounts(this.assets.usedAssetSymbols());
+    //this.accounts.createAccounts(this.assets.usedAssetSymbols());
   }
 }

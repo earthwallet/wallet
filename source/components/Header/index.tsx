@@ -69,7 +69,7 @@ function Header({
         <div
           className={clsx(styles.container, styles.containerDetails, className)}
         >
-          <div
+          {showBackArrow ? <div
             className={clsx(
               styles.backButtonCont,
               styles.backButtonContDetails
@@ -86,6 +86,9 @@ function Header({
               <div className={styles.backText}>Back</div>
             </div>
           </div>
+            : <div className={clsx(
+              styles.backButtonIconNoop
+            )} />}
           {text && (
             <div
               className={clsx(

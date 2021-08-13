@@ -1,14 +1,15 @@
 .page {
-  width: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: -webkit-fill-available;
   background: linear-gradient(
     0deg,
     rgba(71, 134, 255, 0.4) 0%,
     rgba(71, 134, 255, 0) 100%
   );
+  background: url('../../../../assets/images/bg_portfolio_extension.png');
+  height: $appHeight;
+  width: $appWidth;
 }
 
 .headerIcon {
@@ -30,6 +31,10 @@
   border: 2px solid #131a28;
   cursor: pointer;
   user-select: none;
+}
+
+.headerIcon:active {
+  opacity: 0.7;
 }
 
 .headerIconFirst {
@@ -466,4 +471,8 @@
   overflow-y: scroll;
   overflow-x: hidden;
   min-height: 510px;
+}
+
+.noop {
+  display: none;
 }

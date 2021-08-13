@@ -1,7 +1,6 @@
 import { createWallet, newMnemonic } from '@earthwallet/sdk';
 import store from '~state/store';
 import {
-  updateAccounts,
   updateActiveAccount,
   updateNewMnemonic,
   updateError,
@@ -90,17 +89,47 @@ export default class AccountsController implements IAccountsController {
     await _getTransactions(address, symbol);
   };
 
-  createAccounts = async (symbols: string[]) => {
+  createAccounts = async (
+    mnemonic: string,
+    symbols: string[],
+    name: string,
+    password: string,
+    callback?: (address: string) => void
+  ) => {
     let newAccounts = [];
 
     for (const symbol of symbols) {
-      const keypair = await createWallet(
-        'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano',
-        symbol
-      );
-      newAccounts.push({ id: keypair.address, ...keypair });
+      const keypair = await createWallet(mnemonic, symbol);
+      let data = {
+        id: keypair.address,
+        ...keypair,
+        meta: {
+          name,
+          createdAt: Math.round(new Date().getTime() / 1000),
+          publicKey: keypair.publicKey,
+          type: keypair.type,
+        },
+        vault: {
+          encryptedMnemonic: encryptString(mnemonic, password),
+          encryptedJson: '',
+          encryptionType: 'AES',
+        },
+        symbol,
+      };
+      if (symbol === 'ICP') {
+        data.vault.encryptedJson = encryptString(
+          JSON.stringify(keypair.identity.toJSON()),
+          password
+        );
+      }
+      newAccounts.push(data);
     }
-    store.dispatch(updateActiveAccount(newAccounts[0]));
-    store.dispatch(updateAccounts(newAccounts));
+    store.dispatch(
+      storeEntities({
+        entity: 'accounts',
+        data: newAccounts,
+      })
+    );
+    callback && callback(newAccounts[0]?.id);
   };
 }

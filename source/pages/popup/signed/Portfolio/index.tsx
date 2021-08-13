@@ -28,13 +28,14 @@ const Page = () => {
   return (
     <div className={styles.page}>
       <Header
+        showBackArrow={false}
         className={styles.header}
         showAccountsDropdown={false}
         text={'Accounts'}
         type={'details'}
       >
         <div className={styles.headerIcons}>
-          <div className={clsx(styles.headerIcon, styles.headerIconFirst)}>
+          <div className={clsx(styles.headerIcon, styles.headerIconFirst, styles.noop)}>
             <img src={ICON_SCROLL} />
           </div>
           <div className={clsx(styles.headerIcon, styles.headerIconSecond)}>
