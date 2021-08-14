@@ -1,4 +1,4 @@
-import { EarthKeyringPair } from '@earthwallet/sdk';
+import { EarthKeyringPair } from '@earthwallet/keyring';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NetworkType } from '~global/types';
 

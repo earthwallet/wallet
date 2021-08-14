@@ -8,7 +8,7 @@ import ICON_SEND from '~assets/images/icon_send_status.svg';
 import { useHistory } from 'react-router-dom';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { getBalance, getTransactions } from '@earthwallet/sdk';
+import { getBalance, getTransactions } from '@earthwallet/keyring';
 import moment from 'moment-mini';
 import { getShortAddress } from '~utils/common';
 import { ClipLoader } from 'react-spinners';

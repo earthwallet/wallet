@@ -1,4 +1,4 @@
-import { createWallet, newMnemonic } from '@earthwallet/sdk';
+import { createWallet, newMnemonic } from '@earthwallet/keyring';
 import store from '~state/store';
 import {
   updateAccounts,
@@ -13,7 +13,7 @@ import {
   getBalance as _getBalance,
   getTransactions as _getTransactions,
   send as _send,
-} from '@earthwallet/sdk';
+} from '@earthwallet/keyring';
 import { encryptString } from '~utils/vault';
 
 export default class AccountsController implements IAccountsController {
