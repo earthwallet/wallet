@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styles from './index.scss';
 //import { useHistory } from 'react-router-dom';
@@ -22,6 +22,9 @@ const Page = () => {
   const { accounts }: IWalletState = useSelector(
     (state: AppState) => state.wallet
   );
+  const [context, setContext] = useState(false);
+
+
 
   useEffect(() => {
     controller.createAccounts();
@@ -58,9 +61,19 @@ const Page = () => {
             <div className={clsx(styles.headerIcon, styles.headerIconFirst, styles.noop)}>
               <img src={ICON_SCROLL} />
             </div>
-            <div className={clsx(styles.headerIcon, styles.headerIconSecond)}>
+            <div
+              onClick={() => setContext(true)}
+              className={clsx(styles.headerIcon, styles.headerIconSecond)}>
               <img src={ICON_ADD} />
             </div>
+            {context && <div className={clsx(styles.headerContext)}>
+              <Link className={styles.link} to={'/account/create'}>
+                <div className={clsx(styles.headerContextLink)}>Create new Porfolio</div>
+              </Link>
+              <Link className={styles.link} to={'/account/import'}>
+                <div className={clsx(styles.headerContextLink)}>Import Seed</div>
+              </Link>
+            </div>}
           </div>
         </Header>
 
