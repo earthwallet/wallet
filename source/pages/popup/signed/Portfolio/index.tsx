@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import styles from './index.scss';
 //import { useHistory } from 'react-router-dom';
-const symbols = ['ICP', 'KSM', 'DOT', 'ETH', 'BNB', 'BTC', 'LTC', 'BCH'];
+const symbols = ['ETH', 'ICP', 'KSM', 'DOT', 'BNB', 'BTC', 'LTC', 'BCH'];
 import Header from '~components/Header';
 //import ICON_CHECKED from '~assets/images/icon_checkbox_checked.svg';
 //import ICON_UNCHECKED from '~assets/images/icon_checkbox_unchecked.svg';
@@ -24,11 +24,11 @@ const Page = () => {
   );
 
   useEffect(() => {
-    controller.accountsInfo();
+    controller.createAccounts();
   }, []);
   return (
 
-    true ? (
+    false ? (
       <div className={styles.pageFirstTime}>
         <div className={styles.subtitle}>bringing crypto back to earth</div>
         <div className={styles.noAccountsActions}>

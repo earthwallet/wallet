@@ -14,7 +14,7 @@ import clsx from 'clsx';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
-import { getBalance, getTransactions } from '@earthwallet/sdk';
+import { getBalance, getTransactions } from '@earthwallet/keyring';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }

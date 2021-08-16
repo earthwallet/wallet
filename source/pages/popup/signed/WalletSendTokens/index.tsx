@@ -10,10 +10,10 @@ import clsx from 'clsx';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
-import { getBalance, send } from '@earthwallet/sdk';
-import Secp256k1KeyIdentity from '@earthwallet/sdk/build/main/util/icp/secpk256k1/identity';
+import { getBalance, send } from '@earthwallet/keyring';
+import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { isJsonString } from '~utils/common';
-import { principal_id_to_address, address_to_hex } from '@earthwallet/sdk/build/main/util/icp';
+import { principal_id_to_address, address_to_hex } from '@earthwallet/keyring/build/main/util/icp';
 
 import { decryptString } from '~utils/vault';
 

@@ -1,4 +1,4 @@
-import type { EarthKeyringPair } from '@earthwallet/sdk';
+import type { EarthKeyringPair } from '@earthwallet/keyring';
 import type {
   NetworkType,
   // WalletAccounts,

@@ -2,7 +2,7 @@
 [![Discord](https://img.shields.io/badge/Developers-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/aemgEpMye3)
 [![Twitter](https://img.shields.io/badge/Updates-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
 ![License](https://img.shields.io/badge/Code-MIT%20Licence-blueviolet)
-[![SDK](https://img.shields.io/npm/v/@earthwallet/sdk?color=success)](https://www.npmjs.com/package/@earthwallet/sdk)
+[![SDK](https://img.shields.io/npm/v/@earthwallet/keyring?color=success)](https://www.npmjs.com/package/@earthwallet/keyring)
 
 ![Earth Wallet](https://i.imgur.com/eIZaUbx.png)
 

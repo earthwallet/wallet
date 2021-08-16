@@ -1,4 +1,4 @@
-import { createWallet, newMnemonic } from '@earthwallet/sdk';
+import { createWallet, newMnemonic } from '@earthwallet/keyring';
 import store from '~state/store';
 import {
   updateActiveAccount,
@@ -12,7 +12,7 @@ import {
   getBalance as _getBalance,
   getTransactions as _getTransactions,
   send as _send,
-} from '@earthwallet/sdk';
+} from '@earthwallet/keyring';
 import { encryptString } from '~utils/vault';
 
 export default class AccountsController implements IAccountsController {
@@ -78,6 +78,8 @@ export default class AccountsController implements IAccountsController {
         ],
       })
     );
+    //clear new mnemonic
+    store.dispatch(updateNewMnemonic(''));
     callback && callback(keypair.address);
   }
 
@@ -96,12 +98,19 @@ export default class AccountsController implements IAccountsController {
     password: string,
     callback?: (address: string) => void
   ) => {
-    let newAccounts = [];
+    console.log(mnemonic, symbols, name, password, 'createAccounts');
 
+    let newAccounts = [];
+    let groupId = '';
     for (const symbol of symbols) {
       const keypair = await createWallet(mnemonic, symbol);
+      if (symbol === symbols[0]) {
+        groupId = keypair.address;
+      }
+
       let data = {
         id: keypair.address,
+        groupId,
         ...keypair,
         meta: {
           name,
@@ -130,6 +139,8 @@ export default class AccountsController implements IAccountsController {
         data: newAccounts,
       })
     );
+    //clear new mnemonic
+    store.dispatch(updateNewMnemonic(''));
     callback && callback(newAccounts[0]?.id);
   };
 }
