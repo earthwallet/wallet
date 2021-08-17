@@ -91,14 +91,14 @@ export default class AccountsController implements IAccountsController {
     await _getTransactions(address, symbol);
   };
 
-  createAccounts = async (
+  createOrUpdateAccounts = async (
     mnemonic: string,
     symbols: string[],
     name: string,
     password: string,
     callback?: (address: string) => void
   ) => {
-    console.log(mnemonic, symbols, name, password, 'createAccounts');
+    console.log(mnemonic, symbols, name, password, 'createOrUpdateAccounts');
 
     let newAccounts = [];
     let groupId = '';

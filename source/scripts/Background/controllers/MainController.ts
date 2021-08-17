@@ -24,7 +24,7 @@ export default class MainController {
     await store.dispatch(preloadStateAsync() as any);
   }
 
-  async createAccounts() {
-    this.accounts.createAccounts('sweet unaware acoustic ability armor scheme often notice index artefact trap blouse', this.assets.usedAssetSymbols(), '', '');
+  async createOrUpdateAccounts() {
+    this.accounts.createOrUpdateAccounts('sweet unaware acoustic ability armor scheme often notice index artefact trap blouse', this.assets.usedAssetSymbols(), '', '');
   }
 }

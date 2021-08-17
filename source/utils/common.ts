@@ -1,5 +1,3 @@
-
-
 const randomColorArray = [
   '#FEE05F',
   '#F5836B',
@@ -96,6 +94,10 @@ const generateRandomColor = (str: string) => {
 
 export const getShortAddress = (address: string) =>
   address.substring(0, 6) + '...' + address.substring(address.length - 5);
+
+export const getShortText = (text: string, count: number) => {
+  return text.slice(0, count) + (text.length > count ? '...' : '');
+};
 
 export const isJsonString = (str: string) => {
   try {

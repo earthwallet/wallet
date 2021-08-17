@@ -1,5 +1,5 @@
 export interface IAccountsController {
-  createAccounts: (
+  createOrUpdateAccounts: (
     mnemonic: string,
     symbols: string[],
     name: string,

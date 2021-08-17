@@ -52,9 +52,9 @@ const Page = () => {
   const _onCreate = useCallback((): void => {
     if (name && password && newMnemonic) {
       setIsBusy(true);
-      const callback = (address: string) => history.replace('/account/details/' + address);
+      const callback = (address: string) => history.replace('/portfolio?hightlight=' + address);
       controller.accounts
-        .createOrUpdateAccount(newMnemonic, 'ICP', name, password, callback)
+        .createOrUpdateAccounts(newMnemonic, ['ETH', 'ICP'], name, password, callback)
         .then(() => {
         });
     }

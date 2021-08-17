@@ -9,12 +9,13 @@ import Header from '~components/Header';
 import ICON_ADD from '~assets/images/icon_addportfolio.svg';
 import ICON_SCROLL from '~assets/images/icon_scrollable.svg';
 import clsx from 'clsx';
-import { getShortAddress } from '~utils/common';
+import { getShortAddress, getShortText } from '~utils/common';
 import { useController } from '~hooks/useController';
 import { useSelector } from 'react-redux';
 import { AppState } from '~state/store';
 import { IWalletState } from '~state/wallet/types';
 import { Link } from 'react-router-dom';
+import { selectAccountGroups } from '~state/wallet';
 
 const Page = () => {
   //const history = useHistory();
@@ -22,12 +23,48 @@ const Page = () => {
   const { accounts }: IWalletState = useSelector(
     (state: AppState) => state.wallet
   );
+  console.log(accounts);
   const [context, setContext] = useState(false);
+  const accountGroups = useSelector(selectAccountGroups);
+  console.log(accountGroups);
 
+  const AccountsCard = (props: any) => <>
+    <div className={styles.cardcont}>
+      <div className={styles.cardcontinner}>
+        <div className={styles.cardinfo}>
+          <div className={styles.pillet}>
+            {getShortText(props.accounts[0]?.meta?.name, 25) || props.index}
+          </div>
+          <div className={styles.value}>$XXXX.22</div>
+          <div className={styles.stats}>+XX.34%</div>
+        </div>
+      </div>
+      <div className={styles.cardnetworks}>
+        <div className={styles.networktitle}>Networks</div>
+
+        {props.accounts?.map((account: any, index: number) => (
+          <div className={styles.netcard} key={index}>
+            <div className={styles.networklogo}></div>
+            <div className={styles.netmid}>
+              <div className={styles.netname}>{symbols[index]}</div>
+              <div className={styles.netassets}>
+                {getShortAddress(account.address)}
+              </div>
+            </div>
+
+            <div className={styles.netlast}>
+              <div className={styles.netvalue}>$3X,0XX2.22 USD</div>
+              <div className={styles.netstats}>+0.X4%</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </>
 
 
   useEffect(() => {
-    controller.createAccounts();
+    controller.createOrUpdateAccounts();
   }, []);
   return (
 
@@ -76,37 +113,8 @@ const Page = () => {
             </div>}
           </div>
         </Header>
-
-        <div className={styles.cards}>
-          <div className={styles.cardcont}>
-            <div className={styles.cardcontinner}>
-              <div className={styles.cardinfo}>
-                <div className={styles.pillet}>Earth Profile #</div>
-                <div className={styles.value}>$XXXX.22</div>
-                <div className={styles.stats}>+XX.34%</div>
-              </div>
-            </div>
-            <div className={styles.cardnetworks}>
-              <div className={styles.networktitle}>Networks</div>
-
-              {accounts?.map((account, index) => (
-                <div className={styles.netcard} key={index}>
-                  <div className={styles.networklogo}></div>
-                  <div className={styles.netmid}>
-                    <div className={styles.netname}>{symbols[index]}</div>
-                    <div className={styles.netassets}>
-                      {getShortAddress(account.address)}
-                    </div>
-                  </div>
-
-                  <div className={styles.netlast}>
-                    <div className={styles.netvalue}>$3X,0XX2.22 USD</div>
-                    <div className={styles.netstats}>+0.X4%</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className={styles.cards} >
+          {accountGroups?.map && accountGroups?.map((accounts: any, index: number) => <AccountsCard key={index} index={index} accounts={accounts} />)}
         </div>
       </div>
   );

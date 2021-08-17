@@ -5,6 +5,7 @@ import { NetworkType } from '~global/types';
 import type { IWalletState } from './types';
 //import type { StoreInterface } from '~state/IStore';
 import { AppState } from '~state/store';
+import groupBy from 'lodash/groupBy';
 
 const initialState: IWalletState = {
   accounts: [],
@@ -52,13 +53,25 @@ export const {
   updateNewMnemonic,
   updateError,
   updateLoading,
-  hydrateWallet
+  hydrateWallet,
 } = WalletState.actions;
 
 export const selectAccounts = (state: AppState) =>
   Object.keys(state.entities.accounts.byId).map(
     (id) => state.entities.accounts.byId[id]
   );
+export const selectAccountGroups = (state: AppState) => {
+  const accountGroupsObject = groupBy(
+    Object.keys(state.entities.accounts.byId).map(
+      (id) => state.entities.accounts.byId[id]
+    ),
+    'groupId'
+  );
+  console.log(accountGroupsObject, Object.keys(state.entities.accounts.byId).map(
+    (id) => state.entities.accounts.byId[id]
+  ), 'selectAccountGroups');
+  return Object.keys(accountGroupsObject).map((id) => accountGroupsObject[id]);
+};
 
 export const selectAccountById = (address: string) => (state: AppState) =>
   state.entities.accounts.byId[address];

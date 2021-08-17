@@ -35,7 +35,7 @@ const Page = () => {
       const callback = (address: string) => history.replace('/account/details/' + address);
 
       controller.accounts
-        .createOrUpdateAccount(seed, 'ICP', name, password, callback)
+        .createOrUpdateAccounts(seed, ['ETH', 'ICP'], name, password, callback)
         .then(() => {
         });
     }

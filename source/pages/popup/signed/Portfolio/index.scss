@@ -293,7 +293,7 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  width: 144px;
+  /* width: 144px; */
   height: 29px;
   background: #55d171;
   border-radius: 25px;
@@ -312,6 +312,12 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+  white-space: nowrap;
+  padding: 0 15px;
+  min-width: 0;
 }
 
 .cardcont {
@@ -332,7 +338,7 @@
   border-radius: 12px;
 
   padding: 2px;
-  margin: 0 24px;
+  margin: 12px 24px;
 }
 
 .cardcontinner {

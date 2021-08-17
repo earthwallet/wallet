@@ -9,5 +9,5 @@ export interface IMainController {
   dapp: Readonly<IDAppController>;
   provider: Readonly<EarthProvider>;
   preloadState: () => Promise<void>;
-  createAccounts: () => Promise<void>;
+  createOrUpdateAccounts: () => Promise<void>;
 }
