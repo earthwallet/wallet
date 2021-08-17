@@ -1,25 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import styles from './index.scss';
-//import { useHistory } from 'react-router-dom';
-const symbols = ['ETH', 'ICP', 'KSM', 'DOT', 'BNB', 'BTC', 'LTC', 'BCH'];
 import Header from '~components/Header';
-//import ICON_CHECKED from '~assets/images/icon_checkbox_checked.svg';
-//import ICON_UNCHECKED from '~assets/images/icon_checkbox_unchecked.svg';
 import ICON_ADD from '~assets/images/icon_addportfolio.svg';
 import ICON_SCROLL from '~assets/images/icon_scrollable.svg';
 import clsx from 'clsx';
-import { getShortAddress, getShortText } from '~utils/common';
-import { useController } from '~hooks/useController';
+import { getShortAddress, getShortText, getSymbol } from '~utils/common';
 import { useSelector } from 'react-redux';
 import { AppState } from '~state/store';
 import { IWalletState } from '~state/wallet/types';
 import { Link } from 'react-router-dom';
 import { selectAccountGroups } from '~state/wallet';
+import { useHistory } from 'react-router-dom';
 
 const Page = () => {
-  //const history = useHistory();
-  const controller = useController();
+  const history = useHistory();
   const { accounts }: IWalletState = useSelector(
     (state: AppState) => state.wallet
   );
@@ -43,10 +38,14 @@ const Page = () => {
         <div className={styles.networktitle}>Networks</div>
 
         {props.accounts?.map((account: any, index: number) => (
-          <div className={styles.netcard} key={index}>
-            <div className={styles.networklogo}></div>
+          <div
+            onClick={() => history.push('/account/details/' + account.id)}
+            className={styles.netcard} key={index}>
+            <div className={styles.networklogo}>
+              <img src={getSymbol(account.symbol)?.icon} />
+            </div>
             <div className={styles.netmid}>
-              <div className={styles.netname}>{symbols[index]}</div>
+              <div className={styles.netname}>{getSymbol(account.symbol)?.name}</div>
               <div className={styles.netassets}>
                 {getShortAddress(account.address)}
               </div>
@@ -62,13 +61,8 @@ const Page = () => {
     </div>
   </>
 
-
-  useEffect(() => {
-    controller.createOrUpdateAccounts();
-  }, []);
   return (
-
-    false ? (
+    accountGroups.length === 0 ? (
       <div className={styles.pageFirstTime}>
         <div className={styles.subtitle}>bringing crypto back to earth</div>
         <div className={styles.noAccountsActions}>
@@ -113,8 +107,8 @@ const Page = () => {
             </div>}
           </div>
         </Header>
-        <div className={styles.cards} >
-          {accountGroups?.map && accountGroups?.map((accounts: any, index: number) => <AccountsCard key={index} index={index} accounts={accounts} />)}
+        <div className={styles.cards}>
+          {accountGroups?.sort((a, b) => (b[0].meta.createdAt - a[0].meta.createdAt)).map && accountGroups?.map((accounts: any, index: number) => <AccountsCard key={index} index={index} accounts={accounts} />)}
         </div>
       </div>
   );

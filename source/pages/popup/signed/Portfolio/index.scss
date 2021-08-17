@@ -496,6 +496,15 @@
   border-bottom: 1px solid #ffffff17;
   grid-gap: 10px 10px;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.netcard:hover {
+  border-bottom: 1px solid #e3b0b017;
+}
+
+.netcard:active {
+  opacity: 0.7;
 }
 
 .netmid,
@@ -506,7 +515,7 @@
 }
 
 .networklogo {
-  background-color: aliceblue;
+  background-color: rgba(38, 38, 38, 0.051);
   height: 32px;
   width: 32px;
   border-radius: 50%;

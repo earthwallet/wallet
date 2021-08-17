@@ -7,7 +7,7 @@ import SeedAndPath from './SeedAndPath';
 import AccountNamePasswordCreation from './AccountNamePasswordCreation';
 import { useController } from '~hooks/useController';
 import { useHistory } from 'react-router-dom';
-
+import { DEFAULT_SYMBOLS } from '~global/constant';
 
 
 const Page = () => {
@@ -32,10 +32,10 @@ const Page = () => {
     // this should always be the case
     if (name && password && seed) {
       setIsBusy(true);
-      const callback = (address: string) => history.replace('/account/details/' + address);
+      const callback = (address: string) => history.replace('/portfolio?hightlight=' + address);
 
       controller.accounts
-        .createOrUpdateAccounts(seed, ['ETH', 'ICP'], name, password, callback)
+        .createOrUpdateAccounts(seed, DEFAULT_SYMBOLS.map(symbolObj => symbolObj.symbol), name, password, callback)
         .then(() => {
         });
     }

@@ -1,3 +1,5 @@
+import { DEFAULT_SYMBOLS } from '~global/constant';
+
 const randomColorArray = [
   '#FEE05F',
   '#F5836B',
@@ -97,6 +99,10 @@ export const getShortAddress = (address: string) =>
 
 export const getShortText = (text: string, count: number) => {
   return text.slice(0, count) + (text.length > count ? '...' : '');
+};
+
+export const getSymbol = (symbol: string) => {
+  return DEFAULT_SYMBOLS.find((o) => o.symbol === symbol);
 };
 
 export const isJsonString = (str: string) => {
