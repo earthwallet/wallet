@@ -174,9 +174,6 @@
   width: 50px;
   margin: 0px 12px;
 }
-.tokenLogoConfirm {
-  margin: 0px 12px 6px;
-}
 
 .tokenSelectionLabelDiv {
   display: flex;
@@ -247,7 +244,7 @@
   font-weight: normal;
   font-size: 15px;
   line-height: 150%;
-  text-align: center;
+  text-align: right;
   color: #fafbfb;
   opacity: 0.7;
   margin-bottom: 3px;
@@ -258,7 +255,7 @@
   font-weight: 500;
   font-size: 34px;
   line-height: 44px;
-  text-align: center;
+  text-align: right;
   color: #fafbfb;
   text-shadow: 0px 0px 11.4544px rgba(177, 204, 255, 0.89);
   margin-bottom: 3px;
@@ -277,9 +274,10 @@
   border-radius: 14px;
   margin-top: 16px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  padding: 27px 0 24px 0;
+  justify-content: space-between;
+  padding: 27px 24px 24px 24px;
 }
 .tokenValue {
   font-family: DM Mono;
@@ -289,11 +287,100 @@
   line-height: 150%;
   /* identical to box height, or 24px */
 
-  text-align: center;
+  text-align: right;
 
   /* Brand / Moonlight Grey / 20% */
 
   color: #fafbfb;
 
   opacity: 0.51;
+}
+.feeTitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  color: #fafbfb;
+
+  opacity: 0.54;
+  margin: 5px 0px;
+}
+
+.feeAmount {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+
+  text-align: right;
+  color: #fafbfb;
+}
+
+.feeValue {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  text-align: right;
+  color: #fafbfb;
+  opacity: 0.54;
+}
+
+.feeCont {
+  width: 327px;
+  background: rgba(90, 89, 126, 0.39);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  border-radius: 14px;
+  margin-top: 5px;
+}
+
+.feeRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* justify-content: center; */
+  justify-content: space-between;
+  padding: 8px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.119);
+  &:last-child {
+    border-bottom: 0px;
+  }
+}
+
+.feeTotal {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 15px;
+  /* identical to box height, or 107% */
+
+  color: #fafbfb;
+}
+
+.removeBtn {
+  cursor: pointer;
+  user-select: none;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 150%;
+  /* identical to box height, or 18px */
+
+  color: #ffffff;
+
+  padding: 3px 9px;
+  margin-left: 5px;
+  background: rgba(255, 255, 255, 0.17);
+  border-radius: 4px;
+  &:hover {
+    background: rgba(255, 255, 255, 0.37);
+  }
 }

@@ -72,6 +72,7 @@ const Wallet = ({
       const balance: keyable = await getBalance(address, 'ICP');
       setLoading(false);
 
+      console.log(balance, 'loadBalance');
       if (balance && balance?.balances != null) {
         setWalletBalance(balance);
         getBalanceInUSD(balance);

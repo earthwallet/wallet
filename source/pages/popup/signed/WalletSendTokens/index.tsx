@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import styles from './index.scss';
-import ICON_ICP_DETAILS from '~assets/images/icon_icp_details.png';
 import InputWithLabel from '~components/InputWithLabel';
 import NextStepButton from '~components/NextStepButton';
 import Warning from '~components/Warning';
@@ -17,6 +16,7 @@ import { principal_id_to_address, address_to_hex } from '@earthwallet/keyring/bu
 import { getSymbol } from '~utils/common';
 
 import { decryptString } from '~utils/vault';
+import { validateMnemonic } from '@earthwallet/keyring';
 
 
 const MIN_LENGTH = 6;
@@ -48,6 +48,7 @@ const WalletSendTokens = ({
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
   const [usdValue, setUsdValue] = useState<number>(0);
   const [walletBalance, setWalletBalance] = useState<any | null | keyable>(null);
+  const [selectCredit, setSelectCredit] = useState<boolean>(true);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [isBusy, setIsBusy] = useState(false);
@@ -93,17 +94,17 @@ const WalletSendTokens = ({
   const sendTx = async () => {
     setIsBusy(true);
 
-    let json_secret = '';
+    let secret = '';
 
     try {
-      json_secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
+      secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
     } catch (error) {
       setError('Wrong password! Please try again');
       setIsBusy(false);
     }
 
-    if (isJsonString(json_secret)) {
-      const currentIdentity = Secp256k1KeyIdentity.fromJSON(json_secret);
+    if (isJsonString(secret)) {
+      const currentIdentity = Secp256k1KeyIdentity.fromJSON(secret);
       const address = address_to_hex(
         principal_id_to_address(currentIdentity.getPrincipal())
       );
@@ -145,15 +146,17 @@ const WalletSendTokens = ({
       setPass(password);
       setError('');
 
-      let json_secret = '';
+      let secret = '';
       try {
-        json_secret = decryptString(selectedAccount?.vault.encryptedJson, password);
+        secret = selectedAccount.symbol !== 'ICP'
+          ? decryptString(selectedAccount?.vault.encryptedMnemonic, password)
+          : decryptString(selectedAccount?.vault.encryptedJson, password);
       }
       catch (error) {
         setError('Wrong password! Please try again');
       }
-
-      if (!isJsonString(json_secret)) {
+      console.log(secret, selectedAccount?.vault.encryptedJson, selectedAccount, 'onPassChange');
+      if (selectedAccount.symbol === 'ICP' ? !isJsonString(secret) : !validateMnemonic(secret)) {
         setError('Wrong password! Please try again');
       }
     }
@@ -242,11 +245,39 @@ const WalletSendTokens = ({
           <div className={styles.confirmAmountCont}>
             <img
               className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
-              src={ICON_ICP_DETAILS}
+              src={getSymbol(selectedAccount.symbol)?.icon}
             />
-            <div className={styles.tokenText}>Internet Computer</div>
-            <div className={styles.tokenAmount}>{selectedAmount} ICP</div>
-            <div className={styles.tokenValue}>${(selectedAmount * usdValue).toFixed(3)}</div>
+            <div>
+              <div className={styles.tokenText}>{getSymbol(selectedAccount.symbol)?.name}</div>
+              <div className={styles.tokenAmount}>{selectedAmount} {selectedAccount.symbol}</div>
+              <div className={styles.tokenValue}>${(selectedAmount * usdValue).toFixed(3)}</div>
+            </div>
+
+          </div>
+          <div className={styles.feeCont}>
+            <div className={styles.feeRow}>
+              <div className={styles.feeTitle}>Transaction Fee</div>
+              <div>
+                <div className={styles.feeAmount}>0.001 {selectedAccount.symbol}</div>
+                <div className={styles.feeValue}>$6.52</div>
+              </div>
+            </div>
+            {selectCredit && <div className={styles.feeRow}>
+              <div className={styles.feeTitle}>Earth Credit<span
+                onClick={() => setSelectCredit(false)}
+                className={styles.removeBtn}>Remove</span></div>
+              <div>
+                <div className={styles.feeAmount}>You Recieve</div>
+                <div className={styles.feeValue}>1.50 EARTH</div>
+              </div>
+            </div>}
+            <div className={styles.feeRow}>
+              <div className={styles.feeTotal}>Total</div>
+              <div>
+                <div className={styles.feeAmount}>{selectedAmount + 0.001}</div>
+                <div className={styles.feeValue}>${((selectedAmount + 0.001) * usdValue).toFixed(3)}</div>
+              </div>
+            </div>
 
           </div>
           <InputWithLabel
