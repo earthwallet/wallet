@@ -21,7 +21,6 @@ const Page = () => {
   console.log(accounts);
   const [context, setContext] = useState(false);
   const accountGroups = useSelector(selectAccountGroups);
-  console.log(accountGroups);
 
   const AccountsCard = (props: any) => <>
     <div className={styles.cardcont}>
