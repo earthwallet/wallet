@@ -1,136 +1,123 @@
 .page {
-    width: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: -webkit-fill-available;
-    //assets/bg_wallet_details.png
-    background: url('../../../../assets/images/bg_wallet_details.png');
-  }
-  .pageloading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: -webkit-fill-available;
-    width: auto;
-  }
-  
-  .backTransButton {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-  }
-  
-  .backTransButton:active {
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: $appHeight;
+  position: relative;
+  background: url('../../../../assets/images/bg_nft_details.png');
+}
+
+.fullImage {
+  width: 375px;
+  height: 430px;
+  background: url('../../../../assets/images/nft_bg.png');
+  position: absolute;
+  z-index: 1;
+}
+.mainCont {
+  position: absolute;
+  z-index: 10;
+}
+
+.action {
+  background: #2496ff;
+  border-radius: 29px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  color: #fafbfb;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 8px 22px;
+  margin: 300px 24px 30px;
+  cursor: pointer;
+  user-select: none;
+
+  &:active {
     opacity: 0.7;
   }
-  
-  .transColIcon {
-    margin-right: 8px;
-    margin-top: 2px;
-  }
-  
-  .transCont {
-    backdrop-filter: blur(7px);
-    height: 568px;
-    width: 343px;
-    margin: 16px;
-    border: 1px solid #2496ff;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-direction: column;
-    box-sizing: border-box;
-    padding: 12px;
-    overflow: hidden;
-  }
-  
-  .transTitle {
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 150%;
-    /* identical to box height, or 24px */
-  
-    text-align: center;
-  
-    /* Brand / Moonlight Grey / 100% */
-    color: #e6e9ed;
-  }
-  
-  .transItem {
-    border-bottom: 1px solid #ffffff1a;
-    padding: 23px 0;
-    display: flex;
-    width: calc(340px - 32px);
-    overflow: hidden;
-    cursor: pointer;
-    user-select: none;
-  
-    &:active {
-      opacity: 0.7;
-    }
-  }
-  
-  .transColStatus {
-    display: flex;
-    flex-direction: column;
-    width: 150px;
-    margin-right: 21px;
-  }
-  .transSubColTime {
-    display: flex;
-    flex-direction: row;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 12px;
-    /* identical to box height, or 100% */
-  
-    color: #fafbfb;
-  
-    opacity: 0.54;
-    display: flex;
-    align-items: center;
-  }
-  
-  .transSubColPrice {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 12px;
-    /* identical to box height, or 100% */
-  
-    color: #fafbfb;
-  
-    opacity: 0.54;
-  }
-  
-  .transColAction {
-    display: flex;
-    align-self: center;
-  }
-  
-  .transColValue {
-    align-items: flex-end;
-    margin-right: 16px;
-    display: flex;
-    flex-direction: column;
-    text-align: end;
-    flex: 1;
-  }
-  .transSubColDot {
-    width: 2px;
-    height: 2px;
-    margin: 0 3px;
-    border-radius: 6px;
-    background: #989da9;
-  }
-  
-  .transItems {
-    height: 502px;
-    overflow: hidden scroll;
-  }
-  
+}
+
+.title {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 28px;
+  line-height: 20px;
+  padding: 24px 30px 8px 24px;
+}
+
+.subtitle {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 22px;
+  /* or 19px */
+
+  color: #ffffff;
+}
+
+.price {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.subtitleCont {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  justify-content: space-between;
+}
+.sep {
+  opacity: 0.15;
+  border: 1px solid #ffffff;
+  margin: 12px;
+}
+
+.creatorIcon {
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+}
+.creatorCont {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+.creatorSubtitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 150%;
+  /* identical to box height, or 15px */
+
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+
+  opacity: 0.35;
+}
+
+.creatorTitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 150%;
+  /* identical to box height, or 21px */
+
+  color: #ffffff;
+}
+.creatorInfo {
+  margin-left: 12px;
+}
