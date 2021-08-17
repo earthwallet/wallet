@@ -3,12 +3,12 @@ import { NetworkType } from './types';
 //['ETH', 'ICP',  'DOT', 'KSM','BTC', 'LTC', 'BCH', 'BNB',];
 import ICON_ETH from '~assets/images/icon_eth_mini.png';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
-import ICON_DOT from '~assets/images/icon_icp_details.png';
-import ICON_KSM from '~assets/images/icon_icp_details.png';
-import ICON_BTC from '~assets/images/icon_icp_details.png';
-import ICON_LTC from '~assets/images/icon_icp_details.png';
-import ICON_BCH from '~assets/images/icon_icp_details.png';
-import ICON_BNB from '~assets/images/icon_icp_details.png';
+import ICON_DOT from '~assets/images/icon_mini_dot.png';
+import ICON_KSM from '~assets/images/icon_mini_ksm.png';
+import ICON_BTC from '~assets/images/icon_btc_mini.png';
+import ICON_LTC from '~assets/images/icon_mini_ltc.png';
+import ICON_BCH from '~assets/images/icon_mini_bch.png';
+import ICON_BNB from '~assets/images/icon_mini_bnb.png';
 
 export const STATE_PORT = 'EARTH_WALLET';
 

@@ -44,15 +44,15 @@ const Page = () => {
               <img src={getSymbol(account.symbol)?.icon} />
             </div>
             <div className={styles.netmid}>
-              <div className={styles.netname}>{getSymbol(account.symbol)?.name}</div>
+              <div className={styles.netname}>{getShortAddress(account.address)}</div>
               <div className={styles.netassets}>
-                {getShortAddress(account.address)}
+                3 assets
               </div>
             </div>
 
             <div className={styles.netlast}>
-              <div className={styles.netvalue}>$3X,0XX2.22 USD</div>
-              <div className={styles.netstats}>+0.X4%</div>
+              <div className={styles.netvalue}>1.310 {account.symbol}</div>
+              <div className={styles.netstats}>$0.X4</div>
             </div>
           </div>
         ))}

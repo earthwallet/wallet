@@ -13,6 +13,8 @@ import WalletReceiveTokens from '~pages/popup/signed/WalletReceiveTokens';
 import Portfolio from '~pages/popup/signed/Portfolio';
 import ErrorBoundary from '~components/ErrorBoundary';
 import { useController } from '~hooks/useController';
+import NFTDetails from '~pages/popup/signed/NFTDetails';
+import CreateNFT from '~pages/popup/signed/CreateNFT';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -87,6 +89,12 @@ const PopupRouter = () => {
                 <WalletReceiveTokens />,
                 'wallet-receive-token'
               )}
+            </Route>
+            <Route path="/nftdetails/:assetid">
+              {wrapWithErrorBoundary(<NFTDetails />, 'accounts')}
+            </Route>
+            <Route path="/createnft/:address">
+              {wrapWithErrorBoundary(<CreateNFT />, 'accounts')}
             </Route>
           </Switch>
         </animated.div>
