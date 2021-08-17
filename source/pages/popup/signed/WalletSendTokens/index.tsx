@@ -14,6 +14,7 @@ import { getBalance, send } from '@earthwallet/keyring';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { isJsonString } from '~utils/common';
 import { principal_id_to_address, address_to_hex } from '@earthwallet/keyring/build/main/util/icp';
+import { getSymbol } from '~utils/common';
 
 import { decryptString } from '~utils/vault';
 
@@ -51,7 +52,6 @@ const WalletSendTokens = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [isBusy, setIsBusy] = useState(false);
   const [paymentHash, setPaymentHash] = useState<string>('');
-  const selectedNetwork = 'ICP';
 
   const getICPUSDValue = async () => {
     const fetchHeaders = new Headers();
@@ -196,20 +196,22 @@ const WalletSendTokens = ({
               <div className={styles.selectedNetworkDiv}>
                 <img
                   className={styles.tokenLogo}
-                  src={ICON_ICP_DETAILS}
+                  src={getSymbol(selectedAccount.symbol)?.icon}
                 />
                 <div className={styles.tokenSelectionLabelDiv}>
-                  <div className={styles.tokenLabel}>{selectedNetwork}</div>
+                  <div className={styles.tokenLabel}>{selectedAccount.symbol}</div>
                   <div className={styles.tokenBalance}>
                     {loading
                       ? <SkeletonTheme color="#222"
                         highlightColor="#000">
                         <Skeleton width={150} />
                       </SkeletonTheme>
-                      : <span className={styles.tokenBalanceText}>Balance: {walletBalance && walletBalance?.balances[0] &&
-                        `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} 
+                      : selectedAccount?.symbol !== 'ICP'
+                        ? <span className={styles.tokenBalanceText}>Balance: 0 {selectedAccount?.symbol}</span>
+                        : <span className={styles.tokenBalanceText}>Balance: {walletBalance && walletBalance?.balances[0] &&
+                          `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} 
                         ${walletBalance?.balances[0]?.currency?.symbol}`
-                      }</span>
+                        }</span>
                     }
                   </div>
                 </div>

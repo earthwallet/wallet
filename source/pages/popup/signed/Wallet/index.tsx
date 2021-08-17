@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import styles from './index.scss';
 import { Link } from 'react-router-dom';
 import Header from '~components/Header';
-import icpLogo from '~assets/images/icon_icp_details.png';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import CopyToClipboard from 'react-copy-to-clipboard';
 //import bg_wallet_details from '~assets/images/bg_wallet_details.png';
 import icon_copy from '~assets/images/icon_copy.svg';
 import icon_rec from '~assets/images/icon_rec.svg';
 import icon_send from '~assets/images/icon_send.svg';
-import { getShortAddress } from '~utils/common';
+import { getShortAddress, getSymbol } from '~utils/common';
 import clsx from 'clsx';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
@@ -93,17 +92,20 @@ const Wallet = ({
         showMenu
         type={'wallet'}
       />
-      <img className={styles.networklogo} src={icpLogo} />
-      <div className={styles.networktext}>Internet Computer</div>
+      <img className={styles.networklogo} src={getSymbol(selectedAccount.symbol)?.icon} />
+      <div className={styles.networktext}>{getSymbol(selectedAccount.symbol)?.name}</div>
       <div className={styles.primaryBalanceLabel}>
         {loading ? (
           <SkeletonTheme color="#222" highlightColor="#000">
             <Skeleton width={150} />
           </SkeletonTheme>
         ) : (
-          <div className={styles.primaryBalanceLabel}>{walletBalance && walletBalance?.balances[0] &&
-            `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} ${walletBalance?.balances[0]?.currency?.symbol}`
-          }</div>
+          selectedAccount.symbol !== 'ICP'
+            ? <div className={styles.primaryBalanceLabel}>0 {selectedAccount.symbol}</div>
+            : <div className={styles.primaryBalanceLabel}>{walletBalance && walletBalance?.balances[0] &&
+              `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} ${walletBalance?.balances[0]?.currency?.symbol}`
+            }</div>
+
         )}
       </div>
       <div className={styles.secondaryBalanceLabel}>

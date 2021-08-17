@@ -31,7 +31,7 @@ const NFTDetails = ({
                 ></Header>
                 <div className={styles.action}>Transfer</div>
                 <div className={styles.transCont}>
-                    <div className={styles.title}>Natures call</div>
+                    <div className={styles.title}>Natures treats</div>
                     <div className={styles.subtitleCont}>
                         <div className={styles.subtitle}>Mint 1 of 21</div>
                         <div className={styles.price}>0.25 ETH</div>

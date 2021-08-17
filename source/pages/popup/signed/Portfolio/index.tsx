@@ -29,8 +29,8 @@ const Page = () => {
           <div className={styles.pillet}>
             {getShortText(props.accounts[0]?.meta?.name, 25) || props.index}
           </div>
-          <div className={styles.value}>$XXXX.22</div>
-          <div className={styles.stats}>+XX.34%</div>
+          <div className={styles.value}>$1201.22</div>
+          <div className={styles.stats}>+4.34%</div>
         </div>
       </div>
       <div className={styles.cardnetworks}>
@@ -51,8 +51,8 @@ const Page = () => {
             </div>
 
             <div className={styles.netlast}>
-              <div className={styles.netvalue}>1.310 {account.symbol}</div>
-              <div className={styles.netstats}>$0.X4</div>
+              <div className={styles.netvalue}>{Math.floor(Math.random()*(999-100+1)+100)/10} {account.symbol}</div>
+              <div className={styles.netstats}>$0.24</div>
             </div>
           </div>
         ))}
