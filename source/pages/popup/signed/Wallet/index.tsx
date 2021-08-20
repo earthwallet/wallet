@@ -40,8 +40,10 @@ const Wallet = ({
   const [walletTransactions, setWalletTransactions] = useState<any>();
 
   const getBalanceInUSD = async (walletBalance: keyable) => {
-    const balance = walletBalance?.balances[0]?.value;
-    const decimals = walletBalance?.balances[0]?.currency?.decimals;
+
+    //selectedAccount.symbol
+    const balance = selectedAccount.symbol === 'ICP' ? walletBalance?.balances[0]?.value : walletBalance?.value;
+    const decimals = selectedAccount.symbol === 'ICP' ? walletBalance?.balances[0]?.currency?.decimals : walletBalance?.currency?.decimals;
 
     const fetchHeaders = new Headers();
 
@@ -53,11 +55,11 @@ const Wallet = ({
       redirect: 'follow'
     };
 
-    const factor: keyable = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd', requestOptions)
+    const factor: keyable = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${getSymbol(selectedAccount.symbol)?.coingeckoid}&vs_currencies=usd`, requestOptions)
       .then((response) => response.json())
       .catch((error) => console.log('error', error));
 
-    setUsdValue((balance / Math.pow(10, decimals)) * parseFloat(factor['internet-computer'].usd));
+    setUsdValue((balance / Math.pow(10, decimals)) * parseFloat(factor[getSymbol(selectedAccount.symbol)?.coingeckoid || ''].usd));
   };
 
 
@@ -73,9 +75,9 @@ const Wallet = ({
       setLoading(false);
 
       console.log(balance, 'loadBalance');
-      if(balance?.value !== null) {
-        setWalletBalance(balance.value/Math.pow(10, balance?.currency?.decimals));
-
+      if (balance?.value !== null) {
+        setWalletBalance(balance.value / Math.pow(10, balance?.currency?.decimals));
+        getBalanceInUSD(balance);
       }
       if (balance && balance?.balances != null) {
         setWalletBalance(balance);
