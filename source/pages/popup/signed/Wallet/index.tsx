@@ -69,10 +69,14 @@ const Wallet = ({
 
     const loadBalance = async (address: string) => {
       setLoading(true);
-      const balance: keyable = await getBalance(address, 'ICP');
+      const balance: keyable = await getBalance(address, selectedAccount.symbol);
       setLoading(false);
 
       console.log(balance, 'loadBalance');
+      if(balance?.value !== null) {
+        setWalletBalance(balance.value/Math.pow(10, balance?.currency?.decimals));
+
+      }
       if (balance && balance?.balances != null) {
         setWalletBalance(balance);
         getBalanceInUSD(balance);
@@ -102,7 +106,7 @@ const Wallet = ({
           </SkeletonTheme>
         ) : (
           selectedAccount.symbol !== 'ICP'
-            ? <div className={styles.primaryBalanceLabel}>0 {selectedAccount.symbol}</div>
+            ? <div className={styles.primaryBalanceLabel}>{walletBalance} {selectedAccount.symbol}</div>
             : <div className={styles.primaryBalanceLabel}>{walletBalance && walletBalance?.balances[0] &&
               `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} ${walletBalance?.balances[0]?.currency?.symbol}`
             }</div>
