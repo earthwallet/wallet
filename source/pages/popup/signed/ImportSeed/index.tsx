@@ -7,7 +7,7 @@ import SeedAndPath from './SeedAndPath';
 import AccountNamePasswordCreation from './AccountNamePasswordCreation';
 import { useController } from '~hooks/useController';
 import { useHistory } from 'react-router-dom';
-import { DEFAULT_SYMBOLS } from '~global/constant';
+import { LIVE_SYMBOLS } from '~global/constant';
 
 
 const Page = () => {
@@ -35,7 +35,7 @@ const Page = () => {
       const callback = (address: string) => history.replace('/portfolio?hightlight=' + address);
 
       controller.accounts
-        .createOrUpdateAccounts(seed, DEFAULT_SYMBOLS.map(symbolObj => symbolObj.symbol), name, password, callback)
+        .createOrUpdateAccounts(seed, LIVE_SYMBOLS, name, password, callback)
         .then(() => {
         });
     }

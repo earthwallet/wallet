@@ -1,3 +1,6 @@
+interface keyable {
+  [key: string]: any;
+}
 export interface IAccountsController {
   createOrUpdateAccounts: (
     mnemonic: string,
@@ -14,4 +17,5 @@ export interface IAccountsController {
     callback?: (address: string) => void
   ) => Promise<void>;
   createNewMnemonic: () => Promise<void>;
+  getBalancesOfAccounts: (accounts: keyable[][]) => Promise<void>;
 }

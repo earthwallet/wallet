@@ -29,7 +29,7 @@ import { IWalletState } from '~state/wallet/types';
 import { AppState } from '~state/store';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { DEFAULT_SYMBOLS } from '~global/constant';
+import { LIVE_SYMBOLS } from '~global/constant';
 
 const Page = () => {
   const controller = useController();
@@ -55,7 +55,7 @@ const Page = () => {
       setIsBusy(true);
       const callback = (address: string) => history.replace('/portfolio?hightlight=' + address);
       controller.accounts
-        .createOrUpdateAccounts(newMnemonic, DEFAULT_SYMBOLS.map(symbolObj => symbolObj.symbol), name, password, callback)
+        .createOrUpdateAccounts(newMnemonic, LIVE_SYMBOLS, name, password, callback)
         .then(() => {
         });
     }

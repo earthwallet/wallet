@@ -15,6 +15,10 @@ import {
 } from '@earthwallet/keyring';
 import { encryptString } from '~utils/vault';
 
+interface keyable {
+  [key: string]: any;
+}
+
 export default class AccountsController implements IAccountsController {
   async createNewMnemonic() {
     store.dispatch(updateLoading(true));
@@ -87,6 +91,62 @@ export default class AccountsController implements IAccountsController {
     await _getBalance(address, symbol);
   };
 
+  getBalancesOfAccounts = async (accountsGroup: keyable[][]) => {
+    const fetchBalance = async (account: keyable) => {
+      store.dispatch(
+        storeEntities({
+          entity: 'balances',
+          data: [
+            {
+              id: account.address,
+              symbol: account.symbol,
+              loading: true,
+            },
+          ],
+        })
+      );
+
+      let balance: keyable = await _getBalance(account.address, account.symbol);
+      if (account.symbol === 'ICP') {
+        balance.value = balance?.balances[0]?.value;
+        balance.currency = balance?.balances[0].currency;
+      }
+      return { ...balance, ...{ id: account.address, symbol: account.symbol } };
+    };
+
+    for (const accounts of accountsGroup) {
+      for (const account of accounts) {
+        try {
+          let balance: keyable = await fetchBalance(account);
+          balance.error = false;
+          balance.loading = false;
+
+          store.dispatch(
+            storeEntities({
+              entity: 'balances',
+              data: [balance],
+            })
+          );
+        } catch (error) {
+          store.dispatch(
+            storeEntities({
+              entity: 'balances',
+              data: [
+                {
+                  id: account.address,
+                  symbol: account.symbol,
+                  error: true,
+                  loading: false,
+                  errorData: JSON.stringify(error),
+                },
+              ],
+            })
+          );
+        }
+      }
+    }
+  };
+
   getTransactions = async (address: string, symbol = 'ICP') => {
     await _getTransactions(address, symbol);
   };
@@ -98,8 +158,6 @@ export default class AccountsController implements IAccountsController {
     password: string,
     callback?: (address: string) => void
   ) => {
-    console.log(mnemonic, symbols, name, password, 'createOrUpdateAccounts');
-
     let newAccounts = [];
     let groupId = '';
     for (const symbol of symbols) {

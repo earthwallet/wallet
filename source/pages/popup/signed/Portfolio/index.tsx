@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import styles from './index.scss';
 import Header from '~components/Header';
@@ -7,20 +7,30 @@ import ICON_SCROLL from '~assets/images/icon_scrollable.svg';
 import clsx from 'clsx';
 import { getShortAddress, getShortText, getSymbol } from '~utils/common';
 import { useSelector } from 'react-redux';
-import { AppState } from '~state/store';
-import { IWalletState } from '~state/wallet/types';
 import { Link } from 'react-router-dom';
 import { selectAccountGroups } from '~state/wallet';
 import { useHistory } from 'react-router-dom';
+import { useController } from '~hooks/useController';
 
-const Page = () => {
+interface keyable {
+  [key: string]: any;
+}
+
+
+const Portfolio = () => {
   const history = useHistory();
-  const { accounts }: IWalletState = useSelector(
-    (state: AppState) => state.wallet
-  );
-  console.log(accounts);
   const [context, setContext] = useState(false);
   const accountGroups = useSelector(selectAccountGroups);
+  const controller = useController();
+
+
+  useEffect((): void => {
+    console.log('getBalancesOfAccounts', 'Portfolio', accountGroups);
+    accountGroups.length !== 0 && controller.accounts
+      .getBalancesOfAccounts(accountGroups)
+      .then(() => {
+      });
+  }, [accountGroups.length !== 0]);
 
   const AccountsCard = (props: any) => <>
     <div className={styles.cardcont}>
@@ -45,13 +55,13 @@ const Page = () => {
             </div>
             <div className={styles.netmid}>
               <div className={styles.netname}>{getShortAddress(account.address)}</div>
-              <div className={styles.netassets}>
+              {/*   <div className={styles.netassets}>
                 3 assets
-              </div>
+              </div> */}
             </div>
 
             <div className={styles.netlast}>
-              <div className={styles.netvalue}>{Math.floor(Math.random()*(999-100+1)+100)/10} {account.symbol}</div>
+              <div className={styles.netvalue}><Balance account={account} /></div>
               <div className={styles.netstats}>$0.24</div>
             </div>
           </div>
@@ -59,6 +69,7 @@ const Page = () => {
       </div>
     </div>
   </>
+
 
   return (
     accountGroups.length === 0 ? (
@@ -113,4 +124,9 @@ const Page = () => {
   );
 };
 
-export default Page;
+const Balance = (props: keyable) => {
+  return <div>0 {props.account.symbol}</div>
+}
+
+
+export default Portfolio;

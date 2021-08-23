@@ -7,6 +7,7 @@ const initialState: IEntityState = {
   transactions: { byId: {} },
   prices: { byId: {} },
   addresses: { byId: {} },
+  balances: { byId: {} },
 };
 
 export const entitiesState = createSlice({
@@ -80,7 +81,7 @@ export const {
   replaceEntities,
   removeEntityKey,
   resetEntities,
-  hydrateEntities
+  hydrateEntities,
 } = entitiesState.actions;
 
 export default entitiesState.reducer;

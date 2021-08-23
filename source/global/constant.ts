@@ -24,48 +24,57 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_ETH,
     symbol: 'ETH',
     primary: true,
-    coingeckoid: 'ethereum'
+    coingeckoid: 'ethereum',
+    isLive: true,
   },
   {
     name: 'Internet Computer',
     icon: ICON_ICP,
     symbol: 'ICP',
-    coingeckoid: 'internet-computer'
+    coingeckoid: 'internet-computer',
+    isLive: true,
   },
   {
     name: 'Polkadot',
     icon: ICON_DOT,
     symbol: 'DOT',
-    coingeckoid: 'polkadot'
+    coingeckoid: 'polkadot',
   },
   {
     name: 'Kusama',
     icon: ICON_KSM,
     symbol: 'KSM',
-    coingeckoid: 'kusama'
+    coingeckoid: 'kusama',
   },
   {
     name: 'Bitcoin',
     icon: ICON_BTC,
     symbol: 'BTC',
-    coingeckoid: 'bitcoin'
+    coingeckoid: 'bitcoin',
+    isLive: true,
   },
   {
     name: 'Litecoin',
     icon: ICON_LTC,
     symbol: 'LTC',
-    coingeckoid: 'litecoin'
+    coingeckoid: 'litecoin',
   },
   {
     name: 'Bitcoin Cash',
     icon: ICON_BCH,
     symbol: 'BCH',
-    coingeckoid: 'bitcoin-cash'
+    coingeckoid: 'bitcoin-cash',
+    isLive: true,
   },
   {
     name: 'Binance',
     icon: ICON_BNB,
     symbol: 'BNB',
-    coingeckoid: 'binancecoin'
+    coingeckoid: 'binancecoin',
+    isLive: true,
   },
 ];
+
+export const LIVE_SYMBOLS = DEFAULT_SYMBOLS.filter(
+  (symbolObj) => symbolObj.isLive
+).map((symbolObj) => symbolObj.symbol);
