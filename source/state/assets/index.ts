@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AssetPriceInfo, WalletAssets } from '~global/types';
 
 import { IAssetState } from './types';
+import { AppState } from '~state/store';
 
 const initialState: IAssetState = {
   assetList: {},
@@ -26,5 +27,8 @@ const AssetState = createSlice({
 });
 
 export const { updateAssets, updateFiatPrice } = AssetState.actions;
+
+export const selectAssetBySymbol = (symbol: string) => (state: AppState) => state.entities.prices.byId[symbol];
+
 
 export default AssetState.reducer;

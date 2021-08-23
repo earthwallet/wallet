@@ -78,3 +78,7 @@ export const DEFAULT_SYMBOLS = [
 export const LIVE_SYMBOLS = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
 ).map((symbolObj) => symbolObj.symbol);
+
+export const LIVE_SYMBOLS_GECKOIDs = DEFAULT_SYMBOLS.filter(
+  (symbolObj) => symbolObj.isLive
+).map((symbolObj) => symbolObj.coingeckoid);
