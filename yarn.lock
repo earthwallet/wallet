@@ -1256,10 +1256,10 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.3.tgz#90420f9f9c6d3987f176a19a7d8e764271a2f55d"
   integrity sha512-Fxt+AfXgjMoin2maPIYzFZnQjAXjAL0PHscM5pRTtatFqB+vZxAM9tLp2Optnuw3QOQC40jTNeGYFOMvyf7v9g==
 
-"@earthwallet/keyring@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@earthwallet/keyring/-/keyring-0.2.0.tgz#467b131fa2fb4f1921711bcea6635fe92e6b1550"
-  integrity sha512-dFWn1FvrylEQIvc5pNPDDhFLAEFbR0dDdLF/c7FsfP0rDFqyTsd7tfY3P1fwVSIoFOAQnrc1ywY8K+5ujVeC6w==
+"@earthwallet/keyring@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@earthwallet/keyring/-/keyring-0.2.1.tgz#90d0d609fb164c8f86be068be2966b4a3ab9abb2"
+  integrity sha512-oBZR+h2e/lIwkIlVQz7bOwGtdHxP9wtMwasMRv4UiADB725gDwZBbzHStdDfhMAWFzpKYCFSRktHIvA2wldWNw==
   dependencies:
     "@binance-chain/javascript-sdk" "^4.1.1"
     "@dfinity/agent" "^0.8.9"

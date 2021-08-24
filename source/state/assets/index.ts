@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AssetPriceInfo, WalletAssets } from '~global/types';
+import { getSymbol } from '~utils/common';
 
 import { IAssetState } from './types';
 import { AppState } from '~state/store';
@@ -28,7 +29,10 @@ const AssetState = createSlice({
 
 export const { updateAssets, updateFiatPrice } = AssetState.actions;
 
-export const selectAssetBySymbol = (symbol: string) => (state: AppState) => state.entities.prices.byId[symbol];
+export const selectAssetBySymbol = (symbol: string) => (state: AppState) =>
+  state.entities.prices.byId[symbol];
 
+export const selectAssetByCoinGeckoId = (symbol: string) =>
+  selectAssetBySymbol(getSymbol(symbol)?.coinGeckoId || '');
 
 export default AssetState.reducer;

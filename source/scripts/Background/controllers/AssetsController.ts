@@ -57,10 +57,10 @@ export default class AssetsController implements IAssetsController {
       store.dispatch(
         storeEntities({
           entity: 'prices',
-          data: Object.keys(data).map((symbol) => {
+          data: Object.keys(data).map((coinGeckoId) => {
             return {
-              id: symbol,
-              ...data[symbol],
+              id: coinGeckoId,
+              ...data[coinGeckoId],
               loading: false,
               error: false,
             };

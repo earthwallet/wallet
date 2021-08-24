@@ -37,12 +37,12 @@ const Portfolio = () => {
     controller.assets.fetchFiatPrices(LIVE_SYMBOLS_GECKOIDs)
   }, []);
 
-  const AccountsCard = (props: any) => <>
+  const AccountsCard = ({ accounts, index }: { accounts: keyable, index: string | number }) => <>
     <div className={styles.cardcont}>
       <div className={styles.cardcontinner}>
         <div className={styles.cardinfo}>
           <div className={styles.pillet}>
-            {getShortText(props.accounts[0]?.meta?.name, 25) || props.index}
+            {getShortText(accounts[0]?.meta?.name, 25) || index}
           </div>
           <div className={styles.value}>$1201.22</div>
           <div className={styles.stats}>+4.34%</div>
@@ -51,7 +51,7 @@ const Portfolio = () => {
       <div className={styles.cardnetworks}>
         <div className={styles.networktitle}>Networks</div>
 
-        {props.accounts?.map((account: any, index: number) => (
+        {accounts?.map((account: any, index: number) => (
           <div
             onClick={() => history.push('/account/details/' + account.id)}
             className={styles.netcard} key={index}>
@@ -130,18 +130,18 @@ const Portfolio = () => {
   );
 };
 
-const Balance = (props: keyable) => {
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(props.account.address));
+const Balance = ({ account }: { account: keyable }) => {
+  const currentBalance: keyable = useSelector(selectBalanceByAddress(account.address));
 
-  return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals)} {props.account.symbol}</div>
+  return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals)} {account.symbol}</div>
 }
 
-const BalanceWithUSD = (props: keyable) => {
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(props.account?.address));
-
-  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(props?.account?.symbol)?.coingeckoid || ''));
+const BalanceWithUSD = ({ account }: { account: keyable }) => {
+  const currentBalance: keyable = useSelector(selectBalanceByAddress(account?.address));
+  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(account?.symbol)?.coinGeckoId || ''));
   const [usdValue, setUsdValue] = useState<number>(0);
 
+  console.log(currentUSDValue);
 
   useEffect(() => {
     const decimals = currentBalance?.currency?.decimals;
@@ -149,8 +149,8 @@ const BalanceWithUSD = (props: keyable) => {
     setUsdValue(_usdValue);
   }, [currentBalance?.value !== null, currentUSDValue?.usd !== null]);
   return <div className={styles.netlast}>
-    <div className={styles.netvalue}><Balance account={props.account} /></div>
-    <div className={styles.netstats}>${usdValue.toFixed(3)}</div>
+    <div className={styles.netvalue}><Balance account={account} /></div>
+    <div className={styles.netstats}>${usdValue?.toFixed(3)}<span className={currentUSDValue?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentUSDValue?.usd_24h_change?.toFixed(2)}%</span></div>
   </div>
 }
 

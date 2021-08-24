@@ -55,11 +55,11 @@ const Wallet = ({
       redirect: 'follow'
     };
 
-    const factor: keyable = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${getSymbol(selectedAccount.symbol)?.coingeckoid}&vs_currencies=usd`, requestOptions)
+    const factor: keyable = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${getSymbol(selectedAccount.symbol)?.coinGeckoId}&vs_currencies=usd`, requestOptions)
       .then((response) => response.json())
       .catch((error) => console.log('error', error));
 
-    setUsdValue((balance / Math.pow(10, decimals)) * parseFloat(factor[getSymbol(selectedAccount.symbol)?.coingeckoid || ''].usd));
+    setUsdValue((balance / Math.pow(10, decimals)) * parseFloat(factor[getSymbol(selectedAccount.symbol)?.coinGeckoId || ''].usd));
   };
 
 
