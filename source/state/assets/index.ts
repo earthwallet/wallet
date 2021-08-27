@@ -8,6 +8,7 @@ import { AppState } from '~state/store';
 const initialState: IAssetState = {
   assetList: {},
   activeAssetId: null,
+  fetchingPrices: false,
 };
 
 const AssetState = createSlice({
@@ -16,6 +17,9 @@ const AssetState = createSlice({
   reducers: {
     updateAssets(state: IAssetState, action: PayloadAction<WalletAssets>) {
       state.assetList = action.payload;
+    },
+    updateFetchingPrices(state: IAssetState, action: PayloadAction<boolean>) {
+      state.fetchingPrices = action.payload;
     },
     updateFiatPrice(state: IAssetState, action: PayloadAction<AssetPriceInfo>) {
       if (state.assetList && state.assetList[action.payload.id]) {

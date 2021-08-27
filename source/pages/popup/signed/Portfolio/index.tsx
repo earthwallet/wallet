@@ -141,9 +141,10 @@ const BalanceWithUSD = ({ account }: { account: keyable }) => {
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(account?.symbol)?.coinGeckoId || ''));
   const [usdValue, setUsdValue] = useState<number>(0);
 
-  console.log(currentUSDValue);
 
   useEffect(() => {
+    console.log('useEffect', currentUSDValue);
+
     const decimals = currentBalance?.currency?.decimals;
     const _usdValue = ((currentBalance?.value / Math.pow(10, decimals)) * parseFloat(currentUSDValue?.usd));
     setUsdValue(_usdValue);
