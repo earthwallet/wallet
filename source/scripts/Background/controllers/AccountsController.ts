@@ -91,7 +91,7 @@ export default class AccountsController implements IAccountsController {
     await _getBalance(address, symbol);
   };
 
-  getBalancesOfAccounts = async (accountsGroup: keyable[][]) => {
+  getBalancesOfAccount = async (account: keyable) => {
     const fetchBalance = async (account: keyable) => {
       store.dispatch(
         storeEntities({
@@ -113,36 +113,39 @@ export default class AccountsController implements IAccountsController {
       }
       return { ...balance, ...{ id: account.address, symbol: account.symbol } };
     };
+    try {
+      let balance: keyable = await fetchBalance(account);
+      balance.error = false;
+      balance.loading = false;
 
+      store.dispatch(
+        storeEntities({
+          entity: 'balances',
+          data: [balance],
+        })
+      );
+    } catch (error) {
+      store.dispatch(
+        storeEntities({
+          entity: 'balances',
+          data: [
+            {
+              id: account.address,
+              symbol: account.symbol,
+              error: true,
+              loading: false,
+              errorData: JSON.stringify(error),
+            },
+          ],
+        })
+      );
+    }
+  };
+
+  getBalancesOfAccountsGroup = async (accountsGroup: keyable[][]) => {
     for (const accounts of accountsGroup) {
       for (const account of accounts) {
-        try {
-          let balance: keyable = await fetchBalance(account);
-          balance.error = false;
-          balance.loading = false;
-
-          store.dispatch(
-            storeEntities({
-              entity: 'balances',
-              data: [balance],
-            })
-          );
-        } catch (error) {
-          store.dispatch(
-            storeEntities({
-              entity: 'balances',
-              data: [
-                {
-                  id: account.address,
-                  symbol: account.symbol,
-                  error: true,
-                  loading: false,
-                  errorData: JSON.stringify(error),
-                },
-              ],
-            })
-          );
-        }
+        await this.getBalancesOfAccount(account);
       }
     }
   };

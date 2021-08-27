@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
-import { getBalance, send } from '@earthwallet/keyring';
+import { send } from '@earthwallet/keyring';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { isJsonString } from '~utils/common';
 import { principal_id_to_address, address_to_hex } from '@earthwallet/keyring/build/main/util/icp';
@@ -17,6 +17,9 @@ import { getSymbol } from '~utils/common';
 
 import { decryptString } from '~utils/vault';
 import { validateMnemonic } from '@earthwallet/keyring';
+import { useController } from '~hooks/useController';
+import { selectBalanceByAddress } from '~state/wallet';
+import { selectAssetBySymbol } from '~state/assets';
 
 
 const MIN_LENGTH = 6;
@@ -36,6 +39,9 @@ const WalletSendTokens = ({
 
   const [step1, setStep1] = useState(true);
   const selectedAccount = useSelector(selectAccountById(address));
+  const controller = useController();
+  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
 
   const onNextStep = useCallback(() => { setStep1(false); }, []);
@@ -46,49 +52,23 @@ const WalletSendTokens = ({
   const [pass, setPass] = useState('');
   const [error, setError] = useState('');
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
-  const [usdValue, setUsdValue] = useState<number>(0);
-  const [walletBalance, setWalletBalance] = useState<any | null | keyable>(null);
   const [selectCredit, setSelectCredit] = useState<boolean>(true);
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [isBusy, setIsBusy] = useState(false);
   const [paymentHash, setPaymentHash] = useState<string>('');
 
-  const getICPUSDValue = async () => {
-    const fetchHeaders = new Headers();
-
-    fetchHeaders.append('accept', 'application/json');
-
-    const requestOptions: RequestInit = {
-      method: 'GET',
-      headers: fetchHeaders,
-      redirect: 'follow'
-    };
-
-    const factor: keyable = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd', requestOptions)
-      .then((response) => response.json())
-      .catch((error) => console.log('error', error));
-
-    setUsdValue(parseFloat(factor['internet-computer'].usd));
-  };
-
-  const loadBalance = async (address: string) => {
-    setLoading(true);
-    const balance: keyable = await getBalance(address, 'ICP');
-
-    setLoading(false);
-
-    if (balance && balance?.balances != null) { setWalletBalance(balance); }
-  };
-
   useEffect(() => {
 
+    controller.accounts
+      .getBalancesOfAccount(selectedAccount)
+      .then(() => {
+      });
 
-    if (selectedAccount && selectedAccount?.id) {
-      loadBalance(selectedAccount?.id);
-      getICPUSDValue();
-    }
-  }, [selectedAccount]);
+    /*  if (selectedAccount && selectedAccount?.id) {
+       loadBalance(selectedAccount?.id);
+       getICPUSDValue();
+     } */
+  }, [selectedAccount?.id === address]);
 
 
   const sendTx = async () => {
@@ -124,7 +104,10 @@ const WalletSendTokens = ({
           'ICP'
         );
 
-        await loadBalance(address);
+        await controller.accounts
+          .getBalancesOfAccount(selectedAccount)
+          .then(() => {
+          });
         setLoadingSend(false);
         setPaymentHash(hash || '');
         setIsBusy(false);
@@ -204,17 +187,15 @@ const WalletSendTokens = ({
                 <div className={styles.tokenSelectionLabelDiv}>
                   <div className={styles.tokenLabel}>{selectedAccount.symbol}</div>
                   <div className={styles.tokenBalance}>
-                    {loading
+                    {currentBalance?.loading
                       ? <SkeletonTheme color="#222"
                         highlightColor="#000">
                         <Skeleton width={150} />
                       </SkeletonTheme>
-                      : selectedAccount?.symbol !== 'ICP'
-                        ? <span className={styles.tokenBalanceText}>Balance: 0 {selectedAccount?.symbol}</span>
-                        : <span className={styles.tokenBalanceText}>Balance: {walletBalance && walletBalance?.balances[0] &&
-                          `${walletBalance?.balances[0]?.value / Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)} 
-                        ${walletBalance?.balances[0]?.currency?.symbol}`
-                        }</span>
+                      : <span className={styles.tokenBalanceText}>Balance: {currentBalance &&
+                        `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} 
+                        ${currentBalance?.currency?.symbol}`
+                      }</span>
                     }
                   </div>
                 </div>
@@ -250,7 +231,7 @@ const WalletSendTokens = ({
             <div>
               <div className={styles.tokenText}>{getSymbol(selectedAccount.symbol)?.name}</div>
               <div className={styles.tokenAmount}>{selectedAmount} {selectedAccount.symbol}</div>
-              <div className={styles.tokenValue}>${(selectedAmount * usdValue).toFixed(3)}</div>
+              <div className={styles.tokenValue}>${(selectedAmount * currentUSDValue?.usd).toFixed(3)}</div>
             </div>
 
           </div>
@@ -275,7 +256,7 @@ const WalletSendTokens = ({
               <div className={styles.feeTotal}>Total</div>
               <div>
                 <div className={styles.feeAmount}>{selectedAmount + 0.001}</div>
-                <div className={styles.feeValue}>${((selectedAmount + 0.001) * usdValue).toFixed(3)}</div>
+                <div className={styles.feeValue}>${((selectedAmount + 0.001) * currentUSDValue?.usd).toFixed(3)}</div>
               </div>
             </div>
 

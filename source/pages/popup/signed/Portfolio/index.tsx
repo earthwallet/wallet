@@ -28,7 +28,7 @@ const Portfolio = () => {
 
   useEffect((): void => {
     accountGroups.length !== 0 && controller.accounts
-      .getBalancesOfAccounts(accountGroups)
+      .getBalancesOfAccountsGroup(accountGroups)
       .then(() => {
       });
   }, [accountGroups.length !== 0]);

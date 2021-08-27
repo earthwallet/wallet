@@ -36,7 +36,6 @@ export default class AssetsController implements IAssetsController {
   }
 
   async fetchFiatPrices(symbols: keyable, currency = 'USD') {
-    console.log(symbols.toString(), 'fetchFiatPrices');
     try {
       const activeAssetIds = symbols.toString();
 
