@@ -63,9 +63,11 @@ const handleEarthEnable = () => {
 };
 ```
 
-## 🚀 Auditors / Bug Hunters - $10k USD+ Available!!
+## 🚀 Auditors / Bug Hunters - $5k USD+ Available!!
 
-We have an on going bug bounty campaign for $10,000 USD, as well as full time positions available. If you find a bug, or simply have an idea of how to make the code better/faster/more secure, please [join our Developer Server](https://discord.gg/aemgEpMye3). Help create the most secure open source digital asset wallet and own a piece the future!
+Full Details: https://github.com/earth-association/wallet/wiki/The-Earth-Wallet-Bug-Bounty-Program
+
+We have an on going bug bounty campaign for $5,000 USD, as well as full time positions available. If you find a bug, or simply have an idea of how to make the code better/faster/more secure, please [join our Developer Server](https://discord.gg/aemgEpMye3). Help create the most secure open source digital asset wallet and own a piece the future!
 
 To get started, ensure you have:
 
