@@ -30,12 +30,11 @@ const Portfolio = () => {
     accountGroups.length !== 0 && controller.accounts
       .getBalancesOfAccountsGroup(accountGroups)
       .then(() => {
+        controller.assets.fetchFiatPrices(LIVE_SYMBOLS_GECKOIDs);
       });
   }, [accountGroups.length !== 0]);
 
-  useEffect((): void => {
-    controller.assets.fetchFiatPrices(LIVE_SYMBOLS_GECKOIDs)
-  }, []);
+
 
   const AccountsCard = ({ accounts, index }: { accounts: keyable, index: string | number }) => <>
     <div className={styles.cardcont}>
@@ -44,9 +43,9 @@ const Portfolio = () => {
           <div className={styles.pillet}>
             {getShortText(accounts[0]?.meta?.name, 25) || index}
           </div>
-          <div className={styles.value}>$1201.22</div>
-          <div className={styles.stats}>+4.34%</div>
-        </div>
+          <div className={styles.value}>${accounts[0]?.portfolioBalance || 0}</div>
+          {/*           <div className={styles.stats}>+4.34%</div>
+ */}        </div>
       </div>
       <div className={styles.cardnetworks}>
         <div className={styles.networktitle}>Networks</div>

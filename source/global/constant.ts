@@ -64,14 +64,14 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_BCH,
     symbol: 'BCH',
     coinGeckoId: 'bitcoin-cash',
-    isLive: true,
+    isLive: false,
   },
   {
     name: 'Binance',
     icon: ICON_BNB,
     symbol: 'BNB',
     coinGeckoId: 'binancecoin',
-    isLive: true,
+    isLive: false,
   },
 ];
 
