@@ -7,13 +7,14 @@ import {
   updateLoading,
 } from '~state/wallet';
 import type { IAccountsController } from '../types/IAccountsController';
-import { storeEntities } from '~state/entities';
+import { storeEntities, updateEntities } from '~state/entities';
 import {
   getBalance as _getBalance,
   getTransactions as _getTransactions,
   send as _send,
 } from '@earthwallet/keyring';
 import { encryptString } from '~utils/vault';
+import { getSymbol } from '~utils/common';
 
 interface keyable {
   [key: string]: any;
@@ -146,6 +147,46 @@ export default class AccountsController implements IAccountsController {
     for (const accounts of accountsGroup) {
       for (const account of accounts) {
         await this.getBalancesOfAccount(account);
+      }
+    }
+  };
+
+  getTotalBalanceOfAccountGroup = (accountsGroup: keyable[][]) => {
+    console.log('getTotalBalanceOfAccountGroup', accountsGroup);
+    const state = store.getState();
+    for (const accounts of accountsGroup) {
+      let addresses = accounts.length;
+      let total = 0;
+      for (const account of accounts) {
+        let currentBalance = state.entities.balances.byId[account.id];
+        const decimals = currentBalance?.currency?.decimals;
+        const currentUSDValue: keyable =
+          state.entities.prices.byId[
+            getSymbol(account?.symbol)?.coinGeckoId || ''
+          ];
+        const usdValue =
+          (currentBalance?.value / Math.pow(10, decimals)) *
+          parseFloat(currentUSDValue?.usd);
+        total = total + usdValue;
+        store.dispatch(
+          updateEntities({
+            entity: 'balances',
+            key: account.id,
+            data: {
+              balanceInUSD: usdValue,
+              usd_24h_change: currentUSDValue.usd_24h_change,
+            },
+          })
+        );
+        if (!--addresses) {
+          store.dispatch(
+            storeEntities({
+              entity: 'groupbalances',
+              data: [{ balanceInUSD: total, id: account.groupId }],
+            })
+          );
+          // do your thing
+        }
       }
     }
   };

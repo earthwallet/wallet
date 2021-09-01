@@ -70,8 +70,15 @@ export const selectAccountGroups = (state: AppState) => {
   return Object.keys(accountGroupsObject).map((id) => accountGroupsObject[id]);
 };
 
-export const selectBalanceByAddress = (address: string) => (state: AppState) => state.entities.balances.byId[address];
+export const selectBalanceByAddress = (address: string) => (state: AppState) =>
+  state.entities.balances.byId[address];
+export const selectBalanceInUSDByAddress =
+  (address: string) => (state: AppState) =>
+    state.entities.balances.byId[address].balanceInUSD;
 
+export const selectGroupBalanceByAddress =
+  (address: string) => (state: AppState) =>
+    state.entities.groupbalances.byId[address];
 
 export const selectAccountById = (address: string) => (state: AppState) =>
   state.entities.accounts.byId[address];

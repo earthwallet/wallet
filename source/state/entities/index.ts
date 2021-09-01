@@ -8,6 +8,8 @@ const initialState: IEntityState = {
   prices: { byId: {} },
   addresses: { byId: {} },
   balances: { byId: {} },
+  groupbalances: { byId: {} },
+
 };
 
 export const entitiesState = createSlice({

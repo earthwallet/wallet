@@ -8,11 +8,10 @@ import clsx from 'clsx';
 import { getShortAddress, getShortText, getSymbol } from '~utils/common';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { selectAccountGroups, selectBalanceByAddress } from '~state/wallet';
+import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
 import { useHistory } from 'react-router-dom';
 import { useController } from '~hooks/useController';
 import { LIVE_SYMBOLS_GECKOIDs } from '~global/constant';
-import { selectAssetBySymbol } from '~state/assets';
 
 interface keyable {
   [key: string]: any;
@@ -30,8 +29,10 @@ const Portfolio = () => {
     accountGroups.length !== 0 && controller.accounts
       .getBalancesOfAccountsGroup(accountGroups)
       .then(() => {
+        console.log('getBalancesOfAccountsGroup', accountGroups);
         controller.assets.fetchFiatPrices(LIVE_SYMBOLS_GECKOIDs).then(() => {
-          console.log('fetch totals');
+          console.log('fetchFiatPrices');
+          controller.accounts.getTotalBalanceOfAccountGroup(accountGroups);
         });
       });
   }, [accountGroups.length !== 0]);
@@ -45,7 +46,7 @@ const Portfolio = () => {
           <div className={styles.pillet}>
             {getShortText(accounts[0]?.meta?.name, 25) || index}
           </div>
-          <div className={styles.value}>${accounts[0]?.portfolioBalance || 0}</div>
+          <div className={styles.value}><GroupBalance account={accounts[0]} /></div>
           {/*           <div className={styles.stats}>+4.34%</div>
  */}        </div>
       </div>
@@ -133,26 +134,24 @@ const Portfolio = () => {
 
 const Balance = ({ account }: { account: keyable }) => {
   const currentBalance: keyable = useSelector(selectBalanceByAddress(account.address));
-
   return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals)} {account.symbol}</div>
+}
+const GroupBalance = ({ account }: { account: keyable }) => {
+  const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(account?.groupId));
+  console.log(currentBalance, account);
+  return <div>${currentBalance?.balanceInUSD?.toFixed(3) || 0}</div>
 }
 
 const BalanceWithUSD = ({ account }: { account: keyable }) => {
   const currentBalance: keyable = useSelector(selectBalanceByAddress(account?.address));
-  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(account?.symbol)?.coinGeckoId || ''));
-  const [usdValue, setUsdValue] = useState<number>(0);
-
-
-  useEffect(() => {
-    console.log('useEffect', currentUSDValue);
-
-    const decimals = currentBalance?.currency?.decimals;
-    const _usdValue = ((currentBalance?.value / Math.pow(10, decimals)) * parseFloat(currentUSDValue?.usd));
-    setUsdValue(_usdValue);
-  }, [currentBalance?.value !== null, currentUSDValue?.usd !== null]);
   return <div className={styles.netlast}>
     <div className={styles.netvalue}><Balance account={account} /></div>
-    <div className={styles.netstats}>${usdValue?.toFixed(3)}<span className={currentUSDValue?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentUSDValue?.usd_24h_change?.toFixed(2)}%</span></div>
+    <div className={styles.netstats}>${currentBalance?.balanceInUSD?.toFixed(3)}
+      {
+        currentBalance?.usd_24h_change
+        && <span className={currentBalance?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentBalance?.usd_24h_change?.toFixed(2)}%</span>
+      }
+    </div>
   </div>
 }
 

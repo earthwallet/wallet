@@ -19,4 +19,5 @@ export interface IAccountsController {
   createNewMnemonic: () => Promise<void>;
   getBalancesOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   getBalancesOfAccount: (account: keyable) => Promise<void>;
+  getTotalBalanceOfAccountGroup: (accounts: keyable[][]) => void;
 }
