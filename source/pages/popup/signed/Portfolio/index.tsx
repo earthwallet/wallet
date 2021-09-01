@@ -30,7 +30,9 @@ const Portfolio = () => {
     accountGroups.length !== 0 && controller.accounts
       .getBalancesOfAccountsGroup(accountGroups)
       .then(() => {
-        controller.assets.fetchFiatPrices(LIVE_SYMBOLS_GECKOIDs);
+        controller.assets.fetchFiatPrices(LIVE_SYMBOLS_GECKOIDs).then(() => {
+          console.log('fetch totals');
+        });
       });
   }, [accountGroups.length !== 0]);
 

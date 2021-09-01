@@ -6,13 +6,13 @@ import type { IAssetsController, keyable } from '../types/IAssetsController';
 import { storeEntities } from '~state/entities';
 
 export default class AssetsController implements IAssetsController {
-  async fetchFiatPrice(currency = 'USD') {
+  fetchFiatPrice = async (currency = 'USD') => {
     try {
       const assetState: IAssetState = store.getState().assets;
       const { activeAssetId } = assetState;
 
       if (!activeAssetId) {
-        return false;
+        return;
       }
 
       const data = await (
@@ -28,14 +28,14 @@ export default class AssetsController implements IAssetsController {
           priceChange: data[activeAssetId][`${currency}_24h_change`],
         })
       );
-      return true;
+      return;
     } catch (error) {
       console.log('fecthing CGECKO_PRICE_API error => ', error);
-      return false;
+      return;
     }
-  }
+  };
 
-  async fetchFiatPrices(symbols: keyable, currency = 'USD') {
+  fetchFiatPrices = async (symbols: keyable, currency = 'USD') => {
     try {
       const activeAssetIds = symbols.toString();
 
@@ -66,10 +66,10 @@ export default class AssetsController implements IAssetsController {
           }),
         })
       );
-      return true;
+      return;
     } catch (error) {
       console.log('fecthing CGECKO_PRICE_API error => ', error);
-      return false;
     }
-  }
+    return;
+  };
 }

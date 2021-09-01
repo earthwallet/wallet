@@ -1,6 +1,6 @@
 export interface IAssetsController {
-  fetchFiatPrice: (currency?: string) => void;
-  fetchFiatPrices: (symbols: keyable, currency?: string) => void;
+  fetchFiatPrice: (currency?: string) => Promise<void>;
+  fetchFiatPrices: (symbols: keyable, currency?: string) => Promise<void>;
 }
 
 export interface keyable {
