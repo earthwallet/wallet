@@ -89,12 +89,14 @@ export default class AccountsController implements IAccountsController {
   }
 
   getBalance = async (address: string, symbol = 'ICP') => {
-    await _getBalance(address, symbol);
+    const balance = await _getBalance(address, symbol);
+    return balance;
   };
 
-  migrateExistingICP = async (mnemonic: string, symbol = 'ICP-Ed25519') => {
-    const keypair = await createWallet(mnemonic, symbol);
-    console.log(keypair);
+  migrateExistingICP = async (mnemonic: string) => {
+    const keypair = await createWallet(mnemonic.trim(), 'ICP', 0, { type: 'Ed25519' });
+    const balance = await this.getBalance(keypair.address);
+    return { keypair, balance };
   };
 
   getBalancesOfAccount = async (account: keyable) => {

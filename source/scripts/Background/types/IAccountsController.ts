@@ -1,3 +1,5 @@
+import { EarthKeyringPair, EarthBalance } from '@earthwallet/keyring';
+
 interface keyable {
   [key: string]: any;
 }
@@ -20,4 +22,7 @@ export interface IAccountsController {
   getBalancesOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   getBalancesOfAccount: (account: keyable) => Promise<void>;
   getTotalBalanceOfAccountGroup: (accounts: keyable[][]) => void;
+  migrateExistingICP: (
+    mnemonic: string
+  ) => Promise<{ keypair: EarthKeyringPair; balance: EarthBalance }>;
 }

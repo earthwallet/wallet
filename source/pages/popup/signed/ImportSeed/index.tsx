@@ -19,8 +19,15 @@ const Page = () => {
   const history = useHistory();
 
   const _onNextStep = useCallback(() => {
-    setStep1(false);
-  }, []);
+
+    seed !== null && controller.accounts
+      .migrateExistingICP(seed)
+      .then((keypair) => {
+        console.log(keypair, 'importseed');
+        setStep1(false);
+      });
+
+  }, [seed !== null]);
   const _onBackClick = useCallback(() => {
     setStep1(true);
   }, []);
