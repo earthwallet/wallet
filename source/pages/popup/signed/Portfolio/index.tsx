@@ -36,7 +36,7 @@ const Portfolio = () => {
           controller.accounts.getTotalBalanceOfAccountGroup(accountGroups);
         });
       });
-  }, [accountGroups.length !== 0]);
+  }, [accountGroups.length]);
 
 
 

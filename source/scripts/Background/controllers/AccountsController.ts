@@ -219,6 +219,7 @@ export default class AccountsController implements IAccountsController {
           createdAt: Math.round(new Date().getTime() / 1000),
           publicKey: keypair.publicKey,
           type: keypair.type,
+          principalId: null,
         },
         vault: {
           encryptedMnemonic: encryptString(mnemonic, password),
@@ -228,6 +229,7 @@ export default class AccountsController implements IAccountsController {
         symbol,
       };
       if (symbol === 'ICP') {
+        data.meta.principalId = keypair.identity.getPrincipal().toText();
         data.vault.encryptedJson = encryptString(
           JSON.stringify(keypair.identity.toJSON()),
           password
