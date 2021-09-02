@@ -5,6 +5,12 @@
   background: url('../../../../assets/images/bg_receive.png');
 }
 
+.container {
+  height: 535px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  min-height: 535px;
+}
 .qrCodeCont {
   display: flex;
   background: #5a597e66;
@@ -15,6 +21,7 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .accountShare {
@@ -100,4 +107,8 @@
 
 .copyIcon:active {
   opacity: 0.7;
+}
+
+.principalCont {
+  margin-bottom: 90px;
 }

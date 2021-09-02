@@ -25,7 +25,7 @@ const WalletReceiveTokens = ({
   return (
     <div className={styles.page}>
       <Header showAccountsDropdown showMenu type="wallet" />
-      <div>
+      <div className={styles.container}>
         <div className={styles.accountShare}>Share your Public Address</div>
         <div className={styles.accountDetail}>
           {selectedAccount?.id && (
@@ -36,7 +36,8 @@ const WalletReceiveTokens = ({
               </CopyToClipboard>
             </div>
           )}
-
+        </div>
+        <div>
           <div className={styles.qrCodeCont}>
             <QRCode
               bgColor="#0000"
@@ -46,11 +47,21 @@ const WalletReceiveTokens = ({
             />
           </div>
         </div>
+        {selectedAccount?.meta?.principalId && <div className={styles.principalCont}>
+          <div className={styles.accountShare}>Your Principal Id</div>
+          <div className={styles.accountDetail}>
+            <div className={styles.addressDisplay}>
+              {getShortAddress(selectedAccount?.meta?.principalId)}
+              <CopyToClipboard text={selectedAccount?.meta?.principalId}>
+                <img src={ICON_COPY} className={styles.copyIcon} onClick={_onCopy} />
+              </CopyToClipboard>
+            </div>
+          </div>
+        </div>}
       </div>
       <div
         style={{
-          padding: '0 27px',
-          marginBottom: 30,
+          margin: '0 30px 30px 30px',
           position: 'absolute',
           bottom: 0,
           left: 0,
@@ -65,7 +76,7 @@ const WalletReceiveTokens = ({
           {'Export Account'}
         </NextStepButton>
       </div>
-    </div>
+    </div >
   );
 };
 
