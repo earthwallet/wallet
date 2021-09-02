@@ -50,10 +50,8 @@ const Wallet = ({
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
-      if (selectedAccount.symbol === 'ICP') {
-        const transactions = await getTransactions(address, 'ICP');
-        setWalletTransactions(transactions);
-      }
+      const transactions = await getTransactions(address, selectedAccount?.symbol);
+      setWalletTransactions(transactions);
     };
 
 
@@ -147,7 +145,7 @@ const Wallet = ({
                 styles.selectedTabView
               )}
             >
-              Transactions {walletTransactions?.transactions?.length === 0 || walletTransactions?.transactions === undefined ? '' : `(${walletTransactions?.transactions?.length})`}
+              Transactions {walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
             </div>
           </div>
         </div>
