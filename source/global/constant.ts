@@ -25,7 +25,7 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'ETH',
     primary: true,
     coinGeckoId: 'ethereum',
-    isLive: true,
+    isLive: false,
   },
   {
     name: 'Internet Computer',

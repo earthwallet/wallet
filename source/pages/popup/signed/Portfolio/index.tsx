@@ -12,6 +12,7 @@ import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddres
 import { useHistory } from 'react-router-dom';
 import { useController } from '~hooks/useController';
 import { LIVE_SYMBOLS_GECKOIDs } from '~global/constant';
+import { ClipLoader } from 'react-spinners';
 
 interface keyable {
   [key: string]: any;
@@ -23,15 +24,15 @@ const Portfolio = () => {
   const [context, setContext] = useState(false);
   const accountGroups = useSelector(selectAccountGroups);
   const controller = useController();
-
+  const [loading, setLoading] = useState(false);
 
   useEffect((): void => {
     accountGroups.length !== 0 && controller.accounts
       .getBalancesOfAccountsGroup(accountGroups)
       .then(() => {
-        console.log('getBalancesOfAccountsGroup', accountGroups);
+        setLoading(true);
         controller.assets.fetchFiatPrices(LIVE_SYMBOLS_GECKOIDs).then(() => {
-          console.log('fetchFiatPrices');
+          setLoading(false);
           controller.accounts.getTotalBalanceOfAccountGroup(accountGroups);
         });
       });
@@ -39,14 +40,14 @@ const Portfolio = () => {
 
 
 
-  const AccountsCard = ({ accounts, index }: { accounts: keyable, index: string | number }) => <>
+  const AccountsCard = ({ accounts, index, loading }: { accounts: keyable, index: string | number, loading: boolean }) => <>
     <div className={styles.cardcont}>
       <div className={styles.cardcontinner}>
         <div className={styles.cardinfo}>
           <div className={styles.pillet}>
             {getShortText(accounts[0]?.meta?.name, 25) || index}
           </div>
-          <div className={styles.value}><GroupBalance account={accounts[0]} /></div>
+          <div className={styles.value}><GroupBalance loading={loading} account={accounts[0]} /></div>
           {/*           <div className={styles.stats}>+4.34%</div>
  */}        </div>
       </div>
@@ -111,7 +112,7 @@ const Portfolio = () => {
               <img src={ICON_SCROLL} />
             </div>
             <div
-              onClick={() => setContext(true)}
+              onClick={() => context === true ? setContext(false) : setContext(true)}
               className={clsx(styles.headerIcon, styles.headerIconSecond)}>
               <img src={ICON_ADD} />
             </div>
@@ -126,7 +127,7 @@ const Portfolio = () => {
           </div>
         </Header>
         <div className={styles.cards}>
-          {accountGroups?.sort((a, b) => (b[0].meta.createdAt - a[0].meta.createdAt)).map && accountGroups?.map((accounts: any, index: number) => <AccountsCard key={index} index={index} accounts={accounts} />)}
+          {accountGroups?.sort((a, b) => (b[0].meta.createdAt - a[0].meta.createdAt)).map && accountGroups?.map((accounts: any, index: number) => <AccountsCard key={index} loading={loading} index={index} accounts={accounts} />)}
         </div>
       </div>
   );
@@ -136,10 +137,10 @@ const Balance = ({ account }: { account: keyable }) => {
   const currentBalance: keyable = useSelector(selectBalanceByAddress(account.address));
   return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals)} {account.symbol}</div>
 }
-const GroupBalance = ({ account }: { account: keyable }) => {
+const GroupBalance = ({ account, loading }: { account: keyable, loading: boolean }) => {
   const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(account?.groupId));
-  console.log(currentBalance, account);
-  return <div>${currentBalance?.balanceInUSD?.toFixed(3) || 0}</div>
+  return <div>${currentBalance?.balanceInUSD?.toFixed(3) || 0}{loading && <span className={styles.totalSpinner}><ClipLoader color={'#fffff'}
+    size={15} /></span>}</div>
 }
 
 const BalanceWithUSD = ({ account }: { account: keyable }) => {
@@ -148,7 +149,7 @@ const BalanceWithUSD = ({ account }: { account: keyable }) => {
     <div className={styles.netvalue}><Balance account={account} /></div>
     <div className={styles.netstats}>${currentBalance?.balanceInUSD?.toFixed(3)}
       {
-        currentBalance?.usd_24h_change
+        currentBalance?.usd_24h_change && currentBalance?.balanceInUSD !== 0
         && <span className={currentBalance?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentBalance?.usd_24h_change?.toFixed(2)}%</span>
       }
     </div>

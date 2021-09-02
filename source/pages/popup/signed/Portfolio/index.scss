@@ -47,7 +47,6 @@
   z-index: 999;
   padding: 8px 5px;
   position: absolute;
-  width: 192px;
 
   left: 160px;
   top: 65px;
@@ -636,4 +635,10 @@
 .netstatsnegative {
   padding-left: 8px;
   color: #d15555;
+}
+
+.totalSpinner {
+  position: relative;
+  top: -5px;
+  right: -8px;
 }
