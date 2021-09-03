@@ -91,8 +91,8 @@ const Transactions = ({
         let amount = 0;
         //let fees = 0;
         //const amountFrom = transaction.from.reduce((total: number, a: any) => total + a.amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber(), 0);
-        const amountTo = transaction.to.reduce((total: number, a: any) => total + a.amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber(), 0)
-        amount = address === transaction.from[0].from ? -1 * (transaction.to[0].amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber()) : amountTo;
+        //const amountTo = transaction.to.reduce((total: number, a: any) => total + a.amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber(), 0)
+        amount = address === transaction.from[0].from ? -1 * (transaction.to[0].amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber()) : (transaction.to[0].amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber());
 
         return amount;
       };
