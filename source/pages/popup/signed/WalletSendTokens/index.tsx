@@ -16,7 +16,7 @@ import { principal_id_to_address, address_to_hex } from '@earthwallet/keyring/bu
 import { getSymbol } from '~utils/common';
 
 import { decryptString } from '~utils/vault';
-import { validateMnemonic } from '@earthwallet/keyring';
+import { validateMnemonic, transfer, getFees } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
 import { selectBalanceByAddress } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
@@ -51,6 +51,9 @@ const WalletSendTokens = ({
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
   const [pass, setPass] = useState('');
   const [error, setError] = useState('');
+  const [txError, setTxError] = useState('');
+  const [fees, setFees] = useState<number>(0);
+
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
   const [selectCredit, setSelectCredit] = useState<boolean>(true);
 
@@ -64,15 +67,58 @@ const WalletSendTokens = ({
       .then(() => {
       });
 
-    /*  if (selectedAccount && selectedAccount?.id) {
-       loadBalance(selectedAccount?.id);
-       getICPUSDValue();
-     } */
+    if (selectedAccount.symbol !== 'ICP') {
+      getFees(selectedAccount.symbol).then(fees => {
+        console.log(fees, 'fees');
+        const BTC_DECIMAL = 8;
+        setFees(fees.fast.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber());
+      })
+    }
+    else {
+      setFees(0.001);
+    }
   }, [selectedAccount?.id === address]);
 
-
-  const sendTx = async () => {
+  const transferForAll = async () => {
     setIsBusy(true);
+    setTxError('');
+    let mnemonic = '';
+    try {
+      mnemonic = decryptString(selectedAccount?.vault.encryptedMnemonic, pass);
+    } catch (error) {
+      setError('Wrong password! Please try again');
+      setIsBusy(false);
+    }
+    try {
+      if (selectedAmount === 0) {
+        alert('Amount cannot be 0');
+      }
+      const hash: any = await transfer(
+        selectedRecp,
+        selectedAmount.toString(),
+        mnemonic,
+        selectedAccount.symbol,
+        { network: 'mainnet' }
+      );
+
+      await controller.accounts
+        .getBalancesOfAccount(selectedAccount)
+        .then(() => {
+        });
+      setLoadingSend(false);
+      setPaymentHash(hash || '');
+      setIsBusy(false);
+    } catch (error) {
+      console.log(error);
+      setTxError('Unable to send! Please try again later');
+      setLoadingSend(false);
+      setIsBusy(false);
+    }
+
+  }
+  const sendTxICP = async () => {
+    setIsBusy(true);
+    setTxError('');
 
     let secret = '';
 
@@ -113,6 +159,7 @@ const WalletSendTokens = ({
         setIsBusy(false);
       } catch (error) {
         console.log(error);
+        setTxError(JSON.stringify(error));
         setLoadingSend(false);
         setIsBusy(false);
       }
@@ -239,11 +286,11 @@ const WalletSendTokens = ({
             <div className={styles.feeRow}>
               <div className={styles.feeTitle}>Transaction Fee</div>
               <div>
-                <div className={styles.feeAmount}>0.001 {selectedAccount.symbol}</div>
-                <div className={styles.feeValue}>$6.52</div>
+                <div className={styles.feeAmount}>{fees} {selectedAccount.symbol}</div>
+                <div className={styles.feeValue}>${(fees * currentUSDValue?.usd).toFixed(2)}</div>
               </div>
             </div>
-            {selectCredit && <div className={styles.feeRow}>
+            {false && selectCredit && <div className={styles.feeRow}>
               <div className={styles.feeTitle}>Earth Credit<span
                 onClick={() => setSelectCredit(false)}
                 className={styles.removeBtn}>Remove</span></div>
@@ -255,8 +302,8 @@ const WalletSendTokens = ({
             <div className={styles.feeRow}>
               <div className={styles.feeTotal}>Total</div>
               <div>
-                <div className={styles.feeAmount}>{selectedAmount + 0.001}</div>
-                <div className={styles.feeValue}>${((selectedAmount + 0.001) * currentUSDValue?.usd).toFixed(3)}</div>
+                <div className={styles.feeAmount}>{selectedAmount + fees}</div>
+                <div className={styles.feeValue}>${((selectedAmount + fees) * currentUSDValue?.usd).toFixed(3)}</div>
               </div>
             </div>
 
@@ -279,10 +326,19 @@ const WalletSendTokens = ({
             </Warning>
           )}
         </div>}
+
+      {txError && (
+        <div><Warning
+          isBelowInput
+          isDanger
+        >
+          {txError}
+        </Warning></div>
+
+      )}
     </div>
     <div style={{
-      padding: '0 27px',
-      marginBottom: 30,
+      margin: '0 30px 30px 30px',
       position: 'absolute',
       bottom: 0,
       left: 0
@@ -298,7 +354,7 @@ const WalletSendTokens = ({
         : <NextStepButton
           disabled={loadingSend || !!error || pass.length < MIN_LENGTH}
           loading={isBusy || loadingSend}
-          onClick={() => sendTx()}>
+          onClick={() => selectedAccount.symbol === 'ICP' ? sendTxICP() : transferForAll()}>
           {'Send'}
         </NextStepButton>}
     </div>
