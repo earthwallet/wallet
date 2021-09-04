@@ -52,7 +52,7 @@ const PopupRouter = () => {
         >
           <Switch location={item}>
             <Route path="/popup.html">
-              <Redirect to="/portfolio" />
+              <Redirect to="/account/import" />
             </Route>
             <Route path="/home">
               <Redirect to="/portfolio" />
