@@ -51,7 +51,6 @@ const Transactions = ({
     const loadTransactions = async (address: string) => {
       setLoading(true);
       const transactions = await getTransactions(address, selectedAccount?.symbol);
-      console.log(transactions, 'loadTransactions', address);
       setLoading(false);
 
       setWalletTransactions(transactions);
@@ -65,7 +64,6 @@ const Transactions = ({
 
   const TxnItem = ({ transaction, index, symbol }: { transaction: keyable, index: number, symbol: string }) => {
 
-    console.log(transaction);
 
     const getTransactionDetailICP = (transaction: any): any => {
       const operations = transaction.transaction.operations

@@ -162,7 +162,6 @@ export default class AccountsController implements IAccountsController {
   };
 
   getTotalBalanceOfAccountGroup = (accountsGroup: keyable[][]) => {
-    console.log('getTotalBalanceOfAccountGroup', accountsGroup);
     const state = store.getState();
     for (const accounts of accountsGroup) {
       let addresses = accounts.length;

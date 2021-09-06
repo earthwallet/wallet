@@ -52,7 +52,6 @@ export default class AssetsController implements IAssetsController {
           `${CGECKO_PRICE_API}?ids=${activeAssetIds}&vs_currencies=${currency}&include_24hr_change=true`
         )
       ).json();
-      console.log(data, 'fetchFiatPrices');
       store.dispatch(
         storeEntities({
           entity: 'prices',
