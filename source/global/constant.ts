@@ -86,3 +86,6 @@ export const LIVE_SYMBOLS_OBJS = DEFAULT_SYMBOLS.filter(
 export const LIVE_SYMBOLS_GECKOIDs = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
 ).map((symbolObj) => symbolObj.coinGeckoId);
+
+
+export const DEFAULT_ICP_FEES = 0.0001;

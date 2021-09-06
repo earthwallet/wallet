@@ -7,10 +7,16 @@ import SeedAndPath from './SeedAndPath';
 import AccountNamePasswordCreation from './AccountNamePasswordCreation';
 import { useController } from '~hooks/useController';
 import { useHistory } from 'react-router-dom';
-import { LIVE_SYMBOLS } from '~global/constant';
+import { DEFAULT_ICP_FEES, LIVE_SYMBOLS } from '~global/constant';
 import { ClipLoader } from 'react-spinners';
 import { getSymbol } from '~utils/common';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
+import { keyable } from '~scripts/Background/types/IAssetsController';
+import { principal_id_to_address, address_to_hex } from '@earthwallet/keyring/build/main/util/icp';
+import { createWallet } from '@earthwallet/keyring';
+import { send } from '@earthwallet/keyring';
+import Warning from '~components/Warning';
+import ICON_GREEN_TICK from '~assets/images/icon_green_tick.svg';
 
 
 const Page = () => {
@@ -18,6 +24,11 @@ const Page = () => {
   const [seed, setSeed] = useState<string | null>(null);
   const [step, setStep] = useState<string>('1');
   const [balance, setBalance] = useState<number>(0);
+  const [addresses, setAddresses] = useState<keyable>({ old: '', new: '' });
+  const [loadingSend, setLoadingSend] = useState<boolean>(false);
+  const [txError, setTxError] = useState('');
+  const [migrateComplete, setMigrateComplete] = useState<boolean>(false);
+
   const [isBusy, setIsBusy] = useState(false);
   const controller = useController();
   const history = useHistory();
@@ -26,11 +37,11 @@ const Page = () => {
 
     seed !== null && controller.accounts
       .migrateExistingICP(seed)
-      .then((keypair) => {
-        console.log(keypair, 'importseed');
-        if (keypair?.balance?.balances[0]?.value > 0) {
-          setBalance(keypair?.balance?.balances[0]?.value
-            / Math.pow(10, keypair?.balance.balances[0].currency.decimals));
+      .then((keypairGroup) => {
+        if (keypairGroup?.balance?.balances[0]?.value > 0) {
+          setAddresses({ old: keypairGroup.keypair.address, new: keypairGroup.keypairNew.address });
+          setBalance(keypairGroup?.balance?.balances[0]?.value
+            / Math.pow(10, keypairGroup?.balance.balances[0].currency.decimals));
           setStep('1a');
         } else {
           setStep('2');
@@ -38,9 +49,53 @@ const Page = () => {
       });
 
   }, [seed !== null]);
+
+  const sendICPFromOldToNew = useCallback(async () => {
+    if (seed !== null) {
+      const fees = DEFAULT_ICP_FEES;
+      setLoadingSend(false);
+      setTxError('');
+      setMigrateComplete(false);
+      const oldKeypair = await createWallet(seed.trim(), 'ICP', 0, {
+        type: 'Ed25519',
+      });
+      const newKeypair = await createWallet(seed.trim(), 'ICP', 0);
+      const currentIdentity = oldKeypair.identity;
+      const address = address_to_hex(
+        principal_id_to_address(currentIdentity.getPrincipal())
+      );
+      setLoadingSend(true);
+      const selectedAmount = parseFloat((balance - fees).toFixed(8));
+      try {
+
+        const hash: any = await send(
+          currentIdentity,
+          newKeypair.address,
+          address,
+          selectedAmount,
+          'ICP'
+        );
+        if (hash !== null) {
+          setLoadingSend(false);
+          setStep('2');
+          setMigrateComplete(true);
+        }
+
+      } catch (error) {
+        setTxError("Please try again later or Skip! Error: " + JSON.stringify(error));
+        setLoadingSend(false);
+        setMigrateComplete(false);
+
+      }
+    }
+
+  }, [seed, balance]);
+
+
   const _onBackClick = useCallback(() => {
     setStep('1');
   }, []);
+
 
 
 
@@ -85,40 +140,71 @@ const Page = () => {
               <div className={styles.notAddr}>Old Address</div>
               <div className={styles.notAddrCont}>
                 <img src={getSymbol('ICP')?.icon} className={styles.notAddrIcon}></img>
-                <div className={styles.notAddrText}>0x48c8c69e2571e0...</div>
+                <div className={styles.notAddrText}>{addresses?.old}</div>
               </div>
               <div className={styles.notAddr}>New Address</div>
               <div className={styles.notAddrCont}>
                 <img src={getSymbol('ICP')?.icon} className={styles.notAddrIcon}></img>
-                <div className={styles.notAddrText}>0x48c8c69e2571e0...</div>
+                <div className={styles.notAddrText}>{addresses?.new}</div>
               </div>
 
             </div>
           </div>
-          <div
+          {txError && (
+            <div
+              className={styles.noBalanceError}
+            ><Warning
+              isBelowInput
+              isDanger
+            >
+                {txError}
+              </Warning></div>
+          )}
+          {loadingSend ? <div
             style={{
               margin: '0px 24px 24px',
               position: 'absolute',
               bottom: 0,
               left: 0,
-              display: 'flex'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 330,
+              height: 56,
             }}
           >
-            <div
-              onClick={() => setStep('2')}
-              className={styles.secButton}>Skip</div>
-            <div
-              onClick={() => setStep('2')}
-              className={styles.primButton}>Next</div>
+            <ClipLoader color={'#fffff'}
+              size={15} />
           </div>
+            : <div
+              style={{
+                margin: '0px 24px 24px',
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                display: 'flex'
+              }}
+            >
+              <div
+                onClick={() => setStep('2')}
+                className={styles.secButton}>Skip</div>
+              <div
+                onClick={() => sendICPFromOldToNew()}
+                className={styles.primButton}>Next</div>
+            </div>}
         </ >;
       case '2':
-        return <AccountNamePasswordCreation
-          buttonLabel={'Add account'}
-          isBusy={isBusy}
-          onBackClick={_onBackClick}
-          onCreate={_onCreate}
-        />;
+        return <div>
+          {migrateComplete && <div className={styles.migrateAnnon}>
+            <img className={styles.migrateAnnonIcon} src={ICON_GREEN_TICK} />
+            Migration is complete. Continue with import account{'>'} </div>}
+          <AccountNamePasswordCreation
+            buttonLabel={'Add account'}
+            isBusy={isBusy}
+            onBackClick={_onBackClick}
+            onCreate={_onCreate}
+          />
+        </div>;
       default:
         return <ClipLoader color={'#fffff'}
           size={15} />

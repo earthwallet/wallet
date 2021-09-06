@@ -226,7 +226,7 @@
 }
 
 .noticeCont {
-  margin: 24px;
+  margin: 24px 24px 8px 24px;
   padding: 12px;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     rgba(90, 89, 126, 0.39);
@@ -293,7 +293,7 @@
   /* identical to box height, or 100% */
 
   color: #fafbfb;
-
+  word-break: break-all;
   opacity: 0.8;
   margin-left: 9px;
 }
@@ -374,4 +374,23 @@
   &:active {
     opacity: 0.7;
   }
+}
+
+.noBalanceError {
+  margin: 8px 24px;
+}
+
+.migrateAnnon {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 24px 24px 5px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.migrateAnnonIcon {
+  margin-right: 10px;
 }

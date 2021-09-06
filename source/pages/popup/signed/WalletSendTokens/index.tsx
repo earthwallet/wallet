@@ -20,6 +20,7 @@ import { validateMnemonic, transfer, getFees } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
 import { selectBalanceByAddress } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
+import { DEFAULT_ICP_FEES } from '~global/constant';
 
 
 const MIN_LENGTH = 6;
@@ -44,8 +45,7 @@ const WalletSendTokens = ({
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
 
-  const onNextStep = useCallback(() => { setStep1(false); }, []);
-  const onBackClick = useCallback(() => { setStep1(true); }, []);
+
   const dropDownRef = useRef(null);
   const [selectedRecp, setSelectedRecp] = useState<string>('');
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
@@ -69,16 +69,40 @@ const WalletSendTokens = ({
 
     if (selectedAccount.symbol !== 'ICP') {
       getFees(selectedAccount.symbol).then(fees => {
-        console.log(fees, 'fees');
         const BTC_DECIMAL = 8;
         setFees(fees.fast.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber());
       })
     }
     else {
-      setFees(0.001);
+      setFees(DEFAULT_ICP_FEES);
     }
   }, [selectedAccount?.id === address]);
 
+
+  const loadMaxAmount = useCallback((): void => {
+    let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
+    maxAmount = parseFloat(maxAmount.toFixed(8));
+    setSelectedAmount(parseFloat(maxAmount.toFixed(8)));
+  }, [currentBalance, fees]);
+
+  const onConfirm = useCallback(() => {
+    let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
+    maxAmount = parseFloat(maxAmount.toFixed(8));
+    if (selectedAmount !== 0 && selectedAmount <= maxAmount) {
+      setError('');
+      setStep1(false);
+    }
+    else if (selectedAmount === 0) {
+      setError(`Amount cannot be zero. Transaction fees is ${fees}${selectedAccount?.symbol}`);
+      setStep1(true);
+    }
+    else {
+      setError(`Please check entered amount. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+      setStep1(true);
+    }
+  }, [fees, selectedAmount, currentBalance, selectedAccount]);
+
+  const onBackClick = useCallback(() => { setStep1(true); }, []);
   const transferForAll = async () => {
     setIsBusy(true);
     setTxError('');
@@ -159,7 +183,7 @@ const WalletSendTokens = ({
         setIsBusy(false);
       } catch (error) {
         console.log(error);
-        setTxError(JSON.stringify(error));
+        setTxError("Please try again! Error: " + JSON.stringify(error));
         setLoadingSend(false);
         setIsBusy(false);
       }
@@ -185,7 +209,6 @@ const WalletSendTokens = ({
       catch (error) {
         setError('Wrong password! Please try again');
       }
-      console.log(secret, selectedAccount?.vault.encryptedJson, selectedAccount, 'onPassChange');
       if (selectedAccount.symbol === 'ICP' ? !isJsonString(secret) : !validateMnemonic(secret)) {
         setError('Wrong password! Please try again');
       }
@@ -249,10 +272,12 @@ const WalletSendTokens = ({
               </div>
             </div>
           </div>
-          <div
+          {selectedAccount.symbol !== 'BTC' && <div
             className={styles.earthInputLabel}>
-            Amount
-          </div>
+            Amount <div
+              onClick={() => loadMaxAmount()}
+              className={styles.maxBtn}>Max</div>
+          </div>}
           <input
             autoCapitalize='off'
             autoCorrect='off'
@@ -268,6 +293,18 @@ const WalletSendTokens = ({
             type="number"
             value={selectedAmount}
           />
+          {error && (
+            <div
+              className={styles.noBalanceError}
+            >
+              <Warning
+                isBelowInput
+                isDanger
+              >
+                {error}
+              </Warning>
+            </div>
+          )}
         </div>
         : <div className={styles.confirmPage}>
           <div className={styles.confirmAmountCont}>
@@ -302,7 +339,7 @@ const WalletSendTokens = ({
             <div className={styles.feeRow}>
               <div className={styles.feeTotal}>Total</div>
               <div>
-                <div className={styles.feeAmount}>{selectedAmount + fees}</div>
+                <div className={styles.feeAmount}>{(selectedAmount + fees).toFixed(currentBalance?.currency?.decimals)}</div>
                 <div className={styles.feeValue}>${((selectedAmount + fees) * currentUSDValue?.usd).toFixed(3)}</div>
               </div>
             </div>
@@ -328,13 +365,14 @@ const WalletSendTokens = ({
         </div>}
 
       {txError && (
-        <div><Warning
+        <div
+          className={styles.noBalanceError}
+        ><Warning
           isBelowInput
           isDanger
         >
-          {txError}
-        </Warning></div>
-
+            {txError}
+          </Warning></div>
       )}
     </div>
     <div style={{
@@ -347,7 +385,7 @@ const WalletSendTokens = ({
         ? <NextStepButton
           disabled={loadingSend || !selectedRecp}
           loading={isBusy}
-          onClick={onNextStep}>
+          onClick={onConfirm}>
           {'Next'}
         </NextStepButton>
 

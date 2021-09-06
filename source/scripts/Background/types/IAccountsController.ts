@@ -24,5 +24,9 @@ export interface IAccountsController {
   getTotalBalanceOfAccountGroup: (accounts: keyable[][]) => void;
   migrateExistingICP: (
     mnemonic: string
-  ) => Promise<{ keypair: EarthKeyringPair; balance: keyable }>;
+  ) => Promise<{
+    keypair: EarthKeyringPair;
+    balance: keyable;
+    keypairNew: EarthKeyringPair;
+  }>;
 }
