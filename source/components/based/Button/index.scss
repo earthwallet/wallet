@@ -1,5 +1,5 @@
 .button {
-  text-transform: none;
+  text-transform: none !important;
 
   &.disabled {
     opacity: 0.5;

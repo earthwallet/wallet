@@ -4,35 +4,35 @@ import store from '~state/store';
 import { IDAppController, SignatureRequest } from '../types/IDAppController';
 
 class DAppController implements IDAppController {
-  private current: DAppInfo = { origin: '', logo: '', title: '' };
-  private request: SignatureRequest;
+  #current: DAppInfo = { origin: '', logo: '', title: '' };
+  #request: SignatureRequest;
 
-  fromPageConnectDApp = (origin: string, title: string) => {
+  fromPageConnectDApp(origin: string, title: string) {
     const dapp: ConnectedDApps = store.getState().dapp;
 
-    this.current = {
+    this.#current = {
       origin,
       logo: `chrome://favicon/size/64@1x/${origin}`,
       title,
     };
 
     return !!dapp[origin];
-  };
+  }
 
-  fromUserConnectDApp = (origin: string, dapp: DAppInfo) => {
+  fromUserConnectDApp(origin: string, dapp: DAppInfo) {
     store.dispatch(listNewDapp({ id: origin, dapp }));
-  };
+  }
 
-  getCurrent = () => {
-    return this.current;
-  };
+  getCurrent() {
+    return this.#current;
+  }
 
-  setSignatureRequest = (req: SignatureRequest) => {
-    this.request = req;
-  };
+  setSignatureRequest(req: SignatureRequest) {
+    this.#request = req;
+  }
 
   getSignatureRequest = () => {
-    return this.request;
+    return this.#request;
   };
 }
 

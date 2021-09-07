@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { IMainController } from '../types/IMainController';
 
@@ -19,7 +20,7 @@ export const messagesHandler = (
         const { id, result } = response;
         port.postMessage({ id, data: { result } });
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log('messagesHandler.ERROR', e.type, e.message, e.detail);
       console.log(JSON.stringify(e, null, 2));
       port.postMessage({ id: e.type, data: { error: e.detail } });
@@ -47,7 +48,32 @@ export const messagesHandler = (
         //
       }
     } else if (message.type === 'ENABLE_REQUEST') {
-      //
+      if (origin && allowed) {
+        return Promise.resolve({ id: message.id, result: origin && allowed });
+      }
+
+      const windowId = uuid();
+      const popup = await mainController.createPopup(windowId);
+      if (popup) {
+        window.addEventListener(
+          'connectWallet',
+          (ev: any) => {
+            console.log('Connect window addEventListener', ev.detail);
+            if (ev.detail.substring(1) === windowId) {
+              port.postMessage({ id: message.id, data: { result: true } });
+            }
+          },
+          { once: true, passive: true }
+        );
+
+        browser.windows.onRemoved.addListener((id) => {
+          if (id === popup.id) {
+            port.postMessage({ id: message.id, data: { result: false } });
+            console.log('Connect window is closed');
+          }
+        });
+        return Promise.resolve(null);
+      }
       return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;

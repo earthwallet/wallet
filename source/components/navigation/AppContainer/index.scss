@@ -3,4 +3,7 @@
   width: $appWidth;
   height: $appHeight;
   color: $greyWhite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -1,3 +1,4 @@
+import { Windows } from 'webextension-polyfill-ts';
 import { EarthProvider } from '~scripts/Provider/EarthProvider';
 import { IAccountsController } from './IAccountsController';
 import { IAssetsController } from './IAssetsController';
@@ -9,4 +10,6 @@ export interface IMainController {
   dapp: Readonly<IDAppController>;
   provider: Readonly<EarthProvider>;
   preloadState: () => Promise<void>;
+  accountsInfo: () => Promise<void>;
+  createPopup: (windowId: string) => Promise<Windows.Window | null>;
 }
