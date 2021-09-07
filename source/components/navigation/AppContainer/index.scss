@@ -7,3 +7,8 @@
   align-items: center;
   justify-content: center;
 }
+
+.container > div {
+  width: $appWidth !important;
+  height: $appHeight !important;
+}

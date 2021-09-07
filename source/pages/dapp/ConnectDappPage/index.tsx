@@ -4,12 +4,11 @@ import NavButton from '~components/composed/NavButton';
 import { useConnectWalletToDApp, useCurrentDapp } from '~hooks/useController';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import AccountImage from '~assets/images/icon_icp_details.png';
-
 import styles from './index.module.scss';
 import { useSelector } from 'react-redux';
 import { selectAccounts } from '~state/wallet';
 import { isUndefined } from 'lodash';
+import { getSymbol } from '~utils/common';
 
 enum ConnectStep {
   Accounts,
@@ -55,13 +54,13 @@ export default function ConnectDappPage() {
               <div className={styles.dapp}>
                 <span>You are connecting to:</span>
                 <i>
-                  <img src={dapp.logo} />
+                  {dapp.logo && <img src={dapp.logo} />}
                   {dapp.origin}
                 </i>
               </div>
               <div className={styles.connectWith}>
                 <label>Connect With:</label>
-                {accounts.map((account, index) => (
+                {accounts.sort((a, b) => a.symbol.localeCompare(b.symbol)).map((account, index) => (
                   <div
                     className={styles.row}
                     key={account.id}
@@ -71,7 +70,7 @@ export default function ConnectDappPage() {
                     }}
                   >
                     <span>
-                      <img src={AccountImage} />
+                      <img src={getSymbol(account.symbol)?.icon} />
                       <label>
                         {account.meta.name}
                         <small>{account.id}</small>
@@ -102,6 +101,7 @@ export default function ConnectDappPage() {
                   {!isUndefined(accountIndex) &&
                     accounts[accountIndex].meta.name}
                 </NavButton>
+                {!isUndefined(accountIndex) && accounts[accountIndex].id}
               </div>
             </>
           )}

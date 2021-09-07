@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-y: scroll;
 
   &::before {
     content: '';
@@ -99,6 +100,7 @@
         display: flex;
         flex-direction: column;
         width: 100%;
+        margin-bottom: 24px;
 
         & > label {
           font-size: 16px;
@@ -138,6 +140,11 @@
               font-size: 14px;
               font-weight: 400;
               color: #fafafb;
+              white-space: nowrap;
+              overflow: hidden;
+              display: block;
+              text-overflow: ellipsis;
+              width: 200px;
 
               & > small {
                 font-size: 12px;
@@ -171,6 +178,8 @@
         padding: 8px 7px;
         width: 100%;
         box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         & > span {
           width: 100%;
@@ -182,7 +191,7 @@
           justify-content: flex-start;
           border-radius: 8px;
           height: 57px;
-          font-size: 18px;
+          font-size: 14px;
           line-height: 27px;
           color: rgba($textColor, 0.51);
           padding: 8px;
@@ -230,6 +239,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        word-break: break-all;
       }
     }
 
@@ -237,6 +247,7 @@
       margin-top: auto;
       display: flex;
       flex-direction: column;
+      margin-bottom: 24px;
 
       .info {
         margin-bottom: 40px;
