@@ -11,17 +11,12 @@ Earth Wallet is a next generation self custody wallet built for the Internet Com
 # Download it Here:
 
 | [![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Yandex](https://raw.github.com/alrra/browser-logos/master/src/yandex/yandex_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![Brave](https://raw.github.com/alrra/browser-logos/master/src/brave/brave_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) | [![vivaldi](https://raw.github.com/alrra/browser-logos/master/src/vivaldi/vivaldi_48x48.png)](https://chrome.google.com/webstore/detail/earth-wallet/agkfnefiabmfpanochlcakggnkdfmmjd?hl=en&authuser=1) |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 49 & later ✔                                                                                                                                                                                         | 52 & later ✔                                                                                                                                                                                            | 36 & later ✔                                                                                                                                                                                      | 79 & later ✔                                                                                                                                                                                   | Latest ✔                                                                                                                                                                                             | Latest ✔                                                                                                                                                                                          | Latest ✔                                                                                                                                                                                                |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| 49 & later ✔                                                                                  | 52 & later ✔                                                                                     | 36 & later ✔                                                                               | 79 & later ✔                                                                            | Latest ✔                                                                                      | Latest ✔                                                                                   | Latest ✔                                                                                         |
 
 ## 🎉 Now in Beta with over 3000 users!
 
-<<<<<<< HEAD
 We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking for a full time role please [apply to Earth Association](https://discord.gg/aemgEpMye3)!
-=======
-We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking apply to [join the Earth Association](https://discord.gg/aemgEpMye3)!
-
-> > > > > > > 897716f (Update readme)
 
 :white_check_mark: Self Custody (your keys, your crypto) <br/>
 :white_check_mark: 100% Open Source <br/>
@@ -56,81 +51,22 @@ const injectEarth = () => {
 // Connect to Earth Wallet (i.e. show accounts available, etc)
 const handleEarthEnable = () => {
   await injectEarth();
-  window?.earth
-    .enable()
-    .then((account) => {
-      console.log('Successfully connected to Earth Wallet 🌍', account);
-      onConnect();
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
+    window?.earth
+    .enable().then((account) => {
+        console.log("Successfully connected to Earth Wallet 🌍", account);
+        onConnect();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 ```
 
-## Project structure
+## 🚀 Auditors / Bug Hunters - $10k USD+ Available!!
 
-    .
-    ├── extension                           # Compiled files
-    ├── source                              # Soruce files
-    │     ├──  assets                       # Assets Folder
-    │     │    ├──  fonts                   # Font assets
-    │     │    ├──  images                  # Image assets
-    │     │    └──  styles                  # Style assets
-    │     ├──  components                   # Components folder
-    │     │    ├──  based                   # Basic/Reusable components
-    │     │    │      ├── Button
-    │     │    │      └── ...
-    │     │    ├──  feature                 # Feature related components
-    │     │    │      ├── transaction
-    │     │    │      │      └── TxProgressBar
-    │     │    │      └── ...
-    │     │    └──  navigation              # Navigation related components
-    │     │           ├── Header
-    │     │           └── ...
-    │     ├──  containers                   # Container components
-    │     │    ├──  DApp
-    │     │    ├──  Hardware
-    │     │    ├──  Popup
-    │     │    │      ├── custom.d.ts
-    │     │    │      ├── index.tsx
-    │     │    │      └── router.tsx
-    │     ├──  pages                        # Page components
-    │     │    ├──  dapp
-    │     │    ├──  hardware
-    │     │    │      └── HardwareWalletPage
-    │     │    ├──  popup
-    │     │    │      ├── signed
-    │     │    │      │      └── HomePage
-    │     │    │      ├── started
-    │     │    │      │      └── StarterPage
-    │     │    │      └── ...
-    │     │    └──  ...
-    │     ├──  scripts                      # Script files
-    │     │    ├──  Background
-    │     │    ├──  ContentScript
-    │     │    └──  Provider
-    │     ├──  utils                        # Util functions
-    │     ├──  services                     # Service functions
-    │     ├──  global                       # Global files
-    │     │    ├──  constant.ts
-    │     │    ├──  types.ts
-    │     │    └──  ...
-    │     ├──  state                        # Redux state files
-    │     │    ├──  app                     # Reducer files
-    │     │    ├──  ...
-    │     │    ├──  store.ts
-    │     │    └──  localStorage.ts
-    │     └──  hooks                        # React custom Hooks
-    ├── views                               # Popup HTML files
-    │     ├──  popup.html
-    │     ├──  app.html
-    │     └──  ...
-    └── README.md
+We have an on going bug bounty campaign for $10,000 USD, as well as full time positions available. If you find a bug, or simply have an idea of how to make the code better/faster/more secure, please [join our Developer Server](https://discord.gg/aemgEpMye3). Help create the most secure open source digital asset wallet and own a piece the future!
 
-## 🚀 Quick Start
-
-Ensure you have
+To get started, ensure you have:
 
 - [Node.js](https://nodejs.org) 10 or later installed
 - [Yarn](https://yarnpkg.com) v1 or v2 installed
@@ -183,43 +119,13 @@ Then run the following:
 
 Note: By default the `manifest.json` is set with version `0.0.0`. The webpack loader will update the version in the build with that of the `package.json` version. In order to release a new version, update version in `package.json` and run script.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
 # ♾️ Contributors
-
-=======
-
-# Contributors
-
-=======
-
-# ♾️ Contributors
-
-> > > > > > > 209bbab (Add links)
-
-> > > > > > > 56671ff (Update readme)
 
 The best way to submit feedback and report bugs is to [open a GitHub issue](https://github.com/earth-association/wallet/issues/new).
 If you want to contribute code please join our [Developer Server](https://discord.gg/gmgPCBnvJd).
 
 Thanks to all the people who contribute!
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
 # 🈚 License
-
-=======
-
-# License
-
-=======
-
-# 🈚 License
-
-> > > > > > > 209bbab (Add links)
-
-> > > > > > > 56671ff (Update readme)
 
 Earth Wallet is available under the MIT license. See the [LICENSE](LICENSE) file for more info.

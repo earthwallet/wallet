@@ -1,6 +1,6 @@
 {
   "name": "earth-wallet",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "Earth Wallet",
   "private": false,
   "type": "module",
@@ -11,6 +11,7 @@
     "yarn": ">= 1.0.0"
   },
   "scripts": {
+    "start": "yarn dev:chrome",
     "dev:chrome": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=chrome webpack --watch --progress",
     "dev:firefox": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=firefox webpack --watch",
     "dev:opera": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=opera webpack --watch",
@@ -23,7 +24,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.0",
-    "@earthwallet/keyring": "^0.2.0",
+    "@earthwallet/keyring": "^0.2.3",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@material-ui/core": "^4.12.2",

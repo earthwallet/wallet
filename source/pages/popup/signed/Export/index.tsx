@@ -23,7 +23,7 @@ import { decryptString } from '~utils/vault';
 
 const MIN_LENGTH = 6;
 
-interface Props extends RouteComponentProps<{ address: string }> {}
+interface Props extends RouteComponentProps<{ address: string }> { }
 
 function Export({
   match: {

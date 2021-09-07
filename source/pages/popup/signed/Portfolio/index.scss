@@ -47,7 +47,6 @@
   z-index: 999;
   padding: 8px 5px;
   position: absolute;
-  width: 192px;
 
   left: 160px;
   top: 65px;
@@ -57,8 +56,14 @@
       rgba(255, 255, 255, 0.06) 39.61%
     ),
     #193058;
-  //box-shadow: -4px 4px 6px rgb(14, 32, 51 , 35%);
+  box-shadow: -4px 4px 6px rgba(14, 32, 51, 35%);
   border-radius: 6px;
+  border: 2px solid;
+  border-image-source: linear-gradient(
+    99.06deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.0528) 100%
+  );
 }
 
 .headerIcon:active {
@@ -75,6 +80,10 @@
 
   color: #fafbfb;
   margin: 13px 22px;
+  cursor: pointer;
+  &:active {
+    opacity: 0.7;
+  }
 }
 
 .headerIconFirst {
@@ -627,4 +636,19 @@
   order: 0;
   flex-grow: 0;
   margin: 0px 6px;
+}
+
+.netstatspositive {
+  padding-left: 8px;
+  color: #55d171;
+}
+.netstatsnegative {
+  padding-left: 8px;
+  color: #d15555;
+}
+
+.totalSpinner {
+  position: relative;
+  top: -5px;
+  right: -8px;
 }

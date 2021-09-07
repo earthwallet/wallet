@@ -7,6 +7,9 @@ const initialState: IEntityState = {
   transactions: { byId: {} },
   prices: { byId: {} },
   addresses: { byId: {} },
+  balances: { byId: {} },
+  groupbalances: { byId: {} },
+
 };
 
 export const entitiesState = createSlice({

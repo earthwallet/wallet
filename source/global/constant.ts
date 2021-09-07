@@ -24,48 +24,68 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_ETH,
     symbol: 'ETH',
     primary: true,
-    coingeckoid: 'ethereum'
+    coinGeckoId: 'ethereum',
+    isLive: false,
   },
   {
     name: 'Internet Computer',
     icon: ICON_ICP,
     symbol: 'ICP',
-    coingeckoid: 'internet-computer'
+    coinGeckoId: 'internet-computer',
+    isLive: true,
   },
   {
     name: 'Polkadot',
     icon: ICON_DOT,
     symbol: 'DOT',
-    coingeckoid: 'polkadot'
+    coinGeckoId: 'polkadot',
   },
   {
     name: 'Kusama',
     icon: ICON_KSM,
     symbol: 'KSM',
-    coingeckoid: 'kusama'
+    coinGeckoId: 'kusama',
   },
   {
     name: 'Bitcoin',
     icon: ICON_BTC,
     symbol: 'BTC',
-    coingeckoid: 'bitcoin'
+    coinGeckoId: 'bitcoin',
+    isLive: true,
   },
   {
     name: 'Litecoin',
     icon: ICON_LTC,
     symbol: 'LTC',
-    coingeckoid: 'litecoin'
+    coinGeckoId: 'litecoin',
   },
   {
     name: 'Bitcoin Cash',
     icon: ICON_BCH,
     symbol: 'BCH',
-    coingeckoid: 'bitcoin-cash'
+    coinGeckoId: 'bitcoin-cash',
+    isLive: false,
   },
   {
     name: 'Binance',
     icon: ICON_BNB,
     symbol: 'BNB',
-    coingeckoid: 'binancecoin'
+    coinGeckoId: 'binancecoin',
+    isLive: false,
   },
 ];
+
+export const LIVE_SYMBOLS = DEFAULT_SYMBOLS.filter(
+  (symbolObj) => symbolObj.isLive
+).map((symbolObj) => symbolObj.symbol);
+
+export const LIVE_SYMBOLS_OBJS = DEFAULT_SYMBOLS.filter(
+  (symbolObj) => symbolObj.isLive
+).map((symbolObj) => symbolObj);
+
+export const LIVE_SYMBOLS_GECKOIDs = DEFAULT_SYMBOLS.filter(
+  (symbolObj) => symbolObj.isLive
+).map((symbolObj) => symbolObj.coinGeckoId);
+
+
+export const DEFAULT_ICP_FEES = 0.0001;

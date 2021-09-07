@@ -30,6 +30,8 @@
 .transColIcon {
   margin-right: 8px;
   margin-top: 2px;
+  flex-basis: 16px;
+  flex-shrink: 0;
 }
 
 .transCont {
@@ -74,10 +76,20 @@
   }
 }
 
+.transAddress {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.transDate {
+  white-space: nowrap;
+}
+
 .transColStatus {
   display: flex;
   flex-direction: column;
-  width: 150px;
+  width: 165px;
   margin-right: 21px;
 }
 .transSubColTime {

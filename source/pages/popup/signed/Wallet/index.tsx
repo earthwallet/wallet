@@ -13,11 +13,16 @@ import clsx from 'clsx';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
-import { getBalance, getTransactions } from '@earthwallet/keyring';
+import { getTransactions } from '@earthwallet/keyring';
+import { useController } from '~hooks/useController';
+import { selectBalanceByAddress } from '~state/wallet';
+import { selectAssetBySymbol } from '~state/assets';
 
-interface Props extends RouteComponentProps<{ address: string }> {}
+
+interface Props extends RouteComponentProps<{ address: string }> {
+}
 interface keyable {
-  [key: string]: any;
+  [key: string]: any
 }
 
 const Wallet = ({
@@ -25,66 +30,39 @@ const Wallet = ({
     params: { address },
   },
 }: Props) => {
+
+  const controller = useController();
+
   //const _onCopy = useCallback((): void => show('Copied'), [show]);
   const _onCopy = console.log;
 
+
   const selectedAccount = useSelector(selectAccountById(address));
-  const [loading, setLoading] = useState<boolean>(false);
-  const [usdValue, setUsdValue] = useState<number>(0);
-  const [walletBalance, setWalletBalance] = useState<any | null>(null);
+
+
+  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
   const [walletTransactions, setWalletTransactions] = useState<any>();
 
-  const getBalanceInUSD = async (walletBalance: keyable) => {
-    const balance = walletBalance?.balances[0]?.value;
-    const decimals = walletBalance?.balances[0]?.currency?.decimals;
 
-    const fetchHeaders = new Headers();
 
-    fetchHeaders.append('accept', 'application/json');
-
-    const requestOptions: RequestInit = {
-      method: 'GET',
-      headers: fetchHeaders,
-      redirect: 'follow',
-    };
-
-    const factor: keyable = await fetch(
-      'https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd',
-      requestOptions
-    )
-      .then((response) => response.json())
-      .catch((error) => console.log('error', error));
-
-    setUsdValue(
-      (balance / Math.pow(10, decimals)) *
-        parseFloat(factor['internet-computer'].usd)
-    );
-  };
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
-      const transactions = await getTransactions(address, 'ICP');
+      const transactions = await getTransactions(address, selectedAccount?.symbol);
       setWalletTransactions(transactions);
     };
 
-    const loadBalance = async (address: string) => {
-      setLoading(true);
-      const balance: keyable = await getBalance(address, 'ICP');
-      setLoading(false);
-
-      console.log(balance, 'loadBalance');
-      if (balance && balance?.balances != null) {
-        setWalletBalance(balance);
-        getBalanceInUSD(balance);
-      }
-    };
 
     if (selectedAccount && selectedAccount?.id) {
-      loadBalance(selectedAccount?.id);
+      controller.accounts
+        .getBalancesOfAccount(selectedAccount)
+        .then(() => {
+        });
       loadTransactions(selectedAccount?.id);
     }
-  }, [selectedAccount]);
+  }, [selectedAccount?.id === address]);
 
   return (
     <div className={styles.page}>
@@ -94,42 +72,27 @@ const Wallet = ({
         showMenu
         type={'wallet'}
       />
-      <img
-        className={styles.networklogo}
-        src={getSymbol(selectedAccount.symbol)?.icon}
-      />
-      <div className={styles.networktext}>
-        {getSymbol(selectedAccount.symbol)?.name}
-      </div>
+      <img className={styles.networklogo} src={getSymbol(selectedAccount.symbol)?.icon} />
+      <div className={styles.networktext}>{getSymbol(selectedAccount.symbol)?.name}</div>
       <div className={styles.primaryBalanceLabel}>
-        {loading ? (
+        {currentBalance?.loading ? (
           <SkeletonTheme color="#222" highlightColor="#000">
             <Skeleton width={150} />
           </SkeletonTheme>
-        ) : selectedAccount.symbol !== 'ICP' ? (
-          <div className={styles.primaryBalanceLabel}>
-            0 {selectedAccount.symbol}
-          </div>
         ) : (
-          <div className={styles.primaryBalanceLabel}>
-            {walletBalance &&
-              walletBalance?.balances[0] &&
-              `${
-                walletBalance?.balances[0]?.value /
-                Math.pow(10, walletBalance?.balances[0]?.currency?.decimals)
-              } ${walletBalance?.balances[0]?.currency?.symbol}`}
-          </div>
+          <div className={styles.primaryBalanceLabel}>{currentBalance &&
+            `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
+          }</div>
+
         )}
       </div>
       <div className={styles.secondaryBalanceLabel}>
-        {loading ? (
+        {currentBalance?.loading ? (
           <SkeletonTheme color="#222" highlightColor="#000">
             <Skeleton width={100} />
           </SkeletonTheme>
         ) : (
-          <span className={styles.secondaryBalanceLabel}>
-            ${usdValue.toFixed(3)}
-          </span>
+          <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))}</span>
         )}
       </div>
 
@@ -151,10 +114,7 @@ const Wallet = ({
         <div
           className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
         >
-          <Link
-            className={styles.transactionsCont}
-            to={'/account/receive/' + selectedAccount?.id}
-          >
+          <Link className={styles.transactionsCont} to={"/account/receive/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_rec} />
               <div className={styles.tokenActionLabel}>Receive</div>
@@ -163,10 +123,7 @@ const Wallet = ({
         </div>
 
         <div className={clsx(styles.tokenActionView, styles.sendTokenAction)}>
-          <Link
-            className={styles.transactionsCont}
-            to={'/account/send/' + selectedAccount?.id}
-          >
+          <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_send} />
               <div className={styles.tokenActionLabel}>Send</div>
@@ -182,12 +139,13 @@ const Wallet = ({
         <div className={styles.assetsAndActivityDiv}>
           <div className={styles.tabsPill}></div>
           <div className={styles.tabsView}>
-            <div className={clsx(styles.tabView, styles.selectedTabView)}>
-              Transactions{' '}
-              {walletTransactions?.transactions?.length === 0 ||
-              walletTransactions?.transactions === undefined
-                ? ''
-                : `(${walletTransactions?.transactions?.length})`}
+            <div
+              className={clsx(
+                styles.tabView,
+                styles.selectedTabView
+              )}
+            >
+              Transactions {walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
             </div>
           </div>
         </div>

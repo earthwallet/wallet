@@ -36,8 +36,7 @@ function AccountNamePasswordCreation({ buttonLabel, isBusy, onCreate }: Props): 
       </div>
 
       <div style={{
-        padding: '0 27px',
-        marginBottom: 30,
+        margin: '0 30px 30px 30px',
         position: 'absolute',
         bottom: 0,
         left: 0

@@ -5,7 +5,7 @@ import Header from '../Header';
 
 interface Props {
   className?: string;
-  step: number;
+  step: string|number;
   text: string;
   backOverride?: any;
 }

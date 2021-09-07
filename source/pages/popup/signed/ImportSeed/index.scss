@@ -202,7 +202,7 @@
 }
 
 .seedInputCont {
-//padding: 0 24px;
+  //padding: 0 24px;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
     rgba(36, 150, 255, 0.47);
   backdrop-filter: blur(5px);
@@ -223,4 +223,174 @@
   font-size: 16px;
   line-height: 19px;
   letter-spacing: 0.025em;
+}
+
+.noticeCont {
+  margin: 24px 24px 8px 24px;
+  padding: 12px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    rgba(90, 89, 126, 0.39);
+  opacity: 0.9;
+  backdrop-filter: blur(10px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  border: 1px solid rgba(36, 150, 255, 0.7);
+}
+
+.noticeTitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  /* or 24px */
+
+  text-align: center;
+
+  /* Brand / Moonlight Grey / 100% */
+
+  color: #e6e9ed;
+}
+.noticeSubTitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 150%;
+  /* or 18px */
+
+  text-align: center;
+  letter-spacing: 0.02em;
+
+  color: #dbe4f2;
+
+  opacity: 0.8;
+  margin-bottom: 12px;
+}
+
+.noticeIcon {
+  width: 26px;
+  height: 24px;
+  margin: 12px auto;
+}
+.notAddr {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  color: #ffffff;
+}
+.notAddrText {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  color: #fafbfb;
+  word-break: break-all;
+  opacity: 0.8;
+  margin-left: 9px;
+}
+
+.notAddrIcon {
+  width: 45px;
+  height: 45px;
+  margin: 0 0 4px 0;
+}
+
+.notAddrCont {
+  display: flex;
+  align-items: center;
+  margin: 12px 0 24px 0;
+}
+
+.secButton {
+  filter: drop-shadow(0px 0px 9px rgba(35, 110, 255, 0.5))
+    drop-shadow(0px 0px 13px rgba(6, 42, 112, 0.8))
+    drop-shadow(0px 0px 30px rgba(8, 52, 137, 0.8));
+
+  border: 2px solid #2496ff;
+  box-sizing: border-box;
+  border-radius: 8px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  text-align: center;
+
+  /* Brand / Moonlight Grey / 20% */
+
+  color: #fafbfb;
+  cursor: pointer;
+  user-select: none;
+  width: 158px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.primButton {
+  filter: drop-shadow(0px 0px 9px rgba(35, 110, 255, 0.5))
+    drop-shadow(0px 0px 13px rgba(6, 42, 112, 0.8))
+    drop-shadow(0px 0px 30px rgba(8, 52, 137, 0.8));
+
+  border: 2px solid #2496ff;
+  box-sizing: border-box;
+  border-radius: 8px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+  background: #2496ff;
+
+  text-align: center;
+
+  /* Brand / Moonlight Grey / 20% */
+
+  color: #fafbfb;
+  cursor: pointer;
+  user-select: none;
+  width: 158px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 15px;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.noBalanceError {
+  margin: 8px 24px;
+}
+
+.migrateAnnon {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  margin: 24px 24px 5px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.migrateAnnonIcon {
+  margin-right: 10px;
 }

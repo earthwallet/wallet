@@ -1,3 +1,8 @@
+import { EarthKeyringPair } from '@earthwallet/keyring';
+
+interface keyable {
+  [key: string]: any;
+}
 export interface IAccountsController {
   createOrUpdateAccounts: (
     mnemonic: string,
@@ -14,4 +19,14 @@ export interface IAccountsController {
     callback?: (address: string) => void
   ) => Promise<void>;
   createNewMnemonic: () => Promise<void>;
+  getBalancesOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
+  getBalancesOfAccount: (account: keyable) => Promise<void>;
+  getTotalBalanceOfAccountGroup: (accounts: keyable[][]) => void;
+  migrateExistingICP: (
+    mnemonic: string
+  ) => Promise<{
+    keypair: EarthKeyringPair;
+    balance: keyable;
+    keypairNew: EarthKeyringPair;
+  }>;
 }

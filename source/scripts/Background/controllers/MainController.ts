@@ -26,7 +26,7 @@ export default class MainController {
   }
 
   async accountsInfo() {
-    this.accounts.createAccounts(this.assets.usedAssetSymbols());
+    //this.accounts.createAccounts(this.assets.usedAssetSymbols());
   }
 
   async createPopup(windowId: string) {
@@ -36,7 +36,7 @@ export default class MainController {
     return await browser.windows.create({
       url: `/dapp.html#${windowId}`,
       width: 375,
-      height: 630,
+      height: 600,
       type: 'popup',
       top: 0,
       left: _window.width - 375,
