@@ -80,9 +80,14 @@ const WalletSendTokens = ({
 
 
   const loadMaxAmount = useCallback((): void => {
-    let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
-    maxAmount = parseFloat(maxAmount.toFixed(8));
-    setSelectedAmount(parseFloat(maxAmount.toFixed(8)));
+    if (parseFloat(currentBalance?.value) === 0 ) {
+      setError(`Not enough balance. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+    }
+    else {
+      let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
+      maxAmount = parseFloat(maxAmount.toFixed(8));
+      setSelectedAmount(parseFloat(maxAmount.toFixed(8)));
+    }
   }, [currentBalance, fees]);
 
   const onConfirm = useCallback(() => {
