@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
-
+import { useController } from '~hooks/useController';
 import ErrorBoundary from '~components/ErrorBoundary';
 import ConnectDappPage from '~pages/dapp/ConnectDappPage';
 
@@ -14,6 +14,7 @@ function wrapWithErrorBoundary(
 
 const DappRouter = () => {
   const location = useLocation();
+  const controller = useController();
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
@@ -21,6 +22,10 @@ const DappRouter = () => {
     leave: { opacity: 0 },
     config: { duration: 100 },
   });
+
+  useEffect(() => {
+    controller.preloadState();
+  }, []);
 
   return (
     <>

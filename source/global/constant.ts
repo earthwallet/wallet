@@ -20,12 +20,12 @@ export const DEFAULT_SYMBOL = 'ETH';
 
 export const DEFAULT_SYMBOLS = [
   {
-    name: 'Ethereum',
-    icon: ICON_ETH,
-    symbol: 'ETH',
+    name: 'Bitcoin',
+    icon: ICON_BTC,
+    symbol: 'BTC',
+    coinGeckoId: 'bitcoin',
+    isLive: true,
     primary: true,
-    coinGeckoId: 'ethereum',
-    isLive: false,
   },
   {
     name: 'Internet Computer',
@@ -33,6 +33,14 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'ICP',
     coinGeckoId: 'internet-computer',
     isLive: true,
+  },
+  {
+    name: 'Ethereum',
+    icon: ICON_ETH,
+    symbol: 'ETH',
+    primary: true,
+    coinGeckoId: 'ethereum',
+    isLive: false,
   },
   {
     name: 'Polkadot',
@@ -45,13 +53,6 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_KSM,
     symbol: 'KSM',
     coinGeckoId: 'kusama',
-  },
-  {
-    name: 'Bitcoin',
-    icon: ICON_BTC,
-    symbol: 'BTC',
-    coinGeckoId: 'bitcoin',
-    isLive: true,
   },
   {
     name: 'Litecoin',
@@ -86,6 +87,5 @@ export const LIVE_SYMBOLS_OBJS = DEFAULT_SYMBOLS.filter(
 export const LIVE_SYMBOLS_GECKOIDs = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
 ).map((symbolObj) => symbolObj.coinGeckoId);
-
 
 export const DEFAULT_ICP_FEES = 0.0001;

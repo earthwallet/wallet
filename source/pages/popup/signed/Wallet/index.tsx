@@ -92,7 +92,7 @@ const Wallet = ({
             <Skeleton width={100} />
           </SkeletonTheme>
         ) : (
-          <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))}</span>
+          <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))?.toFixed(3)}</span>
         )}
       </div>
 

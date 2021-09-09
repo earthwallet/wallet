@@ -17,7 +17,7 @@ enum ConnectStep {
 
 export default function ConnectDappPage() {
   const dapp = useCurrentDapp();
-  const connctWalletToDapp = useConnectWalletToDApp();
+  const connectWalletToDapp = useConnectWalletToDApp();
   const accounts = useSelector(selectAccounts);
 
   const [step, setStep] = useState(ConnectStep.Accounts);
@@ -28,7 +28,7 @@ export default function ConnectDappPage() {
       setStep(ConnectStep.Confirm);
       return;
     }
-    connctWalletToDapp();
+    connectWalletToDapp();
     window.close();
   };
 
