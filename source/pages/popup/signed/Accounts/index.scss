@@ -41,6 +41,7 @@
   border: 2px solid rgba(36, 150, 255, 0.5);
   box-sizing: border-box;
   border-radius: 8px;
+  backdrop-filter: blur(20px);
 }
 
 .footerCont {
@@ -179,6 +180,14 @@
   align-items: center;
   height: 72px;
   border-radius: 4px;
+  justify-content: space-between;
+}
+
+.infoBalance {
+  padding-right: 16px;
+  min-width: 60px;
+  opacity: 0.9;
+  text-align: right;
 }
 
 .img {
@@ -220,4 +229,14 @@
   max-width: 270px;
   white-space: nowrap;
   opacity: 0.7;
+}
+
+.accountIcons {
+  display: flex;
+}
+
+.accountIcon {
+  width: 15px;
+  height: 15px;
+  margin-right: 3px;
 }

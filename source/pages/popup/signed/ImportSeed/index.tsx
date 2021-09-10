@@ -104,7 +104,7 @@ const Page = () => {
     // this should always be the case
     if (name && password && seed) {
       setIsBusy(true);
-      const callback = (address: string) => history.replace('/portfolio?hightlight=' + address);
+      const callback = (address: string) => history.replace('/accounts?hightlight=' + address);
 
       controller.accounts
         .createOrUpdateAccounts(seed, LIVE_SYMBOLS, name, password, callback)

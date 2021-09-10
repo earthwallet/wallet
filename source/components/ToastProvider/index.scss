@@ -1,0 +1,26 @@
+.cont {
+  position: fixed;
+  display: block;
+  height: 40px;
+  text-align: center;
+  line-height: 7px;
+  top: 500px;
+  padding: 0 25px;
+  left: calc(50% - 50px);
+  && {
+    margin: auto;
+    border-radius: 25px;
+    background: $highlightedAreaBackground;
+  }
+}
+
+.noop {
+  display: none;
+}
+
+.content {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+}

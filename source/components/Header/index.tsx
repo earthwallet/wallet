@@ -62,7 +62,7 @@ function Header({
               <span className={styles.logoText}>{text || 'Earth Wallet'}</span>
             )}
           </div>
-          {showAccountsDropdown && <AccountSelector />}
+          {showAccountsDropdown && <AccountSelector accounts={{}} />}
           {children}
         </div>
       ) : type === 'details' ? (
@@ -134,7 +134,7 @@ function Header({
           )}
           {centerText && <div />}
           {children}
-          {showAccountsDropdown && <AccountSelector />}
+          {showAccountsDropdown && <AccountSelector accounts={{}} />}
         </div>
       )}
     </>

@@ -26,6 +26,7 @@ export const DEFAULT_SYMBOLS = [
     coinGeckoId: 'bitcoin',
     isLive: true,
     primary: true,
+    order: 0,
   },
   {
     name: 'Internet Computer',
@@ -33,6 +34,7 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'ICP',
     coinGeckoId: 'internet-computer',
     isLive: true,
+    order: 1,
   },
   {
     name: 'Ethereum',
@@ -40,52 +42,67 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'ETH',
     primary: true,
     coinGeckoId: 'ethereum',
-    isLive: false,
+    isLive: true,
+    order: 2,
   },
   {
     name: 'Polkadot',
     icon: ICON_DOT,
     symbol: 'DOT',
     coinGeckoId: 'polkadot',
+    isLive: true,
+    order: 3,
   },
   {
     name: 'Kusama',
     icon: ICON_KSM,
     symbol: 'KSM',
     coinGeckoId: 'kusama',
+    isLive: true,
+    order: 4,
   },
   {
     name: 'Litecoin',
     icon: ICON_LTC,
     symbol: 'LTC',
     coinGeckoId: 'litecoin',
+    isLive: true,
+    order: 5,
   },
   {
     name: 'Bitcoin Cash',
     icon: ICON_BCH,
     symbol: 'BCH',
     coinGeckoId: 'bitcoin-cash',
-    isLive: false,
+    isLive: true,
+    order: 6,
   },
   {
     name: 'Binance',
     icon: ICON_BNB,
     symbol: 'BNB',
     coinGeckoId: 'binancecoin',
-    isLive: false,
+    isLive: true,
+    order: 7,
   },
 ];
 
 export const LIVE_SYMBOLS = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
-).map((symbolObj) => symbolObj.symbol);
+)
+  .sort((a, b) => a.order - b.order)
+  .map((symbolObj) => symbolObj.symbol);
 
 export const LIVE_SYMBOLS_OBJS = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
-).map((symbolObj) => symbolObj);
+)
+  .sort((a, b) => a.order - b.order)
+  .map((symbolObj) => symbolObj);
 
 export const LIVE_SYMBOLS_GECKOIDs = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
-).map((symbolObj) => symbolObj.coinGeckoId);
+)
+  .sort((a, b) => a.order - b.order)
+  .map((symbolObj) => symbolObj.coinGeckoId);
 
 export const DEFAULT_ICP_FEES = 0.0001;

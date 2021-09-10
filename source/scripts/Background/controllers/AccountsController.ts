@@ -146,6 +146,7 @@ export default class AccountsController implements IAccountsController {
               error: true,
               loading: false,
               errorData: JSON.stringify(error),
+              value: 0,
             },
           ],
         })
@@ -169,24 +170,38 @@ export default class AccountsController implements IAccountsController {
       for (const account of accounts) {
         let currentBalance = state.entities.balances.byId[account.id];
         const decimals = currentBalance?.currency?.decimals;
-        const currentUSDValue: keyable =
-          state.entities.prices.byId[
-            getSymbol(account?.symbol)?.coinGeckoId || ''
-          ];
-        const usdValue =
-          (currentBalance?.value / Math.pow(10, decimals)) *
-          parseFloat(currentUSDValue?.usd);
-        total = total + usdValue;
-        store.dispatch(
-          updateEntities({
-            entity: 'balances',
-            key: account.id,
-            data: {
-              balanceInUSD: usdValue,
-              usd_24h_change: currentUSDValue.usd_24h_change,
-            },
-          })
-        );
+        if (decimals === undefined) {
+          total = 0;
+          store.dispatch(
+            updateEntities({
+              entity: 'balances',
+              key: account.id,
+              data: {
+                balanceInUSD: 0,
+                usd_24h_change: 0,
+              },
+            })
+          );
+        } else {
+          const currentUSDValue: keyable =
+            state.entities.prices.byId[
+              getSymbol(account?.symbol)?.coinGeckoId || ''
+            ];
+          const usdValue =
+            (currentBalance?.value / Math.pow(10, decimals)) *
+            parseFloat(currentUSDValue?.usd);
+          total = total + usdValue;
+          store.dispatch(
+            updateEntities({
+              entity: 'balances',
+              key: account.id,
+              data: {
+                balanceInUSD: usdValue,
+                usd_24h_change: currentUSDValue.usd_24h_change,
+              },
+            })
+          );
+        }
         if (!--addresses) {
           store.dispatch(
             storeEntities({

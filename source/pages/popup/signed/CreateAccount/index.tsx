@@ -53,7 +53,7 @@ const Page = () => {
   const _onCreate = useCallback((): void => {
     if (name && password && newMnemonic) {
       setIsBusy(true);
-      const callback = (address: string) => history.replace('/portfolio?hightlight=' + address);
+      const callback = (address: string) => history.replace('/accounts?hightlight=' + address);
       controller.accounts
         .createOrUpdateAccounts(newMnemonic, LIVE_SYMBOLS, name, password, callback)
         .then(() => {
