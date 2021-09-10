@@ -228,7 +228,9 @@ export default class AccountsController implements IAccountsController {
   ) => {
     let newAccounts = [];
     let groupId = '';
+    let index = 0;
     for (const symbol of symbols) {
+      index++;
       const keypair = await createWallet(mnemonic, symbol);
       if (symbol === symbols[0]) {
         groupId = keypair.address;
@@ -251,6 +253,7 @@ export default class AccountsController implements IAccountsController {
           encryptionType: 'AES',
         },
         symbol,
+        order: index,
       };
       if (symbol === 'ICP') {
         data.meta.principalId = keypair.identity.getPrincipal().toText();
