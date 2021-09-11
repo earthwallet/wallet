@@ -225,15 +225,14 @@ export default class AccountsController implements IAccountsController {
     symbols: string[],
     name: string,
     password: string,
+    selectedSymbols?: string[],
     callback?: (address: string) => void
   ) => {
     let newAccounts = [];
     let index = 0;
     const groupId = (await createWallet(mnemonic, GROUP_ID_SYMBOL)).address;
     for (const symbol of symbols) {
-      index++;
       const keypair = await createWallet(mnemonic, symbol);
-
       let data = {
         id: keypair.address,
         groupId,
@@ -252,6 +251,7 @@ export default class AccountsController implements IAccountsController {
         },
         symbol,
         order: index,
+        active: index === 0 || selectedSymbols?.includes(symbol),
       };
       if (symbol === 'ICP') {
         data.meta.principalId = keypair.identity.getPrincipal().toText();
@@ -261,6 +261,7 @@ export default class AccountsController implements IAccountsController {
         );
       }
       newAccounts.push(data);
+      index++;
     }
     store.dispatch(
       storeEntities({

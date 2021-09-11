@@ -25,6 +25,7 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'BTC',
     coinGeckoId: 'bitcoin',
     isLive: true,
+    preGenerate: true,
     primary: true,
     order: 1,
   },
@@ -34,6 +35,7 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'ICP',
     coinGeckoId: 'internet-computer',
     isLive: true,
+    preGenerate: true,
     order: 0,
   },
   {
@@ -42,7 +44,8 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'ETH',
     primary: true,
     coinGeckoId: 'ethereum',
-    isLive: true,
+    isLive: false,
+    preGenerate: true,
     order: 2,
   },
   {
@@ -50,7 +53,8 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_DOT,
     symbol: 'DOT',
     coinGeckoId: 'polkadot',
-    isLive: true,
+    isLive: false,
+    preGenerate: true,
     order: 3,
   },
   {
@@ -58,7 +62,8 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_KSM,
     symbol: 'KSM',
     coinGeckoId: 'kusama',
-    isLive: true,
+    isLive: false,
+    preGenerate: true,
     order: 4,
   },
   {
@@ -66,7 +71,8 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_LTC,
     symbol: 'LTC',
     coinGeckoId: 'litecoin',
-    isLive: true,
+    isLive: false,
+    preGenerate: true,
     order: 5,
   },
   {
@@ -74,7 +80,8 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_BCH,
     symbol: 'BCH',
     coinGeckoId: 'bitcoin-cash',
-    isLive: true,
+    isLive: false,
+    preGenerate: true,
     order: 6,
   },
   {
@@ -82,13 +89,20 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_BNB,
     symbol: 'BNB',
     coinGeckoId: 'binancecoin',
-    isLive: true,
+    isLive: false,
+    preGenerate: true,
     order: 7,
   },
 ];
 
 export const GROUP_ID_SYMBOL = 'BTC';
 
+export const PREGENERATE_SYMBOLS = DEFAULT_SYMBOLS.filter(
+  (symbolObj) => symbolObj.preGenerate
+)
+  .sort((a, b) => a.order - b.order)
+  .map((symbolObj) => symbolObj.symbol);
+  
 export const LIVE_SYMBOLS = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
 )

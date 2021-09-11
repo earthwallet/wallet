@@ -15,6 +15,8 @@ import ErrorBoundary from '~components/ErrorBoundary';
 import { useController } from '~hooks/useController';
 import NFTDetails from '~pages/popup/signed/NFTDetails';
 import CreateNFT from '~pages/popup/signed/CreateNFT';
+import AddNetwork from '~pages/popup/signed/AddNetwork';
+import ToastProvider from '~components/ToastProvider';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -50,53 +52,60 @@ const PopupRouter = () => {
           }}
           key={key}
         >
-          <Switch location={item}>
-            <Route path="/popup.html">
-              <Redirect to="/accounts" />
-            </Route>
-            <Route path="/home">
-              <Redirect to="/accounts" />
-            </Route>
-            <Route path="/accounts">
-              {wrapWithErrorBoundary(<Accounts />, 'accounts')}
-            </Route>
-            <Route path="/portfolio">
-              {wrapWithErrorBoundary(<Portfolio />, 'portfolio')}
-            </Route>
-            <Route path="/account/create">
-              {wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}
-            </Route>
-            <Route path="/account/export/:address">
-              {wrapWithErrorBoundary(<Export />, 'export-address')}
-            </Route>
-            <Route path="/account/import">
-              {wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}
-            </Route>
-            <Route path="/account/details/:address">
-              {wrapWithErrorBoundary(<Wallet />, 'wallet')}
-            </Route>
-            <Route path="/account/transactions/:address">
-              {wrapWithErrorBoundary(<Transactions />, 'transactions')}
-            </Route>
-            <Route path="/account/transaction/:txnId">
-              {wrapWithErrorBoundary(<TransactionDetails />, 'transactions')}
-            </Route>
-            <Route path="/account/send/:address">
-              {wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}
-            </Route>
-            <Route path="/account/receive/:address">
-              {wrapWithErrorBoundary(
-                <WalletReceiveTokens />,
-                'wallet-receive-token'
-              )}
-            </Route>
-            <Route path="/nftdetails/:assetid">
-              {wrapWithErrorBoundary(<NFTDetails />, 'accounts')}
-            </Route>
-            <Route path="/createnft/:address">
-              {wrapWithErrorBoundary(<CreateNFT />, 'accounts')}
-            </Route>
-          </Switch>
+          <ToastProvider>
+
+            <Switch location={item}>
+              <Route path="/popup.html">
+                <Redirect to="/accounts" />
+              </Route>
+              <Route path="/home">
+                <Redirect to="/accounts" />
+              </Route>
+              <Route path="/accounts">
+                {wrapWithErrorBoundary(<Accounts />, 'accounts')}
+              </Route>
+              <Route path="/portfolio">
+                {wrapWithErrorBoundary(<Portfolio />, 'portfolio')}
+              </Route>
+              <Route path="/account/create">
+                {wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}
+              </Route>
+              <Route path="/account/export/:address">
+                {wrapWithErrorBoundary(<Export />, 'export-address')}
+              </Route>
+              <Route path="/account/import">
+                {wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}
+              </Route>
+              <Route path="/account/details/:address">
+                {wrapWithErrorBoundary(<Wallet />, 'wallet')}
+              </Route>
+              <Route path="/account/transactions/:address">
+                {wrapWithErrorBoundary(<Transactions />, 'transactions')}
+              </Route>
+              <Route path="/account/transaction/:txnId">
+                {wrapWithErrorBoundary(<TransactionDetails />, 'transactions')}
+              </Route>
+              <Route path="/account/send/:address">
+                {wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}
+              </Route>
+              <Route path="/account/receive/:address">
+                {wrapWithErrorBoundary(
+                  <WalletReceiveTokens />,
+                  'wallet-receive-token'
+                )}
+              </Route>
+              <Route path="/account/addnetwork/:groupId">
+                {wrapWithErrorBoundary(<AddNetwork />, 'accounts')}
+              </Route>
+              <Route path="/nftdetails/:assetid">
+                {wrapWithErrorBoundary(<NFTDetails />, 'accounts')}
+              </Route>
+              <Route path="/createnft/:address">
+                {wrapWithErrorBoundary(<CreateNFT />, 'accounts')}
+              </Route>
+
+            </Switch>
+          </ToastProvider>
         </animated.div>
       ))}
     </>

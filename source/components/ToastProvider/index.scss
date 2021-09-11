@@ -1,17 +1,15 @@
 .cont {
   position: fixed;
-  display: block;
   height: 40px;
   text-align: center;
-  line-height: 7px;
+  line-height: 16px;
   top: 500px;
   padding: 0 25px;
   left: calc(50% - 50px);
-  && {
-    margin: auto;
-    border-radius: 25px;
-    background: $highlightedAreaBackground;
-  }
+  z-index: 200;
+  border-radius: 25px;
+  background: $highlightedAreaBackground;
+  display: flex;
 }
 
 .noop {
@@ -23,4 +21,6 @@
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
+  margin: auto;
+
 }

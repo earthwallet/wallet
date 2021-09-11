@@ -9,6 +9,7 @@ export interface IAccountsController {
     symbols: string[],
     name: string,
     password: string,
+    selectedSymbols?: string[],
     callback?: (address: string) => void
   ) => Promise<void>;
   createOrUpdateAccount: (

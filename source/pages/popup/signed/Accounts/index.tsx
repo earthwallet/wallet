@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import ICON_ADD from '~assets/images/icon_add_account.svg';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { selectAccountGroups, selectGroupBalanceByAddress } from '~state/wallet';
+import { selectActiveAccountGroups, selectGroupBalanceByAddress } from '~state/wallet';
 import { useHistory } from 'react-router-dom';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 import { getSymbol } from '~utils/common';
@@ -13,7 +13,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 const Page = () => {
   const history = useHistory();
-  const accountGroups = useSelector(selectAccountGroups);
+  const accountGroups = useSelector(selectActiveAccountGroups);
   const loading = useGetAccountGroupBalances(accountGroups);
 
   return (

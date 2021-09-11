@@ -75,7 +75,7 @@ const Page = () => {
       <HeaderWithSteps
         backOverride={step === 1 ? undefined : _onPreviousStep}
         step={step}
-        text={'Create an account'}
+        text={'Add a Network'}
       />
       {newMnemonic !== '' &&
         (step === 1 ? (

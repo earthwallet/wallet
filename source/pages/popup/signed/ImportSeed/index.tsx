@@ -7,7 +7,7 @@ import SeedAndPath from './SeedAndPath';
 import AccountNamePasswordCreation from './AccountNamePasswordCreation';
 import { useController } from '~hooks/useController';
 import { useHistory } from 'react-router-dom';
-import { DEFAULT_ICP_FEES, LIVE_SYMBOLS } from '~global/constant';
+import { DEFAULT_ICP_FEES, PREGENERATE_SYMBOLS } from '~global/constant';
 import { ClipLoader } from 'react-spinners';
 import { getSymbol } from '~utils/common';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
@@ -107,7 +107,7 @@ const Page = () => {
       const callback = (address: string) => history.replace('/accounts?hightlight=' + address);
 
       controller.accounts
-        .createOrUpdateAccounts(seed, LIVE_SYMBOLS, name, password, callback)
+        .createOrUpdateAccounts(seed, PREGENERATE_SYMBOLS, name, password, [], callback)
         .then(() => {
         });
     }

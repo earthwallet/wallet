@@ -87,3 +87,24 @@
 .addressItem_selected {
   background-color: rgb(0, 0, 0);
 }
+
+.addNetworkBtn {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  padding: 8px 9px;
+  background: #252525ee;
+  font-size: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border-top: 1px solid #3e3e3e;
+  &:hover {
+    background-color: $buttonBackgroundHover;
+    cursor: pointer;
+  }
+  &:active {
+    opacity: 0.7;
+  }
+}

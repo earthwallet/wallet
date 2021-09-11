@@ -33,15 +33,16 @@
 }
 
 .accountsCont {
-  //backdrop-filter: blur(20px);
   height: 190px;
-  overflow: scroll;
+  overflow-y: scroll;
   margin-top: 10px;
   width: calc(100vw - 40px);
   border: 2px solid rgba(36, 150, 255, 0.5);
   box-sizing: border-box;
   border-radius: 8px;
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
+  overflow-x: hidden;
 }
 
 .footerCont {

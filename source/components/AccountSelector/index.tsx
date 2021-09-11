@@ -4,7 +4,7 @@ import styles from './index.scss';
 import SMALL_DOWN from '~assets/images/small_down.svg';
 import SMALL_UP from '~assets/images/small_up.svg';
 import { useSelector } from 'react-redux';
-import { selectAccountsByGroupId } from '~state/wallet';
+import { selectActiveAccountsByGroupId } from '~state/wallet';
 import { useHistory } from 'react-router-dom';
 import { getSymbol } from '~utils/common';
 import useOutsideClick from '~hooks/useOutsideClick';
@@ -17,7 +17,7 @@ interface Props {
 const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> => {
   const [showDropDown, setShowDropDown] = useState(false);
   const dropDownRef = useRef(null);
-  const accounts = useSelector(selectAccountsByGroupId(selectedAccount?.groupId));
+  const accounts = useSelector(selectActiveAccountsByGroupId(selectedAccount?.groupId));
   const history = useHistory();
 
   const [selectedAccountText, setSelectedAccountText] = useState<string>();
@@ -41,14 +41,14 @@ const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> 
   >
     {selectedAccountText && <div className={styles.selectedAccountDiv}>
       <div className={styles.selectedAccount}
-        onClick={() => accounts.length > 1 ? setShowDropDown((status) => !status) : {}}>
+        onClick={() => setShowDropDown((status) => !status)}>
         <img src={getSymbol(selectedAccount.symbol)?.icon} className={styles.networkIcon} />
         {selectedAccount.symbol}
-        {accounts.length > 1 && (<img
+        <img
           className={styles.dropDownIcon}
           color='#F4F5F8'
           src={showDropDown ? SMALL_DOWN : SMALL_UP}
-        />)}
+        />
       </div>
     </div>}
     {showDropDown && <div className={styles.addressSelector}>
@@ -63,6 +63,9 @@ const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> 
           </div>);
         })
       }
+      <div
+        onClick={() => history.push('/account/addnetwork/' + selectedAccount.groupId)}
+        className={styles.addNetworkBtn}>+ Add Network</div>
     </div>}
 
   </div>;
