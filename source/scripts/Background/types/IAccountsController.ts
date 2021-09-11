@@ -23,11 +23,15 @@ export interface IAccountsController {
   getBalancesOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   getBalancesOfAccount: (account: keyable) => Promise<void>;
   getTotalBalanceOfAccountGroup: (accounts: keyable[][]) => void;
-  migrateExistingICP: (
-    mnemonic: string
-  ) => Promise<{
+  migrateExistingICP: (mnemonic: string) => Promise<{
     keypair: EarthKeyringPair;
     balance: keyable;
     keypairNew: EarthKeyringPair;
   }>;
+  updateActiveAccountsOfGroup: (
+    groupId: string,
+    symbols: string[],
+    status: boolean,
+    callback?: (address?: string) => void
+  ) => Promise<void>;
 }

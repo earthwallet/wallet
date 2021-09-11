@@ -37,10 +37,28 @@
   user-select: none;
 }
 .checkboxCont {
+  padding: 0 24px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 24px 0px;
+  margin: 2px 0px;
+  user-select: none;
+  cursor: pointer;
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  width: 327px;
+  height: 73px;
+  justify-content: space-between;
+  &:active {
+    opacity: 0.7;
+  }
+}
+.checkboxCont_disabled {
+  pointer-events: none;
+  opacity: 0.7;
 }
 
 .mnemonicCont {
@@ -214,4 +232,23 @@
 
 .password {
   margin: 0 24px 0 24px;
+}
+
+.empty {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+  padding-left: 1em;
+  margin-top: 3px;
+}
+
+.checkboxContent {
+  display: flex;
+  align-items: center;
+}
+
+.networkIcon {
+  width: 25px;
+  height: 25px;
 }

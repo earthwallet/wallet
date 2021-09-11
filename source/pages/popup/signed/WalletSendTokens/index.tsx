@@ -80,7 +80,7 @@ const WalletSendTokens = ({
 
 
   const loadMaxAmount = useCallback((): void => {
-    if (parseFloat(currentBalance?.value) === 0 ) {
+    if (parseFloat(currentBalance?.value) === 0) {
       setError(`Not enough balance. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
     }
     else {
@@ -277,12 +277,12 @@ const WalletSendTokens = ({
               </div>
             </div>
           </div>
-          {selectedAccount.symbol !== 'BTC' && <div
+          <div
             className={styles.earthInputLabel}>
-            Amount <div
+            Amount  {selectedAccount.symbol !== 'BTC' && <div
               onClick={() => loadMaxAmount()}
-              className={styles.maxBtn}>Max</div>
-          </div>}
+              className={styles.maxBtn}>Max</div>}
+          </div>
           <input
             autoCapitalize='off'
             autoCorrect='off'
@@ -395,7 +395,7 @@ const WalletSendTokens = ({
         </NextStepButton>
 
         : <NextStepButton
-          disabled={loadingSend || !!error || pass.length < MIN_LENGTH}
+          disabled={loadingSend || !!error || pass.length < MIN_LENGTH || !(paymentHash === undefined || paymentHash === '')}
           loading={isBusy || loadingSend}
           onClick={() => selectedAccount.symbol === 'ICP' ? sendTxICP() : transferForAll()}>
           {'Send'}

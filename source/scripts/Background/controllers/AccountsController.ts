@@ -273,4 +273,39 @@ export default class AccountsController implements IAccountsController {
     store.dispatch(updateNewMnemonic(''));
     callback && callback(groupId);
   };
+
+  updateActiveAccountsOfGroup = async (
+    groupId: string,
+    symbols: string[],
+    status: boolean,
+    callback?: (address?: string) => void
+  ) => {
+    const state = store.getState();
+
+    const existingAllAccounts = Object.keys(state.entities.accounts.byId)
+      .map((id) => state.entities.accounts.byId[id])
+      .filter((account) => account.groupId === groupId)
+      .sort((a, b) => a.order - b.order);
+
+    let forwardAddress = '';
+    for (const symbol of symbols) {
+      if (symbol !== 'ICP') {
+        const selectedAccount = existingAllAccounts.filter(
+          (a) => a.symbol === symbol
+        )[0];
+        forwardAddress = selectedAccount.id;
+        store.dispatch(
+          updateEntities({
+            entity: 'accounts',
+            key: selectedAccount.id,
+            data: {
+              active: status,
+            },
+          })
+        );
+      }
+    }
+
+    callback && callback(forwardAddress);
+  };
 }

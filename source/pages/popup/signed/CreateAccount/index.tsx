@@ -30,6 +30,7 @@ import { AppState } from '~state/store';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { PREGENERATE_SYMBOLS } from '~global/constant';
+import useToast from '~hooks/useToast';
 
 const Page = () => {
   const controller = useController();
@@ -48,7 +49,9 @@ const Page = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState<string | null>(null);
 
-  const _onCopy = () => console.log();
+  const { show } = useToast();
+
+  const _onCopy = useCallback((): void => show('Copied'), [show]);
 
   const _onCreate = useCallback((): void => {
     if (name && password && newMnemonic) {
@@ -61,7 +64,16 @@ const Page = () => {
     }
   }, [name, password, newMnemonic]);
 
-  const backupKeystore = () => console.log();
+  const backupKeystore = () => {
+    setIsBusy(true);
+    const meId = parseInt((new Date().getTime() / 1000).toFixed(0));
+    const blob = new Blob([newMnemonic || ''], {
+      type: 'text/plain;charset=utf-8',
+    });
+
+    saveAs(blob, `${meId}.txt`);
+    setIsBusy(false);
+  };
 
   const _onNextStep = useCallback(() => setStep((step) => step + 1), []);
   const _onPreviousStep = useCallback(() => setStep((step) => step - 1), []);
