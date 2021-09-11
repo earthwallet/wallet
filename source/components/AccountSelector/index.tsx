@@ -43,7 +43,7 @@ const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> 
       <div className={styles.selectedAccount}
         onClick={() => setShowDropDown((status) => !status)}>
         <img src={getSymbol(selectedAccount.symbol)?.icon} className={styles.networkIcon} />
-        {selectedAccount.symbol}
+        {getSymbol(selectedAccount.symbol)?.name}
         <img
           className={styles.dropDownIcon}
           color='#F4F5F8'
@@ -59,7 +59,7 @@ const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> 
             key={account.address}
             onClick={() => _onChangePrefix(account)}>
             <img src={getSymbol(account.symbol)?.icon} className={styles.networkIcon} />
-            {account.symbol}
+            {getSymbol(account.symbol)?.name}
           </div>);
         })
       }
