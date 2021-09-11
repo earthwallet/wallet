@@ -26,7 +26,7 @@ export const DEFAULT_SYMBOLS = [
     coinGeckoId: 'bitcoin',
     isLive: true,
     primary: true,
-    order: 0,
+    order: 1,
   },
   {
     name: 'Internet Computer',
@@ -34,7 +34,7 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'ICP',
     coinGeckoId: 'internet-computer',
     isLive: true,
-    order: 1,
+    order: 0,
   },
   {
     name: 'Ethereum',
@@ -86,6 +86,8 @@ export const DEFAULT_SYMBOLS = [
     order: 7,
   },
 ];
+
+export const GROUP_ID_SYMBOL = 'BTC';
 
 export const LIVE_SYMBOLS = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive

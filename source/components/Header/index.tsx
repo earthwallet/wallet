@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import AccountSelector from '../AccountSelector';
 import clsx from 'clsx';
 import styles from './index.scss';
+import { keyable } from '~scripts/Background/types/IAssetsController';
 
 interface Props {
   children?: React.ReactNode;
@@ -21,6 +22,7 @@ interface Props {
   showAccountsDropdown?: boolean;
   backOverride?: any;
   centerText?: boolean;
+  selectedAccount?: keyable;
 }
 
 function Header({
@@ -33,6 +35,7 @@ function Header({
   smallMargin = false,
   text,
   type = '',
+  selectedAccount
 }: Props): React.ReactElement<Props> {
   const history = useHistory();
 
@@ -62,7 +65,7 @@ function Header({
               <span className={styles.logoText}>{text || 'Earth Wallet'}</span>
             )}
           </div>
-          {showAccountsDropdown && <AccountSelector accounts={{}} />}
+          {showAccountsDropdown && selectedAccount && <AccountSelector selectedAccount={selectedAccount} />}
           {children}
         </div>
       ) : type === 'details' ? (
@@ -134,7 +137,7 @@ function Header({
           )}
           {centerText && <div />}
           {children}
-          {showAccountsDropdown && <AccountSelector accounts={{}} />}
+          {showAccountsDropdown && selectedAccount && <AccountSelector selectedAccount={selectedAccount} />}
         </div>
       )}
     </>

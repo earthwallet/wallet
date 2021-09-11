@@ -15,6 +15,7 @@ import {
 } from '@earthwallet/keyring';
 import { encryptString } from '~utils/vault';
 import { getSymbol } from '~utils/common';
+import { GROUP_ID_SYMBOL } from '~global/constant';
 
 interface keyable {
   [key: string]: any;
@@ -227,14 +228,11 @@ export default class AccountsController implements IAccountsController {
     callback?: (address: string) => void
   ) => {
     let newAccounts = [];
-    let groupId = '';
     let index = 0;
+    const groupId = (await createWallet(mnemonic, GROUP_ID_SYMBOL)).address;
     for (const symbol of symbols) {
       index++;
       const keypair = await createWallet(mnemonic, symbol);
-      if (symbol === symbols[0]) {
-        groupId = keypair.address;
-      }
 
       let data = {
         id: keypair.address,
@@ -272,6 +270,6 @@ export default class AccountsController implements IAccountsController {
     );
     //clear new mnemonic
     store.dispatch(updateNewMnemonic(''));
-    callback && callback(newAccounts[0]?.id);
+    callback && callback(groupId);
   };
 }

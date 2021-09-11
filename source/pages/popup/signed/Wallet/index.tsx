@@ -71,6 +71,7 @@ const Wallet = ({
         showAccountsDropdown
         showMenu
         type={'wallet'}
+        selectedAccount={selectedAccount}
       />
       <img className={styles.networklogo} src={getSymbol(selectedAccount.symbol)?.icon} />
       <div className={styles.networktext}>{getSymbol(selectedAccount.symbol)?.name}</div>

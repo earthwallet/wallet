@@ -53,12 +53,9 @@ const Page = () => {
                             <span>{accountGroup[0]?.meta?.name}</span>
                           </div>
                           <div className={styles.accountIcons}>
-                            {accountGroup.map((account: keyable) =>
+                            {accountGroup.sort((a: keyable, b: keyable) => a.order - b.order).map((account: keyable) =>
                               <img src={getSymbol(account.symbol)?.icon} className={styles.accountIcon} key={account.id} />
                             )}
-                            {/* <span className={styles.fullAddress}>
-                              {account.id}
-                            </span> */}
                           </div>
                         </div>
                         <div className={styles.infoBalance}><GroupBalance loading={loading} groupId={accountGroup[0].groupId} />
