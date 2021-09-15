@@ -83,7 +83,7 @@ const Transactions = ({
       return operations[0];
     };
 
-    if (symbol === 'BTC' || symbol === 'LTC') {
+    if (symbol === 'BTC' || symbol === 'LTC' || symbol === 'BCH') {
       const BTC_DECIMAL = 8;
       const getAmount = (transaction: any): any => {
         let amount = 0;
@@ -95,7 +95,7 @@ const Transactions = ({
       return <div
         className={styles.transItem}
         key={index}
-        onClick={() => window.open(`https://chain.so/tx/${symbol}/${transaction?.hash}`, "_blank")}
+        onClick={() => window.open(symbol === 'BCH' ? `https://www.blockchain.com/bch/tx/${transaction?.hash}` : `https://chain.so/tx/${symbol}/${transaction?.hash}`, "_blank")}
       >
         <div className={styles.transColIcon}>
           {statusToIcon(
