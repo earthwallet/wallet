@@ -83,15 +83,11 @@ const Transactions = ({
       return operations[0];
     };
 
-    if (symbol === 'BTC') {
+    if (symbol === 'BTC' || symbol === 'LTC') {
       const BTC_DECIMAL = 8;
       const getAmount = (transaction: any): any => {
         let amount = 0;
-        //let fees = 0;
-        //const amountFrom = transaction.from.reduce((total: number, a: any) => total + a.amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber(), 0);
-        //const amountTo = transaction.to.reduce((total: number, a: any) => total + a.amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber(), 0)
         amount = address === transaction.from[0].from ? -1 * (transaction.to[0].amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber()) : (transaction.to[0].amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber());
-
         return amount;
       };
 
@@ -99,7 +95,7 @@ const Transactions = ({
       return <div
         className={styles.transItem}
         key={index}
-        onClick={() => window.open(`https://www.blockchain.com/btc/tx/${transaction?.hash}`, "_blank")}
+        onClick={() => window.open(`https://chain.so/tx/${symbol}/${transaction?.hash}`, "_blank")}
       >
         <div className={styles.transColIcon}>
           {statusToIcon(
@@ -269,7 +265,7 @@ const Transactions = ({
             walletTransactions?.txs?.sort((a: keyable, b: keyable) =>
               getTransactionTime(a) - getTransactionTime(b))
               .reverse().map((transaction: keyable, index: number) =>
-                <TxnItem transaction={transaction} index={index} symbol={selectedAccount?.symbol} />)}
+                <TxnItem key={index} transaction={transaction} index={index} symbol={selectedAccount?.symbol} />)}
         </div>
       </div>
     </div>
