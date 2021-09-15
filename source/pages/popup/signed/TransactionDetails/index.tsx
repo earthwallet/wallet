@@ -154,6 +154,7 @@ const Details = ({
     <div className={styles.page}>
       <div className={styles.transCont}>
         <Header
+          showBackArrow
           className={styles.header}
           showAccountsDropdown={false}
           text={'Details'}

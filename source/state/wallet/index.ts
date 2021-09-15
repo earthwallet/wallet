@@ -60,11 +60,35 @@ export const selectAccounts = (state: AppState) =>
   Object.keys(state.entities.accounts.byId).map(
     (id) => state.entities.accounts.byId[id]
   );
+
+export const selectAccountsByGroupId = (groupId: string) => (state: AppState) =>
+  Object.keys(state.entities.accounts.byId)
+    .map((id) => state.entities.accounts.byId[id])
+    .filter((account) => account.groupId === groupId)
+    .sort((a, b) => a.order - b.order);
+
+export const selectActiveAccountsByGroupId =
+  (groupId: string) => (state: AppState) =>
+    Object.keys(state.entities.accounts.byId)
+      .map((id) => state.entities.accounts.byId[id])
+      .filter((account) => account.groupId === groupId && account.active)
+      .sort((a, b) => a.order - b.order);
+
 export const selectAccountGroups = (state: AppState) => {
   const accountGroupsObject = groupBy(
     Object.keys(state.entities.accounts.byId).map(
       (id) => state.entities.accounts.byId[id]
     ),
+    'groupId'
+  );
+  return Object.keys(accountGroupsObject).map((id) => accountGroupsObject[id]);
+};
+
+export const selectActiveAccountGroups = (state: AppState) => {
+  const accountGroupsObject = groupBy(
+    Object.keys(state.entities.accounts.byId)
+      .map((id) => state.entities.accounts.byId[id])
+      .filter((account) => account.active),
     'groupId'
   );
   return Object.keys(accountGroupsObject).map((id) => accountGroupsObject[id]);

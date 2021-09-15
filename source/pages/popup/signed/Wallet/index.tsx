@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styles from './index.scss';
 import { Link } from 'react-router-dom';
 import Header from '~components/Header';
@@ -17,7 +17,9 @@ import { getTransactions } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
 import { selectBalanceByAddress } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
+import useToast from '~hooks/useToast';
 
+import { useHistory } from 'react-router-dom';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -32,12 +34,12 @@ const Wallet = ({
 }: Props) => {
 
   const controller = useController();
+  const { show } = useToast();
 
-  //const _onCopy = useCallback((): void => show('Copied'), [show]);
-  const _onCopy = console.log;
-
+  const _onCopy = useCallback((): void => show('Copied'), [show]);
 
   const selectedAccount = useSelector(selectAccountById(address));
+  const history = useHistory();
 
 
   const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
@@ -71,6 +73,8 @@ const Wallet = ({
         showAccountsDropdown
         showMenu
         type={'wallet'}
+        selectedAccount={selectedAccount}
+        backOverride={() => history.push('/home')}
       />
       <img className={styles.networklogo} src={getSymbol(selectedAccount.symbol)?.icon} />
       <div className={styles.networktext}>{getSymbol(selectedAccount.symbol)?.name}</div>

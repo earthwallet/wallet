@@ -135,7 +135,7 @@ const Portfolio = () => {
 
 const Balance = ({ account }: { account: keyable }) => {
   const currentBalance: keyable = useSelector(selectBalanceByAddress(account.address));
-  return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals)} {account.symbol}</div>
+  return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)} {account.symbol}</div>
 }
 const GroupBalance = ({ account, loading }: { account: keyable, loading: boolean }) => {
   const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(account?.groupId));

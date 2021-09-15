@@ -4,16 +4,21 @@ import { Link } from 'react-router-dom';
 import ICON_ADD from '~assets/images/icon_add_account.svg';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { selectAccounts } from '~state/wallet';
+import { selectActiveAccountGroups, selectGroupBalanceByAddress } from '~state/wallet';
 import { useHistory } from 'react-router-dom';
+import { keyable } from '~scripts/Background/types/IAssetsController';
+import { getSymbol } from '~utils/common';
+import useGetAccountGroupBalances from '~hooks/useGetAccountGroupBalances';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 const Page = () => {
   const history = useHistory();
-  const accounts = useSelector(selectAccounts);
+  const accountGroups = useSelector(selectActiveAccountGroups);
+  const loading = useGetAccountGroupBalances(accountGroups);
 
   return (
     <div className={styles.page}>
-      {accounts.length === 0 ? (
+      {accountGroups.length === 0 ? (
         <div>
           <div className={styles.subtitle}>bringing crypto back to earth</div>
           <div className={styles.noAccountsActions}>
@@ -35,30 +40,31 @@ const Page = () => {
           <>
             <div className={styles.accountTitle}>Select Account</div>
             <div className={styles.accountsCont}>
-              {accounts.map((account: any) => (
-                <div key={account.id}>
+              {accountGroups.map((accountGroup: any) => (
+                <div key={accountGroup[0].id}>
                   <div className={styles.address}>
                     <div
                       className={styles.addressLink}
-                      onClick={() => history.push('/account/details/' + account.id)}
+                      onClick={() => history.push('/account/details/' + accountGroup[0].id)}
                     >
                       <div className={styles.infoRow}>
                         <div className={styles.info}>
                           <div className={styles.name}>
-                            <span>{account.meta.name}</span>
+                            <span>{accountGroup[0]?.meta?.name}</span>
                           </div>
-                          <div className={styles.addressDisplay}>
-                            <span className={styles.fullAddress}>
-                              {account.id}
-                            </span>
+                          <div className={styles.accountIcons}>
+                            {accountGroup.sort((a: keyable, b: keyable) => a.order - b.order).map((account: keyable) =>
+                              <img src={getSymbol(account.symbol)?.icon} className={styles.accountIcon} key={account.id} />
+                            )}
                           </div>
+                        </div>
+                        <div className={styles.infoBalance}><GroupBalance loading={loading} groupId={accountGroup[0].groupId} />
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
-
               <Link className={styles.link} to={'/account/create'}>
                 <div
                   className={clsx(
@@ -85,5 +91,16 @@ const Page = () => {
     </div>
   );
 };
+
+const GroupBalance = ({ groupId, loading }: { groupId: string, loading: boolean }) => {
+  const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(groupId));
+
+  if (loading)
+    return <SkeletonTheme color="#222" highlightColor="#000">
+      <Skeleton width={60} />
+    </SkeletonTheme>;
+
+  return <div>${currentBalance?.balanceInUSD?.toFixed(3) || 0}</div>
+}
 
 export default Page;

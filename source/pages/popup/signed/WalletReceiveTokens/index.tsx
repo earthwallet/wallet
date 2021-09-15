@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styles from './index.scss';
 import { getShortAddress } from '~utils/common';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -10,8 +10,9 @@ import NextStepButton from '~components/NextStepButton';
 import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
+import useToast from '~hooks/useToast';
 
-interface Props extends RouteComponentProps<{ address: string }> {}
+interface Props extends RouteComponentProps<{ address: string }> { }
 const WalletReceiveTokens = ({
   match: {
     params: { address },
@@ -19,7 +20,10 @@ const WalletReceiveTokens = ({
 }: Props) => {
   const history = useHistory();
   const selectedAccount = useSelector(selectAccountById(address));
-  const _onCopy = console.log;
+  const { show } = useToast();
+
+  const _onCopy = useCallback((): void => show('Copied'), [show]);
+
 
   return (
     <div className={styles.page}>

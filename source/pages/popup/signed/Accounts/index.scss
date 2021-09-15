@@ -33,14 +33,16 @@
 }
 
 .accountsCont {
-  //backdrop-filter: blur(20px);
   height: 190px;
-  overflow: scroll;
+  overflow-y: scroll;
   margin-top: 10px;
   width: calc(100vw - 40px);
   border: 2px solid rgba(36, 150, 255, 0.5);
   box-sizing: border-box;
   border-radius: 8px;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  overflow-x: hidden;
 }
 
 .footerCont {
@@ -179,6 +181,14 @@
   align-items: center;
   height: 72px;
   border-radius: 4px;
+  justify-content: space-between;
+}
+
+.infoBalance {
+  padding-right: 16px;
+  min-width: 60px;
+  opacity: 0.9;
+  text-align: right;
 }
 
 .img {
@@ -193,7 +203,7 @@
   margin: 2px 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 270px;
+  max-width: 207px;
   white-space: nowrap;
 
   &.displaced {
@@ -220,4 +230,14 @@
   max-width: 270px;
   white-space: nowrap;
   opacity: 0.7;
+}
+
+.accountIcons {
+  display: flex;
+}
+
+.accountIcon {
+  width: 15px;
+  height: 15px;
+  margin-right: 3px;
 }

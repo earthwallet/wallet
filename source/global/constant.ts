@@ -1,6 +1,4 @@
 import { NetworkType } from './types';
-
-//['ETH', 'ICP',  'DOT', 'KSM','BTC', 'LTC', 'BCH', 'BNB',];
 import ICON_ETH from '~assets/images/icon_eth_mini.png';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
 import ICON_DOT from '~assets/images/icon_mini_dot.png';
@@ -9,6 +7,10 @@ import ICON_BTC from '~assets/images/icon_btc_mini.png';
 import ICON_LTC from '~assets/images/icon_mini_ltc.png';
 import ICON_BCH from '~assets/images/icon_mini_bch.png';
 import ICON_BNB from '~assets/images/icon_mini_bnb.png';
+import ICON_BTG from '~assets/images/icon_btg.png';
+import ICON_MATIC from '~assets/images/icon_matic.png';
+import ICON_AVAX from '~assets/images/icon_avalanche.svg';
+import ICON_DOGE from '~assets/images/icon_doge.png';
 
 export const STATE_PORT = 'EARTH_WALLET';
 
@@ -25,7 +27,9 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'BTC',
     coinGeckoId: 'bitcoin',
     isLive: true,
+    preGenerate: true,
     primary: true,
+    order: 1,
   },
   {
     name: 'Internet Computer',
@@ -33,6 +37,8 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'ICP',
     coinGeckoId: 'internet-computer',
     isLive: true,
+    preGenerate: true,
+    order: 0,
   },
   {
     name: 'Ethereum',
@@ -41,24 +47,35 @@ export const DEFAULT_SYMBOLS = [
     primary: true,
     coinGeckoId: 'ethereum',
     isLive: false,
+    preGenerate: true,
+    order: 2,
   },
   {
     name: 'Polkadot',
     icon: ICON_DOT,
     symbol: 'DOT',
     coinGeckoId: 'polkadot',
+    isLive: false,
+    preGenerate: true,
+    order: 3,
   },
   {
     name: 'Kusama',
     icon: ICON_KSM,
     symbol: 'KSM',
     coinGeckoId: 'kusama',
+    isLive: false,
+    preGenerate: true,
+    order: 4,
   },
   {
     name: 'Litecoin',
     icon: ICON_LTC,
     symbol: 'LTC',
     coinGeckoId: 'litecoin',
+    isLive: false,
+    preGenerate: true,
+    order: 5,
   },
   {
     name: 'Bitcoin Cash',
@@ -66,6 +83,8 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'BCH',
     coinGeckoId: 'bitcoin-cash',
     isLive: false,
+    preGenerate: true,
+    order: 6,
   },
   {
     name: 'Binance',
@@ -73,19 +92,99 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'BNB',
     coinGeckoId: 'binancecoin',
     isLive: false,
+    preGenerate: true,
+    order: 7,
+  },
+  {
+    name: 'Binance Smart',
+    icon: ICON_BNB,
+    symbol: 'BSC',
+    coinGeckoId: 'binancecoin',
+    isLive: false,
+    preGenerate: false,
+    order: 8,
+  },
+  {
+    name: 'Polygon',
+    icon: ICON_MATIC,
+    symbol: 'MATIC',
+    coinGeckoId: 'polygon',
+    isLive: false,
+    preGenerate: false,
+    order: 9,
+  },
+
+  {
+    name: 'Bitcoin Gold',
+    icon: ICON_BTG,
+    symbol: 'BTG',
+    coinGeckoId: 'bitcoin-gold',
+    isLive: false,
+    preGenerate: false,
+    order: 10,
+  },
+  {
+    name: 'Avalanche',
+    icon: ICON_AVAX,
+    symbol: 'AVAX',
+    coinGeckoId: 'avalanche',
+    isLive: false,
+    preGenerate: false,
+    order: 11,
+  },
+  {
+    name: 'Dogecoin',
+    icon: ICON_DOGE,
+    symbol: 'DOGE',
+    coinGeckoId: 'dogecoin',
+    isLive: false,
+    preGenerate: false,
+    order: 12,
+  },
+  {
+    name: 'Avalanche P Chain',
+    icon: ICON_AVAX,
+    symbol: 'AVAP',
+    coinGeckoId: 'avalanche',
+    isLive: false,
+    preGenerate: false,
+    order: 13,
+  },
+  {
+    name: 'Avalanche C Chain',
+    icon: ICON_AVAX,
+    symbol: 'AVAC',
+    coinGeckoId: 'avalanche',
+    isLive: false,
+    preGenerate: false,
+    order: 14,
   },
 ];
 
+export const GROUP_ID_SYMBOL = 'BTC';
+
+export const PREGENERATE_SYMBOLS = DEFAULT_SYMBOLS.filter(
+  (symbolObj) => symbolObj.preGenerate
+)
+  .sort((a, b) => a.order - b.order)
+  .map((symbolObj) => symbolObj.symbol);
+
 export const LIVE_SYMBOLS = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
-).map((symbolObj) => symbolObj.symbol);
+)
+  .sort((a, b) => a.order - b.order)
+  .map((symbolObj) => symbolObj.symbol);
 
 export const LIVE_SYMBOLS_OBJS = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
-).map((symbolObj) => symbolObj);
+)
+  .sort((a, b) => a.order - b.order)
+  .map((symbolObj) => symbolObj);
 
 export const LIVE_SYMBOLS_GECKOIDs = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
-).map((symbolObj) => symbolObj.coinGeckoId);
+)
+  .sort((a, b) => a.order - b.order)
+  .map((symbolObj) => symbolObj.coinGeckoId);
 
 export const DEFAULT_ICP_FEES = 0.0001;

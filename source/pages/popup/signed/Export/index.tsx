@@ -20,6 +20,7 @@ import NextStepButton from '~components/NextStepButton';
 import Header from '~components/Header';
 import { getShortAddress } from '~utils/common';
 import { decryptString } from '~utils/vault';
+import useToast from '~hooks/useToast';
 
 const MIN_LENGTH = 6;
 
@@ -39,7 +40,10 @@ function Export({
   const [mnemonic, setMnemonic] = useState<string | null>(null);
   const history = useHistory();
 
-  const _onCopy = useCallback((): void => console.log('Copied'), []);
+  const { show } = useToast();
+
+  const _onCopy = useCallback((): void => show('Copied'), [show]);
+
 
   const onPassChange = useCallback((password: string) => {
     setPass(password);

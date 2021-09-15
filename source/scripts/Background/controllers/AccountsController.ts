@@ -15,6 +15,7 @@ import {
 } from '@earthwallet/keyring';
 import { encryptString } from '~utils/vault';
 import { getSymbol } from '~utils/common';
+import { GROUP_ID_SYMBOL } from '~global/constant';
 
 interface keyable {
   [key: string]: any;
@@ -146,6 +147,7 @@ export default class AccountsController implements IAccountsController {
               error: true,
               loading: false,
               errorData: JSON.stringify(error),
+              value: 0,
             },
           ],
         })
@@ -169,24 +171,38 @@ export default class AccountsController implements IAccountsController {
       for (const account of accounts) {
         let currentBalance = state.entities.balances.byId[account.id];
         const decimals = currentBalance?.currency?.decimals;
-        const currentUSDValue: keyable =
-          state.entities.prices.byId[
-            getSymbol(account?.symbol)?.coinGeckoId || ''
-          ];
-        const usdValue =
-          (currentBalance?.value / Math.pow(10, decimals)) *
-          parseFloat(currentUSDValue?.usd);
-        total = total + usdValue;
-        store.dispatch(
-          updateEntities({
-            entity: 'balances',
-            key: account.id,
-            data: {
-              balanceInUSD: usdValue,
-              usd_24h_change: currentUSDValue.usd_24h_change,
-            },
-          })
-        );
+        if (decimals === undefined) {
+          total = 0;
+          store.dispatch(
+            updateEntities({
+              entity: 'balances',
+              key: account.id,
+              data: {
+                balanceInUSD: 0,
+                usd_24h_change: 0,
+              },
+            })
+          );
+        } else {
+          const currentUSDValue: keyable =
+            state.entities.prices.byId[
+              getSymbol(account?.symbol)?.coinGeckoId || ''
+            ];
+          const usdValue =
+            (currentBalance?.value / Math.pow(10, decimals)) *
+            parseFloat(currentUSDValue?.usd);
+          total = total + usdValue;
+          store.dispatch(
+            updateEntities({
+              entity: 'balances',
+              key: account.id,
+              data: {
+                balanceInUSD: usdValue,
+                usd_24h_change: currentUSDValue.usd_24h_change,
+              },
+            })
+          );
+        }
         if (!--addresses) {
           store.dispatch(
             storeEntities({
@@ -209,16 +225,14 @@ export default class AccountsController implements IAccountsController {
     symbols: string[],
     name: string,
     password: string,
+    selectedSymbols?: string[],
     callback?: (address: string) => void
   ) => {
     let newAccounts = [];
-    let groupId = '';
+    let index = 0;
+    const groupId = (await createWallet(mnemonic, GROUP_ID_SYMBOL)).address;
     for (const symbol of symbols) {
       const keypair = await createWallet(mnemonic, symbol);
-      if (symbol === symbols[0]) {
-        groupId = keypair.address;
-      }
-
       let data = {
         id: keypair.address,
         groupId,
@@ -236,6 +250,8 @@ export default class AccountsController implements IAccountsController {
           encryptionType: 'AES',
         },
         symbol,
+        order: index,
+        active: index === 0 || selectedSymbols?.includes(symbol),
       };
       if (symbol === 'ICP') {
         data.meta.principalId = keypair.identity.getPrincipal().toText();
@@ -245,6 +261,7 @@ export default class AccountsController implements IAccountsController {
         );
       }
       newAccounts.push(data);
+      index++;
     }
     store.dispatch(
       storeEntities({
@@ -254,6 +271,41 @@ export default class AccountsController implements IAccountsController {
     );
     //clear new mnemonic
     store.dispatch(updateNewMnemonic(''));
-    callback && callback(newAccounts[0]?.id);
+    callback && callback(groupId);
+  };
+
+  updateActiveAccountsOfGroup = async (
+    groupId: string,
+    symbols: string[],
+    status: boolean,
+    callback?: (address?: string) => void
+  ) => {
+    const state = store.getState();
+
+    const existingAllAccounts = Object.keys(state.entities.accounts.byId)
+      .map((id) => state.entities.accounts.byId[id])
+      .filter((account) => account.groupId === groupId)
+      .sort((a, b) => a.order - b.order);
+
+    let forwardAddress = '';
+    for (const symbol of symbols) {
+      if (symbol !== 'ICP') {
+        const selectedAccount = existingAllAccounts.filter(
+          (a) => a.symbol === symbol
+        )[0];
+        forwardAddress = selectedAccount.id;
+        store.dispatch(
+          updateEntities({
+            entity: 'accounts',
+            key: selectedAccount.id,
+            data: {
+              active: status,
+            },
+          })
+        );
+      }
+    }
+
+    callback && callback(forwardAddress);
   };
 }
