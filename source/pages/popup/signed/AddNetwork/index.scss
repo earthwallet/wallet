@@ -6,6 +6,12 @@
   display: inline-block;
 }
 
+.container {
+  height: $appHeight - 40px;
+  overflow-y: scroll;
+  padding-bottom: 100px;
+}
+
 .nextCont {
   position: absolute;
   left: 0;

@@ -44,7 +44,6 @@ export const DEFAULT_SYMBOLS = [
     name: 'Ethereum',
     icon: ICON_ETH,
     symbol: 'ETH',
-    primary: true,
     coinGeckoId: 'ethereum',
     isLive: false,
     preGenerate: true,
@@ -103,6 +102,7 @@ export const DEFAULT_SYMBOLS = [
     isLive: false,
     preGenerate: false,
     order: 8,
+    evmChain: true
   },
   {
     name: 'Polygon',
@@ -112,15 +112,15 @@ export const DEFAULT_SYMBOLS = [
     isLive: false,
     preGenerate: false,
     order: 9,
+    evmChain: true
   },
-
   {
     name: 'Bitcoin Gold',
     icon: ICON_BTG,
     symbol: 'BTG',
     coinGeckoId: 'bitcoin-gold',
     isLive: false,
-    preGenerate: false,
+    preGenerate: true,
     order: 10,
   },
   {
@@ -129,7 +129,7 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'AVAX',
     coinGeckoId: 'avalanche',
     isLive: false,
-    preGenerate: false,
+    preGenerate: true,
     order: 11,
   },
   {
@@ -138,7 +138,7 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'DOGE',
     coinGeckoId: 'dogecoin',
     isLive: false,
-    preGenerate: false,
+    preGenerate: true,
     order: 12,
   },
   {
@@ -147,7 +147,7 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'AVAP',
     coinGeckoId: 'avalanche',
     isLive: false,
-    preGenerate: false,
+    preGenerate: true,
     order: 13,
   },
   {
@@ -158,6 +158,7 @@ export const DEFAULT_SYMBOLS = [
     isLive: false,
     preGenerate: false,
     order: 14,
+    evmChain: true
   },
 ];
 

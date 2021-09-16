@@ -69,7 +69,7 @@ const AddNetwork = ({
         type={'wallet'}
         text={'Add a Network'}
       ><div className={styles.empty} /></Header>
-      <div>
+      <div className={styles.container}>
         <div className={styles.earthInputCont}>
           <div className={styles.labelText}>
             Select Networks
