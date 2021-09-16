@@ -21,7 +21,8 @@ import { useController } from '~hooks/useController';
 import { selectBalanceByAddress } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
 import { DEFAULT_ICP_FEES } from '~global/constant';
-
+import indexToHash from './indexToHash'
+import { useHistory } from 'react-router-dom';
 
 const MIN_LENGTH = 6;
 
@@ -61,6 +62,7 @@ const WalletSendTokens = ({
 
   const [isBusy, setIsBusy] = useState(false);
   const [paymentHash, setPaymentHash] = useState<string>('');
+  const history = useHistory();
 
   useEffect(() => {
 
@@ -173,7 +175,7 @@ const WalletSendTokens = ({
           alert('Amount cannot be 0');
         }
 
-        const hash: any = await send(
+        const index: BigInt = await send(
           currentIdentity,
           selectedRecp,
           address,
@@ -181,13 +183,22 @@ const WalletSendTokens = ({
           'ICP'
         );
 
+        const hash: string = await indexToHash(index);
+
+
         await controller.accounts
           .getBalancesOfAccount(selectedAccount)
           .then(() => {
+            if (hash !== null) {
+              history.replace(`/account/transaction/${hash}`)
+            }
+            else {
+              setLoadingSend(false);
+              setPaymentHash(index.toString() || '');
+              setIsBusy(false);
+            }
           });
-        setLoadingSend(false);
-        setPaymentHash(hash || '');
-        setIsBusy(false);
+
       } catch (error) {
         console.log(error);
         setTxError("Please try again! Error: " + JSON.stringify(error));

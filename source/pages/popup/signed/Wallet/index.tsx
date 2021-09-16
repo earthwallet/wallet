@@ -76,8 +76,8 @@ const Wallet = ({
         selectedAccount={selectedAccount}
         backOverride={() => history.push('/home')}
       />
-      <img className={styles.networklogo} src={getSymbol(selectedAccount.symbol)?.icon} />
-      <div className={styles.networktext}>{getSymbol(selectedAccount.symbol)?.name}</div>
+      <img className={styles.networklogo} src={getSymbol(selectedAccount?.symbol)?.icon} />
+      <div className={styles.networktext}>{getSymbol(selectedAccount?.symbol)?.name}</div>
       <div className={styles.primaryBalanceLabel}>
         {currentBalance?.loading ? (
           <SkeletonTheme color="#222" highlightColor="#000">
