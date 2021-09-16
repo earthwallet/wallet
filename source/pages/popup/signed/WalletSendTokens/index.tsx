@@ -50,6 +50,8 @@ const WalletSendTokens = ({
   const [selectedRecp, setSelectedRecp] = useState<string>('');
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
   const [pass, setPass] = useState('');
+  const [recpError, setRecpError] = useState('');
+
   const [error, setError] = useState('');
   const [txError, setTxError] = useState('');
   const [fees, setFees] = useState<number>(0);
@@ -220,6 +222,22 @@ const WalletSendTokens = ({
     }
     , [selectedAccount]);
 
+  const parseRecipientAndSetAddress = (recipient: string) => {
+    if (selectedAccount.symbol === 'ICP') {
+      setSelectedRecp(recipient);
+      const dashCount = (recipient.match(/-/g) || []).length;
+      if (dashCount === 5 || dashCount === 10) {
+        setRecpError('Principal id is not accepted! Please enter account id ')
+      }
+      else {
+        setRecpError('');
+      }
+    }
+    else {
+      setSelectedRecp(recipient);
+    }
+  };
+
   return <div className={styles.page}><>
     <Header
       backOverride={step1 ? undefined : paymentHash === '' ? onBackClick : undefined}
@@ -244,11 +262,18 @@ const WalletSendTokens = ({
             autoFocus={true}
             className={clsx(styles.earthinput, styles.recipientAddress)}
             key={'recp'}
-            onChange={(e) => setSelectedRecp(e.target.value)}
+            onChange={(e) => parseRecipientAndSetAddress(e.target.value)}
             placeholder="Recipient address"
             required
             value={selectedRecp}
           />
+          {recpError !== '' && <Warning
+            isBelowInput
+            isDanger
+            className={styles.warningRecp}
+          >
+            {recpError}
+          </Warning>}
           <div className={styles.assetSelectionDivCont}>
             <div className={styles.earthInputLabel}>
               Asset
