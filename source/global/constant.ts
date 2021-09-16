@@ -100,8 +100,9 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'BSC',
     coinGeckoId: 'binancecoin',
     isLive: false,
-    preGenerate: true,
+    preGenerate: false,
     order: 8,
+    evmChain: true
   },
   {
     name: 'Polygon',
@@ -109,8 +110,9 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'MATIC',
     coinGeckoId: 'polygon',
     isLive: false,
-    preGenerate: true,
+    preGenerate: false,
     order: 9,
+    evmChain: true
   },
   {
     name: 'Bitcoin Gold',
@@ -154,8 +156,9 @@ export const DEFAULT_SYMBOLS = [
     symbol: 'AVAC',
     coinGeckoId: 'avalanche',
     isLive: false,
-    preGenerate: true,
+    preGenerate: false,
     order: 14,
+    evmChain: true
   },
 ];
 
