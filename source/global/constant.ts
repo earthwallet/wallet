@@ -81,7 +81,7 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_BCH,
     symbol: 'BCH',
     coinGeckoId: 'bitcoin-cash',
-    isLive: true,
+    isLive: false,
     preGenerate: true,
     order: 6,
   },
@@ -112,7 +112,6 @@ export const DEFAULT_SYMBOLS = [
     preGenerate: true,
     order: 9,
   },
-
   {
     name: 'Bitcoin Gold',
     icon: ICON_BTG,
