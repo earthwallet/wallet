@@ -1310,10 +1310,10 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.5.tgz#9283c9ce5b289a3c4f61c12757469e59377f81f3"
   integrity sha512-6nFkfkmSeV/rqSaS4oWHgmpnYw194f6hmWF5is6b0J1naJZoiD0NTc9AiUwPHvWsowkjuHErCZT1wa0jg+BLIA==
 
-"@earthwallet/keyring@^0.2.4":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@earthwallet/keyring/-/keyring-0.2.5.tgz#cadd582c0751c6b610a40011e98e871ef3264b97"
-  integrity sha512-2icr50RFcxoXVm7BRDx/p0inXHcid6wrbu2aY3Vvgd74/PjVz7FsQ6TG0YczPL2hB0TZdozRFwG+3YZjaL4v8w==
+"@earthwallet/keyring@^0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@earthwallet/keyring/-/keyring-0.2.7.tgz#18791e615ec85e1b753a9efbeab409fdd2906639"
+  integrity sha512-FGk68KndPRGub6e61VPYN69r4S3ADu0SCLwPBjHuA0ckq1peJZVgputycY6g86BHRju+KW44mC0Pv9h0CrFquQ==
   dependencies:
     "@avalabs/avalanche-wallet-sdk" "0.7.3"
     "@binance-chain/javascript-sdk" "^4.1.1"
@@ -1331,7 +1331,7 @@
     "@polkadot/util-crypto" "^7.0.2"
     "@psf/bitcoincashjs-lib" "^4.0.2"
     "@xchainjs/xchain-binance" "^5.2.5"
-    "@xchainjs/xchain-bitcoin" "^0.15.11"
+    "@xchainjs/xchain-bitcoin" "0.15.11"
     "@xchainjs/xchain-bitcoincash" "^0.11.8"
     "@xchainjs/xchain-client" "^0.10.2"
     "@xchainjs/xchain-crypto" "^0.2.5"
@@ -3561,10 +3561,10 @@
   resolved "https://registry.yarnpkg.com/@xchainjs/xchain-binance/-/xchain-binance-5.3.1.tgz#915f41a0636d70dcd1ee871e6e7e1da7db1f2ab2"
   integrity sha512-wTI9/WBAu3rEWPj6WQdcap0et+0sUMCVTAjOAqypC+us9dhgtPm38LevykcTOvWXCi1OybTYtyu80YFftK0T+w==
 
-"@xchainjs/xchain-bitcoin@^0.15.11":
-  version "0.15.12"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-bitcoin/-/xchain-bitcoin-0.15.12.tgz#0c3a8ef9fa234f58b910b7538419feee8571e284"
-  integrity sha512-r1EBXJubToklEl26WtHd6hs2Aaizp0PNOZaT1ZjEveNC0kbsW4JOmvQCjigyJ+Sx0NEYowODLar2aAz5/pq/GA==
+"@xchainjs/xchain-bitcoin@0.15.11":
+  version "0.15.11"
+  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-bitcoin/-/xchain-bitcoin-0.15.11.tgz#958984d6d97afc75f2e6b4d03e5f9f4f14229727"
+  integrity sha512-gM759KCfMb5V9nRng4nLp6ao7zID5PejzBMXPwGD9DP5Jyv3NpFTJTQaoA+zP33GkwNVp0o+GO15l1eXNC8uFg==
 
 "@xchainjs/xchain-bitcoincash@^0.11.8":
   version "0.11.9"
