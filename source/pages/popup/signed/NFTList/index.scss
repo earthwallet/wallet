@@ -1,0 +1,92 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(
+    0deg,
+    rgba(71, 134, 255, 0.4) 0%,
+    rgba(71, 134, 255, 0) 100%
+  );
+  background: url('../../../../assets/images/bg_portfolio_extension.png');
+  height: $appHeight;
+  width: $appWidth;
+}
+.header {
+  width: $appWidth;
+}
+
+.resetLink {
+  text-decoration: none;
+}
+.resetLink:hover {
+  opacity: 0.9;
+  text-decoration: none;
+}
+
+.assetsAndActivityDiv {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+  height: 64px;
+  display: flex;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    rgba(36, 150, 255, 0.32);
+  box-sizing: border-box;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  cursor: pointer;
+  background: linear-gradient(0deg, #071a28, #071a28),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    rgba(36, 150, 255, 0.32);
+  justify-content: space-between;
+  border: 1px solid #2496ff;
+  border-bottom: 0px;
+}
+
+.tabsView {
+  width: 340px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0px 24px;
+}
+
+.selectedTabView {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+
+  text-align: center;
+  color: #e6e9ed;
+  opacity: 0.75;
+  text-decoration: none;
+}
+
+.tabsPill {
+  width: 29px;
+  height: 3px;
+  background: #175b99;
+  border-radius: 29px;
+  display: flex;
+  flex-basis: 3px;
+  min-height: 3px;
+  margin-top: 9px;
+}
+
+.tabsView {
+  width: 340px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0px 24px;
+}
+
+.bottomFixed {
+  position: fixed;
+  bottom: 0;
+}
