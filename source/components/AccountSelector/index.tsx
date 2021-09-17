@@ -59,7 +59,7 @@ const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> 
             key={account.address}
             onClick={() => _onChangePrefix(account)}>
             <img src={getSymbol(account.symbol)?.icon} className={styles.networkIcon} />
-            {getSymbol(account.symbol)?.name}
+            <div className={styles.networkName}>{getSymbol(account.symbol)?.name}</div>
           </div>);
         })
       }
