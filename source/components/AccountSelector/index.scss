@@ -51,9 +51,10 @@
   box-shadow: 0 0 10px $boxShadow;
   position: absolute;
   max-height: 300px;
-  overflow: auto;
   z-index: 2;
   right: 7px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .addressItem {
   display: flex;

@@ -163,13 +163,13 @@ const Transactions = ({
             : 'Send'}
         </div>
         <div className={styles.transSubColTime}>
-          <div>{getTransactionTime(transaction) || 'Jun 7'}</div>
+          <div>{getTransactionTime(transaction) || '-'}</div>
           <div className={styles.transSubColDot}></div>
           <div>
             to{' '}
             {getShortAddress(
               getTransactionWithDetailICP(transaction)?.account
-                .address || 'Self'
+                .address || 'Self', 4
             )}
           </div>
         </div>

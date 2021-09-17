@@ -107,6 +107,15 @@
   display: flex;
   align-items: center;
 }
+.transSubColTime > div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.transColValue > div {
+  white-space: nowrap;
+}
 
 .transSubColPrice {
   font-style: normal;
