@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { keyable } from '~scripts/Background/types/IAssetsController';
+import { keyable } from '~scripts/Background/types/IMainController';
 import styles from './index.scss';
 import SMALL_DOWN from '~assets/images/small_down.svg';
 import SMALL_UP from '~assets/images/small_up.svg';

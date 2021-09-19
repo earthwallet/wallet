@@ -118,8 +118,11 @@ export default class AccountsController implements IAccountsController {
         })
       );
 
-      let balance: keyable = await _getBalance(account.address, account.symbol);
-      if (account.symbol === 'ICP') {
+      let balance: keyable = await _getBalance(
+        account.address,
+        account.symbol === 'ICP_Ed25519' ? 'ICP' : account.symbol
+      );
+      if (account.symbol === 'ICP' || 'ICP_Ed25519') {
         balance.value = balance?.balances[0]?.value;
         balance.currency = balance?.balances[0].currency;
       }

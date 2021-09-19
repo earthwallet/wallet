@@ -70,7 +70,7 @@ const Wallet = ({
     <div className={styles.page}>
       <Header
         className={styles.header}
-        showAccountsDropdown
+        showAccountsDropdown={selectedAccount.symbol !== 'ICP_Ed25519'}
         showMenu
         type={'wallet'}
         selectedAccount={selectedAccount}
@@ -126,14 +126,14 @@ const Wallet = ({
           </Link>
         </div>
 
-        <div className={clsx(styles.tokenActionView, styles.sendTokenAction)}>
+        {selectedAccount.symbol !== 'ICP_Ed25519' && <div className={clsx(styles.tokenActionView, styles.sendTokenAction)}>
           <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_send} />
               <div className={styles.tokenActionLabel}>Send</div>
             </div>
           </Link>
-        </div>
+        </div>}
       </div>
 
       <Link

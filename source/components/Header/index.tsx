@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import AccountSelector from '../AccountSelector';
 import clsx from 'clsx';
 import styles from './index.scss';
-import { keyable } from '~scripts/Background/types/IAssetsController';
+import { keyable } from '~scripts/Background/types/IMainController';
 
 interface Props {
   children?: React.ReactNode;

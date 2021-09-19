@@ -1,6 +1,7 @@
 import { NetworkType } from './types';
 import ICON_ETH from '~assets/images/icon_eth_mini.png';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
+import ICON_ICP_ED25519 from '~assets/images/icon_icp_ed25519.png';
 import ICON_DOT from '~assets/images/icon_mini_dot.png';
 import ICON_KSM from '~assets/images/icon_mini_ksm.png';
 import ICON_BTC from '~assets/images/icon_btc_mini.png';
@@ -39,6 +40,15 @@ export const DEFAULT_SYMBOLS = [
     isLive: true,
     preGenerate: true,
     order: 0,
+  },
+  {
+    name: 'ICP Ed25519',
+    icon: ICON_ICP_ED25519,
+    symbol: 'ICP_Ed25519',
+    coinGeckoId: 'internet-computer',
+    isLive: false,
+    preGenerate: false,
+    order: -1,
   },
   {
     name: 'Ethereum',
