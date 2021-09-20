@@ -29,6 +29,9 @@ function SeedAndPath({ onNextStep, onSeedChange }: Props): React.ReactElement {
     if (validateMnemonic(seed)) {
       setIsValidSeed(true);
     }
+    else {
+      setIsValidSeed(false);
+    }
     onSeedChange(seed);
   }, [seed, onSeedChange]);
 
