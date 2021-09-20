@@ -71,7 +71,7 @@ const Wallet = ({
     <div className={styles.page}>
       <Header
         className={styles.header}
-        showAccountsDropdown={selectedAccount.symbol !== 'ICP_Ed25519'}
+        showAccountsDropdown={selectedAccount?.symbol !== 'ICP_Ed25519'}
         showMenu
         type={'wallet'}
         selectedAccount={selectedAccount}
@@ -115,7 +115,7 @@ const Wallet = ({
         </div>
       </CopyToClipboard>
 
-      {selectedAccount.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
+      {selectedAccount?.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
         <div
           className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
         >
@@ -137,7 +137,7 @@ const Wallet = ({
         </div>
       </div>}
 
-      {selectedAccount.symbol === 'ICP_Ed25519' && <div className={styles.walletNoSupportActionsView}>
+      {selectedAccount?.symbol === 'ICP_Ed25519' && <div className={styles.walletNoSupportActionsView}>
         <div className={styles.noSupportText}>
         <img src={ICON_NOTICE} className={styles.noticeIcon}></img>
 

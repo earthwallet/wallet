@@ -122,7 +122,7 @@ export default class AccountsController implements IAccountsController {
         account.address,
         account.symbol === 'ICP_Ed25519' ? 'ICP' : account.symbol
       );
-      if (account.symbol === 'ICP' || 'ICP_Ed25519') {
+      if (account.symbol === 'ICP' || account.symbol === 'ICP_Ed25519') {
         balance.value = balance?.balances[0]?.value;
         balance.currency = balance?.balances[0].currency;
       }
