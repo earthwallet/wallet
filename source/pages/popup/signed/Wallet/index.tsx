@@ -20,6 +20,7 @@ import { selectAssetBySymbol } from '~state/assets';
 import useToast from '~hooks/useToast';
 
 import { useHistory } from 'react-router-dom';
+import ICON_NOTICE from '~assets/images/icon_notice.svg';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -70,7 +71,7 @@ const Wallet = ({
     <div className={styles.page}>
       <Header
         className={styles.header}
-        showAccountsDropdown
+        showAccountsDropdown={selectedAccount?.symbol !== 'ICP_Ed25519'}
         showMenu
         type={'wallet'}
         selectedAccount={selectedAccount}
@@ -114,7 +115,7 @@ const Wallet = ({
         </div>
       </CopyToClipboard>
 
-      <div className={styles.walletActionsView}>
+      {selectedAccount?.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
         <div
           className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
         >
@@ -134,10 +135,28 @@ const Wallet = ({
             </div>
           </Link>
         </div>
-      </div>
+      </div>}
+
+      {selectedAccount?.symbol === 'ICP_Ed25519' && <div className={styles.walletNoSupportActionsView}>
+        <div className={styles.noSupportText}>
+        <img src={ICON_NOTICE} className={styles.noticeIcon}></img>
+
+          Ed25519 address is no longer supported. Please import seed from Export</div>
+        <div
+          className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
+        >
+          <Link className={styles.transactionsCont} to={"/account/export/" + selectedAccount?.id}>
+            <div className={styles.tokenActionButton}>
+              <img className={clsx(styles.iconActions, styles.exportIcon)} src={icon_send} />
+              <div className={styles.tokenActionLabel}>Export</div>
+            </div>
+          </Link>
+        </div>
+
+      </div>}
 
       <Link
-        className={styles.resetLink}
+        className={clsx(styles.resetLink, styles.fixedBottom)}
         to={`/account/transactions/${selectedAccount?.id}`}
       >
         <div className={styles.assetsAndActivityDiv}>

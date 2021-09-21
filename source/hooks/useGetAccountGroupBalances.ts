@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { keyable } from '~scripts/Background/types/IAssetsController';
+import { keyable } from '~scripts/Background/types/IMainController';
 import { useController } from '~hooks/useController';
 import { LIVE_SYMBOLS_GECKOIDs } from '~global/constant';
 

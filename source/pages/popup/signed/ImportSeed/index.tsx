@@ -11,7 +11,7 @@ import { DEFAULT_ICP_FEES, PREGENERATE_SYMBOLS } from '~global/constant';
 import { ClipLoader } from 'react-spinners';
 import { getSymbol } from '~utils/common';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
-import { keyable } from '~scripts/Background/types/IAssetsController';
+import { keyable } from '~scripts/Background/types/IMainController';
 import { principal_id_to_address, address_to_hex } from '@earthwallet/keyring/build/main/util/icp';
 import { createWallet } from '@earthwallet/keyring';
 import { send } from '@earthwallet/keyring';
@@ -48,7 +48,7 @@ const Page = () => {
         }
       });
 
-  }, [seed !== null]);
+  }, [seed]);
 
   const sendICPFromOldToNew = useCallback(async () => {
     if (seed !== null) {
