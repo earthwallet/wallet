@@ -173,7 +173,7 @@ const Page = () => {
               </div>
               <div className={styles.nextCont}>
                 <NextStepButton
-                  disabled={!checked}
+                  disabled={!checked || name === ''}
                   onClick={!checked ? console.log : _onNextStep}
                 >
                   {'Next step'}
