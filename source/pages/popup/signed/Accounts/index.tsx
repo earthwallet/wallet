@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { selectActiveAccountGroups, selectGroupBalanceByAddress } from '~state/wallet';
 import { useHistory } from 'react-router-dom';
-import { keyable } from '~scripts/Background/types/IAssetsController';
+import { keyable } from '~scripts/Background/types/IMainController';
 import { getSymbol } from '~utils/common';
 import useGetAccountGroupBalances from '~hooks/useGetAccountGroupBalances';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';

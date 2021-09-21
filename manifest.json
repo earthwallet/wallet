@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Earth Wallet",
-  "version": "0.2.3",
+  "version": "0.3.1",
 
   "icons": {
     "16": "assets/images/icon-16.png",
@@ -10,7 +10,7 @@
     "64": "assets/images/icon-64.png",
     "128": "assets/images/icon-128.png"
   },
-  "description": "Your Keys to Web3.",
+  "description": "Bringing Crypto Back to Earth.",
   "homepage_url": "https://github.com/earth-association/wallet",
   "short_name": "Earth Wallet",
 

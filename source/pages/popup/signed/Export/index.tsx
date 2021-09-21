@@ -21,7 +21,11 @@ import Header from '~components/Header';
 import { getShortAddress } from '~utils/common';
 import { decryptString } from '~utils/vault';
 import useToast from '~hooks/useToast';
+import StringCrypto from 'string-crypto';
 
+const {
+  decryptString: decryptString_PBKDF2
+} = new StringCrypto();
 const MIN_LENGTH = 6;
 
 interface Props extends RouteComponentProps<{ address: string }> { }
@@ -65,10 +69,14 @@ function Export({
     setIsBusy(true);
     let mnemonicSecret = '';
     try {
-      mnemonicSecret = decryptString(
-        selectedAccount?.vault.encryptedMnemonic,
-        pass
-      );
+      mnemonicSecret = selectedAccount?.vault.encryptionType === 'PBKDF2'
+        ? decryptString_PBKDF2(
+          selectedAccount?.vault.encryptedMnemonic,
+          pass
+        ) : decryptString(
+          selectedAccount?.vault.encryptedMnemonic,
+          pass
+        );
     } catch (error) {
       setError('Wrong password! Please try again');
       setIsBusy(false);

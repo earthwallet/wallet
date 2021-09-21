@@ -38,7 +38,13 @@ const PopupRouter = () => {
   });
 
   useEffect(() => {
-    controller.preloadState();
+    controller.preloadState().then(() => {
+      try {
+        controller.migrateLocalStorage();
+      } catch (error) {
+        console.log(error)
+      }
+    });
   }, []);
 
   return (
