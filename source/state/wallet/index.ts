@@ -61,6 +61,11 @@ export const selectAccounts = (state: AppState) =>
     (id) => state.entities.accounts.byId[id]
   );
 
+export const selectAccounts_ICP = (state: AppState) =>
+  Object.keys(state.entities.accounts.byId)
+    .map((id) => state.entities.accounts.byId[id])
+    .filter((account) => account.symbol === 'ICP');
+
 export const selectAccountsByGroupId = (groupId: string) => (state: AppState) =>
   Object.keys(state.entities.accounts.byId)
     .map((id) => state.entities.accounts.byId[id])

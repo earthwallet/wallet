@@ -6,7 +6,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import styles from './index.module.scss';
 import { useSelector } from 'react-redux';
-import { selectAccounts } from '~state/wallet';
+import { selectAccounts_ICP } from '~state/wallet';
 import { isUndefined } from 'lodash';
 import { getSymbol } from '~utils/common';
 import { EarthKeyringPair } from '@earthwallet/keyring';
@@ -19,7 +19,7 @@ enum ConnectStep {
 export default function ConnectDappPage() {
   const dapp = useCurrentDapp();
   const connectWalletToDapp = useConnectWalletToDApp();
-  const accounts = useSelector(selectAccounts);
+  const accounts = useSelector(selectAccounts_ICP);
   const setActiveAccount = async (account: EarthKeyringPair & { id: string }) => {
     const useUpdateActiveAccounted = useUpdateActiveAccount(account);
     useUpdateActiveAccounted().then(() => {
