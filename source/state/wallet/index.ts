@@ -109,6 +109,10 @@ export const selectGroupBalanceByAddress =
   (address: string) => (state: AppState) =>
     state.entities.groupbalances.byId[address];
 
+export const selectAssetsICPCountByAddress =
+  (address: string) => (state: AppState) =>
+    state.entities.assetsCount.byId[address];
+
 export const selectAccountById = (address: string) => (state: AppState) =>
   state.entities.accounts.byId[address];
 

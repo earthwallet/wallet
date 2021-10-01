@@ -1,4 +1,5 @@
 import { DEFAULT_SYMBOLS } from '~global/constant';
+import { keyable } from '~scripts/Background/types/IAssetsController';
 
 const randomColorArray = [
   '#FEE05F',
@@ -116,5 +117,21 @@ export const isJsonString = (str: string) => {
 
   return true;
 };
+
+export const serializeJsonWithBigInt = (data: keyable): string =>
+  JSON.stringify(data, (_, value) =>
+    typeof value === 'bigint' ? value.toString() + 'n' : value
+  );
+
+export const deSerializeJsonWithBigInt = (json: string): keyable =>
+  JSON.parse(json, (_, value) => {
+    if (typeof value === 'string' && /^\d+n$/.test(value)) {
+      return BigInt(value.substring(0, value.length - 1)).toString();
+    }
+    return value;
+  });
+
+export const parseBigIntToString = (data: keyable): keyable =>
+  deSerializeJsonWithBigInt(serializeJsonWithBigInt(data));
 
 export default generateRandomColor;

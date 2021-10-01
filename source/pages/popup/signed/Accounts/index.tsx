@@ -4,17 +4,20 @@ import { Link } from 'react-router-dom';
 import ICON_ADD from '~assets/images/icon_add_account.svg';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { selectActiveAccountGroups, selectGroupBalanceByAddress } from '~state/wallet';
+import { selectActiveAccountGroups, selectAssetsICPCountByAddress, selectGroupBalanceByAddress } from '~state/wallet';
 import { useHistory } from 'react-router-dom';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { getSymbol } from '~utils/common';
 import useGetAccountGroupBalances from '~hooks/useGetAccountGroupBalances';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import useGetAccountGroupAssetBalances from '~hooks/useGetAccountGroupAssetBalances';
 
 const Page = () => {
   const history = useHistory();
   const accountGroups = useSelector(selectActiveAccountGroups);
   const loading = useGetAccountGroupBalances(accountGroups);
+  const assetLoading = useGetAccountGroupAssetBalances(accountGroups);
+  console.log(assetLoading);
 
   return (
     <div className={styles.page}>
@@ -56,6 +59,7 @@ const Page = () => {
                             {accountGroup.sort((a: keyable, b: keyable) => a.order - b.order).map((account: keyable) =>
                               <img src={getSymbol(account.symbol)?.icon} className={styles.accountIcon} key={account.id} />
                             )}
+                            <AssetsICPCount loading={assetLoading} icpAddress={accountGroup.filter((account: keyable) => account.symbol === 'ICP')[0]?.address} />
                           </div>
                         </div>
                         <div className={styles.infoBalance}><GroupBalance loading={loading} groupId={accountGroup[0].groupId} />
@@ -101,6 +105,20 @@ const GroupBalance = ({ groupId, loading }: { groupId: string, loading: boolean 
     </SkeletonTheme>;
 
   return <div>${currentBalance?.balanceInUSD?.toFixed(3) || 0}</div>
+}
+
+const AssetsICPCount = ({ icpAddress, loading }: { icpAddress: string, loading: boolean }) => {
+  const assetsObj: keyable = useSelector(selectAssetsICPCountByAddress(icpAddress));
+
+  if (loading)
+    return <div className={styles.assetCount}><SkeletonTheme color="#222" highlightColor="#000">
+      <Skeleton width={20} />
+    </SkeletonTheme></div>;
+    
+  if (assetsObj?.count === 0 || assetsObj?.count === null) {
+    return <></>
+  }
+  return <div className={styles.assetCount}>{assetsObj?.count === 1 ? '1 NFT' : `${assetsObj?.count} NFTs`} </div>
 }
 
 export default Page;
