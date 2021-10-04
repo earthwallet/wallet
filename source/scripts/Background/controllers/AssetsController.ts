@@ -6,6 +6,7 @@ import type { IAssetsController, keyable } from '../types/IAssetsController';
 import { storeEntities } from '~state/entities';
 import { getNFTsFromCanisterExt } from '@earthwallet/assets';
 import { parseBigIntToString } from '~utils/common';
+import LIVE_ICP_NFT_LIST_CANISTER_IDS from '~global/nfts';
 export default class AssetsController implements IAssetsController {
   fetchFiatPrice = async (currency = 'USD') => {
     try {
@@ -73,40 +74,58 @@ export default class AssetsController implements IAssetsController {
     return;
   };
 
-  getAssetsOfAccount = async (account: keyable) => {
-    console.log('getAssetsOfAccount', account);
-    const fetchAssets = async (account: keyable) => {
-      let canisterId = 'owuqd-dyaaa-aaaah-qapxq-cai';
-      const tokens: keyable = await getNFTsFromCanisterExt(
-        canisterId,
-        account.address
-      );
+  fetchICPAssets = async (account: keyable, canisterId: string) => {
+    const tokens: keyable = await getNFTsFromCanisterExt(
+      canisterId,
+      account.address
+    );
+    const parsedTokens = tokens.map((token: keyable) => ({
+      id: token.tokenIdentifier,
+      address: account.address,
+      canisterId,
+      ...parseBigIntToString(token),
+    }));
 
-      console.log(
-        account.address,
-        tokens,
-        account.symbol === 'ICP_Ed25519' ? 'ICP' : account.symbol
-      );
+    return parsedTokens;
+  };
 
-      const parsedTokens = tokens.map((token: keyable) => ({
-        id: token.tokenIdentifier,
-        address: account.address,
-        canisterId,
-        ...parseBigIntToString(token),
-      }));
+  getICPAssetsOfAccount = async (account: keyable) => {
+    let allTokens: keyable = [];
+    store.dispatch(
+      storeEntities({
+        entity: 'assetsCount',
+        data: [
+          {
+            id: account.address,
+            symbol: account.symbol,
+            loading: true,
+            error: false,
+          },
+        ],
+      })
+    );
 
-      console.log(parsedTokens, 'parsedTokens');
-      return parsedTokens;
-    };
     try {
-      
-      const tokens: keyable = await fetchAssets(account);
+      for (const [
+        index,
+        canisterId,
+      ] of LIVE_ICP_NFT_LIST_CANISTER_IDS.entries()) {
+        allTokens[index] = await this.fetchICPAssets(account, canisterId);
+      }
 
+      let tokens = allTokens.flat();
       if (tokens.length === 0) {
         store.dispatch(
           storeEntities({
             entity: 'assetsCount',
-            data: [{ id: account.address, symbol: account.symbol, count: 0 }],
+            data: [
+              {
+                id: account.address,
+                symbol: account.symbol,
+                count: 0,
+                loading: false,
+              },
+            ],
           })
         );
       } else {
@@ -118,6 +137,7 @@ export default class AssetsController implements IAssetsController {
                 id: account.address,
                 symbol: account.symbol,
                 count: tokens.length,
+                loading: false,
               },
             ],
           })
@@ -133,7 +153,22 @@ export default class AssetsController implements IAssetsController {
         );
       }
     } catch (error) {
-      console.log(error);
+      console.log('Unable to load assets', error);
+      store.dispatch(
+        storeEntities({
+          entity: 'assetsCount',
+          data: [
+            {
+              id: account.address,
+              symbol: account.symbol,
+              count: 0,
+              loading: false,
+              errorMessage: 'Unable to load assets',
+              error: true,
+            },
+          ],
+        })
+      );
     }
   };
 
@@ -142,7 +177,7 @@ export default class AssetsController implements IAssetsController {
       for (const account of accounts.filter(
         (account) => account.symbol === 'ICP'
       )) {
-        await this.getAssetsOfAccount(account);
+        await this.getICPAssetsOfAccount(account);
       }
     }
   };

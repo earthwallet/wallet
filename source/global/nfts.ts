@@ -1,4 +1,4 @@
-const list = [
+export const ICP_NFT_LIST = [
   {
     name: 'Cronic Critters',
     id: 'e3izy-jiaaa-aaaah-qacbq-cai',
@@ -97,4 +97,8 @@ const list = [
   },
 ];
 
-export default list;
+const LIVE_ICP_NFT_LIST_CANISTER_IDS = ICP_NFT_LIST.filter(
+  (asset) => asset.isLive
+).map((asset) => asset.id);
+
+export default LIVE_ICP_NFT_LIST_CANISTER_IDS;
