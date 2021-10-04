@@ -21,6 +21,8 @@ import useToast from '~hooks/useToast';
 
 import { useHistory } from 'react-router-dom';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
+import { selectAssetsICPCountByAddress } from '~state/wallet';
+import { ClipLoader } from 'react-spinners';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -77,6 +79,9 @@ const Wallet = ({
         selectedAccount={selectedAccount}
         backOverride={() => history.push('/home')}
       />
+      {selectedAccount?.id &&
+        <AssetsICPCount icpAddress={selectedAccount?.id} />}
+
       <img className={styles.networklogo} src={getSymbol(selectedAccount?.symbol)?.icon} />
       <div className={styles.networktext}>{getSymbol(selectedAccount?.symbol)?.name}</div>
       <div className={styles.primaryBalanceLabel}>
@@ -139,7 +144,7 @@ const Wallet = ({
 
       {selectedAccount?.symbol === 'ICP_Ed25519' && <div className={styles.walletNoSupportActionsView}>
         <div className={styles.noSupportText}>
-        <img src={ICON_NOTICE} className={styles.noticeIcon}></img>
+          <img src={ICON_NOTICE} className={styles.noticeIcon}></img>
 
           Ed25519 address is no longer supported. Please import seed from Export</div>
         <div
@@ -176,5 +181,17 @@ const Wallet = ({
     </div>
   );
 };
+const AssetsICPCount = ({ icpAddress }: { icpAddress: string }) => {
+  const assetsObj: keyable = useSelector(selectAssetsICPCountByAddress(icpAddress));
+
+
+  if (assetsObj?.count === 0 || assetsObj?.count === undefined) return <></>;
+
+  return <div className={styles.assetsCont}><div className={styles.assetCount}>{assetsObj?.count === 0 ? '' : assetsObj?.count === 1 ? 'See Your 1 NFT' : `See Your ${assetsObj?.count} NFTs`}
+    {assetsObj.loading && <span className={styles.assetCountLoading}><ClipLoader color={'#fffff'}
+      size={12} />
+    </span>}
+  </div></div>
+}
 
 export default withRouter(Wallet);
