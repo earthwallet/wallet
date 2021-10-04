@@ -59,7 +59,7 @@ const Page = () => {
                             {accountGroup.sort((a: keyable, b: keyable) => a.order - b.order).map((account: keyable) =>
                               <img src={getSymbol(account.symbol)?.icon} className={styles.accountIcon} key={account.id} />
                             )}
-                            <AssetsICPCount loading={assetLoading} icpAddress={accountGroup.filter((account: keyable) => account.symbol === 'ICP')[0]?.address} />
+                            <AssetsICPCount icpAddress={accountGroup.filter((account: keyable) => account.symbol === 'ICP')[0]?.address} />
                           </div>
                         </div>
                         <div className={styles.infoBalance}><GroupBalance loading={loading} groupId={accountGroup[0].groupId} />
@@ -107,18 +107,18 @@ const GroupBalance = ({ groupId, loading }: { groupId: string, loading: boolean 
   return <div>${currentBalance?.balanceInUSD?.toFixed(3) || 0}</div>
 }
 
-const AssetsICPCount = ({ icpAddress, loading }: { icpAddress: string, loading: boolean }) => {
+const AssetsICPCount = ({ icpAddress }: { icpAddress: string }) => {
   const assetsObj: keyable = useSelector(selectAssetsICPCountByAddress(icpAddress));
 
-  if (loading)
-    return <div className={styles.assetCount}><SkeletonTheme color="#222" highlightColor="#000">
+
+
+
+  return <div className={styles.assetCount}>{assetsObj?.count === 0 ? '' : assetsObj?.count === 1 ? '1 NFT' : `${assetsObj?.count} NFTs`}
+    {assetsObj.loading && <span className={styles.assetCountLoading}><SkeletonTheme color="#222" highlightColor="#000">
       <Skeleton width={20} />
-    </SkeletonTheme></div>;
-    
-  if (assetsObj?.count === 0 || assetsObj?.count === null) {
-    return <></>
-  }
-  return <div className={styles.assetCount}>{assetsObj?.count === 1 ? '1 NFT' : `${assetsObj?.count} NFTs`} </div>
+    </SkeletonTheme>
+    </span>}
+  </div>
 }
 
 export default Page;
