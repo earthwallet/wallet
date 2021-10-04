@@ -113,6 +113,13 @@ export const selectAssetsICPCountByAddress =
   (address: string) => (state: AppState) =>
     state.entities.assetsCount.byId[address];
 
+export const selectAssetsICPByAddress =
+  (address: string) => (state: AppState) => {
+    return Object.keys(state.entities.assets.byId)
+      .map((id) => state.entities.assets.byId[id])
+      .filter((assets) => assets.address === address);
+  };
+
 export const selectAccountById = (address: string) => (state: AppState) =>
   state.entities.accounts.byId[address];
 

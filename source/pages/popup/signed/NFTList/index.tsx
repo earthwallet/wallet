@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react';
 import styles from './index.scss';
 import Header from '~components/Header';
@@ -5,24 +7,24 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
+import Swiper from 'react-id-swiper';
+import 'swiper/swiper-bundle.css'
+import { selectAssetsICPByAddress } from '~state/wallet';
+import { useSelector } from 'react-redux';
+
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
 
 
-const Wallet = ({
+const NFTList = ({
     match: {
         params: { address },
     },
 }: Props) => {
 
 
-
     const history = useHistory();
-
-
-
-
     return (
         <div className={styles.page}>
             <Header
@@ -31,9 +33,17 @@ const Wallet = ({
                 type={'wallet'}
                 backOverride={() => history.push('/home')}
             />
+            <div>
+                <div className={styles.tabnav}>
+                    NFT’s
+                </div>
+                <div className={styles.tabsep}></div>
+                <div className={styles.coverflowcont}>
+                    <AssetsCoverflow address={address} />
+                </div>
+            </div>
 
-            {address}
-            <Link
+            {/*  <Link
                 className={clsx(styles.resetLink, styles.bottomFixed)}
                 to={`/account/details/${address}`}
             >
@@ -50,9 +60,50 @@ const Wallet = ({
                         </div>
                     </div>
                 </div>
-            </Link>
+            </Link> */}
         </div>
     );
 };
 
-export default withRouter(Wallet);
+const AssetsCoverflow = ({ address }) => {
+    const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+
+    const history = useHistory();
+
+    const params = {
+        grabCursor: true,
+        centeredSlides: true,
+        coverflowEffect: {
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true
+        },
+        pagination: {
+            el: '.swiper-pagination'
+        }
+    }
+    return (
+        <Swiper
+            effect={'coverflow'}
+            slidesPerView={'auto'}
+            {...params}>
+            {assets?.map((asset, i: number) => {
+                return <div
+                    key={i}
+                    onClick={() => history.push(`/nftdetails/${asset.id}`)}
+                    className={styles.imagecont}
+                    style={{ backgroundImage: `url(https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier})` }} >
+                    <div className={styles.imagedesc}>
+                        <div
+                            onClick={() => history.push(`/nftdetails/${asset.id}`)}
+                            className={styles.imagetitle}>{asset?.title || asset?.tokenIndex}</div>
+                        <div className={styles.imagepagin}>{i + 1} of {assets.length}</div></div>
+                </div>
+            })}
+        </Swiper>
+    )
+};
+
+export default withRouter(NFTList);

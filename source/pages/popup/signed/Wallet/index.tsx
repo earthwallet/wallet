@@ -183,15 +183,18 @@ const Wallet = ({
 };
 const AssetsICPCount = ({ icpAddress }: { icpAddress: string }) => {
   const assetsObj: keyable = useSelector(selectAssetsICPCountByAddress(icpAddress));
+  const history = useHistory();
 
 
   if (assetsObj?.count === 0 || assetsObj?.count === undefined) return <></>;
 
-  return <div className={styles.assetsCont}><div className={styles.assetCount}>{assetsObj?.count === 0 ? '' : assetsObj?.count === 1 ? 'See Your 1 NFT' : `See Your ${assetsObj?.count} NFTs`}
-    {assetsObj.loading && <span className={styles.assetCountLoading}><ClipLoader color={'#fffff'}
-      size={12} />
-    </span>}
-  </div></div>
+  return <div
+    onClick={() => history.push('/account/assets/nftlist/' + icpAddress)}
+    className={styles.assetsCont}><div className={styles.assetCount}>{assetsObj?.count === 0 ? '' : assetsObj?.count === 1 ? 'See Your 1 NFT' : `See Your ${assetsObj?.count} NFTs`}
+      {assetsObj.loading && <span className={styles.assetCountLoading}><ClipLoader color={'#fffff'}
+        size={12} />
+      </span>}
+    </div></div>
 }
 
 export default withRouter(Wallet);
