@@ -11,9 +11,12 @@
 .fullImage {
   width: 375px;
   height: 430px;
-  background: url('../../../../assets/images/nft_bg.png');
+  //background: url('../../../../assets/images/nft_bg.png');
   position: absolute;
   z-index: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 .mainCont {
   position: absolute;

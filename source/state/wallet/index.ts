@@ -120,6 +120,9 @@ export const selectAssetsICPByAddress =
       .filter((assets) => assets.address === address);
   };
 
+  export const selectAssetById =
+  (id: string) => (state: AppState) => state.entities.assets.byId[id];
+
 export const selectAccountById = (address: string) => (state: AppState) =>
   state.entities.accounts.byId[address];
 
