@@ -181,4 +181,21 @@ export default class AssetsController implements IAssetsController {
       }
     }
   };
+
+  updateTokenCollectionDetails = async (asset: keyable) => {
+    const allTokens: keyable = await this.fetchICPAssets(
+      asset.address,
+      asset.canisterId
+    );
+
+    let tokens = allTokens.flat();
+    tokens.map((token: keyable) =>
+      store.dispatch(
+        storeEntities({
+          entity: 'assets',
+          data: [token],
+        })
+      )
+    );
+  };
 }

@@ -25,6 +25,7 @@ import indexToHash from './indexToHash'
 import { useHistory } from 'react-router-dom';
 import { selectAssetsICPByAddress } from '~state/wallet';
 import ICON_CARET from '~assets/images/icon_caret.svg';
+import useQuery from '~hooks/useQuery';
 
 const MIN_LENGTH = 6;
 
@@ -64,6 +65,9 @@ const WalletSendTokens = ({
   const [selectCredit, setSelectCredit] = useState<boolean>(true);
   const [selectedAsset, setSelectAsset] = useState<string>('');
   const [toggleAssetDropdown, setToggleAssetDropdown] = useState<boolean>(false);
+  const queryParams = useQuery();
+
+
 
   const toggle = React.useCallback(() => {
     setToggleAssetDropdown((v) => !v);
@@ -80,7 +84,15 @@ const WalletSendTokens = ({
   const history = useHistory();
 
   useEffect(() => {
-    setSelectAsset(selectedAccount?.symbol)
+    if (queryParams.get('assetid') === null) {
+      setSelectAsset(selectedAccount?.symbol)
+    }
+    else {
+      setSelectAsset(queryParams.get('assetid') || '');
+    }
+  }, [queryParams.get('assetid') !== null]);
+
+  useEffect(() => {
     controller.accounts
       .getBalancesOfAccount(selectedAccount)
       .then(() => {

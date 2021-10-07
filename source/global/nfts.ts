@@ -101,4 +101,7 @@ const LIVE_ICP_NFT_LIST_CANISTER_IDS = ICP_NFT_LIST.filter(
   (asset) => asset.isLive
 ).map((asset) => asset.id);
 
+export const getTokenCollectionInfo = (canisterId: string) =>
+  ICP_NFT_LIST.filter((asset) => asset.id === canisterId)[0];
+
 export default LIVE_ICP_NFT_LIST_CANISTER_IDS;
