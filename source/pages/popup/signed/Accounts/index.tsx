@@ -110,11 +110,8 @@ const GroupBalance = ({ groupId, loading }: { groupId: string, loading: boolean 
 const AssetsICPCount = ({ icpAddress }: { icpAddress: string }) => {
   const assetsObj: keyable = useSelector(selectAssetsICPCountByAddress(icpAddress));
 
-
-
-
-  return <div className={styles.assetCount}>{assetsObj?.count === 0 ? '' : assetsObj?.count === 1 ? '1 NFT' : `${assetsObj?.count} NFTs`}
-    {assetsObj.loading && <span className={styles.assetCountLoading}><SkeletonTheme color="#222" highlightColor="#000">
+  return <div className={styles.assetCount}>{(assetsObj?.count === 0 || assetsObj?.count === undefined) ? '' : assetsObj?.count === 1 ? '1 NFT' : `${assetsObj?.count} NFTs`}
+    {assetsObj?.loading && <span className={styles.assetCountLoading}><SkeletonTheme color="#222" highlightColor="#000">
       <Skeleton width={20} />
     </SkeletonTheme>
     </span>}

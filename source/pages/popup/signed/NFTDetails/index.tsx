@@ -27,9 +27,7 @@ const NFTDetails = ({
     return (
         <div className={styles.page}>
 
-            <div className={styles.fullImage} style={{ backgroundImage: `url(https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier})` }} >
-
-            </div>
+            <div className={styles.fullImage} style={{ backgroundImage: `url(https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier})` }} />
             <div className={styles.mainCont}>
                 <Header
                     showBackArrow

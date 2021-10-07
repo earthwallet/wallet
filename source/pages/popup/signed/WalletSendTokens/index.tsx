@@ -23,6 +23,8 @@ import { selectAssetBySymbol } from '~state/assets';
 import { DEFAULT_ICP_FEES } from '~global/constant';
 import indexToHash from './indexToHash'
 import { useHistory } from 'react-router-dom';
+import { selectAssetsICPByAddress } from '~state/wallet';
+import ICON_CARET from '~assets/images/icon_caret.svg';
 
 const MIN_LENGTH = 6;
 
@@ -45,6 +47,7 @@ const WalletSendTokens = ({
   const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
+  const assets: keyable = useSelector(selectAssetsICPByAddress(address));
 
 
   const dropDownRef = useRef(null);
@@ -59,20 +62,32 @@ const WalletSendTokens = ({
 
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
   const [selectCredit, setSelectCredit] = useState<boolean>(true);
+  const [selectedAsset, setSelectAsset] = useState<string>('');
+  const [toggleAssetDropdown, setToggleAssetDropdown] = useState<boolean>(false);
+
+  const toggle = React.useCallback(() => {
+    setToggleAssetDropdown((v) => !v);
+  }, []);
+
+  const toggleAndSetAsset = React.useCallback((asset: string) => {
+    toggle();
+    setSelectAsset(asset);
+  }, []);
+
 
   const [isBusy, setIsBusy] = useState(false);
   const [paymentHash, setPaymentHash] = useState<string>('');
   const history = useHistory();
 
   useEffect(() => {
-
+    setSelectAsset(selectedAccount?.symbol)
     controller.accounts
       .getBalancesOfAccount(selectedAccount)
       .then(() => {
       });
 
-    if (selectedAccount.symbol !== 'ICP') {
-      getFees(selectedAccount.symbol).then(fees => {
+    if (selectedAccount?.symbol !== 'ICP') {
+      getFees(selectedAccount?.symbol).then(fees => {
         const BTC_DECIMAL = 8;
         setFees(fees.fast.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber());
       })
@@ -95,21 +110,28 @@ const WalletSendTokens = ({
   }, [currentBalance, fees]);
 
   const onConfirm = useCallback(() => {
-    let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
-    maxAmount = parseFloat(maxAmount.toFixed(8));
-    if (selectedAmount !== 0 && selectedAmount <= maxAmount) {
+    if (selectedAsset !== selectedAccount.symbol) {
       setError('');
       setStep1(false);
     }
-    else if (selectedAmount === 0) {
-      setError(`Amount cannot be zero. Transaction fees is ${fees}${selectedAccount?.symbol}`);
-      setStep1(true);
-    }
     else {
-      setError(`Please check entered amount. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
-      setStep1(true);
+      let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
+      maxAmount = parseFloat(maxAmount.toFixed(8));
+      if (selectedAmount !== 0 && selectedAmount <= maxAmount) {
+        setError('');
+        setStep1(false);
+      }
+      else if (selectedAmount === 0) {
+        setError(`Amount cannot be zero. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+        setStep1(true);
+      }
+      else {
+        setError(`Please check entered amount. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+        setStep1(true);
+      }
     }
-  }, [fees, selectedAmount, currentBalance, selectedAccount]);
+
+  }, [fees, selectedAmount, currentBalance, selectedAccount, selectedAsset]);
 
   const onBackClick = useCallback(() => { setStep1(true); }, []);
   const transferForAll = async () => {
@@ -130,7 +152,7 @@ const WalletSendTokens = ({
         selectedRecp,
         selectedAmount.toString(),
         mnemonic,
-        selectedAccount.symbol,
+        selectedAccount?.symbol,
         { network: 'mainnet' }
       );
 
@@ -149,6 +171,14 @@ const WalletSendTokens = ({
     }
 
   }
+
+  const sendNFTICP = async () => {
+
+    //todo:send and clear All NFTs from redux cache for that address
+
+  }
+  console.log(sendNFTICP);
+
   const sendTxICP = async () => {
     setIsBusy(true);
     setTxError('');
@@ -220,21 +250,21 @@ const WalletSendTokens = ({
 
       let secret = '';
       try {
-        secret = selectedAccount.symbol !== 'ICP'
+        secret = selectedAccount?.symbol !== 'ICP'
           ? decryptString(selectedAccount?.vault.encryptedMnemonic, password)
           : decryptString(selectedAccount?.vault.encryptedJson, password);
       }
       catch (error) {
         setError('Wrong password! Please try again');
       }
-      if (selectedAccount.symbol === 'ICP' ? !isJsonString(secret) : !validateMnemonic(secret)) {
+      if (selectedAccount?.symbol === 'ICP' ? !isJsonString(secret) : !validateMnemonic(secret)) {
         setError('Wrong password! Please try again');
       }
     }
     , [selectedAccount]);
 
   const parseRecipientAndSetAddress = (recipient: string) => {
-    if (selectedAccount.symbol === 'ICP') {
+    if (selectedAccount?.symbol === 'ICP') {
       setSelectedRecp(recipient);
       const dashCount = (recipient.match(/-/g) || []).length;
       if (dashCount === 5 || dashCount === 10) {
@@ -290,72 +320,93 @@ const WalletSendTokens = ({
               Asset
             </div>
             <div className={styles.tokenSelectionDiv}>
-              <div className={styles.selectedNetworkDiv}>
-                <img
-                  className={styles.tokenLogo}
-                  src={getSymbol(selectedAccount.symbol)?.icon}
+              {selectedAsset === selectedAccount?.symbol && <SelectedAsset
+                onSelectedAssetClick={toggle}
+                label={selectedAccount?.symbol}
+                logo={getSymbol(selectedAccount?.symbol)?.icon || ''}
+                loading={currentBalance?.loading}
+                balanceText={currentBalance === null
+                  ? `Balance: `
+                  : `Balance: ${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
+                }
+              />}
+              {assets.filter((asset: keyable) => asset.tokenIdentifier === selectedAsset).map((asset: keyable) =>
+                <SelectedAsset
+                  onSelectedAssetClick={toggle}
+                  label={asset?.tokenIndex}
+                  loading={false}
+                  balanceText={'1 NFT'}
+                  logo={`https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`}
                 />
-                <div className={styles.tokenSelectionLabelDiv}>
-                  <div className={styles.tokenLabel}>{selectedAccount.symbol}</div>
-                  <div className={styles.tokenBalance}>
-                    {currentBalance?.loading
-                      ? <SkeletonTheme color="#222"
-                        highlightColor="#000">
-                        <Skeleton width={150} />
-                      </SkeletonTheme>
-                      : <span className={styles.tokenBalanceText}>Balance: {currentBalance &&
-                        `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} 
-                        ${currentBalance?.currency?.symbol}`
-                      }</span>
+              )}
+              {toggleAssetDropdown &&
+                <div className={styles.assetOptions}>
+                  <AssetOption
+                    onAssetOptionClick={() => toggleAndSetAsset(selectedAccount?.symbol || '')}
+                    label={selectedAccount?.symbol}
+                    logo={getSymbol(selectedAccount?.symbol)?.icon || ''}
+                    balanceText={currentBalance === null
+                      ? `Balance: `
+                      : `Balance: ${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
                     }
-                  </div>
+                  />
+                  {assets?.map((asset: keyable, index: number) => <AssetOption
+                    key={index}
+                    onAssetOptionClick={() => toggleAndSetAsset(asset?.tokenIdentifier || index)}
+                    label={asset?.tokenIndex}
+                    logo={`https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`}
+                    balanceText={'1 NFT'}
+                  />
+                  )}
                 </div>
-              </div>
+              }
             </div>
           </div>
-          <div
-            className={styles.earthInputLabel}>
-            Amount  {selectedAccount.symbol !== 'BTC' && <div
-              onClick={() => loadMaxAmount()}
-              className={styles.maxBtn}>Max</div>}
-          </div>
-          <input
-            autoCapitalize='off'
-            autoCorrect='off'
-            autoFocus={false}
-            className={clsx(styles.recipientAddress, styles.earthinput)}
-            key={'amount'}
-            max="1.00"
-            min="0.00"
-            onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
-            placeholder="amount up to 8 decimal places"
-            required
-            step="0.001"
-            type="number"
-            value={selectedAmount}
-          />
-          {error && (
+          {selectedAsset === selectedAccount?.symbol && <div>
             <div
-              className={styles.noBalanceError}
-            >
-              <Warning
-                isBelowInput
-                isDanger
-              >
-                {error}
-              </Warning>
+              className={styles.earthInputLabel}>
+              Amount  {selectedAccount?.symbol !== 'BTC' && <div
+                onClick={() => loadMaxAmount()}
+                className={styles.maxBtn}>Max</div>}
             </div>
-          )}
+            <input
+              autoCapitalize='off'
+              autoCorrect='off'
+              autoFocus={false}
+              className={clsx(styles.recipientAddress, styles.earthinput)}
+              key={'amount'}
+              max="1.00"
+              min="0.00"
+              onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
+              placeholder="amount up to 8 decimal places"
+              required
+              step="0.001"
+              type="number"
+              value={selectedAmount}
+            />
+            {error && (
+              <div
+                className={styles.noBalanceError}
+              >
+                <Warning
+                  isBelowInput
+                  isDanger
+                >
+                  {error}
+                </Warning>
+              </div>
+            )}
+          </div>}
         </div>
         : <div className={styles.confirmPage}>
           <div className={styles.confirmAmountCont}>
             <img
               className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
-              src={getSymbol(selectedAccount.symbol)?.icon}
+              src={getSymbol(selectedAccount?.symbol)?.icon}
             />
             <div>
-              <div className={styles.tokenText}>{getSymbol(selectedAccount.symbol)?.name}</div>
-              <div className={styles.tokenAmount}>{selectedAmount} {selectedAccount.symbol}</div>
+              <div className={styles.tokenText}>{getSymbol(selectedAccount?.symbol)?.name}</div>
+              <div className={styles.tokenAmount}>{selectedAmount} {selectedAccount?.symbol}</div>
               <div className={styles.tokenValue}>${(selectedAmount * currentUSDValue?.usd).toFixed(3)}</div>
             </div>
 
@@ -364,7 +415,7 @@ const WalletSendTokens = ({
             <div className={styles.feeRow}>
               <div className={styles.feeTitle}>Transaction Fee</div>
               <div>
-                <div className={styles.feeAmount}>{fees} {selectedAccount.symbol}</div>
+                <div className={styles.feeAmount}>{fees} {selectedAccount?.symbol}</div>
                 <div className={styles.feeValue}>${(fees * currentUSDValue?.usd).toFixed(2)}</div>
               </div>
             </div>
@@ -433,11 +484,63 @@ const WalletSendTokens = ({
         : <NextStepButton
           disabled={loadingSend || !!error || pass.length < MIN_LENGTH || !(paymentHash === undefined || paymentHash === '')}
           loading={isBusy || loadingSend}
-          onClick={() => selectedAccount.symbol === 'ICP' ? sendTxICP() : transferForAll()}>
+          onClick={() => selectedAccount?.symbol === 'ICP' ? sendTxICP() : transferForAll()}>
           {'Send'}
         </NextStepButton>}
     </div>
   </></div>;
 };
 
+
+interface SelectedAssetProps {
+  logo: string,
+  label: string,
+  loading: boolean,
+  balanceText: string,
+  onSelectedAssetClick: () => void
+}
+
+interface AssetOptionProps {
+  logo: string,
+  label: string,
+  balanceText: string,
+  onAssetOptionClick: () => void
+}
+
+const SelectedAsset = ({ logo, label, loading, balanceText, onSelectedAssetClick }: SelectedAssetProps) => <div
+  onClick={onSelectedAssetClick}
+  className={styles.selectedNetworkDiv}>
+  <img
+    className={styles.tokenLogo}
+    src={logo}
+  />
+  <div className={styles.tokenSelectionLabelDiv}>
+    <div className={styles.tokenLabel}>{label}</div>
+    <div className={styles.tokenBalance}>
+      {loading
+        ? <SkeletonTheme color="#222"
+          highlightColor="#000">
+          <Skeleton width={150} />
+        </SkeletonTheme>
+        : <span className={styles.tokenBalanceText}>{balanceText}</span>
+      }
+    </div>
+  </div>
+  <img className={styles.iconcaret} src={ICON_CARET} />
+</div>
+
+const AssetOption = ({ logo, label, balanceText, onAssetOptionClick }: AssetOptionProps) => <div
+  onClick={onAssetOptionClick}
+  className={clsx(styles.selectedNetworkDiv, styles.selectedNetworkDivOption)}>
+  <img
+    className={styles.tokenLogo}
+    src={logo}
+  />
+  <div className={styles.tokenSelectionLabelDiv}>
+    <div className={styles.tokenLabel}>{label}</div>
+    <div className={styles.tokenBalance}>
+      <span className={styles.tokenBalanceText}>{balanceText}</span>
+    </div>
+  </div>
+</div>
 export default withRouter(WalletSendTokens);

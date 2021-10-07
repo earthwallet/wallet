@@ -8,7 +8,6 @@ import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import Swiper from 'react-id-swiper';
-import 'swiper/swiper-bundle.css'
 import { selectAssetsICPByAddress } from '~state/wallet';
 import { useSelector } from 'react-redux';
 
