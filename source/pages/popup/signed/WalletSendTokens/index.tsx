@@ -184,6 +184,9 @@ const WalletSendTokens = ({
 
   }
 
+  const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.tokenIdentifier === assetId)[0]
+
+
   const sendNFTICP = async () => {
 
     //todo:send and clear All NFTs from redux cache for that address
@@ -342,15 +345,14 @@ const WalletSendTokens = ({
                   : `Balance: ${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
                 }
               />}
-              {assets.filter((asset: keyable) => asset.tokenIdentifier === selectedAsset).map((asset: keyable) =>
-                <SelectedAsset
-                  onSelectedAssetClick={toggle}
-                  label={asset?.tokenIndex}
-                  loading={false}
-                  balanceText={'1 NFT'}
-                  logo={`https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`}
-                />
-              )}
+              {getSelectedAsset(selectedAsset) && <SelectedAsset
+                onSelectedAssetClick={toggle}
+                label={getSelectedAsset(selectedAsset).tokenIndex}
+                loading={false}
+                balanceText={'1 NFT'}
+                logo={`https://${getSelectedAsset(selectedAsset).canisterId}.raw.ic0.app/?tokenid=${getSelectedAsset(selectedAsset).tokenIdentifier}`}
+              />
+              }
               {toggleAssetDropdown &&
                 <div className={styles.assetOptions}>
                   <AssetOption
@@ -411,10 +413,11 @@ const WalletSendTokens = ({
           </div>}
         </div>
         : <div className={styles.confirmPage}>
-          <div className={styles.confirmAmountCont}>
+          {selectedAsset === selectedAccount?.symbol ? <div className={styles.confirmAmountCont}>
             <img
               className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
               src={getSymbol(selectedAccount?.symbol)?.icon}
+
             />
             <div>
               <div className={styles.tokenText}>{getSymbol(selectedAccount?.symbol)?.name}</div>
@@ -423,7 +426,19 @@ const WalletSendTokens = ({
             </div>
 
           </div>
-          <div className={styles.feeCont}>
+            : <div className={styles.confirmAmountCont}>
+              <img
+                className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
+                src={`https://${getSelectedAsset(selectedAsset).canisterId}.raw.ic0.app/?tokenid=${getSelectedAsset(selectedAsset)?.tokenIdentifier}`}
+              />
+              <div>
+                <div className={styles.tokenText}>{getSelectedAsset(selectedAsset).tokenIndex}</div>
+                <div className={styles.tokenAmount}>1 NFT</div>
+              </div>
+
+            </div>
+          }
+          {selectedAsset === selectedAccount?.symbol && <div className={styles.feeCont}>
             <div className={styles.feeRow}>
               <div className={styles.feeTitle}>Transaction Fee</div>
               <div>
@@ -448,7 +463,7 @@ const WalletSendTokens = ({
               </div>
             </div>
 
-          </div>
+          </div>}
           <InputWithLabel
             data-export-password
             disabled={isBusy}

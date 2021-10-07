@@ -256,7 +256,13 @@
   color: #fafbfb;
   opacity: 0.7;
   margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
 }
+
 .tokenAmount {
   font-family: DM Mono;
   font-style: normal;
@@ -267,6 +273,11 @@
   color: #fafbfb;
   text-shadow: 0px 0px 11.4544px rgba(177, 204, 255, 0.89);
   margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
 }
 .confirmPage {
   padding: 0 24px;
