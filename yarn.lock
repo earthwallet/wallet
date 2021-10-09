@@ -1323,10 +1323,10 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.5.tgz#9283c9ce5b289a3c4f61c12757469e59377f81f3"
   integrity sha512-6nFkfkmSeV/rqSaS4oWHgmpnYw194f6hmWF5is6b0J1naJZoiD0NTc9AiUwPHvWsowkjuHErCZT1wa0jg+BLIA==
 
-"@earthwallet/assets@^0.3.3":
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/@earthwallet/assets/-/assets-0.3.3.tgz#93fd6e5bd16c789c430b0e3af4c9598d9858662e"
-  integrity sha512-nBtFvBpJX5orpGoR4olndbKVpPCwF2mQmSDXg5qS7lB2P+b8N7CF2ZohT+4i8nj4stpJn8FOSuE+qdlV9wnNCg==
+"@earthwallet/assets@^0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@earthwallet/assets/-/assets-0.3.6.tgz#0ff3db4fa034120f4043f8130022178e325967ac"
+  integrity sha512-npxfJQj+qLJFiYh3ycp2lWAoESzyFobP1Y2tXG+zk9BxOXU0SAyTDBohrYU+hxXF8NPA4ludlhVqDOXv8pq90w==
   dependencies:
     "@dfinity/agent" "^0.9.3"
     "@dfinity/principal" "^0.9.3"
