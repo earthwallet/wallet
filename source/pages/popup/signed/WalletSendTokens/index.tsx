@@ -26,6 +26,7 @@ import { useHistory } from 'react-router-dom';
 import { selectAssetsICPByAddress } from '~state/wallet';
 import ICON_CARET from '~assets/images/icon_caret.svg';
 import useQuery from '~hooks/useQuery';
+import { transferNFTsExt } from '@earthwallet/assets';
 
 const MIN_LENGTH = 6;
 
@@ -187,14 +188,26 @@ const WalletSendTokens = ({
   const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.tokenIdentifier === assetId)[0]
 
 
-  const sendNFTICP = async () => {
-
+  const sendNFTICP = async (assetId: string, fromIdentity: any, toAccountId: string) => {
+    let status
     //todo:send and clear All NFTs from redux cache for that address
+    if (typeof fromIdentity.toUint8Array === 'function') {
+      status = await transferNFTsExt(getSelectedAsset(assetId).canisterId, fromIdentity, toAccountId, getSelectedAsset(selectedAsset).tokenIndex);
 
+    }
+    else {
+      console.log(fromIdentity.toUint8Array(), fromIdentity)
+      const blob = fromIdentity.toBlob();
+      fromIdentity.toUint8Array = () => blob;
+      console.log(typeof fromIdentity.toUint8Array, fromIdentity, typeof fromIdentity.toBlob, 'else')
+      status = await transferNFTsExt(getSelectedAsset(assetId).canisterId, fromIdentity, toAccountId, getSelectedAsset(selectedAsset).tokenIndex);
+    }
+
+    console.log(status);
   }
   console.log(sendNFTICP);
 
-  const sendTxICP = async () => {
+  const tranfersAssetsICP = async () => {
     setIsBusy(true);
     setTxError('');
 
@@ -214,41 +227,45 @@ const WalletSendTokens = ({
       );
 
       setLoadingSend(true);
+      if (selectedAsset === selectedAccount?.symbol) {
+        try {
+          if (selectedAmount === 0) {
+            alert('Amount cannot be 0');
+          }
+          const index: BigInt = await send(
+            currentIdentity,
+            selectedRecp,
+            address,
+            selectedAmount,
+            'ICP'
+          );
 
-      try {
-        if (selectedAmount === 0) {
-          alert('Amount cannot be 0');
+          const hash: string = await indexToHash(index);
+
+
+          await controller.accounts
+            .getBalancesOfAccount(selectedAccount)
+            .then(() => {
+              if (hash !== null) {
+                history.replace(`/account/transaction/${hash}`)
+              }
+              else {
+                setLoadingSend(false);
+                setPaymentHash(index.toString() || '');
+                setIsBusy(false);
+              }
+            });
+
+        } catch (error) {
+          console.log(error);
+          setTxError("Please try again! Error: " + JSON.stringify(error));
+          setLoadingSend(false);
+          setIsBusy(false);
         }
+      } else {
+        let status = await transferNFTsExt(getSelectedAsset(selectedAsset).canisterId, currentIdentity, selectedRecp, getSelectedAsset(selectedAsset).tokenIndex);
 
-        const index: BigInt = await send(
-          currentIdentity,
-          selectedRecp,
-          address,
-          selectedAmount,
-          'ICP'
-        );
-
-        const hash: string = await indexToHash(index);
-
-
-        await controller.accounts
-          .getBalancesOfAccount(selectedAccount)
-          .then(() => {
-            if (hash !== null) {
-              history.replace(`/account/transaction/${hash}`)
-            }
-            else {
-              setLoadingSend(false);
-              setPaymentHash(index.toString() || '');
-              setIsBusy(false);
-            }
-          });
-
-      } catch (error) {
-        console.log(error);
-        setTxError("Please try again! Error: " + JSON.stringify(error));
-        setLoadingSend(false);
-        setIsBusy(false);
+        console.log(status)
       }
     } else {
       setError('Wrong password! Please try again');
@@ -511,7 +528,7 @@ const WalletSendTokens = ({
         : <NextStepButton
           disabled={loadingSend || !!error || pass.length < MIN_LENGTH || !(paymentHash === undefined || paymentHash === '')}
           loading={isBusy || loadingSend}
-          onClick={() => selectedAccount?.symbol === 'ICP' ? sendTxICP() : transferForAll()}>
+          onClick={() => selectedAccount?.symbol === 'ICP' ? tranfersAssetsICP() : transferForAll()}>
           {'Send'}
         </NextStepButton>}
     </div>
