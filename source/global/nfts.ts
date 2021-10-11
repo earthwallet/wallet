@@ -1,3 +1,5 @@
+import { keyable } from '~scripts/Background/types/IAssetsController';
+
 export const ICP_NFT_LIST = [
   {
     name: 'Cronic Critters',
@@ -103,5 +105,20 @@ const LIVE_ICP_NFT_LIST_CANISTER_IDS = ICP_NFT_LIST.filter(
 
 export const getTokenCollectionInfo = (canisterId: string) =>
   ICP_NFT_LIST.filter((asset) => asset.id === canisterId)[0];
+
+export const getTokenImageURL = (asset: keyable) => {
+  const isWrapped = getTokenCollectionInfo(asset?.canisterId)?.wrapped;
+  let imageURL = '';
+  if (isWrapped) {
+    if (getTokenCollectionInfo(asset?.canisterId)?.tokenImage !== undefined) {
+      let tokenImage = getTokenCollectionInfo(asset?.canisterId).tokenImage;
+      imageURL =
+        (tokenImage !== undefined && tokenImage(asset?.tokenIndex)) || '';
+    }
+  } else {
+    imageURL = `https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`;
+  }
+  return imageURL;
+};
 
 export default LIVE_ICP_NFT_LIST_CANISTER_IDS;

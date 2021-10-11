@@ -6,7 +6,7 @@ import Header from '~components/Header';
 import { useSelector } from 'react-redux';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { selectAssetById } from '~state/wallet';
-import { getTokenCollectionInfo } from '~global/nfts';
+import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
 import clsx from 'clsx';
 import { useController } from '~hooks/useController';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -43,7 +43,8 @@ const NFTDetails = ({
                     type={'wallet'}
                 ></Header>
             </div>
-            <div className={styles.fullImage} style={{ backgroundImage: `url(https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier})` }} >
+            <div className={styles.fullImage}
+                style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
                 <div className={styles.actions}>
                     <div onClick={() => history.push(`/account/send/${asset?.address}?assetid=${asset.id}`)}
                         className={styles.action}>Transfer</div>

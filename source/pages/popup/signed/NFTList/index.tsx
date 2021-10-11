@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 import ICON_GRID from '~assets/images/icon_grid.svg';
 import ICON_LIST from '~assets/images/icon_list.svg';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
-import { getTokenCollectionInfo } from '~global/nfts';
+import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -100,7 +100,7 @@ const AssetsList = ({ address }) => {
             key={i}
             onClick={() => history.push(`/nftdetails/${asset.id}`)}
             className={styles.listitem}>
-            <img className={styles.listicon} src={`https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`} />
+            <img className={styles.listicon} src={getTokenImageURL(asset)} />
             <div className={styles.listinfo}>
                 <div className={styles.listtitle}>{asset?.title || asset?.tokenIndex}</div>
                 <div className={styles.listsubtitle}>{getTokenCollectionInfo(asset?.canisterId)?.name}</div>
@@ -149,7 +149,7 @@ const AssetsCoverflow = ({ address }) => {
                     key={i}
                     onClick={() => history.push(`/nftdetails/${asset.id}`)}
                     className={styles.imagecont}
-                    style={{ backgroundImage: `url(https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier})` }} >
+                    style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
                     <div className={styles.imagedesc}>
                         <div
                             onClick={() => history.push(`/nftdetails/${asset.id}`)}

@@ -28,6 +28,7 @@ import ICON_CARET from '~assets/images/icon_caret.svg';
 import useQuery from '~hooks/useQuery';
 import { listNFTsExt, transferNFTsExt } from '@earthwallet/assets';
 import { getShortAddress } from '~utils/common';
+import { getTokenImageURL } from '~global/nfts';
 
 const MIN_LENGTH = 6;
 
@@ -371,7 +372,7 @@ const WalletSendTokens = ({
                 label={selectedAssetObj?.tokenIndex}
                 loading={false}
                 balanceText={'1 NFT'}
-                logo={`https://${selectedAssetObj?.canisterId}.raw.ic0.app/?tokenid=${selectedAssetObj?.tokenIdentifier}`}
+                logo={getTokenImageURL(selectedAssetObj)}
               />
               }
               {toggleAssetDropdown &&
@@ -389,7 +390,7 @@ const WalletSendTokens = ({
                     key={index}
                     onAssetOptionClick={() => toggleAndSetAsset(asset?.tokenIdentifier || index)}
                     label={asset?.tokenIndex}
-                    logo={`https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`}
+                    logo={getTokenImageURL(asset)}
                     balanceText={'1 NFT'}
                   />
                   )}
@@ -450,7 +451,7 @@ const WalletSendTokens = ({
             : <div className={styles.confirmAmountCont}>
               <img
                 className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
-                src={`https://${selectedAssetObj?.canisterId}.raw.ic0.app/?tokenid=${selectedAssetObj?.tokenIdentifier}`}
+                src={getTokenImageURL(selectedAssetObj)}
               />
               <div>
                 <div className={styles.tokenText}>{selectedAssetObj?.tokenIndex}</div>
