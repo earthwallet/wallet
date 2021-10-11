@@ -3,7 +3,7 @@ import { updateFiatPrice } from '~state/assets';
 import { IAssetState } from '~state/assets/types';
 import store from '~state/store';
 import type { IAssetsController, keyable } from '../types/IAssetsController';
-import { storeEntities } from '~state/entities';
+import { storeEntities, updateEntities } from '~state/entities';
 import { getNFTsFromCanisterExt } from '@earthwallet/assets';
 import { parseBigIntToString } from '~utils/common';
 import LIVE_ICP_NFT_LIST_CANISTER_IDS from '~global/nfts';
@@ -196,6 +196,21 @@ export default class AssetsController implements IAssetsController {
           data: [token],
         })
       )
+    );
+  };
+  updateTokenDetails = async ({
+    id,
+    address,
+  }: {
+    id: string;
+    address: string;
+  }) => {
+    store.dispatch(
+      updateEntities({
+        entity: 'assets',
+        key: id,
+        data: { address },
+      })
     );
   };
 }

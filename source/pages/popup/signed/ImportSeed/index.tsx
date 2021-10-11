@@ -12,7 +12,7 @@ import { ClipLoader } from 'react-spinners';
 import { getSymbol } from '~utils/common';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
 import { keyable } from '~scripts/Background/types/IMainController';
-import { principal_id_to_address, address_to_hex } from '@earthwallet/keyring/build/main/util/icp';
+import { principal_to_address } from '@earthwallet/keyring/build/main/util/icp';
 import { createWallet } from '@earthwallet/keyring';
 import { send } from '@earthwallet/keyring';
 import Warning from '~components/Warning';
@@ -61,9 +61,7 @@ const Page = () => {
       });
       const newKeypair = await createWallet(seed.trim(), 'ICP', 0);
       const currentIdentity = oldKeypair.identity;
-      const address = address_to_hex(
-        principal_id_to_address(currentIdentity.getPrincipal())
-      );
+      const address = principal_to_address(currentIdentity.getPrincipal());
       setLoadingSend(true);
       const selectedAmount = parseFloat((balance - fees).toFixed(8));
       try {

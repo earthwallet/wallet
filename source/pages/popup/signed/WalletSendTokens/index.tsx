@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { send } from '@earthwallet/keyring';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { isJsonString } from '~utils/common';
-import { principal_id_to_address, address_to_hex } from '@earthwallet/keyring/build/main/util/icp';
+import { principal_to_address } from '@earthwallet/keyring/build/main/util/icp';
 import { getSymbol } from '~utils/common';
 
 import { decryptString } from '~utils/vault';
@@ -26,7 +26,8 @@ import { useHistory } from 'react-router-dom';
 import { selectAssetsICPByAddress } from '~state/wallet';
 import ICON_CARET from '~assets/images/icon_caret.svg';
 import useQuery from '~hooks/useQuery';
-import { transferNFTsExt } from '@earthwallet/assets';
+import { listNFTsExt, transferNFTsExt } from '@earthwallet/assets';
+import { getShortAddress } from '~utils/common';
 
 const MIN_LENGTH = 6;
 
@@ -51,6 +52,7 @@ const WalletSendTokens = ({
 
   const assets: keyable = useSelector(selectAssetsICPByAddress(address));
 
+  console.log(assets, 'assets');
 
   const dropDownRef = useRef(null);
   const [selectedRecp, setSelectedRecp] = useState<string>('');
@@ -64,7 +66,9 @@ const WalletSendTokens = ({
 
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
   const [selectCredit, setSelectCredit] = useState<boolean>(true);
-  const [selectedAsset, setSelectAsset] = useState<string>('');
+  const [selectedAsset, setSelectedAsset] = useState<string>('');
+  const [selectedAssetObj, setSelectedAssetObj] = useState<keyable>({});
+
   const [toggleAssetDropdown, setToggleAssetDropdown] = useState<boolean>(false);
   const queryParams = useQuery();
 
@@ -76,20 +80,22 @@ const WalletSendTokens = ({
 
   const toggleAndSetAsset = React.useCallback((asset: string) => {
     toggle();
-    setSelectAsset(asset);
+    setSelectedAsset(asset);
+    setSelectedAssetObj(getSelectedAsset(asset));
   }, []);
 
 
   const [isBusy, setIsBusy] = useState(false);
-  const [paymentHash, setPaymentHash] = useState<string>('');
+  const [txCompleteTxt, setTxCompleteTxt] = useState<string>('');
   const history = useHistory();
 
   useEffect(() => {
     if (queryParams.get('assetid') === null) {
-      setSelectAsset(selectedAccount?.symbol)
+      setSelectedAsset(selectedAccount?.symbol)
     }
     else {
-      setSelectAsset(queryParams.get('assetid') || '');
+      setSelectedAsset(queryParams.get('assetid') || '');
+      setSelectedAssetObj(getSelectedAsset(queryParams.get('assetid') || ''))
     }
   }, [queryParams.get('assetid') !== null]);
 
@@ -174,7 +180,7 @@ const WalletSendTokens = ({
         .then(() => {
         });
       setLoadingSend(false);
-      setPaymentHash(hash || '');
+      setTxCompleteTxt('Payment Done! Check transactions for more details.' || hash || '');
       setIsBusy(false);
     } catch (error) {
       console.log(error);
@@ -187,27 +193,7 @@ const WalletSendTokens = ({
 
   const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.tokenIdentifier === assetId)[0]
 
-
-  const sendNFTICP = async (assetId: string, fromIdentity: any, toAccountId: string) => {
-    let status
-    //todo:send and clear All NFTs from redux cache for that address
-    if (typeof fromIdentity.toUint8Array === 'function') {
-      status = await transferNFTsExt(getSelectedAsset(assetId).canisterId, fromIdentity, toAccountId, getSelectedAsset(selectedAsset).tokenIndex);
-
-    }
-    else {
-      console.log(fromIdentity.toUint8Array(), fromIdentity)
-      const blob = fromIdentity.toBlob();
-      fromIdentity.toUint8Array = () => blob;
-      console.log(typeof fromIdentity.toUint8Array, fromIdentity, typeof fromIdentity.toBlob, 'else')
-      status = await transferNFTsExt(getSelectedAsset(assetId).canisterId, fromIdentity, toAccountId, getSelectedAsset(selectedAsset).tokenIndex);
-    }
-
-    console.log(status);
-  }
-  console.log(sendNFTICP);
-
-  const tranfersAssetsICP = async () => {
+  const transferAssetsForICP = async () => {
     setIsBusy(true);
     setTxError('');
 
@@ -222,9 +208,7 @@ const WalletSendTokens = ({
 
     if (isJsonString(secret)) {
       const currentIdentity = Secp256k1KeyIdentity.fromJSON(secret);
-      const address = address_to_hex(
-        principal_id_to_address(currentIdentity.getPrincipal())
-      );
+      const address = principal_to_address(currentIdentity.getPrincipal());
 
       setLoadingSend(true);
       if (selectedAsset === selectedAccount?.symbol) {
@@ -251,7 +235,7 @@ const WalletSendTokens = ({
               }
               else {
                 setLoadingSend(false);
-                setPaymentHash(index.toString() || '');
+                setTxCompleteTxt('Payment Done! Check transactions for more details.');
                 setIsBusy(false);
               }
             });
@@ -263,9 +247,19 @@ const WalletSendTokens = ({
           setIsBusy(false);
         }
       } else {
-        let status = await transferNFTsExt(getSelectedAsset(selectedAsset).canisterId, currentIdentity, selectedRecp, getSelectedAsset(selectedAsset).tokenIndex);
-
-        console.log(status)
+        let status = await transferNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedRecp, selectedAssetObj?.tokenIndex);
+        if (status === 'TOKEN_LISTED_FOR_SALE') {
+          await listNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedAssetObj?.tokenIndex, 0, true);
+          status = await transferNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedRecp, selectedAssetObj?.tokenIndex);
+        }
+        console.log(status, selectedAsset);
+        setTxCompleteTxt('Successfully transferred NFT to ' + getShortAddress(selectedRecp, 3));
+        setLoadingSend(false);
+        setIsBusy(false);
+        //update asset balances after tx
+        controller.assets.updateTokenDetails({ id: selectedAsset, address: selectedRecp });
+        controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' });
+        controller.assets.getICPAssetsOfAccount({ address: selectedRecp, symbol: 'ICP' });
       }
     } else {
       setError('Wrong password! Please try again');
@@ -313,7 +307,7 @@ const WalletSendTokens = ({
 
   return <div className={styles.page}><>
     <Header
-      backOverride={step1 ? undefined : paymentHash === '' ? onBackClick : undefined}
+      backOverride={step1 ? undefined : txCompleteTxt === '' ? onBackClick : undefined}
       centerText
       showMenu
       text={'Send'}
@@ -321,10 +315,9 @@ const WalletSendTokens = ({
     <div className={styles.pagecont}
       ref={dropDownRef}
     >
-      {!(paymentHash === undefined || paymentHash === '') && <div
-
+      {!(txCompleteTxt === undefined || txCompleteTxt === '') && <div
         className={styles.paymentDone}>
-        Payment Done! Check transactions for more details.
+        {txCompleteTxt}
       </div>}
       {step1
         ? <div style={{ width: '100vw' }}>
@@ -364,10 +357,10 @@ const WalletSendTokens = ({
               />}
               {getSelectedAsset(selectedAsset) && <SelectedAsset
                 onSelectedAssetClick={toggle}
-                label={getSelectedAsset(selectedAsset).tokenIndex}
+                label={selectedAssetObj?.tokenIndex}
                 loading={false}
                 balanceText={'1 NFT'}
-                logo={`https://${getSelectedAsset(selectedAsset).canisterId}.raw.ic0.app/?tokenid=${getSelectedAsset(selectedAsset).tokenIdentifier}`}
+                logo={`https://${selectedAssetObj?.canisterId}.raw.ic0.app/?tokenid=${selectedAssetObj?.tokenIdentifier}`}
               />
               }
               {toggleAssetDropdown &&
@@ -446,10 +439,10 @@ const WalletSendTokens = ({
             : <div className={styles.confirmAmountCont}>
               <img
                 className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
-                src={`https://${getSelectedAsset(selectedAsset).canisterId}.raw.ic0.app/?tokenid=${getSelectedAsset(selectedAsset)?.tokenIdentifier}`}
+                src={`https://${selectedAssetObj?.canisterId}.raw.ic0.app/?tokenid=${selectedAssetObj?.tokenIdentifier}`}
               />
               <div>
-                <div className={styles.tokenText}>{getSelectedAsset(selectedAsset).tokenIndex}</div>
+                <div className={styles.tokenText}>{selectedAssetObj?.tokenIndex}</div>
                 <div className={styles.tokenAmount}>1 NFT</div>
               </div>
 
@@ -526,9 +519,9 @@ const WalletSendTokens = ({
         </NextStepButton>
 
         : <NextStepButton
-          disabled={loadingSend || !!error || pass.length < MIN_LENGTH || !(paymentHash === undefined || paymentHash === '')}
+          disabled={loadingSend || !!error || pass.length < MIN_LENGTH || !(txCompleteTxt === undefined || txCompleteTxt === '')}
           loading={isBusy || loadingSend}
-          onClick={() => selectedAccount?.symbol === 'ICP' ? tranfersAssetsICP() : transferForAll()}>
+          onClick={() => selectedAccount?.symbol === 'ICP' ? transferAssetsForICP() : transferForAll()}>
           {'Send'}
         </NextStepButton>}
     </div>

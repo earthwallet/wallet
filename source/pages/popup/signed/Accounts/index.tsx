@@ -16,8 +16,8 @@ const Page = () => {
   const history = useHistory();
   const accountGroups = useSelector(selectActiveAccountGroups);
   const loading = useGetAccountGroupBalances(accountGroups);
-  const assetLoading = useGetAccountGroupAssetBalances(accountGroups);
-  console.log(assetLoading);
+
+  useGetAccountGroupAssetBalances(accountGroups);
 
   return (
     <div className={styles.page}>
