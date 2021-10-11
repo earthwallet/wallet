@@ -87,7 +87,7 @@ const ListNFT = ({
 
     const listNFT = async () => {
 
-        if (selectedAmount <= 0) {
+        if (selectedAmount < 0) {
             setError(`Amount cannot be negative.`);
             return;
         }

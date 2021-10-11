@@ -207,12 +207,23 @@ export default class AssetsController implements IAssetsController {
     address: string;
     price?: number;
   }) => {
-    if (price == undefined) {
+    if (price === undefined || price === null) {
       store.dispatch(
         updateEntities({
           entity: 'assets',
           key: id,
           data: { address },
+        })
+      );
+    } else if (price === 0) {
+      store.dispatch(
+        updateEntities({
+          entity: 'assets',
+          key: id,
+          data: {
+            address,
+            forSale: false,
+          },
         })
       );
     } else {
