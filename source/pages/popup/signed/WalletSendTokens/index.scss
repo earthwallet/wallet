@@ -53,10 +53,10 @@
 }
 .paymentDone {
   text-align: center;
-  border: 1px dashed #216321;
-  margin: auto 24px;
-  padding: 4px;
+  border: 1px dashed #1b8d1b;
+  padding: 8px;
   border-radius: 5px;
+  margin: 24px;
 }
 
 .earthlink {
@@ -460,4 +460,8 @@
 
 .selectedNetworkDivOption {
   border-radius: 2px;
+}
+
+.selectedNetworkDiv_noPointer {
+  cursor: auto;
 }

@@ -13,9 +13,11 @@ export interface IAssetsController {
   updateTokenDetails: ({
     id,
     address,
+    price,
   }: {
     id: string;
     address: string;
+    price?: number;
   }) => Promise<void>;
 }
 

@@ -201,16 +201,32 @@ export default class AssetsController implements IAssetsController {
   updateTokenDetails = async ({
     id,
     address,
+    price,
   }: {
     id: string;
     address: string;
+    price?: number;
   }) => {
-    store.dispatch(
-      updateEntities({
-        entity: 'assets',
-        key: id,
-        data: { address },
-      })
-    );
+    if (price == undefined) {
+      store.dispatch(
+        updateEntities({
+          entity: 'assets',
+          key: id,
+          data: { address },
+        })
+      );
+    } else {
+      store.dispatch(
+        updateEntities({
+          entity: 'assets',
+          key: id,
+          data: {
+            address,
+            forSale: true,
+            info: { price: price * 100000000 },
+          },
+        })
+      );
+    }
   };
 }

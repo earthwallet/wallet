@@ -61,7 +61,6 @@ const PopupRouter = () => {
           key={key}
         >
           <ToastProvider>
-
             <Switch location={item}>
               <Route path="/popup.html">
                 <Redirect to="/accounts" />
@@ -108,14 +107,14 @@ const PopupRouter = () => {
               <Route path="/account/assets/nftlist/:address">
                 {wrapWithErrorBoundary(<NFTList />, 'accounts')}
               </Route>
+              <Route path="/account/listnft/:address">
+                {wrapWithErrorBoundary(<ListNFT />, 'accounts')}
+              </Route>
               <Route path="/nftdetails/:assetid">
                 {wrapWithErrorBoundary(<NFTDetails />, 'accounts')}
               </Route>
               <Route path="/createnft/:address">
                 {wrapWithErrorBoundary(<CreateNFT />, 'accounts')}
-              </Route>
-              <Route path="/listnft/:assetid">
-                {wrapWithErrorBoundary(<ListNFT />, 'accounts')}
               </Route>
             </Switch>
           </ToastProvider>

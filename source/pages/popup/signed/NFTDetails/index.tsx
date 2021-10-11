@@ -47,7 +47,8 @@ const NFTDetails = ({
                 <div className={styles.actions}>
                     <div onClick={() => history.push(`/account/send/${asset?.address}?assetid=${asset.id}`)}
                         className={styles.action}>Transfer</div>
-                    <div onClick={() => history.push(`/listnft/${asset?.id}?update=${asset?.forSale ? 'true' : 'false'}`)}
+                    <div
+                        onClick={() => history.push(`/account/listnft/${asset?.address}?assetid=${asset.id}`)}
                         className={clsx(styles.action, styles.secAction)}>{asset?.forSale ? 'Update Listing' : 'List for Sale'}</div>
                 </div>
             </div>
@@ -63,7 +64,7 @@ const NFTDetails = ({
                                 ? 'Listed for sale'
                                 : 'Unlisted'}
                         </div>
-                        {asset?.forSale && <div className={styles.price}>{Math.floor(asset?.info.price / 100000000)} ICP</div>}
+                        {asset?.forSale && <div className={styles.price}>{(asset?.info.price / 100000000).toFixed(3)} ICP</div>}
                     </div>
                     <div className={styles.sep}></div>
                     <div className={styles.creatorCont}>

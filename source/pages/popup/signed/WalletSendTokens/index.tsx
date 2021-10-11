@@ -52,7 +52,6 @@ const WalletSendTokens = ({
 
   const assets: keyable = useSelector(selectAssetsICPByAddress(address));
 
-  console.log(assets, 'assets');
 
   const dropDownRef = useRef(null);
   const [selectedRecp, setSelectedRecp] = useState<string>('');
@@ -129,7 +128,7 @@ const WalletSendTokens = ({
   }, [currentBalance, fees]);
 
   const onConfirm = useCallback(() => {
-    if (selectedAsset !== selectedAccount.symbol) {
+    if (selectedAsset !== selectedAccount?.symbol) {
       setError('');
       setStep1(false);
     }
@@ -247,19 +246,30 @@ const WalletSendTokens = ({
           setIsBusy(false);
         }
       } else {
-        let status = await transferNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedRecp, selectedAssetObj?.tokenIndex);
-        if (status === 'TOKEN_LISTED_FOR_SALE') {
-          await listNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedAssetObj?.tokenIndex, 0, true);
-          status = await transferNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedRecp, selectedAssetObj?.tokenIndex);
+        try {
+          if (selectedAssetObj?.forSale === true) {
+            await listNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedAssetObj?.tokenIndex, 0, true);
+            await transferNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedRecp, selectedAssetObj?.tokenIndex);
+          }
+          else {
+            await transferNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedRecp, selectedAssetObj?.tokenIndex);
+          }
+
+          setTxCompleteTxt('Successfully transferred NFT to ' + getShortAddress(selectedRecp, 3));
+          setLoadingSend(false);
+          setIsBusy(false);
+          //update asset balances after tx
+          controller.assets.updateTokenDetails({ id: selectedAsset, address: selectedRecp });
+          controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' });
+          controller.assets.getICPAssetsOfAccount({ address: selectedRecp, symbol: 'ICP' });
+
+        } catch (error) {
+          console.log(error);
+          setTxError("Please try again! Error: " + JSON.stringify(error));
+          setLoadingSend(false);
+          setIsBusy(false);
         }
-        console.log(status, selectedAsset);
-        setTxCompleteTxt('Successfully transferred NFT to ' + getShortAddress(selectedRecp, 3));
-        setLoadingSend(false);
-        setIsBusy(false);
-        //update asset balances after tx
-        controller.assets.updateTokenDetails({ id: selectedAsset, address: selectedRecp });
-        controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' });
-        controller.assets.getICPAssetsOfAccount({ address: selectedRecp, symbol: 'ICP' });
+
       }
     } else {
       setError('Wrong password! Please try again');
@@ -350,6 +360,7 @@ const WalletSendTokens = ({
                 label={selectedAccount?.symbol}
                 logo={getSymbol(selectedAccount?.symbol)?.icon || ''}
                 loading={currentBalance?.loading}
+                showDropdown={assets?.length === 0 || assets?.length === undefined}
                 balanceText={currentBalance === null
                   ? `Balance: `
                   : `Balance: ${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
@@ -534,6 +545,7 @@ interface SelectedAssetProps {
   label: string,
   loading: boolean,
   balanceText: string,
+  showDropdown?: boolean,
   onSelectedAssetClick: () => void
 }
 
@@ -544,9 +556,9 @@ interface AssetOptionProps {
   onAssetOptionClick: () => void
 }
 
-const SelectedAsset = ({ logo, label, loading, balanceText, onSelectedAssetClick }: SelectedAssetProps) => <div
-  onClick={onSelectedAssetClick}
-  className={styles.selectedNetworkDiv}>
+const SelectedAsset = ({ logo, label, loading, balanceText, onSelectedAssetClick, showDropdown }: SelectedAssetProps) => <div
+  onClick={showDropdown ? console.log : onSelectedAssetClick}
+  className={clsx(styles.selectedNetworkDiv, showDropdown && styles.selectedNetworkDiv_noPointer)}>
   <img
     className={styles.tokenLogo}
     src={logo}
@@ -563,7 +575,7 @@ const SelectedAsset = ({ logo, label, loading, balanceText, onSelectedAssetClick
       }
     </div>
   </div>
-  <img className={styles.iconcaret} src={ICON_CARET} />
+  {!showDropdown && <img className={styles.iconcaret} src={ICON_CARET} />}
 </div>
 
 const AssetOption = ({ logo, label, balanceText, onAssetOptionClick }: AssetOptionProps) => <div

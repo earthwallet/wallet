@@ -9,7 +9,7 @@ import { messagesHandler } from './controllers/MessageHandler';
 import type { IMainController } from './types/IMainController';
 
 browser.runtime.onInstalled.addListener((): void => {
-  console.emoji('🦄', 'extension installed');
+  console.emoji('🌎', 'earth extension installed');
 });
 
 declare global {

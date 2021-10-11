@@ -34,7 +34,6 @@ const NFTList = ({
                 className={styles.header}
                 showMenu
                 type={'wallet'}
-                backOverride={() => history.push('/home')}
             />
             <div>
                 <div className={styles.nav}>
