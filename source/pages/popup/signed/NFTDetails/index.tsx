@@ -50,7 +50,10 @@ const NFTDetails = ({
                         className={styles.action}>Transfer</div>
                     <div
                         onClick={() => history.push(`/account/listnft/${asset?.address}?assetid=${asset.id}`)}
-                        className={clsx(styles.action, styles.secAction)}>{asset?.forSale ? 'Update Listing' : 'List for Sale'}</div>
+                        className={clsx(styles.action, styles.secAction)}>{asset?.forSale ? 'Update' : 'List for Sale'}</div>
+                    {asset?.forSale && <div
+                        onClick={() => history.push(`/account/listnft/${asset?.address}?assetid=${asset.id}&cancel=true`)}
+                        className={clsx(styles.action, styles.secAction)}>Cancel</div>}
                 </div>
             </div>
             <div className={styles.mainCont}>

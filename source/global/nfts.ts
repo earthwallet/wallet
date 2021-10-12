@@ -97,6 +97,15 @@ export const ICP_NFT_LIST = [
       '10,000 randomly generated, unique collectible clowns with proof of ownership stored on the Internet Computer blockchain. Created as a reference to a meme comparing the Internet Computer token (ICP) with the Insane Clown Posse - an American hip hop duo founded in 1989.',
     icon: 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/1',
   },
+  {
+    name: 'Faceted Meninas',
+    id: 'k4qsa-4aaaa-aaaah-qbvnq-cai',
+    isLive: false,
+    standard: 'EXT',
+    description:
+      'Faceted Meninas is a creature species that holds the power of the universe to act as a magic pillar giving their allies the essence of outer worlds to maximize their powers.',
+    icon: 'https://k4qsa-4aaaa-aaaah-qbvnq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=3h23b-3akor-uwiaa-aaaaa-b4anl-maqca-aaabq-a',
+  },
 ];
 
 const LIVE_ICP_NFT_LIST_CANISTER_IDS = ICP_NFT_LIST.filter(

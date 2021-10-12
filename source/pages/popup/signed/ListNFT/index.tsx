@@ -38,6 +38,8 @@ const ListNFT = ({
     const selectedAccount = useSelector(selectAccountById(address));
     const [selectedAsset, setSelectedAsset] = useState<string>('');
     const [selectedAssetObj, setSelectedAssetObj] = useState<keyable>({});
+    const [cancelListing, setCancelListing] = useState<boolean>(false);
+
     const [txCompleteTxt, setTxCompleteTxt] = useState<string>('');
 
     const assets: keyable = useSelector(selectAssetsICPByAddress(address));
@@ -64,6 +66,14 @@ const ListNFT = ({
             setSelectedAmount(parseFloat((existingAmount / 100000000).toFixed(8)) || 0)
         }
     }, [queryParams.get('assetid') !== null]);
+
+    useEffect(() => {
+        if (queryParams.get('cancel') === 'true') {
+            setCancelListing(true);
+            setSelectedAmount(0);
+        }
+
+    }, [queryParams.get('cancel') !== null]);
 
     const onPassChange = useCallback(
         (password: string) => {
@@ -140,31 +150,38 @@ const ListNFT = ({
         <Header
             showBackArrow
             text={selectedAssetObj?.forSale
-                ? 'Update Price for Public Sale'
+                ? cancelListing ? 'Cancel Public Sale'
+                    : 'Update Price for Public Sale'
                 : 'List NFT for Public sale'}
             type={'wallet'}
         ><div style={{ width: 39 }} />
         </Header>
-        <div>
-            <div className={styles.earthInputLabel}>Price in ICP</div>
-            <input
-                autoCapitalize='off'
-                autoCorrect='off'
-                autoFocus={false}
-                className={clsx(styles.recipientAddress, styles.earthinput)}
-                key={'price'}
-                max="1.00"
-                min="0.00"
-                onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
-                placeholder="price up to 8 decimal places"
-                required
-                step="0.001"
-                type="number"
-                value={selectedAmount}
-            />
-        </div>
-        <div className={styles.info}>Enter a price upto 8 decimal places for public sale. Listing is free and on sale of NFT, 2.0% of the amount will be deducted towards 1.0% Creators Royalty fee,
-            and a 1% Network Marketplace fee</div>
+        {cancelListing ?
+
+            <div>
+                <div className={clsx(styles.info, styles.cancelinfo)}>Cancel listing is free and will unlist your NFT from public sale.</div>
+            </div> :
+            <div>
+                <div className={styles.earthInputLabel}>Price in ICP</div>
+                <input
+                    autoCapitalize='off'
+                    autoCorrect='off'
+                    autoFocus={false}
+                    className={clsx(styles.recipientAddress, styles.earthinput)}
+                    key={'price'}
+                    max="1.00"
+                    min="0.00"
+                    onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
+                    placeholder="price up to 8 decimal places"
+                    required
+                    step="0.001"
+                    type="number"
+                    value={selectedAmount}
+                />
+                <div className={styles.info}>Enter a price upto 8 decimal places for public sale. Listing is free and on sale of NFT, 2.0% of the amount will be deducted towards 1.0% Creators Royalty fee,
+                    and a 1% Network Marketplace fee</div>
+            </div>}
+
         <div
             className={styles.passwordCont}
         >
@@ -203,7 +220,13 @@ const ListNFT = ({
                 loading={isBusy || loadingSend}
                 onClick={() => listNFT()}
             >
-                {selectedAssetObj?.forSale ? 'Update Price' : 'List for Public Sale'}
+                {
+                    selectedAssetObj?.forSale
+                        ? cancelListing
+                            ? 'Cancel Public Sale'
+                            : 'Update Price'
+                        : 'List for Public Sale'
+                }
             </NextStepButton>
         </div>
     </div>;
