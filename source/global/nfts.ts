@@ -28,8 +28,8 @@ export const ICP_NFT_LIST = [
     description:
       'ICPunks wrapped under the EXT standard. 10,000 randomly generated, unique collectible clowns with proof of ownership stored on the Internet Computer blockchain. Created as a reference to a meme comparing the Internet Computer token (ICP) with the Insane Clown Posse.',
     icon: 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/1',
-    tokenImage: (tokenNumber: string) =>
-      `https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/${tokenNumber}`,
+    tokenImage: (tokenIndex: string) =>
+      `https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/${tokenIndex}`,
   },
   {
     name: 'ICP News',
@@ -47,7 +47,7 @@ export const ICP_NFT_LIST = [
     standard: 'EXT',
     description:
       'Wearable NFTs, usable with the Cronics NFT collection. A Play-to-earn NFT game being developed by ToniqLabs for the Internet Computer. Cronics  incorporates breeding mechanics, wearable NFTs, a p2e minigame ecosystem, and more.',
-    icon: 'https://tde7l-3qaaa-aaaah-qansa-cai.raw.ic0.app/?tokenid=gvmdu-vikor-uwiaa-aaaaa-b4adm-qaqca-aakby-a',
+    icon: 'https://entrepot.app/collections/tde7l-3qaaa-aaaah-qansa-cai.jpg',
   },
   {
     name: 'ICMojis',
@@ -76,8 +76,8 @@ export const ICP_NFT_LIST = [
     description:
       'IC Drip are randomly generated NFTs with meta-commerce shopping carts for outfits and personas stored on chain on the Internet Computer.',
     icon: 'https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app/?tokenId=1',
-    tokenImage: (tokenNumber: string) =>
-      `https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app/?tokenId=${tokenNumber}`,
+    tokenImage: (tokenIndex: string) =>
+      `https://d3ttm-qaaaa-aaaai-qam4a-cai.raw.ic0.app/?tokenId=${tokenIndex}`,
   },
   {
     name: 'Wing',
@@ -100,7 +100,7 @@ export const ICP_NFT_LIST = [
   {
     name: 'Faceted Meninas',
     id: 'k4qsa-4aaaa-aaaah-qbvnq-cai',
-    isLive: false,
+    isLive: true,
     standard: 'EXT',
     description:
       'Faceted Meninas is a creature species that holds the power of the universe to act as a magic pillar giving their allies the essence of outer worlds to maximize their powers.',
@@ -120,9 +120,9 @@ export const getTokenImageURL = (asset: keyable) => {
   let imageURL = '';
   if (isWrapped) {
     if (getTokenCollectionInfo(asset?.canisterId)?.tokenImage !== undefined) {
-      let tokenImage = getTokenCollectionInfo(asset?.canisterId).tokenImage;
+      let _tokenImage = getTokenCollectionInfo(asset?.canisterId).tokenImage;
       imageURL =
-        (tokenImage !== undefined && tokenImage(asset?.tokenIndex)) || '';
+        (_tokenImage !== undefined && _tokenImage(asset?.tokenIndex)) || '';
     }
   } else {
     imageURL = `https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`;

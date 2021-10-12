@@ -465,7 +465,7 @@ const WalletSendTokens = ({
               <div className={styles.feeTitle}>Transaction Fee</div>
               <div>
                 <div className={styles.feeAmount}>{fees} {selectedAccount?.symbol}</div>
-                <div className={styles.feeValue}>${(fees * currentUSDValue?.usd).toFixed(2)}</div>
+                <div className={styles.feeValue}>${(fees * currentUSDValue?.usd).toFixed(3)}</div>
               </div>
             </div>
             {false && selectCredit && <div className={styles.feeRow}>
