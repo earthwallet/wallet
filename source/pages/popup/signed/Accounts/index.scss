@@ -241,3 +241,20 @@
   height: 15px;
   margin-right: 3px;
 }
+
+.assetCount {
+  margin-left: 3px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  color: #fafbfb;
+  opacity: 0.54;
+  display: flex;
+  align-items: center;
+}
+
+.assetCountLoading {
+  margin-left: 3px;
+}

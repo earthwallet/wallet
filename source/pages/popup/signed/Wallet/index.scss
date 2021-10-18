@@ -338,3 +338,51 @@
   height: 15px;
   margin-right: 12px;
 }
+
+.assetsCont {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  /* identical to box height, or 24px */
+
+  text-align: center;
+  text-transform: capitalize;
+
+  color: #ffffff;
+  background: linear-gradient(
+      360deg,
+      rgba(36, 150, 255, 0.1617) 0%,
+      rgba(36, 150, 255, 0.0066) 50%
+    ),
+    linear-gradient(
+      101.54deg,
+      rgba(36, 150, 255, 0.16) 10.81%,
+      rgba(27, 99, 166, 0.16) 139.52%
+    ),
+    #050b10;
+  box-shadow: 0px 0px 15px rgba(35, 110, 255, 0.43),
+    0px 0px 67px rgba(43, 115, 255, 0.26);
+  border-radius: 20px;
+  padding: 6px 16px;
+  cursor: pointer;
+  border: 2px solid #2496ff40;
+  position: fixed;
+  top: 90px;
+  &:active {
+    opacity: 0.7;
+  }
+  &:focus {
+    opacity: 0.7;
+  }
+}
+
+.assetCount {
+  display: flex;
+  align-items: center;
+}
+
+.assetCountLoading {
+  margin-left: 6px;
+}

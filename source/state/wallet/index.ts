@@ -61,6 +61,11 @@ export const selectAccounts = (state: AppState) =>
     (id) => state.entities.accounts.byId[id]
   );
 
+export const selectAccounts_ICP = (state: AppState) =>
+  Object.keys(state.entities.accounts.byId)
+    .map((id) => state.entities.accounts.byId[id])
+    .filter((account) => account.symbol === 'ICP');
+
 export const selectAccountsByGroupId = (groupId: string) => (state: AppState) =>
   Object.keys(state.entities.accounts.byId)
     .map((id) => state.entities.accounts.byId[id])
@@ -103,6 +108,20 @@ export const selectBalanceInUSDByAddress =
 export const selectGroupBalanceByAddress =
   (address: string) => (state: AppState) =>
     state.entities.groupbalances.byId[address];
+
+export const selectAssetsICPCountByAddress =
+  (address: string) => (state: AppState) =>
+    state.entities.assetsCount.byId[address];
+
+export const selectAssetsICPByAddress =
+  (address: string) => (state: AppState) => {
+    return Object.keys(state.entities.assets.byId)
+      .map((id) => state.entities.assets.byId[id])
+      .filter((assets) => assets.address === address);
+  };
+
+  export const selectAssetById =
+  (id: string) => (state: AppState) => state.entities.assets.byId[id];
 
 export const selectAccountById = (address: string) => (state: AppState) =>
   state.entities.accounts.byId[address];

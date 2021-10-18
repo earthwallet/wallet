@@ -1,0 +1,78 @@
+.page {
+  display: block;
+  background: url('../../../../assets/images/bg_mnemonic.png');
+  height: $appHeight;
+  width: $appWidth;
+  display: inline-block;
+}
+
+.recipientAddress {
+  color: $subTextColor;
+  font-family: $fontFamily;
+  font-size: $fontSize;
+  width: -webkit-fill-available;
+  margin: 0px 24px;
+}
+
+.earthinput {
+  background-image: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  background: rgba(8, 25, 39, 0.65);
+  border: 2px solid rgba(36, 150, 255, 0.5);
+  padding: 16px 12px;
+  border-radius: 8px;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.earthInputLabel {
+  opacity: 0.65;
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 150%;
+  letter-spacing: 0.05em;
+  color: #dbe4f2;
+  margin: 25px 24px 10px;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.nextCont {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: 20px 30px;
+}
+
+.info {
+  margin: 12px 24px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  color: #fafbfb;
+
+  opacity: 0.54;
+}
+
+.noBalanceError {
+  margin: 8px 24px;
+}
+
+.passwordCont {
+  margin: 0px 24px;
+}
+
+.cancelinfo {
+  margin-top: 24px;
+  margin-bottom: 0;
+}

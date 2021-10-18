@@ -2,6 +2,8 @@ import { ConnectedDApps, DAppInfo } from '~global/types';
 import { listNewDapp } from '~state/dapp';
 import store from '~state/store';
 import { IDAppController, SignatureRequest } from '../types/IDAppController';
+import { updateActiveAccount } from '~state/wallet';
+import { EarthKeyringPair } from '@earthwallet/keyring';
 
 class DAppController implements IDAppController {
   #current: DAppInfo = { origin: '', logo: '', title: '' };
@@ -21,6 +23,10 @@ class DAppController implements IDAppController {
 
   fromUserConnectDApp(origin: string, dapp: DAppInfo) {
     store.dispatch(listNewDapp({ id: origin, dapp }));
+  }
+
+  setActiveAccount(account: EarthKeyringPair & { id: string }) {
+    store.dispatch(updateActiveAccount(account));
   }
 
   getCurrent() {

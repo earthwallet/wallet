@@ -17,6 +17,8 @@ import NFTDetails from '~pages/popup/signed/NFTDetails';
 import CreateNFT from '~pages/popup/signed/CreateNFT';
 import AddNetwork from '~pages/popup/signed/AddNetwork';
 import ToastProvider from '~components/ToastProvider';
+import NFTList from '~pages/popup/signed/NFTList';
+import ListNFT from '~pages/popup/signed/ListNFT';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -59,7 +61,6 @@ const PopupRouter = () => {
           key={key}
         >
           <ToastProvider>
-
             <Switch location={item}>
               <Route path="/popup.html">
                 <Redirect to="/accounts" />
@@ -103,13 +104,18 @@ const PopupRouter = () => {
               <Route path="/account/addnetwork/:groupId">
                 {wrapWithErrorBoundary(<AddNetwork />, 'accounts')}
               </Route>
+              <Route path="/account/assets/nftlist/:address">
+                {wrapWithErrorBoundary(<NFTList />, 'accounts')}
+              </Route>
+              <Route path="/account/listnft/:address">
+                {wrapWithErrorBoundary(<ListNFT />, 'accounts')}
+              </Route>
               <Route path="/nftdetails/:assetid">
                 {wrapWithErrorBoundary(<NFTDetails />, 'accounts')}
               </Route>
               <Route path="/createnft/:address">
                 {wrapWithErrorBoundary(<CreateNFT />, 'accounts')}
               </Route>
-
             </Switch>
           </ToastProvider>
         </animated.div>

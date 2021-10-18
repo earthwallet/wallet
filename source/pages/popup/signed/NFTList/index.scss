@@ -1,0 +1,336 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(
+    0deg,
+    rgba(71, 134, 255, 0.4) 0%,
+    rgba(71, 134, 255, 0) 100%
+  );
+  background: url('../../../../assets/images/bg_portfolio_extension.png');
+  height: $appHeight;
+  width: $appWidth;
+}
+.header {
+  width: $appWidth;
+}
+
+.resetLink {
+  text-decoration: none;
+}
+.resetLink:hover {
+  opacity: 0.9;
+  text-decoration: none;
+}
+
+.assetsAndActivityDiv {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+  height: 64px;
+  display: flex;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    rgba(36, 150, 255, 0.32);
+  box-sizing: border-box;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  cursor: pointer;
+  background: linear-gradient(0deg, #071a28, #071a28),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    rgba(36, 150, 255, 0.32);
+  justify-content: space-between;
+  border: 1px solid #2496ff;
+  border-bottom: 0px;
+}
+
+.tabsView {
+  width: 340px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0px 24px;
+}
+
+.selectedTabView {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+
+  text-align: center;
+  color: #e6e9ed;
+  opacity: 0.75;
+  text-decoration: none;
+}
+
+.tabsPill {
+  width: 29px;
+  height: 3px;
+  background: #175b99;
+  border-radius: 29px;
+  display: flex;
+  flex-basis: 3px;
+  min-height: 3px;
+  margin-top: 9px;
+}
+
+.tabsView {
+  width: 340px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0px 24px;
+}
+
+.bottomFixed {
+  position: fixed;
+  bottom: 0;
+}
+
+.coverflowcont > div {
+  width: 100vw;
+  height: 360px;
+}
+.listcont {
+  width: 100vw;
+  max-height: 415px;
+  padding: 0 24px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin: 24px 0;
+}
+
+.listitemscont {
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+}
+
+.imagecont {
+  border-radius: 5px;
+  &:before {
+    position: absolute;
+    content: '';
+    background: linear-gradient(
+      360deg,
+      rgba(7, 14, 18, 0.8) 3.02%,
+      rgba(0, 0, 0, 0) 46.67%
+    );
+    width: 270px;
+    height: 270px;
+  }
+}
+
+.imagedesc {
+  position: absolute;
+  bottom: -65px;
+  width: 270px;
+  display: flex;
+  flex-direction: column;
+}
+
+.imagetitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 20px;
+  /* or 83% */
+
+  display: flex;
+  align-items: flex-end;
+
+  color: #ffffff;
+  align-self: center;
+  max-width: 270px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.imagepagin {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 11px;
+  line-height: 170.2%;
+  /* identical to box height, or 19px */
+
+  text-align: center;
+
+  color: #ffffff;
+  background: #0f1726;
+  opacity: 0.5;
+  border-radius: 30px;
+  padding: 2px 15px;
+  width: fit-content;
+  margin-top: 12px;
+  align-self: center;
+}
+
+.tabnav {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 170.2%;
+  /* or 27px */
+
+  display: flex;
+  align-items: flex-end;
+
+  color: #ffffff;
+  margin: 35px 12px 0 0;
+  padding: 0 12px 12px;
+  border-bottom: 2px solid #2496ff;
+  width: fit-content;
+  user-select: none;
+  cursor: pointer;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.tabsep {
+  opacity: 0.1;
+  border: 1px solid #fbfbfb;
+  margin: 0 24px 24px;
+}
+
+.nav {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.layoutnav {
+  display: flex;
+}
+
+.layoutnavicon {
+  padding: 0 12px 12px;
+  user-select: none;
+  cursor: pointer;
+  opacity: 0.5;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.layoutnavicon_active {
+  opacity: 1;
+}
+
+.listitem {
+  display: flex;
+  height: 68px;
+  align-items: center;
+  border-bottom: 1px solid #ffffff0d;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+  &:last-child {
+    border-bottom: 0px !important;
+  }
+}
+
+.listicon {
+  margin-left: 12px;
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  background: #ffffff0d;
+}
+
+.listtitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 15px;
+  /* identical to box height, or 107% */
+
+  color: #fafbfb;
+  margin-bottom: 2.5px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.listsubtitle {
+  margin-top: 2.5px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  color: #fafbfb;
+
+  opacity: 0.54;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.listprice {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  text-align: right;
+
+  color: #fafbfb;
+}
+
+.listforward {
+  margin-right: 12px;
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  flex-shrink: 0;
+}
+
+.listinfo {
+  width: 130px;
+  margin-left: 8px;
+  flex-basis: 130px;
+  flex-shrink: 0;
+}
+
+.liststats {
+  width: 110px;
+  flex-basis: 110px;
+  flex-shrink: 0;
+  margin-right: 8px;
+  text-align: right;
+}
