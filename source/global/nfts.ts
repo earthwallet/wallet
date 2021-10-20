@@ -35,7 +35,7 @@ export const ICP_NFT_LIST = [
     name: 'ICP News',
     id: 'uzhxd-ziaaa-aaaah-qanaq-cai',
     standard: 'EXT',
-    isLive: false,
+    isLive: true,
     description:
       'An NFT collection set designed by the @icp_news artist with an Internet Computer theme.',
     icon: 'https://uzhxd-ziaaa-aaaah-qanaq-cai.raw.ic0.app/?tokenid=3qdzl-jikor-uwiaa-aaaaa-b4adi-eaqca-aaaad-q',
@@ -55,7 +55,7 @@ export const ICP_NFT_LIST = [
     isLive: true,
     standard: 'EXT',
     description:
-      'A collection inspired in old school forum emotes, designed by the artist @Visions_GFX, also part of the interactive strategy game ICMoji Origins.',
+      'A collection inspired in old school forum emotes, also part of the interactive strategy game ICMoji Origins.',
     icon: 'https://gevsk-tqaaa-aaaah-qaoca-cai.raw.ic0.app/?tokenid=vqwej-jikor-uwiaa-aaaaa-b4adq-qaqca-aaaac-q',
   },
   {
@@ -106,6 +106,49 @@ export const ICP_NFT_LIST = [
       'Faceted Meninas is a creature species that holds the power of the universe to act as a magic pillar giving their allies the essence of outer worlds to maximize their powers.',
     icon: 'https://k4qsa-4aaaa-aaaah-qbvnq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=3h23b-3akor-uwiaa-aaaaa-b4anl-maqca-aaabq-a',
   },
+  {
+    name: 'ICTuTs',
+    id: 'ahl3d-xqaaa-aaaaj-qacca-cai',
+    isLive: true,
+    standard: 'EXT',
+    description:
+      'ICTuts - 1st pharaohs NFTs in the world. 10,000 randomly generated TuTs',
+    icon: 'https://ahl3d-xqaaa-aaaaj-qacca-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=cplrp-sqkor-uwiaa-aaaaa-cmaaq-qaqca-aaafe-q',
+  },
+  {
+    name: 'ICPuppies',
+    id: 'njgly-uaaaa-aaaah-qb6pa-cai',
+    isLive: true,
+    standard: 'EXT',
+    description: '10,000 randomly generated 8-bit puppy NFTs',
+    icon: 'https://njgly-uaaaa-aaaah-qb6pa-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=e6dxx-4akor-uwiaa-aaaaa-b4apt-yaqca-aaavm-q',
+  },
+  {
+    name: 'Internet Astronauts',
+    id: 'sr4qi-vaaaa-aaaah-qcaaq-cai',
+    isLive: true,
+    standard: 'EXT',
+    description: `Internet Astronauts is a collection of 10,000 unique digital NFT collectibles only found on the Internet Computer! Internet Astronauts can have 
+    advantages for various dapps on the Internet Computer Protocol(ICP) since all dapps on-chain. 
+    Holders will receive the Space Center membership where they can have fun.`,
+    icon: 'https://sr4qi-vaaaa-aaaah-qcaaq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=6roeh-nykor-uwiaa-aaaaa-b4aqa-eaqca-aaaaa-a',
+  },
+  {
+    name: 'ICelebrity',
+    id: 'kss7i-hqaaa-aaaah-qbvmq-cai',
+    isLive: true,
+    standard: 'EXT',
+    description: `100 Uniquely Minted handmade artistic representation of the people we know and love.`,
+    icon: 'https://kss7i-hqaaa-aaaah-qbvmq-cai.raw.ic0.app/?tokenid=pvu3y-iakor-uwiaa-aaaaa-b4anl-eaqca-aaaag-q',
+  },
+  {
+    name: 'ICPBunny',
+    id: 'fu2zl-ayaaa-aaaaf-qaegq-cai',
+    isLive: false,
+    standard: 'ICPBunny',
+    description: `ICPBunny - Yieldable and Breedable NFT`,
+    icon: 'https://ecrba-viaaa-aaaaf-qaedq-cai.raw.ic0.app/Token/1',
+  },
 ];
 
 const LIVE_ICP_NFT_LIST_CANISTER_IDS = ICP_NFT_LIST.filter(
@@ -125,7 +168,11 @@ export const getTokenImageURL = (asset: keyable) => {
         (_tokenImage !== undefined && _tokenImage(asset?.tokenIndex)) || '';
     }
   } else {
-    imageURL = `https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`;
+    if (asset?.canisterId === 'ahl3d-xqaaa-aaaaj-qacca-cai') {
+      imageURL = `https://${asset?.canisterId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${asset?.tokenIdentifier}`;
+    } else {
+      imageURL = `https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`;
+    }
   }
   return imageURL;
 };
