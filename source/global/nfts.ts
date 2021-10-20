@@ -168,7 +168,11 @@ export const getTokenImageURL = (asset: keyable) => {
         (_tokenImage !== undefined && _tokenImage(asset?.tokenIndex)) || '';
     }
   } else {
-    imageURL = `https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`;
+    if (asset?.canisterId === 'ahl3d-xqaaa-aaaaj-qacca-cai') {
+      imageURL = `https://${asset?.canisterId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${asset?.tokenIdentifier}`;
+    } else {
+      imageURL = `https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`;
+    }
   }
   return imageURL;
 };
