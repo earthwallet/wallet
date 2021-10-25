@@ -88,6 +88,8 @@ export const messagesHandler = (
       } else if (method === 'wallet.getBalance') {
         result = mainController.provider.getBalance();
       } else if (method === 'wallet.signMessage') {
+        result = await mainController.provider.signMessage(JSON.stringify(args));
+        console.log(result)
         //
       }
 

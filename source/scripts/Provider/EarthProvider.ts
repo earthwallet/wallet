@@ -1,7 +1,8 @@
 import { getBalance } from '@earthwallet/keyring';
-import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
+//import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import { IWalletState } from '~state/wallet/types';
 import store from '~state/store';
+import { canisterAgentApi } from '@earthwallet/assets';
 
 export class EarthProvider {
   constructor() {}
@@ -27,18 +28,18 @@ export class EarthProvider {
       : null;
   }
 
-  signMessage(msg: string) {
-    const privateKeyHex = '0x'; // TODO: Dummy private key hex
-    const privateKey = Buffer.from(privateKeyHex, 'hex');
-    const msgHash = hashPersonalMessage(Buffer.from(msg));
+  async signMessage(msg: string) {
+    let request = JSON.parse(msg)[0];
 
-    const { v, r, s } = ecsign(msgHash, privateKey);
-    const sig = this.remove0x(toRpcSig(v, r, s));
-
-    return sig;
+    const response: any = await canisterAgentApi(
+      request?.canisterId,
+      request?.method,
+      request?.args
+    );
+    return response;
   }
 
-  private remove0x(hash: string) {
+  /*   private remove0x(hash: string) {
     return hash.startsWith('0x') ? hash.slice(2) : hash;
-  }
+  } */
 }

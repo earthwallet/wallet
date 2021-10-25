@@ -183,14 +183,21 @@ async function handleRequest (req) {
     return icp.getMethod('wallet.sendTransaction')({ to, value })
   }
   const method = REQUEST_MAP[req.method] || req.method
+  console.log(method, ...req.params);
   return icp.getMethod(method)(...req.params)
 }
 
 window.earth = {
   evtRegMap: {},
+  version: '1.1',
   isConnected: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.isConnected')()
+  },
+  signMessage: async (params) => {
+    console.log(params);
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.signMessage')(params)
   },
   enable: async () => {
     const accepted = await window.providerManager.enable()
