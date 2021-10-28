@@ -69,12 +69,20 @@ export default class MainController {
     //this.accounts.createAccounts(this.assets.usedAssetSymbols());
   }
 
-  async createPopup(windowId: string) {
+  async createPopup(windowId: string, route?: string) {
     const _window = await browser.windows.getCurrent();
     if (!_window || !_window.width) return null;
 
+    let url = `/dapp.html?`;
+    if (route) {
+      url += `&route=${route}`;
+    }
+    url += `&windowId=${windowId}`;
+    url += `#${windowId}`;
+
+    console.log(windowId, route);
     return await browser.windows.create({
-      url: `/dapp.html#${windowId}`,
+      url,
       width: 375,
       height: 600,
       type: 'popup',

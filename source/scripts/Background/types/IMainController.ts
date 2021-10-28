@@ -16,5 +16,8 @@ export interface IMainController {
   preloadState: () => Promise<void>;
   migrateLocalStorage: () => Promise<keyable>;
   accountsInfo: () => Promise<void>;
-  createPopup: (windowId: string) => Promise<Windows.Window | null>;
+  createPopup: (
+    windowId: string,
+    route?: string
+  ) => Promise<Windows.Window | null>;
 }

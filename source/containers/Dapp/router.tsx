@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
-import { Switch, Route, useLocation } from 'react-router-dom';
+import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
 import { useController } from '~hooks/useController';
 import ErrorBoundary from '~components/ErrorBoundary';
 import ConnectDappPage from '~pages/dapp/ConnectDappPage';
+import SignTransactionPage from '~pages/dapp/SignTransactionPage';
+import queryString from 'query-string';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -14,6 +16,10 @@ function wrapWithErrorBoundary(
 
 const DappRouter = () => {
   const location = useLocation();
+  console.log(location, 'location DappRouter');
+  const { route } = queryString.parse(location.search);
+  console.log(route, 'route DappRouter');
+
   const controller = useController();
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
@@ -41,11 +47,15 @@ const DappRouter = () => {
         >
           <Switch location={item}>
             <Route path="/dapp.html">
-              {wrapWithErrorBoundary(<ConnectDappPage />, 'connect')}
-              {/* <Redirect to="/connect" /> */}
+              {route
+                ? <Redirect to={`/${route}${location.search}${location.hash}`} />
+                : <Redirect to={`/connect${location.search}${location.hash}`} />}
             </Route>
             <Route path="/connect">
-              {/* {wrapWithErrorBoundary(<ConnectDappPage />, 'connect')} */}
+              {wrapWithErrorBoundary(<ConnectDappPage />, 'connect')}
+            </Route>
+            <Route path="/sign">
+              {wrapWithErrorBoundary(<SignTransactionPage />, 'sign')}
             </Route>
           </Switch>
         </animated.div>

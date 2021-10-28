@@ -205,6 +205,12 @@ window.earth = {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.getAddress')()
   },
+  reset: async () => {
+    const accepted = await window.providerManager.enable()
+    if (!accepted) throw new Error('User rejected')
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.getAddress')()
+  },
   request: async (req) => {
     const params = req.params || []
     return handleRequest({

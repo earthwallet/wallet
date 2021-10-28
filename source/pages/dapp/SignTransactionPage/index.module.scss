@@ -1,0 +1,23 @@
+.page {
+  width: 100vw;
+  height: 100vh;
+  background: url('../../../assets/images/bg_dapp.png');
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: scroll;
+  color: white;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+    pointer-events: none;
+    transition: all 0.3s;
+    z-index: 0;
+  }
+}

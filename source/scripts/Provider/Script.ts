@@ -41,7 +41,7 @@ export class Script {
           });
         }
 
-        //console.log('Script - ', id, type, data);
+        console.log('Script - ', id, type, data);
         this.backgroundPort.postMessage({
           id,
           type,
@@ -53,7 +53,7 @@ export class Script {
   }
 
   onMessage({ id, data }: { id: string; data: string }) {
-    //console.log('Script - onMessage', id, data);
+    console.log('Script - onMessage', id, data);
     this.emitter.emit(id, data);
   }
 }

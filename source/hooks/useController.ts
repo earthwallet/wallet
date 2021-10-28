@@ -25,7 +25,7 @@ export function useConnectWalletToDApp() {
   return async () => {
     controller.dapp.fromUserConnectDApp(origin, current);
     const background = await browser.runtime.getBackgroundPage();
-
+    console.log('useConnectWalletToDApp');
     background.dispatchEvent(
       new CustomEvent('connectWallet', { detail: window.location.hash })
     );

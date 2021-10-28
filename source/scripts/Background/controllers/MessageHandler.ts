@@ -54,6 +54,7 @@ export const messagesHandler = (
 
       const windowId = uuid();
       const popup = await mainController.createPopup(windowId);
+      console.log(popup, 'popup');
       if (popup) {
         window.addEventListener(
           'connectWallet',
@@ -88,8 +89,14 @@ export const messagesHandler = (
       } else if (method === 'wallet.getBalance') {
         result = mainController.provider.getBalance();
       } else if (method === 'wallet.signMessage') {
-        result = await mainController.provider.signMessage(JSON.stringify(args));
-        console.log(result)
+        const windowId = uuid();
+        const popup = await mainController.createPopup(windowId, 'sign');
+
+        //todo add approve flow
+        result = await mainController.provider.signMessage(
+          JSON.stringify(args)
+        );
+        console.log(result, popup);
         //
       }
 

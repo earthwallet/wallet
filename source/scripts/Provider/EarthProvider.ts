@@ -30,12 +30,19 @@ export class EarthProvider {
 
   async signMessage(msg: string) {
     let request = JSON.parse(msg)[0];
-
-    const response: any = await canisterAgentApi(
-      request?.canisterId,
-      request?.method,
-      request?.args
-    );
+    console.log(request, 'signMessage EarthProvider');
+    let response: any;
+    try {
+       response = await canisterAgentApi(
+         request?.canisterId,
+         request?.method,
+         request?.args
+       );  
+    } catch (error) {
+      console.log(error, typeof error, JSON.stringify(error));
+      response = 'ERROR: ' + JSON.stringify(error);
+    }
+   
     return response;
   }
 
