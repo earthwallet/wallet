@@ -76,6 +76,34 @@ export const messagesHandler = (
         return Promise.resolve(null);
       }
       return Promise.resolve({ id: message.id, result: origin && allowed });
+    } else if (message.type === 'SIGN_APPROVAL_REQUEST') {
+      console.log(message, 'SIGN_APPROVAL_REQUEST');
+      
+
+      const windowId = uuid();
+      const popup = await mainController.createPopup(windowId, 'sign');
+      console.log(popup, 'popup signApporval');
+      if (popup) {
+        window.addEventListener(
+          'signApporval',
+          (ev: any) => {
+            console.log('signApporval window addEventListener', ev.detail);
+            if (ev.detail.substring(1) === windowId) {
+              port.postMessage({ id: message.id, data: { result: true } });
+            }
+          },
+          { once: true, passive: true }
+        );
+
+        browser.windows.onRemoved.addListener((id) => {
+          if (id === popup.id) {
+            port.postMessage({ id: message.id, data: { result: false } });
+            console.log('signApporval window is closed');
+          }
+        });
+        return Promise.resolve(null);
+      }
+      return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
       console.log('CAL_REQUEST.method', method, args);

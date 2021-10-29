@@ -32,6 +32,21 @@ export function useConnectWalletToDApp() {
   };
 }
 
+export function useSignApprove(params?: any) {
+  const controller = useController();
+
+  return async () => {
+    controller.dapp.addSignRequest(params || {}, '1234');
+    const background = await browser.runtime.getBackgroundPage();
+    console.log('useConnectWalletToDApp');
+    background.dispatchEvent(
+      new CustomEvent('signApporval', {
+        detail: window.location.hash,
+      })
+    );
+  };
+}
+
 export function useUpdateActiveAccount(
   account: EarthKeyringPair & { id: string }
 ) {

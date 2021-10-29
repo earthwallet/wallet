@@ -4,6 +4,7 @@ import store from '~state/store';
 import { IDAppController, SignatureRequest } from '../types/IDAppController';
 import { updateActiveAccount } from '~state/wallet';
 import { EarthKeyringPair } from '@earthwallet/keyring';
+import { storeEntities } from '~state/entities';
 
 class DAppController implements IDAppController {
   #current: DAppInfo = { origin: '', logo: '', title: '' };
@@ -23,6 +24,21 @@ class DAppController implements IDAppController {
 
   fromUserConnectDApp(origin: string, dapp: DAppInfo) {
     store.dispatch(listNewDapp({ id: origin, dapp }));
+  }
+  
+  addSignRequest(request: any, id: string) {
+    store.dispatch(
+      storeEntities({
+        entity: 'dappRequests',
+        data: [
+          {
+            id,
+            type: 'sign',
+            ...{ request },
+          },
+        ],
+      })
+    );
   }
 
   setActiveAccount(account: EarthKeyringPair & { id: string }) {
