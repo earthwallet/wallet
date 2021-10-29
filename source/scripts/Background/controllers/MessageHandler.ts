@@ -93,9 +93,7 @@ export const messagesHandler = (
         const popup = await mainController.createPopup(windowId, 'sign');
 
         //todo add approve flow
-        result = await mainController.provider.signMessage(
-          JSON.stringify(args)
-        );
+        result = await mainController.provider.signMessage(args[0]);
         console.log(result, popup);
         //
       }
