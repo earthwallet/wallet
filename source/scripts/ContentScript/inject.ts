@@ -53,7 +53,7 @@ class ProviderManager {
     return this.proxy('ENABLE_REQUEST')
   }
   getApproval (params) {
-    return this.proxy('SIGN_APPROVAL_REQUEST', { params })
+    return this.proxy('SIGN_APPROVAL_REQUEST', { args: [params] })
   }
 }
 

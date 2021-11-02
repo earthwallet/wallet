@@ -1,25 +1,13 @@
 .page {
-  width: 100vw;
-  height: 100vh;
-  background: url('../../../assets/images/bg_dapp.png');
+  width: $appWidth;
+  height: $appHeight - 180px;
+  background: url(../../../assets/images/bg_dapp.png);
   background-size: cover;
   display: flex;
-  align-items: center;
-  justify-content: center;
   overflow-y: scroll;
   color: white;
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 1;
-    pointer-events: none;
-    transition: all 0.3s;
-    z-index: 0;
-  }
+  flex-direction: column;
+  padding-bottom: 90px;
 }
 
 .actions {
@@ -29,6 +17,75 @@
 }
 
 .footer {
+  height: 180px;
   position: fixed;
   bottom: 0;
+  width: $appWidth;
+  padding: 0 24px;
+  background: #343434d1;
+  backdrop-filter: blur(7px);
+}
+
+.title {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  line-height: 16px;
+  /* identical to box height, or 72% */
+
+  text-align: center;
+
+  /* white/1 */
+
+  color: #ffffff;
+  margin: 36px 0 18px;
+}
+
+.label {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  color: #ffffff;
+}
+
+.value {
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 16px;
+  /* identical to box height, or 122% */
+  word-break: break-all;
+  /* white/1 */
+
+  color: #ffffff;
+
+  opacity: 0.51;
+  padding: 16px 18px;
+}
+
+.requestBody {
+  padding: 24px;
+}
+
+.footerSuccess {
+  position: fixed;
+  bottom: 0;
+  width: $appWidth;
+  padding: 0 24px;
+  background: #34343447;
+  backdrop-filter: blur(7px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

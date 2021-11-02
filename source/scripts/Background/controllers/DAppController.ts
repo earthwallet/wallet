@@ -1,14 +1,15 @@
 import { ConnectedDApps, DAppInfo } from '~global/types';
 import { listNewDapp } from '~state/dapp';
 import store from '~state/store';
-import { IDAppController, SignatureRequest } from '../types/IDAppController';
+import { IDAppController } from '../types/IDAppController';
 import { updateActiveAccount } from '~state/wallet';
 import { EarthKeyringPair } from '@earthwallet/keyring';
 import { storeEntities } from '~state/entities';
+import { keyable } from '../types/IAssetsController';
 
 class DAppController implements IDAppController {
   #current: DAppInfo = { origin: '', logo: '', title: '' };
-  #request: SignatureRequest;
+  #request: keyable;
 
   fromPageConnectDApp(origin: string, title: string) {
     const dapp: ConnectedDApps = store.getState().dapp;
@@ -25,7 +26,7 @@ class DAppController implements IDAppController {
   fromUserConnectDApp(origin: string, dapp: DAppInfo) {
     store.dispatch(listNewDapp({ id: origin, dapp }));
   }
-  
+
   addSignRequest(request: any, id: string) {
     store.dispatch(
       storeEntities({
@@ -49,7 +50,7 @@ class DAppController implements IDAppController {
     return this.#current;
   }
 
-  setSignatureRequest(req: SignatureRequest) {
+  setSignatureRequest(req: keyable) {
     this.#request = req;
   }
 

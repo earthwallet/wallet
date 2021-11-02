@@ -78,16 +78,21 @@ export const messagesHandler = (
       return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'SIGN_APPROVAL_REQUEST') {
       console.log(message, 'SIGN_APPROVAL_REQUEST');
-      
+      const { args } = message.data;
 
+      mainController.dapp.setSignatureRequest(args[0]);
       const windowId = uuid();
       const popup = await mainController.createPopup(windowId, 'sign');
-      console.log(popup, 'popup signApporval');
+      console.log(popup, args, 'popup signApporval');
       if (popup) {
         window.addEventListener(
           'signApporval',
           (ev: any) => {
-            console.log('signApporval window addEventListener', ev.detail);
+            console.log(
+              'signApporval window addEventListener',
+              ev.detail,
+              windowId
+            );
             if (ev.detail.substring(1) === windowId) {
               port.postMessage({ id: message.id, data: { result: true } });
             }
@@ -103,7 +108,7 @@ export const messagesHandler = (
         });
         return Promise.resolve(null);
       }
-      return Promise.resolve({ id: message.id, result: origin && allowed });
+      return Promise.resolve({ id: message.id, result: true });
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
       console.log('CAL_REQUEST.method', method, args);
