@@ -71,7 +71,10 @@ const SignTransactionPage = () => {
       const fromIdentity = Secp256k1KeyIdentity.fromJSON(secret);
       let response: any;
       let counter = 0;
+      console.log(request, Array.isArray(request))
+
       if (Array.isArray(request)) {
+        response = [];
         for (const singleReqest of request) {
           response[counter] = await canisterAgentApi(
             singleReqest?.canisterId,
@@ -80,7 +83,6 @@ const SignTransactionPage = () => {
             fromIdentity
           );
           counter++;
-
         }
       }
       else {
@@ -97,8 +99,12 @@ const SignTransactionPage = () => {
       /*     await approveSign().then(() => {
            });
           window.close(); */
-      if (response.type !== 'error') {
+
+      if (!Array.isArray(response) && response.type !== 'error') {
         setSuccess(true);
+      }
+      else {
+        //todo
       }
       return response;
     }
