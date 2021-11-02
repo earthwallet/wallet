@@ -206,7 +206,9 @@
             background-color: #292d3d;
             margin-right: 14px;
             border-radius: 50%;
-
+            flex-shrink: 0;
+            flex-basis: 24px;
+            
             & > img {
               width: 24px;
               height: 24px;

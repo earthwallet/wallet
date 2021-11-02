@@ -12,6 +12,7 @@ import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk
 import { canisterAgentApi } from '@earthwallet/assets';
 import InputWithLabel from '~components/InputWithLabel';
 import Warning from '~components/Warning';
+import { stringifyWithBigInt } from '~global/helpers';
 
 const MIN_LENGTH = 6;
 
@@ -65,16 +66,32 @@ const SignTransactionPage = () => {
       setError('Wrong password! Please try again');
       setIsBusy(false);
     }
-    console.log(secret);
+
     if (isJsonString(secret)) {
       const fromIdentity = Secp256k1KeyIdentity.fromJSON(secret);
+      let response: any;
+      let counter = 0;
+      if (Array.isArray(request)) {
+        for (const singleReqest of request) {
+          response[counter] = await canisterAgentApi(
+            singleReqest?.canisterId,
+            singleReqest?.method,
+            singleReqest?.args,
+            fromIdentity
+          );
+          counter++;
 
-      const response: any = await canisterAgentApi(
-        request?.canisterId,
-        request?.method,
-        request?.args,
-        fromIdentity
-      );
+        }
+      }
+      else {
+        response = await canisterAgentApi(
+          request?.canisterId,
+          request?.method,
+          request?.args,
+          fromIdentity
+        );
+      }
+
       console.log(response);
 
       /*     await approveSign().then(() => {
@@ -91,7 +108,26 @@ const SignTransactionPage = () => {
 
   return <div className={styles.page}>
     <div className={styles.title}>Signature Request</div>
-    <div className={styles.requestBody}>
+    {Array.isArray(request) ? request.map((singleReq, index) => <div key={index} className={styles.requestBody}>
+      <div className={styles.label}>
+        CanisterId
+      </div>
+      <div className={styles.value}>
+        {singleReq?.canisterId}
+      </div>
+      <div className={styles.label}>
+        Method
+      </div>
+      <div className={styles.value}>
+        {singleReq?.method}
+      </div>
+      <div className={styles.label}>
+        Message
+      </div>
+      <div className={styles.value}>
+        {stringifyWithBigInt(singleReq?.args)}
+      </div>
+    </div>) : <div className={styles.requestBody}>
       <div className={styles.label}>
         CanisterId
       </div>
@@ -108,9 +144,9 @@ const SignTransactionPage = () => {
         Message
       </div>
       <div className={styles.value}>
-        {JSON.stringify(request?.args)}
+        {stringifyWithBigInt(request?.args)}
       </div>
-    </div>
+    </div>}
 
     {success ?
       <section className={styles.footerSuccess}>
