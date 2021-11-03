@@ -9,7 +9,6 @@ import { useSelector } from 'react-redux';
 import { selectAccounts_ICP } from '~state/wallet';
 import { isUndefined } from 'lodash';
 import { getSymbol } from '~utils/common';
-import { EarthKeyringPair } from '@earthwallet/keyring';
 
 enum ConnectStep {
   Accounts,
@@ -20,10 +19,10 @@ export default function ConnectDappPage() {
   const dapp = useCurrentDapp();
   const connectWalletToDapp = useConnectWalletToDApp();
   const accounts = useSelector(selectAccounts_ICP);
-  const setActiveAccount = async (account: EarthKeyringPair & { id: string }) => {
-    const useUpdateActiveAccounted = useUpdateActiveAccount(account);
+  const setDappConnectedAddress = async (address: string, origin: string) => {
+    const useUpdateActiveAccounted = useUpdateActiveAccount(address, origin);
     useUpdateActiveAccounted().then(() => {
-      console.log(account);
+      console.log(address);
     });
   }
 
@@ -37,7 +36,7 @@ export default function ConnectDappPage() {
     }
     connectWalletToDapp().then(() => {
       if (accountIndex === undefined || (accountIndex < 0)) return;
-      setActiveAccount(accounts[accountIndex]);
+      setDappConnectedAddress(accounts[accountIndex].address, dapp.origin);
     });
     window.close();
   };

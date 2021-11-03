@@ -19,6 +19,11 @@ export class EarthProvider {
     return activeAccount?.address;
   }
 
+  getAddressForDapp(origin: string) {
+    const dapp = store.getState().dapp;
+    return dapp[origin]?.address;
+  }
+
   async getBalance() {
     const { activeNetwork, activeAccount }: IWalletState =
       store.getState().vault;

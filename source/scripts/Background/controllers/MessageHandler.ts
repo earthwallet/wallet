@@ -116,7 +116,7 @@ export const messagesHandler = (
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed };
       } else if (method === 'wallet.getAddress') {
-        result = mainController.provider.getAddress();
+        result = mainController.provider.getAddressForDapp(origin);
       } else if (method === 'wallet.getNetwork') {
         result = mainController.provider.getNetwork();
       } else if (method === 'wallet.getBalance') {

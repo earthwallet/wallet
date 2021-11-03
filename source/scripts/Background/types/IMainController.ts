@@ -15,7 +15,6 @@ export interface IMainController {
   provider: Readonly<EarthProvider>;
   preloadState: () => Promise<void>;
   migrateLocalStorage: () => Promise<keyable>;
-  accountsInfo: () => Promise<void>;
   createPopup: (
     windowId: string,
     route?: string

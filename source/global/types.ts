@@ -86,6 +86,7 @@ export interface DAppInfo {
   origin: string;
   logo: string;
   title: string;
+  address?: string;
 }
 
 export interface ConnectedDApps {

@@ -17,6 +17,18 @@ const DAppState = createSlice({
         [action.payload.id]: action.payload.dapp,
       };
     },
+    updateDapp(
+      state: ConnectedDApps,
+      action: PayloadAction<{ id: string; dapp: DAppInfo }>
+    ) {
+      return {
+        ...state,
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          ...action.payload.dapp,
+        },
+      };
+    },
     unlistDapp(state: ConnectedDApps, action: PayloadAction<{ id: string }>) {
       delete state[action.payload.id];
     },
@@ -26,6 +38,7 @@ const DAppState = createSlice({
   },
 });
 
-export const { listNewDapp, unlistDapp, hydrateDapp } = DAppState.actions;
+export const { listNewDapp, updateDapp, unlistDapp, hydrateDapp } =
+  DAppState.actions;
 
 export default DAppState.reducer;

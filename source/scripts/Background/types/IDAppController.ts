@@ -1,5 +1,4 @@
 import { DAppInfo } from '~global/types';
-import { EarthKeyringPair } from '@earthwallet/keyring';
 import { keyable } from './IAssetsController';
 
 export interface SignatureRequest {
@@ -10,10 +9,11 @@ export interface SignatureRequest {
 
 export interface IDAppController {
   getCurrent: () => DAppInfo;
+  getCurrentDappAddress: () => string;
   fromUserConnectDApp: (origin: string, dapp: DAppInfo) => void;
   fromPageConnectDApp: (origin: string, title: string) => boolean;
   setSignatureRequest: (req: keyable) => void;
   getSignatureRequest: () => keyable;
   addSignRequest: (request: any, id: string) => void;
-  setActiveAccount: (account: EarthKeyringPair & { id: string }) => void;
+  setDappConnectedAddress: (address: string, origin: string) => void;
 }

@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import styles from './index.module.scss';
-import { useSignApprove } from '~hooks/useController';
+import { useCurrentDappAddress, useSignApprove } from '~hooks/useController';
 import ActionButton from '~components/composed/ActionButton';
 import { useController } from '~hooks/useController';
 import { decryptString } from '~utils/vault';
-import { selectAccountById, selectDappActiveAccountAddress } from '~state/wallet';
+import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import { isJsonString } from '~utils/common';
 import { validateMnemonic } from '@earthwallet/keyring';
@@ -17,11 +17,11 @@ import { stringifyWithBigInt } from '~global/helpers';
 const MIN_LENGTH = 6;
 
 const SignTransactionPage = () => {
+  const activeAccountAddress = useCurrentDappAddress();
+
   const controller = useController();
   const request = controller.dapp.getSignatureRequest();
-  const activeAccountAddress = useSelector(selectDappActiveAccountAddress);
   const selectedAccount = useSelector(selectAccountById(activeAccountAddress));
-  //wallet.activeAccount.address
   const approveSign = useSignApprove();
   const [isBusy, setIsBusy] = useState(false);
   const [txError, setTxError] = useState('');

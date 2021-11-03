@@ -1,14 +1,12 @@
 import { ConnectedDApps, DAppInfo } from '~global/types';
-import { listNewDapp } from '~state/dapp';
+import { listNewDapp, updateDapp } from '~state/dapp';
 import store from '~state/store';
 import { IDAppController } from '../types/IDAppController';
-import { updateActiveAccount } from '~state/wallet';
-import { EarthKeyringPair } from '@earthwallet/keyring';
 import { storeEntities } from '~state/entities';
 import { keyable } from '../types/IAssetsController';
 
 class DAppController implements IDAppController {
-  #current: DAppInfo = { origin: '', logo: '', title: '' };
+  #current: DAppInfo = { origin: '', logo: '', title: '', address: '' };
   #request: keyable;
 
   fromPageConnectDApp(origin: string, title: string) {
@@ -42,12 +40,25 @@ class DAppController implements IDAppController {
     );
   }
 
-  setActiveAccount(account: EarthKeyringPair & { id: string }) {
-    store.dispatch(updateActiveAccount(account));
+  setDappConnectedAddress(address: string, origin: string) {
+    const dapp: ConnectedDApps = store.getState().dapp;
+    if (origin !== undefined) {
+      store.dispatch(
+        updateDapp({
+          id: origin,
+          dapp: { ...dapp[origin], address: address },
+        })
+      );
+    }
   }
 
   getCurrent() {
     return this.#current;
+  }
+
+  getCurrentDappAddress() {
+    const dapp: ConnectedDApps = store.getState().dapp;
+    return dapp[this.#current.origin].address || '';
   }
 
   setSignatureRequest(req: keyable) {

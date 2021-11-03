@@ -65,10 +65,6 @@ export default class MainController {
     return items as keyable;
   }
 
-  async accountsInfo() {
-    //this.accounts.createAccounts(this.assets.usedAssetSymbols());
-  }
-
   async createPopup(windowId: string, route?: string) {
     const _window = await browser.windows.getCurrent();
     if (!_window || !_window.width) return null;
