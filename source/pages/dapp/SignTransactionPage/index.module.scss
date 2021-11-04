@@ -88,4 +88,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 56px;
+}
+
+.paymentDone {
+  text-align: center;
+  border: 1px dashed #1b8d1b;
+  padding: 8px;
+  border-radius: 5px;
+  margin: 24px;
 }

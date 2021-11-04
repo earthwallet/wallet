@@ -13,6 +13,8 @@ import { canisterAgentApi } from '@earthwallet/assets';
 import InputWithLabel from '~components/InputWithLabel';
 import Warning from '~components/Warning';
 import { stringifyWithBigInt } from '~global/helpers';
+import { ClipLoader } from 'react-spinners';
+import { keyable } from '~scripts/Background/types/IMainController';
 
 const MIN_LENGTH = 6;
 
@@ -28,6 +30,9 @@ const SignTransactionPage = () => {
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState<keyable | null>(null);
+  const [responseArr, setResponseArr] = useState<keyable[] | null>(null);
 
   console.log(txError, approveSign);
   const onPassChange = useCallback(
@@ -72,14 +77,14 @@ const SignTransactionPage = () => {
       let response: any;
       let counter = 0;
       console.log(request, Array.isArray(request))
-
+      setLoading(true);
       if (Array.isArray(request)) {
         response = [];
-        for (const singleReqest of request) {
+        for (const singleRequest of request) {
           response[counter] = await canisterAgentApi(
-            singleReqest?.canisterId,
-            singleReqest?.method,
-            singleReqest?.args,
+            singleRequest?.canisterId,
+            singleRequest?.method,
+            singleRequest?.args,
             fromIdentity
           );
           counter++;
@@ -102,10 +107,15 @@ const SignTransactionPage = () => {
 
       if (!Array.isArray(response) && response.type !== 'error') {
         setSuccess(true);
+        setResponse(response);
+
       }
       else {
         //todo
+        setResponseArr(response);
+        setSuccess(true);
       }
+      setLoading(false);
       return response;
     }
     return true;
@@ -133,6 +143,16 @@ const SignTransactionPage = () => {
       <div className={styles.value}>
         {stringifyWithBigInt(singleReq?.args)}
       </div>
+      {responseArr && responseArr[index] !== null &&
+        <div>
+          <div className={styles.label}>
+            Response
+          </div>
+          <div className={styles.value}>
+            {stringifyWithBigInt(responseArr[index])}
+          </div>
+        </div>
+      }
     </div>) : <div className={styles.requestBody}>
       <div className={styles.label}>
         CanisterId
@@ -152,45 +172,63 @@ const SignTransactionPage = () => {
       <div className={styles.value}>
         {stringifyWithBigInt(request?.args)}
       </div>
+      {response !== null &&
+        <div>
+          <div className={styles.label}>
+            Response
+          </div>
+          <div className={styles.value}>
+            {stringifyWithBigInt(response)}
+          </div>
+        </div>
+      }
     </div>}
 
-    {success ?
-      <section className={styles.footerSuccess}>
-        <ActionButton
-          onClick={() => window.close()}>
-          Success! 🎊
-        </ActionButton>
-      </section> :
-      <section className={styles.footer}>
-        <InputWithLabel
-          data-export-password
-          disabled={isBusy}
-          isError={pass.length < MIN_LENGTH
-            || !!error}
-          label={'password for this account'}
-          onChange={onPassChange}
-          placeholder='REQUIRED'
-          type='password'
-        />
-        {false && error && (
-          <Warning
-            isBelowInput
-            isDanger
-          >
-            {error}
-          </Warning>
-        )}
-        <div className={styles.actions}>
-          <ActionButton actionType="secondary" onClick={() => window.close()}>
-            Cancel
-          </ActionButton>
+    {loading ? <section className={styles.footerSuccess}>
+      <ClipLoader color={'#fffff'}
+        size={15} />
+    </section>
+      : success ?
+        <section className={styles.footerSuccess}>
+          <div
+            className={styles.paymentDone}>
+            Transaction Success! 🎊
+          </div>
           <ActionButton
-            disabled={error != 'NO_ERROR'}
-            onClick={signCanister}>
-            Approve
+            onClick={() => window.close()}>
+            Done!
           </ActionButton>
-        </div>
-      </section>}
+        </section> :
+        <section className={styles.footer}>
+          <InputWithLabel
+            data-export-password
+            disabled={isBusy}
+            isError={pass.length < MIN_LENGTH
+              || !!error}
+            label={'password for this account'}
+            onChange={onPassChange}
+            placeholder='REQUIRED'
+            type='password'
+          />
+          {false && error && (
+            <Warning
+              isBelowInput
+              isDanger
+            >
+              {error}
+            </Warning>
+          )}
+          <div className={styles.actions}>
+            <ActionButton actionType="secondary" onClick={() => window.close()}>
+              Cancel
+            </ActionButton>
+            <ActionButton
+              disabled={error != 'NO_ERROR'}
+              onClick={signCanister}>
+              Approve
+            </ActionButton>
+          </div>
+        </section>}
 
   </div>;
 };
