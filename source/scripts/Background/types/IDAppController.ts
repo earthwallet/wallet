@@ -12,7 +12,7 @@ export interface IDAppController {
   getCurrentDappAddress: () => string;
   fromUserConnectDApp: (origin: string, dapp: DAppInfo) => void;
   fromPageConnectDApp: (origin: string, title: string) => boolean;
-  setSignatureRequest: (req: keyable) => void;
+  setSignatureRequest: (req: keyable, requestId: string) => void;
   getSignatureRequest: () => keyable;
   addSignRequest: (request: any, id: string) => void;
   setDappConnectedAddress: (address: string, origin: string) => void;

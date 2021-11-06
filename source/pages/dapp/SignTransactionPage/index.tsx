@@ -15,6 +15,7 @@ import Warning from '~components/Warning';
 import { stringifyWithBigInt } from '~global/helpers';
 import { ClipLoader } from 'react-spinners';
 import { keyable } from '~scripts/Background/types/IMainController';
+import { browser } from 'webextension-polyfill-ts';
 
 const MIN_LENGTH = 6;
 
@@ -58,6 +59,22 @@ const SignTransactionPage = () => {
       }
     }
     , [selectedAccount]);
+
+
+
+  const handleCancel = () => {
+    window.close();
+  };
+
+
+  const handleSign = async () => {
+    const background = await browser.runtime.getBackgroundPage();
+    background.dispatchEvent(
+      new CustomEvent('signApporval', { detail: window.location.hash })
+    );
+    //window.close();
+  };
+  
 
   const signCanister = async () => {
     setIsBusy(true);
@@ -121,9 +138,10 @@ const SignTransactionPage = () => {
     return true;
   };
 
+  console.log(signCanister);
 
   return <div className={styles.page}>
-    <div className={styles.title}>Signature Request</div>
+    <div className={styles.title}>Signature Request {window.location.hash}</div>
     {Array.isArray(request) ? request.map((singleReq, index) => <div key={index} className={styles.requestBody}>
       <div className={styles.label}>
         CanisterId
@@ -190,13 +208,9 @@ const SignTransactionPage = () => {
     </section>
       : success ?
         <section className={styles.footerSuccess}>
-          <div
-            className={styles.paymentDone}>
-            Transaction Success! 🎊
-          </div>
           <ActionButton
             onClick={() => window.close()}>
-            Done!
+            Transaction Complete!
           </ActionButton>
         </section> :
         <section className={styles.footer}>
@@ -219,12 +233,12 @@ const SignTransactionPage = () => {
             </Warning>
           )}
           <div className={styles.actions}>
-            <ActionButton actionType="secondary" onClick={() => window.close()}>
+            <ActionButton actionType="secondary" onClick={handleCancel}>
               Cancel
             </ActionButton>
             <ActionButton
               disabled={error != 'NO_ERROR'}
-              onClick={signCanister}>
+              onClick={handleSign}>
               Approve
             </ActionButton>
           </div>

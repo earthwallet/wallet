@@ -12,6 +12,8 @@ export const messagesHandler = (
   port: Runtime.Port,
   mainController: IMainController
 ) => {
+  let pendingWindow = false;
+
   const listener = async (message: Message, connection: Runtime.Port) => {
     try {
       const response = await listenerHandler(message, connection);
@@ -79,9 +81,8 @@ export const messagesHandler = (
     } else if (message.type === 'SIGN_APPROVAL_REQUEST') {
       console.log(message, 'SIGN_APPROVAL_REQUEST');
       const { args } = message.data;
-
-      mainController.dapp.setSignatureRequest(args[0]);
       const windowId = uuid();
+      mainController.dapp.setSignatureRequest(args[0], windowId);
       const popup = await mainController.createPopup(windowId, 'sign');
       console.log(popup, args, 'popup signApporval');
       if (popup) {
@@ -122,6 +123,39 @@ export const messagesHandler = (
       } else if (method === 'wallet.getBalance') {
         result = mainController.provider.getBalance();
       } else if (method === 'wallet.signMessage') {
+        if (pendingWindow) {
+          return Promise.resolve(null);
+        }
+
+        const windowId = uuid();
+        mainController.dapp.setSignatureRequest(args[0], windowId);
+        const popup = await mainController.createPopup(windowId, 'sign');
+        pendingWindow = true;
+        window.addEventListener(
+          'signApporval',
+          async (ev: any) => {
+            if (ev.detail.substring(1) === windowId) {
+              result = await mainController.provider.signMessage(args[0]);
+              port.postMessage({ id: message.id, data: { result } });
+              pendingWindow = false;
+            }
+          },
+          {
+            once: true,
+            passive: true,
+          }
+        );
+
+        browser.windows.onRemoved.addListener((id) => {
+          if (popup && id === popup.id) {
+            port.postMessage({ id: message.id, data: { result: false } });
+            //console.log('SignMessage window is closed');
+            pendingWindow = false;
+          }
+        });
+
+        return Promise.resolve(null);
+      } else if (method === 'wallet.signMessageOld') {
         const windowId = uuid();
         const popup = await mainController.createPopup(windowId, 'sign');
 

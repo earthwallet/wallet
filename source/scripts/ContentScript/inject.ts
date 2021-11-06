@@ -171,11 +171,6 @@ const earthProvider = () => `
 
 const REQUEST_MAP = {
   isConnected: 'wallet.isConnected',
-  getNetwork: 'wallet.getNetwork',
-  getAddress: 'wallet.getAddress',
-  getBalance: 'wallet.getBalance',
-  signMessage: 'wallet.signMessage',
-  sendTransaction: 'wallet.sendTransaction',
 }
 
 async function handleRequest (req) {
@@ -192,14 +187,14 @@ async function handleRequest (req) {
 
 window.earth = {
   evtRegMap: {},
-  version: '1.1',
+  version: '4.1',
   isConnected: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.isConnected')()
   },
   signMessage: async (params) => {
-    const approval = await window.providerManager.getApproval(params)
-    if (!approval) throw new Error('User rejected :', params)
+    //const approval = await window.providerManager.getApproval(params)
+    //if (!approval) throw new Error('User rejected :', params)
 
     console.log(params);
     const icp = window.providerManager.getProviderFor('ICP')

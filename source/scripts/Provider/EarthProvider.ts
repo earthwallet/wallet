@@ -3,6 +3,7 @@ import { getBalance } from '@earthwallet/keyring';
 import { IWalletState } from '~state/wallet/types';
 import store from '~state/store';
 import { canisterAgentApi } from '@earthwallet/assets';
+import { keyable } from '~scripts/Background/types/IMainController';
 
 export class EarthProvider {
   constructor() {}
@@ -33,7 +34,50 @@ export class EarthProvider {
       : null;
   }
 
-  async signMessage(request: any) {
+  async signMessage(request: keyable) {
+    let response: any;
+    let counter = 0;
+    console.log(request, Array.isArray(request));
+    //setLoading(true);
+    if (Array.isArray(request)) {
+      response = [];
+      for (const singleRequest of request) {
+        response[counter] = await canisterAgentApi(
+          singleRequest?.canisterId,
+          singleRequest?.method,
+          singleRequest?.args
+          //fromIdentity
+        );
+        counter++;
+      }
+    } else {
+      response = await canisterAgentApi(
+        request?.canisterId,
+        request?.method,
+        request?.args
+        //fromIdentity
+      );
+    }
+
+    console.log(response);
+
+    /*     await approveSign().then(() => {
+         });
+        window.close(); */
+
+    if (!Array.isArray(response) && response.type !== 'error') {
+      // setSuccess(true);
+      //setResponse(response);
+    } else {
+      //todo
+      // setResponseArr(response);
+      // setSuccess(true);
+    }
+    //setLoading(false);
+    return response;
+  }
+
+  async signMessageOld(request: any) {
     console.log(request, 'signMessage EarthProvider');
     let response: any;
     try {
@@ -44,13 +88,9 @@ export class EarthProvider {
       );
     } catch (error) {
       console.log(error, typeof error, JSON.stringify(error));
-      response = 'ERROR: ' + JSON.stringify(error);
+      response = error;
     }
 
     return response;
   }
-
-  /*   private remove0x(hash: string) {
-    return hash.startsWith('0x') ? hash.slice(2) : hash;
-  } */
 }
