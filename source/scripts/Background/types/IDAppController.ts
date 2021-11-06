@@ -16,4 +16,6 @@ export interface IDAppController {
   getSignatureRequest: () => keyable;
   addSignRequest: (request: any, id: string) => void;
   setDappConnectedAddress: (address: string, origin: string) => void;
+  setApprovedIdentityJSON: (identityJSON: string) => void;
+  getApprovedIdentityJSON: () => any;
 }

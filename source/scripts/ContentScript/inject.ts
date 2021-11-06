@@ -193,10 +193,6 @@ window.earth = {
     return icp.getMethod('wallet.isConnected')()
   },
   signMessage: async (params) => {
-    //const approval = await window.providerManager.getApproval(params)
-    //if (!approval) throw new Error('User rejected :', params)
-
-    console.log(params);
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.signMessage')(params)
   },

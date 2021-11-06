@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ConnectedDApps, DAppInfo } from '~global/types';
+import { AppState } from '~state/store';
 
 const initialState: ConnectedDApps = {};
 
@@ -40,5 +41,8 @@ const DAppState = createSlice({
 
 export const { listNewDapp, updateDapp, unlistDapp, hydrateDapp } =
   DAppState.actions;
+
+export const selectRequestStatusById = (requestId: string) => (state: AppState) =>
+  state.entities?.dappRequests?.byId[requestId];
 
 export default DAppState.reducer;

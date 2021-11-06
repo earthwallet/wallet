@@ -4,6 +4,8 @@ import { IWalletState } from '~state/wallet/types';
 import store from '~state/store';
 import { canisterAgentApi } from '@earthwallet/assets';
 import { keyable } from '~scripts/Background/types/IMainController';
+import { updateEntities } from '~state/entities';
+import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 
 export class EarthProvider {
   constructor() {}
@@ -34,19 +36,45 @@ export class EarthProvider {
       : null;
   }
 
-  async signMessage(request: keyable) {
+  async signMessage(
+    request: keyable,
+    approvedIdentityJSON: string,
+    requestId?: string
+  ) {
     let response: any;
     let counter = 0;
-    console.log(request, Array.isArray(request));
+    const fromIdentity = Secp256k1KeyIdentity.fromJSON(approvedIdentityJSON);
+
+    console.log(request, Array.isArray(request), fromIdentity, requestId);
     //setLoading(true);
+    //store.update
+    store.dispatch(
+      updateEntities({
+        entity: 'dappRequests',
+        key: requestId,
+        data: {
+          loading: true,
+          error: '',
+        },
+      })
+    );
     if (Array.isArray(request)) {
       response = [];
       for (const singleRequest of request) {
+        store.dispatch(
+          updateEntities({
+            entity: 'dappRequests',
+            key: requestId,
+            data: {
+              loadingIndex: counter,
+            },
+          })
+        );
         response[counter] = await canisterAgentApi(
           singleRequest?.canisterId,
           singleRequest?.method,
-          singleRequest?.args
-          //fromIdentity
+          singleRequest?.args,
+          fromIdentity
         );
         counter++;
       }
@@ -54,10 +82,23 @@ export class EarthProvider {
       response = await canisterAgentApi(
         request?.canisterId,
         request?.method,
-        request?.args
-        //fromIdentity
+        request?.args,
+        fromIdentity
       );
     }
+
+    store.dispatch(
+      updateEntities({
+        entity: 'dappRequests',
+        key: requestId,
+        data: {
+          loading: false,
+          complete: true,
+          completedAt: new Date().getTime(),
+          error: '',
+        },
+      })
+    );
 
     console.log(response);
 

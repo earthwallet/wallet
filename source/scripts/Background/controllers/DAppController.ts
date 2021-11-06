@@ -9,7 +9,7 @@ import { stringifyWithBigInt } from '~global/helpers';
 class DAppController implements IDAppController {
   #current: DAppInfo = { origin: '', logo: '', title: '', address: '' };
   #request: keyable;
-  #approvedIdentity: any;
+  #approvedIdentityJSON: string;
 
   fromPageConnectDApp(origin: string, title: string) {
     const dapp: ConnectedDApps = store.getState().dapp;
@@ -28,7 +28,7 @@ class DAppController implements IDAppController {
   }
 
   addSignRequest(request: any, id: string) {
-    let parsedRequest = Array.isArray(request)
+    const parsedRequest = Array.isArray(request)
       ? request.map((singleReq, _) => ({
           ...singleReq,
           args: stringifyWithBigInt(singleReq?.args),
@@ -83,12 +83,12 @@ class DAppController implements IDAppController {
     return this.#request;
   };
 
-  setApprovedIdentity(identity: any) {
-    this.#approvedIdentity = identity;
+  setApprovedIdentityJSON(identityJSON: string) {
+    this.#approvedIdentityJSON = identityJSON;
   }
 
-  getApprovedIdentity = () => {
-    return this.#approvedIdentity;
+  getApprovedIdentityJSON = () => {
+    return this.#approvedIdentityJSON;
   };
 }
 

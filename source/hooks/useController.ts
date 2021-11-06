@@ -36,15 +36,12 @@ export function useConnectWalletToDApp() {
   };
 }
 
-export function useSignApprove(params?: any) {
-  const controller = useController();
-
+export function useSignApprove() {
   return async () => {
-    controller.dapp.addSignRequest(params || {}, '1234');
     const background = await browser.runtime.getBackgroundPage();
-    console.log('useConnectWalletToDApp');
+    console.log('signApproval');
     background.dispatchEvent(
-      new CustomEvent('signApporval', {
+      new CustomEvent('signApproval', {
         detail: window.location.hash,
       })
     );

@@ -8,18 +8,18 @@ import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import { isJsonString } from '~utils/common';
 import { validateMnemonic } from '@earthwallet/keyring';
-import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
-import { canisterAgentApi } from '@earthwallet/assets';
 import InputWithLabel from '~components/InputWithLabel';
 import Warning from '~components/Warning';
 import { stringifyWithBigInt } from '~global/helpers';
 import { ClipLoader } from 'react-spinners';
-import { keyable } from '~scripts/Background/types/IMainController';
-import { browser } from 'webextension-polyfill-ts';
+//import { keyable } from '~scripts/Background/types/IMainController';
+import { selectRequestStatusById } from '~state/dapp';
 
 const MIN_LENGTH = 6;
 
 const SignTransactionPage = () => {
+  const requestId = window.location.hash?.substring(1);
+  const requestStatus = useSelector(selectRequestStatusById(requestId));
   const activeAccountAddress = useCurrentDappAddress();
 
   const controller = useController();
@@ -27,15 +27,11 @@ const SignTransactionPage = () => {
   const selectedAccount = useSelector(selectAccountById(activeAccountAddress));
   const approveSign = useSignApprove();
   const [isBusy, setIsBusy] = useState(false);
-  const [txError, setTxError] = useState('');
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<keyable | null>(null);
-  const [responseArr, setResponseArr] = useState<keyable[] | null>(null);
+  const response = null;
+  const responseArr = [{}, {}];
 
-  console.log(txError, approveSign);
   const onPassChange = useCallback(
     (password: string) => {
       setPass(password);
@@ -55,7 +51,6 @@ const SignTransactionPage = () => {
       }
       else {
         setError('NO_ERROR');
-
       }
     }
     , [selectedAccount]);
@@ -68,17 +63,7 @@ const SignTransactionPage = () => {
 
 
   const handleSign = async () => {
-    const background = await browser.runtime.getBackgroundPage();
-    background.dispatchEvent(
-      new CustomEvent('signApporval', { detail: window.location.hash })
-    );
-    //window.close();
-  };
-  
-
-  const signCanister = async () => {
     setIsBusy(true);
-    setTxError('');
 
     let secret = '';
 
@@ -90,58 +75,15 @@ const SignTransactionPage = () => {
     }
 
     if (isJsonString(secret)) {
-      const fromIdentity = Secp256k1KeyIdentity.fromJSON(secret);
-      let response: any;
-      let counter = 0;
-      console.log(request, Array.isArray(request))
-      setLoading(true);
-      if (Array.isArray(request)) {
-        response = [];
-        for (const singleRequest of request) {
-          response[counter] = await canisterAgentApi(
-            singleRequest?.canisterId,
-            singleRequest?.method,
-            singleRequest?.args,
-            fromIdentity
-          );
-          counter++;
-        }
-      }
-      else {
-        response = await canisterAgentApi(
-          request?.canisterId,
-          request?.method,
-          request?.args,
-          fromIdentity
-        );
-      }
-
-      console.log(response);
-
-      /*     await approveSign().then(() => {
-           });
-          window.close(); */
-
-      if (!Array.isArray(response) && response.type !== 'error') {
-        setSuccess(true);
-        setResponse(response);
-
-      }
-      else {
-        //todo
-        setResponseArr(response);
-        setSuccess(true);
-      }
-      setLoading(false);
-      return response;
+      console.log('handleSign')
+      controller.dapp.setApprovedIdentityJSON(secret);
+      await approveSign();
     }
-    return true;
+    setIsBusy(false);
   };
 
-  console.log(signCanister);
-
   return <div className={styles.page}>
-    <div className={styles.title}>Signature Request {window.location.hash}</div>
+    <div className={styles.title}>Signature Request</div>
     {Array.isArray(request) ? request.map((singleReq, index) => <div key={index} className={styles.requestBody}>
       <div className={styles.label}>
         CanisterId
@@ -202,11 +144,11 @@ const SignTransactionPage = () => {
       }
     </div>}
 
-    {loading ? <section className={styles.footerSuccess}>
+    {requestStatus?.loading ? <section className={styles.footerSuccess}>
       <ClipLoader color={'#fffff'}
         size={15} />
     </section>
-      : success ?
+      : requestStatus?.complete ?
         <section className={styles.footerSuccess}>
           <ActionButton
             onClick={() => window.close()}>

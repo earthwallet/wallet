@@ -1,5 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { browser, Runtime } from 'webextension-polyfill-ts';
+import { parseBigIntObj } from '~global/helpers';
 import { IMainController } from '../types/IMainController';
 
 type Message = {
@@ -84,13 +85,13 @@ export const messagesHandler = (
       const windowId = uuid();
       mainController.dapp.setSignatureRequest(args[0], windowId);
       const popup = await mainController.createPopup(windowId, 'sign');
-      console.log(popup, args, 'popup signApporval');
+      console.log(popup, args, 'popup signApproval');
       if (popup) {
         window.addEventListener(
-          'signApporval',
+          'signApproval',
           (ev: any) => {
             console.log(
-              'signApporval window addEventListener',
+              'signApproval window addEventListener',
               ev.detail,
               windowId
             );
@@ -104,7 +105,7 @@ export const messagesHandler = (
         browser.windows.onRemoved.addListener((id) => {
           if (id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
-            console.log('signApporval window is closed');
+            console.log('signApproval window is closed');
           }
         });
         return Promise.resolve(null);
@@ -132,11 +133,22 @@ export const messagesHandler = (
         const popup = await mainController.createPopup(windowId, 'sign');
         pendingWindow = true;
         window.addEventListener(
-          'signApporval',
+          'signApproval',
           async (ev: any) => {
             if (ev.detail.substring(1) === windowId) {
-              result = await mainController.provider.signMessage(args[0]);
-              port.postMessage({ id: message.id, data: { result } });
+              //https://forum.dfinity.org/t/mismatching-dfinity-agent-versions-can-cause-hashing-issues/7359/5
+              const approvedIdentityJSON =
+                mainController.dapp.getApprovedIdentityJSON();
+              result = await mainController.provider.signMessage(
+                args[0],
+                approvedIdentityJSON,
+                windowId
+              );
+              const parsedResult = parseBigIntObj(result);
+              port.postMessage({
+                id: message.id,
+                data: { result: parsedResult },
+              });
               pendingWindow = false;
             }
           },
@@ -148,21 +160,15 @@ export const messagesHandler = (
 
         browser.windows.onRemoved.addListener((id) => {
           if (popup && id === popup.id) {
-            port.postMessage({ id: message.id, data: { result: false } });
-            //console.log('SignMessage window is closed');
+            port.postMessage({
+              id: message.id,
+              data: { result: 'USER_REJECTED' },
+            });
             pendingWindow = false;
           }
         });
 
         return Promise.resolve(null);
-      } else if (method === 'wallet.signMessageOld') {
-        const windowId = uuid();
-        const popup = await mainController.createPopup(windowId, 'sign');
-
-        //todo add approve flow
-        result = await mainController.provider.signMessage(args[0]);
-        console.log(result, popup);
-        //
       }
 
       if (result !== undefined) {
@@ -173,7 +179,7 @@ export const messagesHandler = (
     } else {
       return Promise.resolve({
         id: message.id,
-        result: 'Hi from content script',
+        result: 'Content script',
       });
     }
 
