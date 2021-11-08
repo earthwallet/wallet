@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import ActionButton from '~components/composed/ActionButton';
 import NavButton from '~components/composed/NavButton';
 import { useConnectWalletToDApp, useCurrentDapp, useUpdateActiveAccount } from '~hooks/useController';
@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { selectAccounts_ICP } from '~state/wallet';
 import { isUndefined } from 'lodash';
 import { getSymbol } from '~utils/common';
+import useToast from '~hooks/useToast';
 
 enum ConnectStep {
   Accounts,
@@ -25,9 +26,13 @@ export default function ConnectDappPage() {
       console.log(address);
     });
   }
+  const { show } = useToast();
+
 
   const [step, setStep] = useState(ConnectStep.Accounts);
   const [accountIndex, setAccountIndex] = useState<number>();
+
+  const onNext = useCallback((): void => show('Select An Account'), [show]);
 
   const handleSubmit = () => {
     if (step === ConnectStep.Accounts && accountIndex) {
@@ -125,7 +130,7 @@ export default function ConnectDappPage() {
             <ActionButton actionType="secondary" onClick={() => window.close()}>
               Cancel
             </ActionButton>
-            <ActionButton onClick={handleSubmit}>
+            <ActionButton onClick={() => step === ConnectStep.Accounts ? onNext() : handleSubmit()}>
               {step === ConnectStep.Accounts ? 'Next' : 'Connect'}
             </ActionButton>
           </div>

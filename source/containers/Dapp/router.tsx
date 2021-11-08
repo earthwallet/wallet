@@ -5,6 +5,7 @@ import ErrorBoundary from '~components/ErrorBoundary';
 import ConnectDappPage from '~pages/dapp/ConnectDappPage';
 import SignTransactionPage from '~pages/dapp/SignTransactionPage';
 import queryString from 'query-string';
+import ToastProvider from '~components/ToastProvider';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -40,19 +41,21 @@ const DappRouter = () => {
           }}
           key={key}
         >
-          <Switch location={item}>
-            <Route path="/dapp.html">
-              {route
-                ? <Redirect to={`/${route}${location.search}${location.hash}`} />
-                : <Redirect to={`/connect${location.search}${location.hash}`} />}
-            </Route>
-            <Route path="/connect">
-              {wrapWithErrorBoundary(<ConnectDappPage />, 'connect')}
-            </Route>
-            <Route path="/sign">
-              {wrapWithErrorBoundary(<SignTransactionPage />, 'sign')}
-            </Route>
-          </Switch>
+          <ToastProvider>
+            <Switch location={item}>
+              <Route path="/dapp.html">
+                {route
+                  ? <Redirect to={`/${route}${location.search}${location.hash}`} />
+                  : <Redirect to={`/connect${location.search}${location.hash}`} />}
+              </Route>
+              <Route path="/connect">
+                {wrapWithErrorBoundary(<ConnectDappPage />, 'connect')}
+              </Route>
+              <Route path="/sign">
+                {wrapWithErrorBoundary(<SignTransactionPage />, 'sign')}
+              </Route>
+            </Switch>
+          </ToastProvider>
         </animated.div>
       ))}
     </>

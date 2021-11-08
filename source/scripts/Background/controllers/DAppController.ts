@@ -92,7 +92,7 @@ class DAppController implements IDAppController {
     return this.#approvedIdentityJSON;
   };
 
-  deleteOriginAndRequests = (origin: string, call?: () => void) => {
+  deleteOriginAndRequests = (origin: string, call?: () => void | undefined) => {
     call && call();
 
     store.dispatch(unlistDapp({ id: origin }));

@@ -60,9 +60,14 @@ export const messagesHandler = (
         return Promise.resolve({ id: message.id, result: origin && allowed });
       }
 
+      if (pendingWindow) {
+        return Promise.resolve(null);
+      }
       const windowId = uuid();
       const popup = await mainController.createPopup(windowId);
-      console.log(popup, 'popup');
+      pendingWindow = true;
+
+      console.log(popup, 'popup', pendingWindow);
       if (popup) {
         window.addEventListener(
           'connectWallet',
@@ -70,6 +75,7 @@ export const messagesHandler = (
             console.log('Connect window addEventListener', ev.detail);
             if (ev.detail.substring(1) === windowId) {
               port.postMessage({ id: message.id, data: { result: true } });
+              pendingWindow = false;
             }
           },
           { once: true, passive: true }
@@ -79,6 +85,8 @@ export const messagesHandler = (
           if (id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
             console.log('Connect window is closed');
+            pendingWindow = false;
+
           }
         });
         return Promise.resolve(null);

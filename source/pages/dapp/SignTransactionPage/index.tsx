@@ -103,7 +103,7 @@ const SignTransactionPage = () => {
       <div className={styles.value}>
         {stringifyWithBigInt(singleReq?.args)}
       </div>
-      {responseArr && responseArr[index] !== null &&
+      {false && responseArr && responseArr[index] !== null &&
         <div>
           <div className={styles.label}>
             Response
@@ -132,13 +132,12 @@ const SignTransactionPage = () => {
       <div className={styles.value}>
         {stringifyWithBigInt(request?.args)}
       </div>
-      {response !== null &&
+      {false && response !== null &&
         <div>
           <div className={styles.label}>
             Response
           </div>
           <div className={styles.value}>
-            {stringifyWithBigInt(response)}
           </div>
         </div>
       }

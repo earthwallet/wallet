@@ -40,9 +40,9 @@ const DappDetails = ({
   const history = useHistory();
 
   const disconnectOrigin = () => {
-    history.goBack();
+    const call = () => history.goBack();
     reset();
-    controller.dapp.deleteOriginAndRequests(parsedOrigin);
+    controller.dapp.deleteOriginAndRequests(parsedOrigin, call);
   }
   return (
     <div className={styles.page}>
