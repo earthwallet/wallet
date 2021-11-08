@@ -39,7 +39,6 @@ export function useConnectWalletToDApp() {
 export function useSignApprove() {
   return async () => {
     const background = await browser.runtime.getBackgroundPage();
-    console.log('signApproval');
     background.dispatchEvent(
       new CustomEvent('signApproval', {
         detail: window.location.hash,

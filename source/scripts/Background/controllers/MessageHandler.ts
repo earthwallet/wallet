@@ -98,16 +98,10 @@ export const messagesHandler = (
       const windowId = uuid();
       mainController.dapp.setSignatureRequest(args[0], windowId);
       const popup = await mainController.createPopup(windowId, 'sign');
-      console.log(popup, args, 'popup signApproval');
       if (popup) {
         window.addEventListener(
           'signApproval',
           (ev: any) => {
-            console.log(
-              'signApproval window addEventListener',
-              ev.detail,
-              windowId
-            );
             if (ev.detail.substring(1) === windowId) {
               port.postMessage({ id: message.id, data: { result: true } });
             }
@@ -118,7 +112,6 @@ export const messagesHandler = (
         browser.windows.onRemoved.addListener((id) => {
           if (id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
-            console.log('signApproval window is closed');
           }
         });
         return Promise.resolve(null);

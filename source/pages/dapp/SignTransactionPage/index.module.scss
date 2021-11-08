@@ -1,6 +1,6 @@
 .page {
   width: $appWidth;
-  height: $appHeight - 180px;
+  height: $appHeight;
   background: url(../../../assets/images/bg_dapp.png);
   background-size: cover;
   display: flex;
@@ -8,6 +8,9 @@
   color: white;
   flex-direction: column;
   padding-bottom: 90px;
+}
+.page_extra {
+  padding-bottom: 200px;
 }
 
 .actions {
@@ -22,7 +25,7 @@
   bottom: 0;
   width: $appWidth;
   padding: 0 24px;
-  background: #343434d1;
+  background: #34343447;
   backdrop-filter: blur(7px);
 }
 
@@ -71,12 +74,17 @@
 
   color: #ffffff;
 
-  opacity: 0.51;
+  opacity: 0.9;
   padding: 16px 18px;
 }
 
 .requestBody {
-  padding: 24px;
+  margin: 24px;
+  padding: 12px 16px;
+  background: rgba(90, 89, 126, 0.39);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  border-radius: 14px;
 }
 
 .footerSuccess {
@@ -98,4 +106,70 @@
   padding: 8px;
   border-radius: 5px;
   margin: 24px;
+}
+
+.accountInfo {
+  background: rgba(90, 89, 126, 0.39);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  border-radius: 14px;
+  margin: 0 24px;
+  padding: 12px 16px;
+}
+
+.accountInfoKey {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 120%;
+  /* or 19px */
+
+  display: flex;
+  align-items: flex-end;
+
+  color: #ffffff;
+}
+
+.accountInfoVal {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 15px;
+  color: #fafbfb;
+  margin: 6px 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  padding-left: 4px;
+}
+
+.accountInfoIcon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  flex-shrink: 0;
+  flex-basis: 32px;
+  align-items: center;
+}
+.accountInfoValCont {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.accountInfoIcon24 {
+  width: 24px;
+  height: 24px;
+}
+
+.valueMono {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
 }

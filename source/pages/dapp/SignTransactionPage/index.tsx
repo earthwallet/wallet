@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import styles from './index.module.scss';
-import { useCurrentDappAddress, useSignApprove } from '~hooks/useController';
+import { useCurrentDapp, useCurrentDappAddress, useSignApprove } from '~hooks/useController';
 import ActionButton from '~components/composed/ActionButton';
 import { useController } from '~hooks/useController';
 import { decryptString } from '~utils/vault';
@@ -14,10 +14,15 @@ import { stringifyWithBigInt } from '~global/helpers';
 import { ClipLoader } from 'react-spinners';
 //import { keyable } from '~scripts/Background/types/IMainController';
 import { selectRequestStatusById } from '~state/dapp';
+import clsx from 'clsx';
+import { getShortAddress } from '~utils/common';
+import ICON_ICP from '~assets/images/icon_icp_details.png';
 
 const MIN_LENGTH = 6;
 
 const SignTransactionPage = () => {
+
+  const dapp = useCurrentDapp();
   const requestId = window.location.hash?.substring(1);
   const requestStatus = useSelector(selectRequestStatusById(requestId));
   const activeAccountAddress = useCurrentDappAddress();
@@ -82,8 +87,26 @@ const SignTransactionPage = () => {
     setIsBusy(false);
   };
 
-  return <div className={styles.page}>
+  return <div className={clsx(styles.page, !(requestStatus?.loading || requestStatus?.complete) && styles.page_extra)}>
     <div className={styles.title}>Signature Request</div>
+    <div className={styles.accountInfo}>
+      <div className={styles.accountInfoKey}>Origin</div>
+      <div className={styles.accountInfoValCont}>
+        <div className={styles.accountInfoIcon}>
+          <img src={dapp?.logo} className={styles.accountInfoIcon24} />
+        </div>
+        <div className={styles.accountInfoVal}>{dapp?.origin}</div>
+      </div>
+
+      <div className={styles.accountInfoKey}>Account</div>
+      <div className={styles.accountInfoValCont}>
+        <div className={styles.accountInfoIcon}>
+          <img src={ICON_ICP} className={styles.accountInfoIcon24} />
+        </div>
+        <div className={styles.accountInfoVal}>{activeAccountAddress && getShortAddress(activeAccountAddress)}</div>
+      </div>
+
+    </div>
     {Array.isArray(request) ? request.map((singleReq, index) => <div key={index} className={styles.requestBody}>
       <div className={styles.label}>
         CanisterId
@@ -94,14 +117,14 @@ const SignTransactionPage = () => {
       <div className={styles.label}>
         Method
       </div>
-      <div className={styles.value}>
+      <div className={clsx(styles.value, styles.valueMono)}>
         {singleReq?.method}
       </div>
       <div className={styles.label}>
         Message
       </div>
-      <div className={styles.value}>
-        {stringifyWithBigInt(singleReq?.args)}
+      <div className={clsx(styles.value, styles.valueMono)}>
+        {singleReq?.args === undefined ? 'undefined' : stringifyWithBigInt(singleReq?.args)}
       </div>
       {false && responseArr && responseArr[index] !== null &&
         <div>
@@ -120,7 +143,7 @@ const SignTransactionPage = () => {
       <div className={styles.value}>
         {request?.canisterId}
       </div>
-      <div className={styles.label}>
+      <div className={clsx(styles.value, styles.valueMono)}>
         Method
       </div>
       <div className={styles.value}>
@@ -129,8 +152,8 @@ const SignTransactionPage = () => {
       <div className={styles.label}>
         Message
       </div>
-      <div className={styles.value}>
-        {stringifyWithBigInt(request?.args)}
+      <div className={clsx(styles.value, styles.valueMono)}>
+        {request?.args === undefined ? 'undefined' : stringifyWithBigInt(request?.args)}
       </div>
       {false && response !== null &&
         <div>
@@ -151,7 +174,7 @@ const SignTransactionPage = () => {
         <section className={styles.footerSuccess}>
           <ActionButton
             onClick={() => window.close()}>
-            Transaction Complete!
+            &nbsp;&nbsp;Transaction Complete!&nbsp;&nbsp;
           </ActionButton>
         </section> :
         <section className={styles.footer}>
@@ -165,7 +188,7 @@ const SignTransactionPage = () => {
             placeholder='REQUIRED'
             type='password'
           />
-          {false && error && (
+          {false && error && error != 'NO_ERROR' && (
             <Warning
               isBelowInput
               isDanger
