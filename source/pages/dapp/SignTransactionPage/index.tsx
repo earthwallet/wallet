@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styles from './index.module.scss';
 import { useCurrentDapp, useCurrentDappAddress, useSignApprove } from '~hooks/useController';
 import ActionButton from '~components/composed/ActionButton';
@@ -84,10 +84,25 @@ const SignTransactionPage = () => {
     setIsBusy(false);
   };
 
-  return <div className={clsx(styles.page, !(requestStatus?.loading || requestStatus?.complete) && styles.page_extra)}>
-    <div className={styles.title}>Signature Request</div>
+  useEffect(() => {
+    if (requestStatus?.complete) {
+      console.log('completed');
+      const body = document.querySelector('#response');
+
+      body?.scrollIntoView({
+        behavior: 'smooth'
+      })
+    }
+  }, [requestStatus?.complete]);
+
+  return <div
+    className={clsx(styles.page, !(requestStatus?.loading || requestStatus?.complete) && styles.page_extra)}>
+    <div
+      id={'response'}
+      className={styles.title}>Signature Request</div>
     {requestStatus?.response && <div className={clsx(styles.accountInfo, styles.response)}>
-      <div className={styles.label}>
+      <div
+        className={styles.label}>
         Response</div>
       <div className={clsx(styles.value, styles.valueMono)}>
         {stringifyWithBigInt(requestStatus?.response)}
