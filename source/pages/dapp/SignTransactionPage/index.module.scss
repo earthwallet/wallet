@@ -79,7 +79,7 @@
 }
 
 .requestBody {
-  margin: 24px;
+  margin: 3px 24px;
   padding: 12px 16px;
   background: rgba(90, 89, 126, 0.39);
   -webkit-backdrop-filter: blur(7px);
@@ -113,7 +113,7 @@
   -webkit-backdrop-filter: blur(7px);
   backdrop-filter: blur(7px);
   border-radius: 14px;
-  margin: 0 24px;
+  margin: 3px 24px;
   padding: 12px 16px;
 }
 
@@ -172,4 +172,9 @@
   font-family: DM Mono;
   font-style: normal;
   font-weight: normal;
+}
+
+.response {
+  background: #006e006b;
+  border: 1px #025a0296 solid;
 }

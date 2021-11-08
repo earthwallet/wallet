@@ -34,8 +34,6 @@ const SignTransactionPage = () => {
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
-  const response = null;
-  const responseArr = [{}, {}];
 
   const onPassChange = useCallback(
     (password: string) => {
@@ -88,6 +86,13 @@ const SignTransactionPage = () => {
 
   return <div className={clsx(styles.page, !(requestStatus?.loading || requestStatus?.complete) && styles.page_extra)}>
     <div className={styles.title}>Signature Request</div>
+    {requestStatus?.response && <div className={clsx(styles.accountInfo, styles.response)}>
+      <div className={styles.label}>
+        Response</div>
+      <div className={clsx(styles.value, styles.valueMono)}>
+        {stringifyWithBigInt(requestStatus?.response)}
+      </div>
+    </div>}
     <div className={styles.accountInfo}>
       <div className={styles.accountInfoKey}>Origin</div>
       <div className={styles.accountInfoValCont}>
@@ -104,8 +109,8 @@ const SignTransactionPage = () => {
         </div>
         <div className={styles.accountInfoVal}>{activeAccountAddress && getShortAddress(activeAccountAddress)}</div>
       </div>
-
     </div>
+
     {Array.isArray(request) ? request.map((singleReq, index) => <div key={index} className={styles.requestBody}>
       <div className={styles.label}>
         CanisterId
@@ -125,16 +130,6 @@ const SignTransactionPage = () => {
       <div className={clsx(styles.value, styles.valueMono)}>
         {singleReq?.args === undefined ? 'undefined' : stringifyWithBigInt(singleReq?.args)}
       </div>
-      {false && responseArr && responseArr[index] !== null &&
-        <div>
-          <div className={styles.label}>
-            Response
-          </div>
-          <div className={styles.value}>
-            {stringifyWithBigInt(responseArr[index])}
-          </div>
-        </div>
-      }
     </div>) : <div className={styles.requestBody}>
       <div className={styles.label}>
         CanisterId
@@ -154,15 +149,6 @@ const SignTransactionPage = () => {
       <div className={clsx(styles.value, styles.valueMono)}>
         {request?.args === undefined ? 'undefined' : stringifyWithBigInt(request?.args)}
       </div>
-      {false && response !== null &&
-        <div>
-          <div className={styles.label}>
-            Response
-          </div>
-          <div className={styles.value}>
-          </div>
-        </div>
-      }
     </div>}
 
     {requestStatus?.loading ? <section className={styles.footerSuccess}>
@@ -173,7 +159,7 @@ const SignTransactionPage = () => {
         <section className={styles.footerSuccess}>
           <ActionButton
             onClick={() => window.close()}>
-            &nbsp;&nbsp;Transaction Complete!&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;Transaction Complete!&nbsp;&nbsp;&nbsp;
           </ActionButton>
         </section> :
         <section className={styles.footer}>
