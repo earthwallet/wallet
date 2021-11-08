@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
-import { useController } from '~hooks/useController';
 import ErrorBoundary from '~components/ErrorBoundary';
 import ConnectDappPage from '~pages/dapp/ConnectDappPage';
 import SignTransactionPage from '~pages/dapp/SignTransactionPage';
@@ -20,7 +19,6 @@ const DappRouter = () => {
   const { route } = queryString.parse(location.search);
   console.log(route, 'route DappRouter');
 
-  const controller = useController();
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
@@ -29,9 +27,6 @@ const DappRouter = () => {
     config: { duration: 100 },
   });
 
-  useEffect(() => {
-    controller.preloadState();
-  }, []);
 
   return (
     <>

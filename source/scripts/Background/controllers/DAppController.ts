@@ -1,8 +1,8 @@
 import { ConnectedDApps, DAppInfo } from '~global/types';
-import { listNewDapp, updateDapp } from '~state/dapp';
+import { listNewDapp, unlistDapp, updateDapp } from '~state/dapp';
 import store from '~state/store';
 import { IDAppController } from '../types/IDAppController';
-import { storeEntities } from '~state/entities';
+import { removeEntityKey, storeEntities } from '~state/entities';
 import { keyable } from '../types/IAssetsController';
 import { stringifyWithBigInt } from '~global/helpers';
 
@@ -90,6 +90,26 @@ class DAppController implements IDAppController {
 
   getApprovedIdentityJSON = () => {
     return this.#approvedIdentityJSON;
+  };
+
+  deleteOriginAndRequests = (origin: string, call?: () => void) => {
+    call && call();
+
+    store.dispatch(unlistDapp({ id: origin }));
+
+    const dappRequests = store.getState().entities?.dappRequests?.byId;
+
+    return (
+      dappRequests &&
+      Object.keys(dappRequests)
+        .map((id) => dappRequests[id])
+        .filter((dappRequest) => dappRequest.origin === origin)
+        .map((dappRequest) =>
+          store.dispatch(
+            removeEntityKey({ entity: 'dappRequests', key: dappRequest.id })
+          )
+        )
+    );
   };
 }
 

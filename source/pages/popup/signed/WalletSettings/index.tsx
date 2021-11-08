@@ -36,7 +36,7 @@ const WalletSettings = () => {
         <div
           className={clsx(styles.earthInputCont, styles.mnemonicInputCont)}
         >
-          {dapps.length !== 0 && dapps?.map((dapp:keyable) => <div
+          {dapps.length !== 0 && dapps?.map((dapp: keyable) => <div
             onClick={() => history.push('/dappdetails/' + encodeURIComponent(dapp?.origin))}
             key={dapp.origin}
             className={styles.checkboxCont}>
@@ -47,7 +47,7 @@ const WalletSettings = () => {
                   {dapp?.origin} {dapp?.title}
                 </div>
                 <div className={styles.checkboxSubTitle}>
-                  {getShortAddress(dapp?.address)}
+                  {dapp?.address && getShortAddress(dapp?.address)}
                 </div>
               </div>
             </div>

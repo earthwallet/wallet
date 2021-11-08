@@ -1,6 +1,6 @@
 
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import styles from './index.scss';
 import ICON_DELETE from '~assets/images/icon_delete.svg';
 
@@ -15,6 +15,9 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 import { stringifyWithBigInt } from '~global/helpers';
 import moment from 'moment-mini';
+import useToast from '~hooks/useToast';
+import { useHistory } from 'react-router-dom';
+import { useController } from '~hooks/useController';
 
 
 interface Props extends RouteComponentProps<{ origin: string }> {
@@ -29,13 +32,23 @@ const DappDetails = ({
   const parsedOrigin = decodeURIComponent(origin);
   const dapp = useSelector(selectDapp(parsedOrigin));
   const dappRequests = useSelector(selectDappRequests(parsedOrigin));
+  const { show } = useToast();
+  const controller = useController();
 
+  const reset = useCallback((): void => show('Dapp Disconnected'), [show]);
 
+  const history = useHistory();
+
+  const disconnectOrigin = () => {
+    history.goBack();
+    reset();
+    controller.dapp.deleteOriginAndRequests(parsedOrigin);
+  }
   return (
     <div className={styles.page}>
       <Header
         type={'wallet'}
-        text={dapp?.title?.length < 27 ? dapp?.title : dapp?.title.substring(0, 27) + '...'}
+        text={dapp?.title?.length < 27 ? dapp?.title : dapp?.title?.substring(0, 27) + '...'}
       ><div className={styles.empty} /></Header>
       <div className={styles.container}>
         <div
@@ -60,12 +73,13 @@ const DappDetails = ({
                     Connected Address
                   </div>
                   <div className={styles.checkboxSubTitle}>
-                    {getShortAddress(dapp?.address)}
+                    {dapp?.address && getShortAddress(dapp?.address)}
                   </div>
                 </div>
               </div>
             </div>
             <img
+              onClick={() => disconnectOrigin()}
               className={styles.deleteIcon}
               src={ICON_DELETE}
             />

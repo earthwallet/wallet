@@ -14,6 +14,7 @@ export interface IMainController {
   dapp: Readonly<IDAppController>;
   provider: Readonly<EarthProvider>;
   preloadState: () => Promise<void>;
+  isHydrated: () => boolean;
   migrateLocalStorage: () => Promise<keyable>;
   createPopup: (
     windowId: string,

@@ -36,6 +36,11 @@ export const messagesHandler = (
   ) => {
     if (browser.runtime.lastError) return Promise.reject('Runtime Last Error');
 
+    if (!mainController.isHydrated()) {
+      //hydrate app if not hydrated
+      await mainController.preloadState();
+    }
+
     const sendError = (error: string) => {
       return Promise.reject(new CustomEvent(message.id, { detail: error }));
     };

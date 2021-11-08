@@ -23,6 +23,10 @@ export default class MainController {
     this.provider = Object.freeze(new EarthProvider());
   }
 
+  isHydrated() {
+    return store.getState().app.hydrated;
+  }
+
   async preloadState() {
     await store.dispatch(preloadStateAsync() as any);
   }

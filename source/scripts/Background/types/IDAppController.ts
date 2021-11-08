@@ -18,4 +18,5 @@ export interface IDAppController {
   setDappConnectedAddress: (address: string, origin: string) => void;
   setApprovedIdentityJSON: (identityJSON: string) => void;
   getApprovedIdentityJSON: () => any;
+  deleteOriginAndRequests: (origin: string, call?: () => void) => void;
 }
