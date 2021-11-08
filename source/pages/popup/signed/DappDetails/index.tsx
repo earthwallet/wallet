@@ -114,6 +114,12 @@ const DappDetails = ({
               <div className={styles.value}>
                 {Array.isArray(dappRequest.request) ? 'True' : 'False'}
               </div>
+              <div className={styles.label}>
+                Response
+              </div>
+              <div className={styles.value}>
+                {dappRequest.response}
+              </div>
               {Array.isArray(dappRequest.request) ? dappRequest.request.map((singleReq, index) => <div key={index} className={styles.requestBody}>
                 <div className={styles.label}>
                   CanisterId
@@ -133,7 +139,6 @@ const DappDetails = ({
                 <div className={styles.value}>
                   {stringifyWithBigInt(singleReq?.args) || '-'}
                 </div>
-
               </div>) : <div className={styles.requestBody}>
                 <div className={styles.label}>
                   CanisterId

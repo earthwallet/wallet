@@ -142,10 +142,10 @@ const SignTransactionPage = () => {
       <div className={styles.value}>
         {request?.canisterId}
       </div>
-      <div className={clsx(styles.value, styles.valueMono)}>
+      <div className={styles.label}>
         Method
       </div>
-      <div className={styles.value}>
+      <div className={clsx(styles.value, styles.valueMono)}>
         {request?.method}
       </div>
       <div className={styles.label}>
