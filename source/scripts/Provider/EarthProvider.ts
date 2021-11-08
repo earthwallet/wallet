@@ -6,6 +6,7 @@ import { canisterAgentApi } from '@earthwallet/assets';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { updateEntities } from '~state/entities';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
+import { stringifyWithBigInt } from '~global/helpers';
 
 export class EarthProvider {
   constructor() {}
@@ -45,8 +46,6 @@ export class EarthProvider {
     let counter = 0;
     const fromIdentity = Secp256k1KeyIdentity.fromJSON(approvedIdentityJSON);
 
-    //setLoading(true);
-    //store.update
     store.dispatch(
       updateEntities({
         entity: 'dappRequests',
@@ -86,6 +85,13 @@ export class EarthProvider {
       );
     }
 
+    let parsedResponse = '';
+    try {
+      parsedResponse = stringifyWithBigInt(response);
+      parsedResponse = parsedResponse?.substring(0, 1000);
+    } catch (error) {
+      console.log('Unable to stringify response');
+    }
     store.dispatch(
       updateEntities({
         entity: 'dappRequests',
@@ -95,25 +101,11 @@ export class EarthProvider {
           complete: true,
           completedAt: new Date().getTime(),
           error: '',
+          response: parsedResponse,
         },
       })
     );
 
-    console.log(response);
-
-    /*     await approveSign().then(() => {
-         });
-        window.close(); */
-
-    if (!Array.isArray(response) && response.type !== 'error') {
-      // setSuccess(true);
-      //setResponse(response);
-    } else {
-      //todo
-      // setResponseArr(response);
-      // setSuccess(true);
-    }
-    //setLoading(false);
     return response;
   }
 }
