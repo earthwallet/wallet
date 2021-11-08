@@ -11,6 +11,7 @@ import { getSymbol } from '~utils/common';
 import useGetAccountGroupBalances from '~hooks/useGetAccountGroupBalances';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import useGetAccountGroupAssetBalances from '~hooks/useGetAccountGroupAssetBalances';
+import ICON_SETTINGS from '~assets/images/icon_more_settings.svg';
 
 const Page = () => {
   const history = useHistory();
@@ -41,6 +42,15 @@ const Page = () => {
       ) : (
         <>
           <>
+            <div className={styles.fixedHeader}>
+              <div 
+              onClick={() => history.push('/walletsettings')}
+              className={styles.backButtonCont}>
+                <div className={styles.backButtonIcon}>
+                  <img src={ICON_SETTINGS} />
+                </div>
+              </div>
+            </div>
             <div className={styles.accountTitle}>Select Account</div>
             <div className={styles.accountsCont}>
               {accountGroups.map((accountGroup: any) => (

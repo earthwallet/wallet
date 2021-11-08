@@ -47,6 +47,7 @@ class DAppController implements IDAppController {
             origin: this.#current.origin,
             type: 'signMessage',
             request: parsedRequest,
+            address: this.#current.address,
           },
         ],
       })

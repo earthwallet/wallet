@@ -49,6 +49,12 @@
   display: flex;
   align-items: center;
   margin-left: 15px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  max-height: 39px;
 }
 
 .backButtonIcon {
