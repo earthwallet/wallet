@@ -45,7 +45,6 @@ export class EarthProvider {
     let counter = 0;
     const fromIdentity = Secp256k1KeyIdentity.fromJSON(approvedIdentityJSON);
 
-    console.log(request, Array.isArray(request), fromIdentity, requestId);
     //setLoading(true);
     //store.update
     store.dispatch(
@@ -115,23 +114,6 @@ export class EarthProvider {
       // setSuccess(true);
     }
     //setLoading(false);
-    return response;
-  }
-
-  async signMessageOld(request: any) {
-    console.log(request, 'signMessage EarthProvider');
-    let response: any;
-    try {
-      response = await canisterAgentApi(
-        request?.canisterId,
-        request?.method,
-        request?.args
-      );
-    } catch (error) {
-      console.log(error, typeof error, JSON.stringify(error));
-      response = error;
-    }
-
     return response;
   }
 }

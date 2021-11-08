@@ -80,7 +80,6 @@ export default class MainController {
     url += `&windowId=${windowId}`;
     url += `#${windowId}`;
 
-    console.log(windowId, route);
     return await browser.windows.create({
       url,
       width: 375,

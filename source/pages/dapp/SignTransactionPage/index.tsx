@@ -80,7 +80,6 @@ const SignTransactionPage = () => {
     }
 
     if (isJsonString(secret)) {
-      console.log('handleSign')
       controller.dapp.setApprovedIdentityJSON(secret);
       await approveSign();
     }

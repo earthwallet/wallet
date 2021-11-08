@@ -24,8 +24,8 @@ export const messagesHandler = (
         port.postMessage({ id, data: { result } });
       }
     } catch (e: any) {
-      console.log('messagesHandler.ERROR', e.type, e.message, e.detail);
-      console.log(JSON.stringify(e, null, 2));
+      //console.log('messagesHandler.ERROR', e.type, e.message, e.detail);
+      //console.log(JSON.stringify(e, null, 2));
       port.postMessage({ id: e.type, data: { error: e.detail } });
     }
   };
@@ -72,7 +72,7 @@ export const messagesHandler = (
         window.addEventListener(
           'connectWallet',
           (ev: any) => {
-            console.log('Connect window addEventListener', ev.detail);
+            //console.log('Connect window addEventListener', ev.detail);
             if (ev.detail.substring(1) === windowId) {
               port.postMessage({ id: message.id, data: { result: true } });
               pendingWindow = false;
@@ -84,7 +84,7 @@ export const messagesHandler = (
         browser.windows.onRemoved.addListener((id) => {
           if (id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
-            console.log('Connect window is closed');
+            //console.log('Connect window is closed');
             pendingWindow = false;
 
           }
@@ -93,7 +93,7 @@ export const messagesHandler = (
       }
       return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'SIGN_APPROVAL_REQUEST') {
-      console.log(message, 'SIGN_APPROVAL_REQUEST');
+      //console.log(message, 'SIGN_APPROVAL_REQUEST');
       const { args } = message.data;
       const windowId = uuid();
       mainController.dapp.setSignatureRequest(args[0], windowId);

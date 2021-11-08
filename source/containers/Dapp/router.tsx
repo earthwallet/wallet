@@ -16,9 +16,7 @@ function wrapWithErrorBoundary(
 
 const DappRouter = () => {
   const location = useLocation();
-  console.log(location, 'location DappRouter');
   const { route } = queryString.parse(location.search);
-  console.log(route, 'route DappRouter');
 
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
