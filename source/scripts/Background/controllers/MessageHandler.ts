@@ -129,6 +129,8 @@ export const messagesHandler = (
         result = mainController.provider.getNetwork();
       } else if (method === 'wallet.getBalance') {
         result = mainController.provider.getBalance();
+      } else if (method === 'wallet.getAddressMeta') {
+        result = mainController.provider.getAddressMeta(origin);
       } else if (method === 'wallet.signMessage') {
         if (pendingWindow) {
           return Promise.resolve(null);

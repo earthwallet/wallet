@@ -149,6 +149,38 @@ export const ICP_NFT_LIST = [
     description: `ICPBunny - Yieldable and Breedable NFT`,
     icon: 'https://ecrba-viaaa-aaaaf-qaedq-cai.raw.ic0.app/Token/1',
   },
+  {
+    name: 'Motoko Day',
+    id: 'oeee4-qaaaa-aaaak-qaaeq-cai',
+    isLive: true,
+    standard: 'EXT',
+    description: `On the Motoko programming language's 2nd birthday, the DFINITY Foundation distributed 10,000 Motoko ghosts designed by Jon Ball of Pokedstudios to the community.`,
+    icon: 'https://oeee4-qaaaa-aaaak-qaaeq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=w44h6-eakor-uwiaa-aaaaa-cuaab-eaqca-aaedg-a',
+  },
+  {
+    name: 'Infernal Vampire Colony',
+    id: 'gyuaf-kqaaa-aaaah-qceka-cai',
+    isLive: true,
+    standard: 'EXT',
+    description: `Infernal Vampires had been in the lair for a long time. They finally managed to get out. Time for them to suck some blood!`,
+    icon: 'https://gyuaf-kqaaa-aaaah-qceka-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=frfav-fakor-uwiaa-aaaaa-b4arc-qaqca-aaaim-a',
+  },
+  {
+    name: 'Haunted Hamsters',
+    id: 'bid2t-gyaaa-aaaah-qcdea-cai',
+    isLive: true,
+    standard: 'EXT',
+    description: `Infernal Vampires had been in the lair for a long time. They finally managed to get out. Time for them to suck some blood!`,
+    icon: 'https://bid2t-gyaaa-aaaah-qcdea-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=kzu34-iqkor-uwiaa-aaaaa-b4aqz-aaqca-aadgp-q',
+  },
+  {
+    name: 'Poked bots',
+    id: 'bzsui-sqaaa-aaaah-qce2a-cai',
+    isLive: true,
+    standard: 'EXT',
+    description: `500 years from now humans have long left earth and only the Robots remain. Robots have managed to create new identities often based on relics they have found from earths past.`,
+    icon: 'https://bzsui-sqaaa-aaaah-qce2a-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=rdlwm-kakor-uwiaa-aaaaa-b4arg-qaqca-aae4h-q',
+  },
 ];
 
 const LIVE_ICP_NFT_LIST_CANISTER_IDS = ICP_NFT_LIST.filter(

@@ -85,7 +85,15 @@ window.earth = {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.isConnected')()
   },
+  getAddressMeta: async () => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.getAddressMeta')()
+  },
   signMessage: async (params) => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.signMessage')(params)
+  },
+  signRaw: async (params) => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.signMessage')(params)
   },
