@@ -115,4 +115,49 @@ export class EarthProvider {
 
     return response;
   }
+
+  async signRaw(
+    request: keyable,
+    approvedIdentityJSON: string,
+    requestId?: string
+  ) {
+    let response: any;
+    const fromIdentity = Secp256k1KeyIdentity.fromJSON(approvedIdentityJSON);
+
+    store.dispatch(
+      updateEntities({
+        entity: 'dappRequests',
+        key: requestId,
+        data: {
+          loading: true,
+          error: '',
+        },
+      })
+    );
+
+    response = await fromIdentity.sign(request.message);
+
+    let parsedResponse = '';
+    try {
+      parsedResponse = JSON.stringify(response);
+      parsedResponse = parsedResponse?.substring(0, 1000);
+    } catch (error) {
+      console.log('Unable to stringify response');
+    }
+    store.dispatch(
+      updateEntities({
+        entity: 'dappRequests',
+        key: requestId,
+        data: {
+          loading: false,
+          complete: true,
+          completedAt: new Date().getTime(),
+          error: '',
+          response: parsedResponse,
+        },
+      })
+    );
+
+    return response;
+  }
 }

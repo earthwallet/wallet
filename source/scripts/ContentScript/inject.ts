@@ -52,9 +52,6 @@ class ProviderManager {
   enable () {
     return this.proxy('ENABLE_REQUEST')
   }
-  getApproval (params) {
-    return this.proxy('SIGN_APPROVAL_REQUEST', { args: [params] })
-  }
 }
 
 window.providerManager = new ProviderManager()
@@ -95,7 +92,7 @@ window.earth = {
   },
   signRaw: async (params) => {
     const icp = window.providerManager.getProviderFor('ICP')
-    return icp.getMethod('wallet.signMessage')(params)
+    return icp.getMethod('wallet.signRaw')(params)
   },
   enable: async () => {
     const accepted = await window.providerManager.enable()

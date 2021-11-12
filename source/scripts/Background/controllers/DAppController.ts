@@ -28,30 +28,47 @@ class DAppController implements IDAppController {
   }
 
   addSignRequest(request: any, id: string) {
-    const parsedRequest = Array.isArray(request)
-      ? request.map((singleReq, _) => ({
-          ...singleReq,
-          args: stringifyWithBigInt(singleReq?.args),
-        }))
-      : {
-          ...request,
-          args: stringifyWithBigInt(request?.args),
-        };
+    if (request.type === 'signRaw') {
+      store.dispatch(
+        storeEntities({
+          entity: 'dappRequests',
+          data: [
+            {
+              id,
+              origin: this.#current.origin,
+              type: 'signRaw',
+              request: request,
+              address: this.#current.address,
+            },
+          ],
+        })
+      );
+    } else {
+      const parsedRequest = Array.isArray(request)
+        ? request.map((singleReq, _) => ({
+            ...singleReq,
+            args: stringifyWithBigInt(singleReq?.args),
+          }))
+        : {
+            ...request,
+            args: stringifyWithBigInt(request?.args),
+          };
 
-    store.dispatch(
-      storeEntities({
-        entity: 'dappRequests',
-        data: [
-          {
-            id,
-            origin: this.#current.origin,
-            type: 'signMessage',
-            request: parsedRequest,
-            address: this.#current.address,
-          },
-        ],
-      })
-    );
+      store.dispatch(
+        storeEntities({
+          entity: 'dappRequests',
+          data: [
+            {
+              id,
+              origin: this.#current.origin,
+              type: 'signMessage',
+              request: parsedRequest,
+              address: this.#current.address,
+            },
+          ],
+        })
+      );
+    }
   }
 
   setDappConnectedAddress(address: string, origin: string) {

@@ -126,45 +126,56 @@ const SignTransactionPage = () => {
       </div>
     </div>
 
-    {Array.isArray(request) ? request.map((singleReq, index) => <div key={index} className={styles.requestBody}>
-      <div className={styles.label}>
-        CanisterId
+    {request?.type === 'signRaw'
+      ? <div className={styles.requestBody}>
+        <div className={styles.label}>
+          Sign Raw Message
+        </div>
+        <div className={styles.value}>
+          {request?.message}
+        </div>
       </div>
-      <div className={styles.value}>
-        {singleReq?.canisterId}
-      </div>
-      <div className={styles.label}>
-        Method
-      </div>
-      <div className={clsx(styles.value, styles.valueMono)}>
-        {singleReq?.method}
-      </div>
-      <div className={styles.label}>
-        Message
-      </div>
-      <div className={clsx(styles.value, styles.valueMono)}>
-        {singleReq?.args === undefined ? 'undefined' : stringifyWithBigInt(singleReq?.args)}
-      </div>
-    </div>) : <div className={styles.requestBody}>
-      <div className={styles.label}>
-        CanisterId
-      </div>
-      <div className={styles.value}>
-        {request?.canisterId}
-      </div>
-      <div className={styles.label}>
-        Method
-      </div>
-      <div className={clsx(styles.value, styles.valueMono)}>
-        {request?.method}
-      </div>
-      <div className={styles.label}>
-        Message
-      </div>
-      <div className={clsx(styles.value, styles.valueMono)}>
-        {request?.args === undefined ? 'undefined' : stringifyWithBigInt(request?.args)}
-      </div>
-    </div>}
+      : Array.isArray(request)
+        ? request.map((singleReq, index) => <div key={index} className={styles.requestBody}>
+          <div className={styles.label}>
+            CanisterId
+          </div>
+          <div className={styles.value}>
+            {singleReq?.canisterId}
+          </div>
+          <div className={styles.label}>
+            Method
+          </div>
+          <div className={clsx(styles.value, styles.valueMono)}>
+            {singleReq?.method}
+          </div>
+          <div className={styles.label}>
+            Message
+          </div>
+          <div className={clsx(styles.value, styles.valueMono)}>
+            {singleReq?.args === undefined ? 'undefined' : stringifyWithBigInt(singleReq?.args)}
+          </div>
+        </div>)
+        : <div className={styles.requestBody}>
+          <div className={styles.label}>
+            CanisterId
+          </div>
+          <div className={styles.value}>
+            {request?.canisterId}
+          </div>
+          <div className={styles.label}>
+            Method
+          </div>
+          <div className={clsx(styles.value, styles.valueMono)}>
+            {request?.method}
+          </div>
+          <div className={styles.label}>
+            Message
+          </div>
+          <div className={clsx(styles.value, styles.valueMono)}>
+            {request?.args === undefined ? 'undefined' : stringifyWithBigInt(request?.args)}
+          </div>
+        </div>}
 
     {requestStatus?.loading ? <section className={styles.footerSuccess}>
       <ClipLoader color={'#fffff'}
