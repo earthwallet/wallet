@@ -1,6 +1,6 @@
 {
   "name": "earth-wallet",
-  "version": "0.3.1",
+  "version": "0.4.1",
   "description": "Earth Wallet",
   "private": false,
   "type": "module",
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.0",
-    "@earthwallet/assets": "^0.3.6",
+    "@earthwallet/assets": "^0.3.13",
     "@earthwallet/keyring": "^0.3.1",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.11.2",
@@ -48,6 +48,7 @@
     "node-inspect-extracted": "^1.0.8",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "qrcode.react": "^1.0.1",
+    "query-string": "^7.0.1",
     "react": "^17.0.2",
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.2",

@@ -101,6 +101,7 @@ export const selectActiveAccountGroups = (state: AppState) => {
 
 export const selectBalanceByAddress = (address: string) => (state: AppState) =>
   state.entities.balances.byId[address];
+
 export const selectBalanceInUSDByAddress =
   (address: string) => (state: AppState) =>
     state.entities.balances.byId[address].balanceInUSD;
@@ -129,6 +130,7 @@ export const selectAssetById = (id: string) => (state: AppState) =>
 export const selectAccountById = (address: string) => (state: AppState) =>
   state.entities.accounts.byId[address];
 
-export const selectActiveAccount = (state: AppState) => state.activeAccount;
+export const selectDappActiveAccountAddress = (state: AppState) =>
+  state.wallet?.activeAccount?.address;
 
 export default WalletState.reducer;

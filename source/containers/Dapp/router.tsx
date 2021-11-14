@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
-import { Switch, Route, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
-import { useController } from '~hooks/useController';
 import ErrorBoundary from '~components/ErrorBoundary';
 import ConnectDappPage from '~pages/dapp/ConnectDappPage';
+import SignTransactionPage from '~pages/dapp/SignTransactionPage';
+import queryString from 'query-string';
+import ToastProvider from '~components/ToastProvider';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -14,7 +16,8 @@ function wrapWithErrorBoundary(
 
 const DappRouter = () => {
   const location = useLocation();
-  const controller = useController();
+  const { route } = queryString.parse(location.search);
+
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
@@ -23,9 +26,6 @@ const DappRouter = () => {
     config: { duration: 100 },
   });
 
-  useEffect(() => {
-    controller.preloadState();
-  }, []);
 
   return (
     <>
@@ -39,15 +39,21 @@ const DappRouter = () => {
           }}
           key={key}
         >
-          <Switch location={item}>
-            <Route path="/dapp.html">
-              {wrapWithErrorBoundary(<ConnectDappPage />, 'connect')}
-              {/* <Redirect to="/connect" /> */}
-            </Route>
-            <Route path="/connect">
-              {/* {wrapWithErrorBoundary(<ConnectDappPage />, 'connect')} */}
-            </Route>
-          </Switch>
+          <ToastProvider>
+            <Switch location={item}>
+              <Route path="/dapp.html">
+                {route
+                  ? <Redirect to={`/${route}${location.search}${location.hash}`} />
+                  : <Redirect to={`/connect${location.search}${location.hash}`} />}
+              </Route>
+              <Route path="/connect">
+                {wrapWithErrorBoundary(<ConnectDappPage />, 'connect')}
+              </Route>
+              <Route path="/sign">
+                {wrapWithErrorBoundary(<SignTransactionPage />, 'sign')}
+              </Route>
+            </Switch>
+          </ToastProvider>
         </animated.div>
       ))}
     </>

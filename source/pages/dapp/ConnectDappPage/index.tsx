@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import ActionButton from '~components/composed/ActionButton';
 import NavButton from '~components/composed/NavButton';
 import { useConnectWalletToDApp, useCurrentDapp, useUpdateActiveAccount } from '~hooks/useController';
@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { selectAccounts_ICP } from '~state/wallet';
 import { isUndefined } from 'lodash';
 import { getSymbol } from '~utils/common';
-import { EarthKeyringPair } from '@earthwallet/keyring';
+import useToast from '~hooks/useToast';
 
 enum ConnectStep {
   Accounts,
@@ -20,15 +20,19 @@ export default function ConnectDappPage() {
   const dapp = useCurrentDapp();
   const connectWalletToDapp = useConnectWalletToDApp();
   const accounts = useSelector(selectAccounts_ICP);
-  const setActiveAccount = async (account: EarthKeyringPair & { id: string }) => {
-    const useUpdateActiveAccounted = useUpdateActiveAccount(account);
+  const setDappConnectedAddress = async (address: string, origin: string) => {
+    const useUpdateActiveAccounted = useUpdateActiveAccount(address, origin);
     useUpdateActiveAccounted().then(() => {
-      console.log(account);
+      console.log(address);
     });
   }
+  const { show } = useToast();
+
 
   const [step, setStep] = useState(ConnectStep.Accounts);
   const [accountIndex, setAccountIndex] = useState<number>();
+
+  const onNext = useCallback((): void => show('Select An Account'), [show]);
 
   const handleSubmit = () => {
     if (step === ConnectStep.Accounts && accountIndex) {
@@ -37,7 +41,7 @@ export default function ConnectDappPage() {
     }
     connectWalletToDapp().then(() => {
       if (accountIndex === undefined || (accountIndex < 0)) return;
-      setActiveAccount(accounts[accountIndex]);
+      setDappConnectedAddress(accounts[accountIndex].address, dapp.origin);
     });
     window.close();
   };
@@ -126,7 +130,7 @@ export default function ConnectDappPage() {
             <ActionButton actionType="secondary" onClick={() => window.close()}>
               Cancel
             </ActionButton>
-            <ActionButton onClick={handleSubmit}>
+            <ActionButton onClick={() => step === ConnectStep.Accounts ? onNext() : handleSubmit()}>
               {step === ConnectStep.Accounts ? 'Next' : 'Connect'}
             </ActionButton>
           </div>

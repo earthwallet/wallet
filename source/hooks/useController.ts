@@ -1,5 +1,4 @@
 import { browser } from 'webextension-polyfill-ts';
-import { EarthKeyringPair } from '@earthwallet/keyring';
 
 export function useController() {
   return browser.extension.getBackgroundPage().controller;
@@ -17,6 +16,11 @@ export function useCurrentDapp() {
   return controller.dapp.getCurrent();
 }
 
+export function useCurrentDappAddress() {
+  const controller = useController();
+  return controller.dapp.getCurrentDappAddress();
+}
+
 export function useConnectWalletToDApp() {
   const controller = useController();
   const current = controller.dapp.getCurrent();
@@ -25,23 +29,33 @@ export function useConnectWalletToDApp() {
   return async () => {
     controller.dapp.fromUserConnectDApp(origin, current);
     const background = await browser.runtime.getBackgroundPage();
-
     background.dispatchEvent(
       new CustomEvent('connectWallet', { detail: window.location.hash })
     );
   };
 }
 
-export function useUpdateActiveAccount(
-  account: EarthKeyringPair & { id: string }
-) {
+export function useSignApprove() {
+  return async () => {
+    const background = await browser.runtime.getBackgroundPage();
+    background.dispatchEvent(
+      new CustomEvent('signApproval', {
+        detail: window.location.hash,
+      })
+    );
+  };
+}
+
+export function useUpdateActiveAccount(address: string, origin: string) {
   const controller = useController();
   return async () => {
-    controller.dapp.setActiveAccount(account);
+    controller.dapp.setDappConnectedAddress(address, origin);
     const background = await browser.runtime.getBackgroundPage();
 
     background.dispatchEvent(
-      new CustomEvent('setActiveAccount', { detail: window.location.hash })
+      new CustomEvent('setDappConnectedAddress', {
+        detail: window.location.hash,
+      })
     );
   };
 }

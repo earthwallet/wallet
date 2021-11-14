@@ -258,3 +258,43 @@
 .assetCountLoading {
   margin-left: 3px;
 }
+
+.fixedHeader {
+  position: fixed;
+  width: $appWidth;
+  top: 0;
+  height: 87px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 20px;
+}
+
+.backButtonCont {
+  background: rgba(5, 12, 18, 0.4);
+  //backdrop-filter: blur(20px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 30px;
+  width: 39px;
+  height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.backButtonCont:active {
+  opacity: 0.7;
+}
+
+.backButtonIcon {
+  width: 33px;
+  height: 33px;
+  background: rgba(255, 255, 255, 0.17);
+  border-radius: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

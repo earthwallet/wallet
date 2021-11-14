@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Earth Wallet",
-  "version": "0.3.1",
+  "version": "0.4.1",
 
   "icons": {
     "16": "assets/images/icon-16.png",
@@ -16,7 +16,7 @@
 
   "permissions": ["activeTab", "storage", "http://*/*", "https://*/*", "chrome://favicon/"],
 
-  "content_security_policy": "script-src 'self' blob: 'unsafe-eval' 'wasm-eval'; object-src 'self';",
+  "content_security_policy": "script-src 'self' blob: 'unsafe-eval' 'wasm-eval'; object-src 'self'; script-src-elem 'self' data:;",
 
   "__chrome|firefox__author": "earth",
   "__opera__developer": {

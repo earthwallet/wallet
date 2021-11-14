@@ -26,12 +26,13 @@ import { useHistory } from 'react-router-dom';
 import { selectAssetsICPByAddress } from '~state/wallet';
 import ICON_CARET from '~assets/images/icon_caret.svg';
 import useQuery from '~hooks/useQuery';
-import { listNFTsExt, transferNFTsExt } from '@earthwallet/assets';
+import { listNFTsExt, principalTextoAddress, transferNFTsExt } from '@earthwallet/assets';
 import { getShortAddress } from '~utils/common';
 import { getTokenImageURL } from '~global/nfts';
+import { validateAddress } from '@earthwallet/assets';
 
 const MIN_LENGTH = 6;
-
+const PRINCIPAL_NOT_ACCEPTED = 'Principal id is not accepted!';
 interface keyable {
   [key: string]: any
 }
@@ -230,7 +231,7 @@ const WalletSendTokens = ({
           await controller.accounts
             .getBalancesOfAccount(selectedAccount)
             .then(() => {
-              if (hash !== null) {
+              if (hash !== undefined) {
                 history.replace(`/account/transaction/${hash}`)
               }
               else {
@@ -303,18 +304,28 @@ const WalletSendTokens = ({
   const parseRecipientAndSetAddress = (recipient: string) => {
     if (selectedAccount?.symbol === 'ICP') {
       setSelectedRecp(recipient);
-      const dashCount = (recipient.match(/-/g) || []).length;
-      if (dashCount === 5 || dashCount === 10) {
-        setRecpError('Principal id is not accepted! Please enter account id ')
+      if (validateAddress(recipient)) {
+        setRecpError('');
       }
       else {
-        setRecpError('');
+        const dashCount = (recipient.match(/-/g) || []).length;
+        if (dashCount === 5 || dashCount === 10) {
+          setRecpError(PRINCIPAL_NOT_ACCEPTED)
+        }
+        else {
+          setRecpError('Not a valid address');
+        }
       }
     }
     else {
       setSelectedRecp(recipient);
     }
   };
+
+  const togglePrincipal = () => {
+    setSelectedRecp(recipient => principalTextoAddress(recipient));
+    setRecpError('');
+  }
 
   return <div className={styles.page}><>
     <Header
@@ -349,7 +360,9 @@ const WalletSendTokens = ({
             isDanger
             className={styles.warningRecp}
           >
-            {recpError}
+            {recpError} {recpError === PRINCIPAL_NOT_ACCEPTED && <div
+              onClick={() => togglePrincipal()}
+              className={styles.earthLink}>Click here to change principal id to address</div>}
           </Warning>}
           <div className={styles.assetSelectionDivCont}>
             <div className={styles.earthInputLabel}>
@@ -524,7 +537,7 @@ const WalletSendTokens = ({
     }}>
       {step1
         ? <NextStepButton
-          disabled={loadingSend || !selectedRecp}
+          disabled={loadingSend || !selectedRecp || recpError !== ''}
           loading={isBusy}
           onClick={onConfirm}>
           {'Next'}

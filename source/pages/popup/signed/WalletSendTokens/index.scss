@@ -465,3 +465,16 @@
 .selectedNetworkDiv_noPointer {
   cursor: auto;
 }
+
+.earthLink {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 160%;
+  color: #2496ff;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}

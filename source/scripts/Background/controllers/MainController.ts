@@ -23,6 +23,10 @@ export default class MainController {
     this.provider = Object.freeze(new EarthProvider());
   }
 
+  isHydrated() {
+    return store.getState().app.hydrated;
+  }
+
   async preloadState() {
     await store.dispatch(preloadStateAsync() as any);
   }
@@ -65,16 +69,19 @@ export default class MainController {
     return items as keyable;
   }
 
-  async accountsInfo() {
-    //this.accounts.createAccounts(this.assets.usedAssetSymbols());
-  }
-
-  async createPopup(windowId: string) {
+  async createPopup(windowId: string, route?: string) {
     const _window = await browser.windows.getCurrent();
     if (!_window || !_window.width) return null;
 
+    let url = `/dapp.html?`;
+    if (route) {
+      url += `&route=${route}`;
+    }
+    url += `&windowId=${windowId}`;
+    url += `#${windowId}`;
+
     return await browser.windows.create({
-      url: `/dapp.html#${windowId}`,
+      url,
       width: 375,
       height: 600,
       type: 'popup',

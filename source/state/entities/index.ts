@@ -12,6 +12,7 @@ const initialState: IEntityState = {
   groupbalances: { byId: {} },
   assets: { byId: {} },
   assetsCount: { byId: {} },
+  dappRequests: { byId: {} },
 };
 
 export const entitiesState = createSlice({

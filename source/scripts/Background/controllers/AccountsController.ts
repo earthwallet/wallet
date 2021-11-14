@@ -262,6 +262,10 @@ export default class AccountsController implements IAccountsController {
           JSON.stringify(keypair.identity.toJSON()),
           password
         );
+        data.identity = encryptString(
+          JSON.stringify(keypair.identity.toJSON()),
+          password
+        );
       }
       newAccounts.push(data);
       index++;

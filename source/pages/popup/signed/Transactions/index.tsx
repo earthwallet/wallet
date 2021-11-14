@@ -259,14 +259,20 @@ const Transactions = ({
           <div className={styles.transTitle}>Transactions</div>
         </div>
 
-        <div className={styles.transItems}>
-          {walletTransactions &&
-            walletTransactions?.txs &&
-            walletTransactions?.txs?.sort((a: keyable, b: keyable) =>
-              getTransactionTime(a) - getTransactionTime(b))
-              .reverse().map((transaction: keyable, index: number) =>
-                <TxnItem key={index} transaction={transaction} index={index} symbol={selectedAccount?.symbol} />)}
-        </div>
+        {walletTransactions &&
+          walletTransactions?.txs &&
+          walletTransactions?.txs.length === 0
+          ? <div className={styles.pageloading}>
+            <div className={styles.noTrans}>No Transactions</div>
+          </div>
+          : <div className={styles.transItems}>
+            {walletTransactions &&
+              walletTransactions?.txs &&
+              walletTransactions?.txs?.sort((a: keyable, b: keyable) =>
+                getTransactionTime(a) - getTransactionTime(b))
+                .reverse().map((transaction: keyable, index: number) =>
+                  <TxnItem key={index} transaction={transaction} index={index} symbol={selectedAccount?.symbol} />)}
+          </div>}
       </div>
     </div>
   );

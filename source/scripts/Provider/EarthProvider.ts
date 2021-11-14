@@ -1,7 +1,12 @@
 import { getBalance } from '@earthwallet/keyring';
-import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
+//import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import { IWalletState } from '~state/wallet/types';
 import store from '~state/store';
+import { canisterAgentApi } from '@earthwallet/assets';
+import { keyable } from '~scripts/Background/types/IMainController';
+import { updateEntities } from '~state/entities';
+import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
+import { stringifyWithBigInt } from '~global/helpers';
 
 export class EarthProvider {
   constructor() {}
@@ -18,6 +23,18 @@ export class EarthProvider {
     return activeAccount?.address;
   }
 
+  getAddressForDapp(origin: string) {
+    const dapp = store.getState().dapp;
+    return dapp[origin]?.address;
+  }
+
+  getAddressMeta(origin: string) {
+    const dapp = store.getState().dapp;
+    const address = dapp[origin]?.address;
+    const account = store.getState().entities.accounts.byId[address];
+    return account.meta;
+  }
+
   async getBalance() {
     const { activeNetwork, activeAccount }: IWalletState =
       store.getState().vault;
@@ -27,18 +44,120 @@ export class EarthProvider {
       : null;
   }
 
-  signMessage(msg: string) {
-    const privateKeyHex = '0x'; // TODO: Dummy private key hex
-    const privateKey = Buffer.from(privateKeyHex, 'hex');
-    const msgHash = hashPersonalMessage(Buffer.from(msg));
+  async signMessage(
+    request: keyable,
+    approvedIdentityJSON: string,
+    requestId?: string
+  ) {
+    let response: any;
+    let counter = 0;
+    const fromIdentity = Secp256k1KeyIdentity.fromJSON(approvedIdentityJSON);
 
-    const { v, r, s } = ecsign(msgHash, privateKey);
-    const sig = this.remove0x(toRpcSig(v, r, s));
+    store.dispatch(
+      updateEntities({
+        entity: 'dappRequests',
+        key: requestId,
+        data: {
+          loading: true,
+          error: '',
+        },
+      })
+    );
+    if (Array.isArray(request)) {
+      response = [];
+      for (const singleRequest of request) {
+        store.dispatch(
+          updateEntities({
+            entity: 'dappRequests',
+            key: requestId,
+            data: {
+              loadingIndex: counter,
+            },
+          })
+        );
+        response[counter] = await canisterAgentApi(
+          singleRequest?.canisterId,
+          singleRequest?.method,
+          singleRequest?.args,
+          fromIdentity
+        );
+        counter++;
+      }
+    } else {
+      response = await canisterAgentApi(
+        request?.canisterId,
+        request?.method,
+        request?.args,
+        fromIdentity
+      );
+    }
 
-    return sig;
+    let parsedResponse = '';
+    try {
+      parsedResponse = stringifyWithBigInt(response);
+      parsedResponse = parsedResponse?.substring(0, 1000);
+    } catch (error) {
+      console.log('Unable to stringify response');
+    }
+    store.dispatch(
+      updateEntities({
+        entity: 'dappRequests',
+        key: requestId,
+        data: {
+          loading: false,
+          complete: true,
+          completedAt: new Date().getTime(),
+          error: '',
+          response: parsedResponse,
+        },
+      })
+    );
+
+    return response;
   }
 
-  private remove0x(hash: string) {
-    return hash.startsWith('0x') ? hash.slice(2) : hash;
+  async signRaw(
+    request: keyable,
+    approvedIdentityJSON: string,
+    requestId?: string
+  ) {
+    let response: any;
+    const fromIdentity = Secp256k1KeyIdentity.fromJSON(approvedIdentityJSON);
+
+    store.dispatch(
+      updateEntities({
+        entity: 'dappRequests',
+        key: requestId,
+        data: {
+          loading: true,
+          error: '',
+        },
+      })
+    );
+
+    response = await fromIdentity.sign(request.message);
+
+    let parsedResponse = '';
+    try {
+      parsedResponse = JSON.stringify(response);
+      parsedResponse = parsedResponse?.substring(0, 1000);
+    } catch (error) {
+      console.log('Unable to stringify response');
+    }
+    store.dispatch(
+      updateEntities({
+        entity: 'dappRequests',
+        key: requestId,
+        data: {
+          loading: false,
+          complete: true,
+          completedAt: new Date().getTime(),
+          error: '',
+          response: parsedResponse,
+        },
+      })
+    );
+
+    return response;
   }
 }
