@@ -6,7 +6,7 @@
 
 ![Earth Wallet](https://i.imgur.com/eIZaUbx.png)
 
-Earth Wallet is a next generation self custody wallet built for the Internet Computer and other next generation blockchains and protocols. Designed and developed from the ground up to make the transition to next generation of the internet as seamless as possible while giving you super powers that other self-custody wallets don't have! Join the mission to bring crypto back to Earth with open source, decentralized technology to create a better planet for all life on Earth.
+Earth Wallet is a self custody digital asset wallet built for the next generation of Web3. Designed and developed from the ground up to make the transition to new blockchain protocols like the internet computer and reduce the environmental impacts of Proof-of-Work blockchains.
 
 # Download it Here:
 
@@ -14,7 +14,7 @@ Earth Wallet is a next generation self custody wallet built for the Internet Com
 | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
 | 49 & later ✔                                                                                  | 52 & later ✔                                                                                     | 36 & later ✔                                                                               | 79 & later ✔                                                                            | Latest ✔                                                                                      | Latest ✔                                                                                   | Latest ✔                                                                                         |
 
-## 🎉 Now in Beta with over 3000 users!
+## 🎉 Now in Beta with over 20,000 users!
 
 We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking for a full time role please [apply to Earth Association](https://discord.gg/aemgEpMye3)!
 
@@ -22,10 +22,11 @@ We are still in Beta, so please remember to backup your keys and don't store lar
 :white_check_mark: 100% Open Source <br/>
 :white_check_mark: Decentralized App Developer SDK <br/>
 :white_check_mark: Internet Computer Protocol Support <br/>
-:black_square_button: Bitcoin, Ethereum, and other multichain support (Q3) <br/>
-:black_square_button: NFTs, Tokens, and other DeFi Protocol support (Q3) <br/>
-:black_square_button: Robust Security Audits (Q3/Q4) <br/>
-:black_square_button: Core Code Freeze (Q4) <br/>
+:white_check_mark: Bitcoin and other multichain support <br/>
+:white_check_mark: Energy efficient NFT support and marketplace <br/>
+:white_check_mark: Earth Connect (Developer SDK) <br/>
+:black_square_button: Core Security Audits (Q4) <br/>
+:black_square_button: Core Code Freeze (Q4/Q1) <br/>
 :black_square_button: Earth Protocol (🙊)
 
 ## 🌎 Decentralized App Developer SDK
