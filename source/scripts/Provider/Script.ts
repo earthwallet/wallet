@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { browser, Runtime } from 'webextension-polyfill-ts';
+import { parseObjWithOutBigInt, stringifyWithBigInt } from '~global/helpers';
 
 export class Script {
   private emitter = new EventEmitter();
@@ -29,23 +30,23 @@ export class Script {
           this.emitter.on(id, (result) => {
             //console.log('Script - emitter', id, result);
             window.dispatchEvent(
-              new CustomEvent(id, { detail: JSON.stringify(result) })
+              new CustomEvent(id, { detail: stringifyWithBigInt(result) })
             );
           });
         } else {
           this.emitter.once(id, (result) => {
             //console.log('Script - emitter.once', id, result);
             window.dispatchEvent(
-              new CustomEvent(id, { detail: JSON.stringify(result) })
+              new CustomEvent(id, { detail: stringifyWithBigInt(result) })
             );
           });
         }
 
-        //console.log('Script - ', id, type, data);
+        //console.log('Script - ', id, type, parseObjWithOutBigInt(data));
         this.backgroundPort.postMessage({
           id,
           type,
-          data,
+          data: parseObjWithOutBigInt(data),
         });
       },
       false

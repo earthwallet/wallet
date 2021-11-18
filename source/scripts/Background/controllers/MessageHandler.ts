@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { browser, Runtime } from 'webextension-polyfill-ts';
-import { parseBigIntObj } from '~global/helpers';
+import { parseObjWithOutBigInt } from '~global/helpers';
 import { IMainController } from '../types/IMainController';
 
 type Message = {
@@ -55,7 +55,7 @@ export const messagesHandler = (
       if (message.data && message.data.method) {
         //
       }
-    } else if (message.type === 'ENABLE_REQUEST') {
+    } else if (message.type === 'CONNECT_REQUEST') {
       if (origin && allowed) {
         return Promise.resolve({ id: message.id, result: origin && allowed });
       }
@@ -106,7 +106,7 @@ export const messagesHandler = (
       } else if (method === 'wallet.getAddressMeta') {
         result = mainController.provider.getAddressMeta(origin);
       } else if (
-        method === 'wallet.signMessage' ||
+        method === 'wallet.sign' ||
         method === 'wallet.signRaw'
       ) {
         if (pendingWindow) {
@@ -135,14 +135,14 @@ export const messagesHandler = (
                   windowId
                 );
               } else {
-                result = await mainController.provider.signMessage(
+                result = await mainController.provider.sign(
                   signatureRequest,
                   approvedIdentityJSON,
                   windowId
                 );
               }
 
-              const parsedResult = parseBigIntObj(result);
+              const parsedResult = parseObjWithOutBigInt(result);
               port.postMessage({
                 id: message.id,
                 data: { result: parsedResult },

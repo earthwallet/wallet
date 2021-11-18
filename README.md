@@ -53,9 +53,13 @@ const injectEarth = () => {
 const handleEarthEnable = () => {
   await injectEarth();
     window?.earth
-    .enable().then((account) => {
+    .connect().then((account) => {
         console.log("Successfully connected to Earth Wallet 🌍", account);
-        onConnect();
+        window.earth.sign({ 
+          canisterId: 'ury7f-eqaaa-aaaab-qadlq-cai',
+           method: 'say', 
+           args: 'hello'
+            });
       })
       .catch((err) => {
         console.error(err);

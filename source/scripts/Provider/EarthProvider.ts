@@ -6,7 +6,11 @@ import { canisterAgentApi } from '@earthwallet/assets';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { updateEntities } from '~state/entities';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
-import { stringifyWithBigInt } from '~global/helpers';
+import {
+  parseObjWithBigInt,
+  parsePrincipalObj,
+  stringifyWithBigInt,
+} from '~global/helpers';
 
 export class EarthProvider {
   constructor() {}
@@ -44,7 +48,7 @@ export class EarthProvider {
       : null;
   }
 
-  async signMessage(
+  async sign(
     request: keyable,
     approvedIdentityJSON: string,
     requestId?: string
@@ -75,19 +79,26 @@ export class EarthProvider {
             },
           })
         );
+        const argsWithBigInt =
+          singleRequest?.args && parseObjWithBigInt(singleRequest?.args);
+        const argsWithPrincipalAndBigInt = parsePrincipalObj(argsWithBigInt);
+
         response[counter] = await canisterAgentApi(
           singleRequest?.canisterId,
           singleRequest?.method,
-          singleRequest?.args,
+          argsWithPrincipalAndBigInt,
           fromIdentity
         );
         counter++;
       }
     } else {
+      const argsWithBigInt = request?.args && parseObjWithBigInt(request?.args);
+      const argsWithPrincipalAndBigInt = parsePrincipalObj(argsWithBigInt);
+
       response = await canisterAgentApi(
         request?.canisterId,
         request?.method,
-        request?.args,
+        argsWithPrincipalAndBigInt,
         fromIdentity
       );
     }

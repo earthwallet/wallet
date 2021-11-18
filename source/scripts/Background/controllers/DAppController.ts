@@ -38,7 +38,7 @@ class DAppController implements IDAppController {
               origin: this.#current.origin,
               type: 'signRaw',
               request: request,
-              address: this.#current.address,
+              address: this.getCurrentDappAddress(),
             },
           ],
         })
@@ -61,9 +61,9 @@ class DAppController implements IDAppController {
             {
               id,
               origin: this.#current.origin,
-              type: 'signMessage',
+              type: 'sign',
               request: parsedRequest,
-              address: this.#current.address,
+              address: this.getCurrentDappAddress(),
             },
           ],
         })
