@@ -49,8 +49,8 @@ class ProviderManager {
     return this.cache[asset]
   }
 
-  enable () {
-    return this.proxy('ENABLE_REQUEST')
+  connect () {
+    return this.proxy('CONNECT_REQUEST')
   }
 }
 
@@ -86,22 +86,16 @@ window.earth = {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.getAddressMeta')()
   },
-  signMessage: async (params) => {
+  sign: async (params) => {
     const icp = window.providerManager.getProviderFor('ICP')
-    return icp.getMethod('wallet.signMessage')(params)
+    return icp.getMethod('wallet.sign')(params)
   },
   signRaw: async (params) => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.signRaw')(params)
   },
-  enable: async () => {
-    const accepted = await window.providerManager.enable()
-    if (!accepted) throw new Error('User rejected')
-    const icp = window.providerManager.getProviderFor('ICP')
-    return icp.getMethod('wallet.getAddress')()
-  },
-  reset: async () => {
-    const accepted = await window.providerManager.enable()
+  connect: async () => {
+    const accepted = await window.providerManager.connect()
     if (!accepted) throw new Error('User rejected')
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.getAddress')()
