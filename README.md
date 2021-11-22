@@ -1,8 +1,9 @@
 [![Telegram](https://img.shields.io/badge/Live_Support-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/earthwallet)
 [![Discord](https://img.shields.io/badge/Developers-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/aemgEpMye3)
 [![Twitter](https://img.shields.io/badge/Updates-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
+[![Docs](https://img.shields.io/badge/Documentation-2CA5E0?color=success)](https://docs.earthwallet.io)
 ![License](https://img.shields.io/badge/Code-MIT%20Licence-blueviolet)
-[![SDK](https://img.shields.io/npm/v/@earthwallet/keyring?color=success)](https://www.npmjs.com/package/@earthwallet/keyring)
+
 
 ![Earth Wallet](https://i.imgur.com/eIZaUbx.png)
 
