@@ -16,7 +16,7 @@ Earth Wallet is a self custody digital asset wallet built for the next generatio
 
 ## 🎉 Now in Beta with over 20,000 users!
 
-We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking for a full time role please [apply to Earth Association](https://discord.gg/aemgEpMye3)!
+We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking for a full time role please [join the Earth DAO](https://discord.gg/aemgEpMye3) and let us know!
 
 :white_check_mark: Self Custody (your keys, your crypto) <br/>
 :white_check_mark: 100% Open Source <br/>
@@ -29,43 +29,11 @@ We are still in Beta, so please remember to backup your keys and don't store lar
 :black_square_button: Core Code Freeze (Q4/Q1) <br/>
 :black_square_button: Earth Protocol (🙊)
 
-## 🌎 Decentralized App Developer SDK
+## 🌎 Earth Connect - Build Apps on the Internet Computer with Earth Wallet
 
-Looking to build on the Internet Computer? The Earth Wallet SDK lets you delegate to a secure, user friendly key signer, to give your application the best user experience possible. This gives both you and your users the peace of mind that their private keys are not exposed to applications, and lets them decide which dapps to sign into. To use this, simply add the following code to your dapp:
+Looking to build on the Internet Computer? Earth Wallet enables develoeprs to build applications that are easy and secure. This gives both you and your users the peace of mind that their private keys are not exposed to applications, and lets them decide which dapps to sign into. To learn more:
 
-```js
-// This will inject the Earth Wallet listener if it is installed.
-const injectEarth = () => {
-  return new Promise((resolve, reject) => {
-    window.addEventListener('load', () => {
-      if (window.earth) {
-        // Handle Earth Wallet Events here.
-        resolve(window.earth);
-      } else {
-        // Earth Wallet is not installed.
-        reject(new Error('Earth Wallet not installed.'));
-      }
-    });
-  });
-};
-
-// Connect to Earth Wallet (i.e. show accounts available, etc)
-const handleEarthEnable = () => {
-  await injectEarth();
-    window?.earth
-    .connect().then((account) => {
-        console.log("Successfully connected to Earth Wallet 🌍", account);
-        window.earth.sign({ 
-          canisterId: 'ury7f-eqaaa-aaaab-qadlq-cai',
-           method: 'say', 
-           args: 'hello'
-            });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-```
+[Check out the documentation](docs.earthwallet.io)
 
 ## 🚀 Auditors / Bug Hunters - $10k USD+ Available!!
 

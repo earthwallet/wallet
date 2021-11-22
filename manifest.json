@@ -11,7 +11,7 @@
     "128": "assets/images/icon-128.png"
   },
   "description": "Bringing Crypto Back to Earth.",
-  "homepage_url": "https://github.com/earth-association/wallet",
+  "homepage_url": "https://github.com/earthdao/wallet",
   "short_name": "Earth Wallet",
 
   "permissions": ["activeTab", "storage", "http://*/*", "https://*/*", "chrome://favicon/"],
