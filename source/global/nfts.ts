@@ -212,7 +212,7 @@ export const getTokenImageURL = (asset: keyable) => {
     if (asset?.canisterId === 'ahl3d-xqaaa-aaaaj-qacca-cai') {
       imageURL = `https://${asset?.canisterId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${asset?.tokenIdentifier}`;
     } else {
-      imageURL = `https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`;
+      imageURL = `https://${asset?.canisterId}.raw.ic0.app/?type=thumbnail&tokenid=${asset?.tokenIdentifier}`;
     }
   }
   return imageURL;
