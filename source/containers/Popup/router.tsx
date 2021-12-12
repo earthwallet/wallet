@@ -97,6 +97,9 @@ const PopupRouter = () => {
               <Route path="/account/send/:address">
                 {wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}
               </Route>
+              <Route path="/account/stake/:address">
+                {wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}
+              </Route>
               <Route path="/account/receive/:address">
                 {wrapWithErrorBoundary(
                   <WalletReceiveTokens />,
