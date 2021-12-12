@@ -42,7 +42,7 @@ const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> 
     {selectedAccountText && <div className={styles.selectedAccountDiv}>
       <div className={styles.selectedAccount}
         onClick={() => setShowDropDown((status) => !status)}>
-        <img src={getSymbol(selectedAccount.symbol)?.icon} className={styles.networkIcon} />
+        <span className={clsx(styles.networkIcon, styles.pulseIcon)} />
         {getSymbol(selectedAccount.symbol)?.name}
         <img
           className={styles.dropDownIcon}
