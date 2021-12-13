@@ -68,10 +68,10 @@ const PopupRouter = () => {
           <ToastProvider>
             <Switch location={item}>
               <Route path="/popup.html">
-                {/*                 <Redirect to="/account/07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992" />
- */}
-
                 <Redirect to="/todo" />
+
+
+                {/* <Redirect to="/todo" /> */}
               </Route>
               <Route path="/todo">
                 {wrapWithErrorBoundary(<TokenHistory />, 'TokenHistory')}

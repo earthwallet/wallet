@@ -1,41 +1,18 @@
-// @ts-nocheck
 
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import styles from './index.scss';
-import { Link } from 'react-router-dom';
-import Header from '~components/Header';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-//import bg_wallet_details from '~assets/images/bg_wallet_details.png';
-import icon_rec from '~assets/images/icon_rec.svg';
-import icon_send from '~assets/images/icon_send.svg';
-import { getSymbol } from '~utils/common';
-import clsx from 'clsx';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { useSelector } from 'react-redux';
-import { selectAccountById } from '~state/wallet';
-import { getTransactions } from '@earthwallet/keyring';
-import { useController } from '~hooks/useController';
-import { selectBalanceByAddress } from '~state/wallet';
-import { selectAssetBySymbol } from '~state/assets';
 
-import { useHistory } from 'react-router-dom';
-import ICON_NOTICE from '~assets/images/icon_notice.svg';
-import { selectAssetsICPCountByAddress } from '~state/wallet';
-import { ClipLoader } from 'react-spinners';
-import ICON_GRID from '~assets/images/icon_grid.svg';
-import ICON_LIST from '~assets/images/icon_list.svg';
-import { selectAssetsICPByAddress } from '~state/wallet';
-import Swiper from 'react-id-swiper';
-import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
-import { LIVE_SYMBOLS_OBJS } from '~global/constant';
-import ICON_FORWARD from '~assets/images/icon_forward.svg';
-import { AssetsList, AssetsCoverflow } from '../NFTList';
+import Header from '~components/Header';
+
+import { RouteComponentProps, withRouter } from 'react-router';
+import ICON_EARTH from '~assets/images/icon-512.png';
+import ICON_SWAP from '~assets/images/icon_swap.png';
+import ICON_STAKE from '~assets/images/icon_stake.png';
+import clsx from 'clsx';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
-interface keyable {
-  [key: string]: any
-}
+
 
 const TokenHistory = ({
   match: {
@@ -43,11 +20,46 @@ const TokenHistory = ({
   },
 }: Props) => {
 
-
+  console.log(address);
 
   return (
     <div className={styles.page}>
+      <Header
+        type={'wallet'}
+        text={'Earth'}
+      ><div className={styles.empty} /></Header>
+      <div>
+        <div className={styles.top}>
+        </div>
 
+        <div className={styles.section}>
+          <img className={styles.icon_earth} src={ICON_EARTH} />
+          <div className={styles.sectitle}>1337 EARTH</div>
+          <div className={styles.secsubtitle}>$4,092.22</div>
+        </div>
+        <div className={styles.cta}>
+          <div className={styles.btnprimary}>
+            <img src={ICON_SWAP} className={styles.btnicon} />
+            <div className={styles.btntxt}>Swap</div>
+          </div>
+          <div className={clsx(styles.btnprimary, styles.btnsecondary)}>
+            <img src={ICON_STAKE} className={styles.btnicon} />
+            <div className={styles.btntxt}>Stake</div>
+          </div>
+        </div>
+        <div className={styles.graphcont}>
+          <div className={styles.graph}></div>
+
+        </div>
+        <div className={styles.tabs}>
+          {['24h', '7d', '14d', '30d', '90d', '1y', 'All'].map((tab, index) => <div
+            key={index}
+            className={clsx(styles.tab, index === 0 && styles.tab_active)}
+          >
+            {tab}
+          </ div>)}
+        </div>
+      </div>
     </div>
   );
 };
