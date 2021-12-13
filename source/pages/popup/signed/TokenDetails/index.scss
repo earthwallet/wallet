@@ -140,11 +140,11 @@
 }
 
 .secondaryBalanceLabel {
-  color: $usdBalance;
+  color: #fff;
   font-family: $fontFamilyMono;
   font-size: 16px;
   line-height: 150%;
-  opacity: 0.8;
+  opacity: 0.75;
   height: 21px;
 }
 
@@ -459,4 +459,12 @@
   overflow-x: hidden;
   overflow-y: scroll;
   margin: 24px 0;
+}
+
+.balanceInfo {
+  position: fixed;
+  bottom: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

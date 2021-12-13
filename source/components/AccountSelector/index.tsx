@@ -25,7 +25,7 @@ const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> 
     setSelectedAccountText(account.address);
     //setSelectedAccount(account);
     setShowDropDown(false);
-    history.push('/account/details/' + account.address);
+    history.push('/todo/' + account.address);
   };
 
   useOutsideClick(dropDownRef, (): void => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.scss';
 import { Link } from 'react-router-dom';
 import Header from '~components/Header';
@@ -15,7 +15,6 @@ import { getTransactions } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
 import { selectBalanceByAddress } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
-import useToast from '~hooks/useToast';
 
 import { useHistory } from 'react-router-dom';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
@@ -36,9 +35,7 @@ const Wallet = ({
 }: Props) => {
 
   const controller = useController();
-  const { show } = useToast();
 
-  const _onCopy = useCallback((): void => show('Copied'), [show]);
 
   const selectedAccount = useSelector(selectAccountById(address));
   const history = useHistory();
@@ -48,7 +45,7 @@ const Wallet = ({
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
   const [walletTransactions, setWalletTransactions] = useState<any>();
-  const [nav, setNav] = useState('list');
+  const [nav, setNav] = useState('grid');
   const [mainNav, setMainNav] = useState('tokens');
 
 
@@ -128,31 +125,30 @@ const Wallet = ({
         }
       </div>
 
-      <img className={styles.networklogo} src={getSymbol(selectedAccount?.symbol)?.icon} />
-      <div className={styles.networktext}>{getSymbol(selectedAccount?.symbol)?.name}</div>
-      <div className={styles.primaryBalanceLabel}>
-        {currentBalance?.loading ? (
-          <SkeletonTheme color="#222" highlightColor="#000">
-            <Skeleton width={150} />
-          </SkeletonTheme>
-        ) : (
-          <div className={styles.primaryBalanceLabel}>{currentBalance &&
-            `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
-          }</div>
+      <div className={styles.balanceInfo}>
+        <div className={styles.primaryBalanceLabel}>
+          {currentBalance?.loading ? (
+            <SkeletonTheme color="#222" highlightColor="#000">
+              <Skeleton width={150} />
+            </SkeletonTheme>
+          ) : (
+            <div className={styles.primaryBalanceLabel}>{currentBalance &&
+              `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
+            }</div>
 
-        )}
+          )}
+        </div>
+        <div className={styles.secondaryBalanceLabel}>
+          {currentBalance?.loading ? (
+            <SkeletonTheme color="#222" highlightColor="#000">
+              <Skeleton width={100} />
+            </SkeletonTheme>
+          ) : (
+            <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))?.toFixed(3)}</span>
+          )}
+        </div>
+
       </div>
-      <div className={styles.secondaryBalanceLabel}>
-        {currentBalance?.loading ? (
-          <SkeletonTheme color="#222" highlightColor="#000">
-            <Skeleton width={100} />
-          </SkeletonTheme>
-        ) : (
-          <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))?.toFixed(3)}</span>
-        )}
-      </div>
-
-
 
       {selectedAccount?.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
         <div
