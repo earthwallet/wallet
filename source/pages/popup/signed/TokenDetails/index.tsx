@@ -29,6 +29,7 @@ import Swiper from 'react-id-swiper';
 import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
 import { LIVE_SYMBOLS_OBJS } from '~global/constant';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
+import { AssetsList, AssetsCoverflow } from '../NFTList';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -126,6 +127,10 @@ const Wallet = ({
 
         <div className={styles.tabsep}></div>
       </div>
+      {mainNav === 'nfts' && <>
+        {nav === 'grid' && <AssetsCoverflow address={address} />}
+        {nav === 'list' && <AssetsList address={address} />}
+      </>}
 
       {mainNav === 'tokens' && <>
         <div>
@@ -329,47 +334,6 @@ const TokensGridflow = ({ address }: { address: string }) => {
   )
 };
 
-
-const AssetsCoverflow = ({ address }) => {
-  const assets: keyable = useSelector(selectAssetsICPByAddress(address));
-
-  const history = useHistory();
-
-  const params = {
-    grabCursor: true,
-    centeredSlides: true,
-    coverflowEffect: {
-      rotate: 50,
-      stretch: 0,
-      depth: 100,
-      modifier: 1,
-      slideShadows: true
-    },
-    pagination: {
-      el: '.swiper-pagination'
-    }
-  }
-  return (
-    <Swiper
-      effect={'coverflow'}
-      slidesPerView={'auto'}
-      {...params}>
-      {assets?.map((asset, i: number) => {
-        return <div
-          key={i}
-          onClick={() => history.push(`/nftdetails/${asset.id}`)}
-          className={styles.imagecont}
-          style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
-          <div className={styles.imagedesc}>
-            <div
-              onClick={() => history.push(`/nftdetails/${asset.id}`)}
-              className={styles.imagetitle}>{asset?.title || asset?.tokenIndex}</div>
-            <div className={styles.imagepagin}>{i + 1} of {assets.length}</div></div>
-        </div>
-      })}
-    </Swiper>
-  )
-};
 
 
 export default withRouter(Wallet);

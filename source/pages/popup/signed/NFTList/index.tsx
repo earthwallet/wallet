@@ -91,7 +91,7 @@ const NFTList = ({
     );
 };
 
-const AssetsList = ({ address }) => {
+export const AssetsList = ({ address }) => {
     const assets: keyable = useSelector(selectAssetsICPByAddress(address));
 
     const history = useHistory();
@@ -120,7 +120,7 @@ const AssetsList = ({ address }) => {
     </div>
 }
 
-const AssetsCoverflow = ({ address }) => {
+export const AssetsCoverflow = ({ address }) => {
     const assets: keyable = useSelector(selectAssetsICPByAddress(address));
 
     const history = useHistory();
