@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+// @ts-nocheck
+
+import React, { useEffect, useState, useRef } from 'react';
 import styles from './index.scss';
 import { Link } from 'react-router-dom';
 import Header from '~components/Header';
@@ -22,6 +24,11 @@ import { selectAssetsICPCountByAddress } from '~state/wallet';
 import { ClipLoader } from 'react-spinners';
 import ICON_GRID from '~assets/images/icon_grid.svg';
 import ICON_LIST from '~assets/images/icon_list.svg';
+import { selectAssetsICPByAddress } from '~state/wallet';
+import Swiper from 'react-id-swiper';
+import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
+import { LIVE_SYMBOLS_OBJS } from '~global/constant';
+
 interface Props extends RouteComponentProps<{ address: string }> {
 }
 interface keyable {
@@ -77,7 +84,6 @@ const Wallet = ({
         selectedAccount={selectedAccount}
         backOverride={() => history.push('/home')}
       />
-
       <div>
         <div className={styles.nav}>
           <div
@@ -125,71 +131,78 @@ const Wallet = ({
         }
       </div>
 
-      <div className={styles.balanceInfo}>
-        <div className={styles.primaryBalanceLabel}>
-          {currentBalance?.loading ? (
-            <SkeletonTheme color="#222" highlightColor="#000">
-              <Skeleton width={150} />
-            </SkeletonTheme>
-          ) : (
-            <div className={styles.primaryBalanceLabel}>{currentBalance &&
-              `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
-            }</div>
 
-          )}
+      {mainNav === 'tokens' && <>
+        <div>
+          {1}
+          <TokensGridflow address='07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992' />
         </div>
-        <div className={styles.secondaryBalanceLabel}>
-          {currentBalance?.loading ? (
-            <SkeletonTheme color="#222" highlightColor="#000">
-              <Skeleton width={100} />
-            </SkeletonTheme>
-          ) : (
-            <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))?.toFixed(3)}</span>
-          )}
-        </div>
+        <div className={styles.tokenGrid}>
+          <div className={styles.balanceInfo}>
+            <div className={styles.primaryBalanceLabel}>
+              {currentBalance?.loading ? (
+                <SkeletonTheme color="#222" highlightColor="#000">
+                  <Skeleton width={150} />
+                </SkeletonTheme>
+              ) : (
+                <div className={styles.primaryBalanceLabel}>{currentBalance &&
+                  `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
+                }</div>
 
-      </div>
-
-      {selectedAccount?.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
-        <div
-          className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
-        >
-          <Link className={styles.transactionsCont} to={"/account/receive/" + selectedAccount?.id}>
-            <div className={styles.tokenActionButton}>
-              <img className={styles.iconActions} src={icon_rec} />
-              <div className={styles.tokenActionLabel}>Receive</div>
+              )}
             </div>
-          </Link>
-        </div>
-
-        <div className={clsx(styles.tokenActionView, styles.sendTokenAction)}>
-          <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
-            <div className={styles.tokenActionButton}>
-              <img className={styles.iconActions} src={icon_send} />
-              <div className={styles.tokenActionLabel}>Send</div>
+            <div className={styles.secondaryBalanceLabel}>
+              {currentBalance?.loading ? (
+                <SkeletonTheme color="#222" highlightColor="#000">
+                  <Skeleton width={100} />
+                </SkeletonTheme>
+              ) : (
+                <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))?.toFixed(3)}</span>
+              )}
             </div>
-          </Link>
-        </div>
-      </div>}
 
-      {selectedAccount?.symbol === 'ICP_Ed25519' && <div className={styles.walletNoSupportActionsView}>
-        <div className={styles.noSupportText}>
-          <img src={ICON_NOTICE} className={styles.noticeIcon}></img>
+          </div>
 
-          Ed25519 address is no longer supported. Please import seed from Export</div>
-        <div
-          className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
-        >
-          <Link className={styles.transactionsCont} to={"/account/export/" + selectedAccount?.id}>
-            <div className={styles.tokenActionButton}>
-              <img className={clsx(styles.iconActions, styles.exportIcon)} src={icon_send} />
-              <div className={styles.tokenActionLabel}>Export</div>
+          {selectedAccount?.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
+            <div
+              className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
+            >
+              <Link className={styles.transactionsCont} to={"/account/receive/" + selectedAccount?.id}>
+                <div className={styles.tokenActionButton}>
+                  <img className={styles.iconActions} src={icon_rec} />
+                  <div className={styles.tokenActionLabel}>Receive</div>
+                </div>
+              </Link>
             </div>
-          </Link>
+
+            <div className={clsx(styles.tokenActionView, styles.sendTokenAction)}>
+              <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
+                <div className={styles.tokenActionButton}>
+                  <img className={styles.iconActions} src={icon_send} />
+                  <div className={styles.tokenActionLabel}>Send</div>
+                </div>
+              </Link>
+            </div>
+          </div>}
+
+          {selectedAccount?.symbol === 'ICP_Ed25519' && <div className={styles.walletNoSupportActionsView}>
+            <div className={styles.noSupportText}>
+              <img src={ICON_NOTICE} className={styles.noticeIcon}></img>
+              Ed25519 address is no longer supported. Please import seed from Export</div>
+            <div
+              className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
+            >
+              <Link className={styles.transactionsCont} to={"/account/export/" + selectedAccount?.id}>
+                <div className={styles.tokenActionButton}>
+                  <img className={clsx(styles.iconActions, styles.exportIcon)} src={icon_send} />
+                  <div className={styles.tokenActionLabel}>Export</div>
+                </div>
+              </Link>
+            </div>
+          </div>}
         </div>
-
-      </div>}
-
+      </>
+      }
       <Link
         className={clsx(styles.resetLink, styles.fixedBottom)}
         to={`/account/transactions/${selectedAccount?.id}`}
@@ -226,5 +239,99 @@ export const AssetsICPCount = ({ icpAddress }: { icpAddress: string }) => {
       </span>}
     </div></div>
 }
+
+
+const TokensGridflow = ({ address }: { address: string }) => {
+  const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+
+  const history = useHistory();
+  const ref = useRef(null);
+
+  const params = {
+    grabCursor: true,
+    centeredSlides: true,
+    containerClass: "tokensswipercontainer",
+    slidesPerView: 'auto',
+    pagination: {
+      el: '.swiper-pagination',
+      type: 'bullets',
+      clickable: true
+    },
+    coverflowEffect: {
+      rotate: 50,
+      stretch: 0,
+      depth: 100,
+      modifier: 1,
+      slideShadows: false
+    },
+    pagination: {
+      el: '.swiper-pagination'
+    }
+  }
+  console.log(ref?.current?.swiper);
+  return (
+    <Swiper
+      ref={ref}
+      effect={'coverflow'}
+      slidesPerView={'auto'}
+      {...params}>
+      {LIVE_SYMBOLS_OBJS?.map((token, i: number) =>
+        <div
+          index={i}
+          className={styles.imagecont}>
+          <img
+            key={i}
+            className={styles.imageIcon}
+            onClick={() => history.push(`/nftdetails/${token?.id}`)}
+            src={token?.icon} >
+          </img>
+        </div>
+      )}
+    </Swiper>
+  )
+};
+
+
+const AssetsCoverflow = ({ address }) => {
+  const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+
+  const history = useHistory();
+
+  const params = {
+    grabCursor: true,
+    centeredSlides: true,
+    coverflowEffect: {
+      rotate: 50,
+      stretch: 0,
+      depth: 100,
+      modifier: 1,
+      slideShadows: true
+    },
+    pagination: {
+      el: '.swiper-pagination'
+    }
+  }
+  return (
+    <Swiper
+      effect={'coverflow'}
+      slidesPerView={'auto'}
+      {...params}>
+      {assets?.map((asset, i: number) => {
+        return <div
+          key={i}
+          onClick={() => history.push(`/nftdetails/${asset.id}`)}
+          className={styles.imagecont}
+          style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
+          <div className={styles.imagedesc}>
+            <div
+              onClick={() => history.push(`/nftdetails/${asset.id}`)}
+              className={styles.imagetitle}>{asset?.title || asset?.tokenIndex}</div>
+            <div className={styles.imagepagin}>{i + 1} of {assets.length}</div></div>
+        </div>
+      })}
+    </Swiper>
+  )
+};
+
 
 export default withRouter(Wallet);

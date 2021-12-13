@@ -12,6 +12,7 @@ import ICON_BTG from '~assets/images/icon_btg.png';
 import ICON_MATIC from '~assets/images/icon_matic.png';
 import ICON_AVAX from '~assets/images/icon_avalanche.svg';
 import ICON_DOGE from '~assets/images/icon_doge.png';
+import ICON_EARTH from '~assets/images/icon-512.png';
 
 export const STATE_PORT = 'EARTH_WALLET';
 
@@ -112,7 +113,7 @@ export const DEFAULT_SYMBOLS = [
     isLive: false,
     preGenerate: false,
     order: 8,
-    evmChain: true
+    evmChain: true,
   },
   {
     name: 'Polygon',
@@ -122,7 +123,7 @@ export const DEFAULT_SYMBOLS = [
     isLive: false,
     preGenerate: false,
     order: 9,
-    evmChain: true
+    evmChain: true,
   },
   {
     name: 'Bitcoin Gold',
@@ -168,7 +169,17 @@ export const DEFAULT_SYMBOLS = [
     isLive: false,
     preGenerate: false,
     order: 14,
-    evmChain: true
+    evmChain: true,
+  },
+  {
+    name: 'Earth Coin',
+    icon: ICON_EARTH,
+    symbol: 'EARTH',
+    coinGeckoId: 'avalanche',
+    isLive: true,
+    preGenerate: false,
+    order: 15,
+    icpChain: true,
   },
 ];
 
