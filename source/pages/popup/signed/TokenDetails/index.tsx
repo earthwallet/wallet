@@ -3,12 +3,10 @@ import styles from './index.scss';
 import { Link } from 'react-router-dom';
 import Header from '~components/Header';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import CopyToClipboard from 'react-copy-to-clipboard';
 //import bg_wallet_details from '~assets/images/bg_wallet_details.png';
-import icon_copy from '~assets/images/icon_copy.svg';
 import icon_rec from '~assets/images/icon_rec.svg';
 import icon_send from '~assets/images/icon_send.svg';
-import { getShortAddress, getSymbol } from '~utils/common';
+import { getSymbol } from '~utils/common';
 import clsx from 'clsx';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
@@ -23,7 +21,8 @@ import { useHistory } from 'react-router-dom';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
 import { selectAssetsICPCountByAddress } from '~state/wallet';
 import { ClipLoader } from 'react-spinners';
-
+import ICON_GRID from '~assets/images/icon_grid.svg';
+import ICON_LIST from '~assets/images/icon_list.svg';
 interface Props extends RouteComponentProps<{ address: string }> {
 }
 interface keyable {
@@ -49,6 +48,8 @@ const Wallet = ({
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
   const [walletTransactions, setWalletTransactions] = useState<any>();
+  const [nav, setNav] = useState('list');
+  const [mainNav, setMainNav] = useState('tokens');
 
 
 
@@ -80,6 +81,52 @@ const Wallet = ({
         backOverride={() => history.push('/home')}
       />
 
+      <div>
+        <div className={styles.nav}>
+          <div
+            onClick={() => setMainNav('tokens')}
+            className={clsx(styles.tabnav,
+              mainNav === 'tokens' && styles.tabnav_active)}>
+            Tokens
+          </div>
+          <div
+            onClick={() => setMainNav('nfts')}
+            className={clsx(styles.tabnav,
+              mainNav === 'nfts' && styles.tabnav_active)}
+          >
+            NFTs
+          </div>
+          <div onClick={() => setMainNav('apps')}
+            className={clsx(styles.tabnav,
+              mainNav === 'apps' && styles.tabnav_active)}>
+            Apps
+          </div>
+          <div className={styles.layoutnav}>
+            <img
+              onClick={() => setNav('grid')}
+              className={
+                clsx(
+                  styles.layoutnavicon,
+                  nav === 'grid' && styles.layoutnavicon_active
+                )}
+              src={ICON_GRID} />
+            <img
+              onClick={() => setNav('list')}
+              className={
+                clsx(
+                  styles.layoutnavicon,
+                  nav === 'list' && styles.layoutnavicon_active
+                )} src={ICON_LIST} />
+          </div>
+        </div>
+
+        <div className={styles.tabsep}></div>
+        {nav === 'grid' ? <div className={styles.coverflowcont}>
+        </div>
+          : <div className={styles.listcont}>
+          </div>
+        }
+      </div>
 
       <img className={styles.networklogo} src={getSymbol(selectedAccount?.symbol)?.icon} />
       <div className={styles.networktext}>{getSymbol(selectedAccount?.symbol)?.name}</div>
@@ -105,19 +152,7 @@ const Wallet = ({
         )}
       </div>
 
-      <CopyToClipboard text={selectedAccount?.id || ''}>
-        <div className={styles.copyActionsView} onClick={_onCopy}>
-          <div className={styles.copyCont}>
-            <div className={styles.copyName}>{selectedAccount?.meta?.name}</div>
-            <div className={styles.copyAddress}>
-              {getShortAddress(selectedAccount?.id || '')}
-            </div>
-          </div>
-          <div className={styles.copyButton}>
-            <img className={styles.iconCopy} src={icon_copy} />
-          </div>
-        </div>
-      </CopyToClipboard>
+
 
       {selectedAccount?.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
         <div

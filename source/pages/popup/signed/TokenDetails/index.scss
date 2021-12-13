@@ -153,9 +153,8 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 18px;
-  margin-bottom: 22px;
-  margin-top: 46px;
+  position: fixed;
+  bottom: 92px;
 }
 
 .tokenActionView {
@@ -277,7 +276,6 @@
   align-items: center;
   color: rgb(255, 255, 255);
   display: flex;
-  opacity: 0.85;
   text-decoration: none;
   vertical-align: middle;
 }
@@ -391,3 +389,74 @@
   margin-left: 6px;
 }
 
+.nav {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.tabnav {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 170.2%;
+  /* or 27px */
+
+  display: flex;
+  align-items: flex-end;
+
+  color: #ffffff;
+  margin: 35px 12px 0 0;
+  padding: 0 12px 12px;
+  width: fit-content;
+  user-select: none;
+  cursor: pointer;
+  opacity: 0.6;
+  border-bottom: 2px solid transparent;
+  &:active {
+    opacity: 0.7;
+  }
+}
+.tabnav_active {
+  opacity: 1;
+  border-bottom: 2px solid #2496ff;
+}
+
+.layoutnav {
+  display: flex;
+}
+
+.layoutnavicon {
+  padding: 0 12px 12px;
+  user-select: none;
+  cursor: pointer;
+  opacity: 0.5;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.layoutnavicon_active {
+  opacity: 1;
+}
+
+.tabsep {
+  opacity: 0.1;
+  border: 1px solid #fbfbfb;
+  margin: 0 24px 24px;
+}
+
+.coverflowcont > div {
+  width: 100vw;
+  height: 360px;
+}
+.listcont {
+  width: 100vw;
+  max-height: 415px;
+  padding: 0 24px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin: 24px 0;
+}
