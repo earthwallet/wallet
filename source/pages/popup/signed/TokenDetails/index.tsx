@@ -28,6 +28,7 @@ import { selectAssetsICPByAddress } from '~state/wallet';
 import Swiper from 'react-id-swiper';
 import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
 import { LIVE_SYMBOLS_OBJS } from '~global/constant';
+import ICON_FORWARD from '~assets/images/icon_forward.svg';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -52,7 +53,7 @@ const Wallet = ({
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
   const [walletTransactions, setWalletTransactions] = useState<any>();
-  const [nav, setNav] = useState('grid');
+  const [nav, setNav] = useState('list');
   const [mainNav, setMainNav] = useState('tokens');
 
 
@@ -124,21 +125,15 @@ const Wallet = ({
         </div>
 
         <div className={styles.tabsep}></div>
-        {nav === 'grid' ? <div className={styles.coverflowcont}>
-        </div>
-          : <div className={styles.listcont}>
-          </div>
-        }
       </div>
-
 
       {mainNav === 'tokens' && <>
         <div>
-          {1}
-          <TokensGridflow address='07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992' />
+          {nav === 'grid' && <TokensGridflow address={address} />}
+          {nav === 'list' && <TokensList address={address} />}
         </div>
         <div className={styles.tokenGrid}>
-          <div className={styles.balanceInfo}>
+          <div className={clsx(styles.balanceInfo, nav === 'list' && styles.hidden)}>
             <div className={styles.primaryBalanceLabel}>
               {currentBalance?.loading ? (
                 <SkeletonTheme color="#222" highlightColor="#000">
@@ -160,7 +155,6 @@ const Wallet = ({
                 <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))?.toFixed(3)}</span>
               )}
             </div>
-
           </div>
 
           {selectedAccount?.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
@@ -241,6 +235,48 @@ export const AssetsICPCount = ({ icpAddress }: { icpAddress: string }) => {
 }
 
 
+const TokensList = ({ address }: { address: string }) => {
+
+  const history = useHistory();
+
+
+
+  return (
+    <div className={styles.tokensList}>
+      <div className={styles.listHeader}>
+        <div className={styles.listHeaderTitle}>Total Balance</div>
+        <div className={styles.listHeaderSubtitle}>$209,092.22</div>
+      </div>
+      <div className={styles.listitemscont}>
+        {LIVE_SYMBOLS_OBJS?.map((token, i: number) =>
+          <div
+            key={i}
+            className={styles.listitem}>
+            <img
+              className={styles.listicon}
+              src={token?.icon} >
+            </img>
+            <div className={styles.listinfo}>
+              <div className={styles.listtitle}>{token?.name}</div>
+            </div>
+            <div
+              className={styles.liststats}
+            ><div className={styles.listprice}>{token?.symbol}</div>
+              <div className={styles.listsubtitle}>$4,092.22</div>
+            </div>
+            <img
+              className={styles.listforward}
+              src={ICON_FORWARD}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+};
+
+
+
 const TokensGridflow = ({ address }: { address: string }) => {
   const assets: keyable = useSelector(selectAssetsICPByAddress(address));
 
@@ -268,6 +304,8 @@ const TokensGridflow = ({ address }: { address: string }) => {
       el: '.swiper-pagination'
     }
   }
+  console.log(ref?.current);
+
   console.log(ref?.current?.swiper);
   return (
     <Swiper
@@ -277,7 +315,7 @@ const TokensGridflow = ({ address }: { address: string }) => {
       {...params}>
       {LIVE_SYMBOLS_OBJS?.map((token, i: number) =>
         <div
-          index={i}
+          key={i}
           className={styles.imagecont}>
           <img
             key={i}

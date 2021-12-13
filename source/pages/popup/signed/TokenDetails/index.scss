@@ -489,3 +489,170 @@
   height: 160px;
   border-radius: 50%;
 }
+
+.hidden {
+  visibility: hidden;
+}
+
+.tokensList {
+  display: flex;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 300px;
+  width: $appWidth;
+  flex-direction: column;
+  align-items: center;
+}
+
+.listHeaderTitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  /* identical to box height, or 143% */
+
+  text-align: center;
+
+  /* Secondary/Shuttle Gray */
+
+  color: #a5acbb;
+}
+
+.listHeaderSubtitle {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 40px;
+  /* identical to box height, or 125% */
+
+  text-align: center;
+
+  /* Brand / Moonlight Grey / 20% */
+
+  color: #fafbfb;
+}
+
+.listcont {
+  width: 100vw;
+  max-height: 415px;
+  padding: 0 24px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin: 24px 0;
+}
+
+.listitemscont {
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  width: 343px;
+}
+
+.listitem {
+  display: flex;
+  height: 68px;
+  align-items: center;
+  border-bottom: 1px solid #ffffff0d;
+  cursor: pointer;
+  user-select: none;
+  justify-content: center;
+  &:active {
+    opacity: 0.7;
+  }
+  &:last-child {
+    border-bottom: 0px !important;
+  }
+}
+
+.listicon {
+  margin-left: 12px;
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  background: #ffffff0d;
+  border-radius: 50%;
+}
+
+.listtitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 15px;
+  /* identical to box height, or 107% */
+
+  color: #fafbfb;
+  margin-bottom: 2.5px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.listsubtitle {
+  margin-top: 2.5px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  color: #fafbfb;
+
+  opacity: 0.54;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.listprice {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  text-align: right;
+
+  color: #fafbfb;
+}
+
+.listforward {
+  margin-right: 12px;
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  flex-shrink: 0;
+}
+
+.listinfo {
+  width: 130px;
+  margin-left: 8px;
+  flex-basis: 130px;
+  flex-shrink: 0;
+}
+
+.liststats {
+  width: 110px;
+  flex-basis: 110px;
+  flex-shrink: 0;
+  margin-right: 8px;
+  text-align: right;
+}
+
+.listHeader {
+  margin-bottom: 20px;
+}

@@ -172,7 +172,7 @@ export const DEFAULT_SYMBOLS = [
     evmChain: true,
   },
   {
-    name: 'Earth Coin',
+    name: 'Earth',
     icon: ICON_EARTH,
     symbol: 'EARTH',
     coinGeckoId: 'avalanche',
