@@ -22,6 +22,8 @@ import ListNFT from '~pages/popup/signed/ListNFT';
 import WalletSettings from '~pages/popup/signed/WalletSettings';
 import DappDetails from '~pages/popup/signed/DappDetails';
 import TokenDetails from '~pages/popup/signed/TokenDetails';
+import TokenHistory from '~pages/popup/signed/TokenHistory';
+
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -66,10 +68,16 @@ const PopupRouter = () => {
           <ToastProvider>
             <Switch location={item}>
               <Route path="/popup.html">
-                <Redirect to="/todo/07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992" />
+                {/*                 <Redirect to="/account/07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992" />
+ */}
+
+                <Redirect to="/todo" />
               </Route>
-              <Route path="/todo/:address">
-              {wrapWithErrorBoundary(<TokenDetails />, 'TokenDetails')}
+              <Route path="/todo">
+                {wrapWithErrorBoundary(<TokenHistory />, 'TokenHistory')}
+              </Route>
+              <Route path="/account/:address">
+                {wrapWithErrorBoundary(<TokenDetails />, 'TokenDetails')}
               </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
