@@ -23,6 +23,8 @@ import WalletSettings from '~pages/popup/signed/WalletSettings';
 import DappDetails from '~pages/popup/signed/DappDetails';
 import TokenDetails from '~pages/popup/signed/TokenDetails';
 import TokenHistory from '~pages/popup/signed/TokenHistory';
+import Stake from '~pages/popup/signed/Stake';
+import Swap from '~pages/popup/signed/Swap';
 
 
 function wrapWithErrorBoundary(
@@ -74,6 +76,12 @@ const PopupRouter = () => {
                 {/* <Redirect to="/todo" /> */}
               </Route>
               <Route path="/todo">
+                {wrapWithErrorBoundary(<Stake />, 'Stake')}
+              </Route>
+              <Route path="/swap">
+                {wrapWithErrorBoundary(<Swap />, 'Swap')}
+              </Route>
+              <Route path="/th">
                 {wrapWithErrorBoundary(<TokenHistory />, 'TokenHistory')}
               </Route>
               <Route path="/account/:address">

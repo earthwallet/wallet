@@ -11,3 +11,187 @@
   height: $appHeight;
   width: $appWidth;
 }
+
+.empty {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 1em;
+  margin-top: 3px;
+  width: 39px;
+  height: 39px;
+}
+
+.key {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 16px;
+  /* identical to box height, or 145% */
+
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  /* Secondary/Shuttle Gray */
+
+  color: #a5acbb;
+}
+
+.val {
+  /* Product/H4 */
+
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 28px;
+  /* identical to box height, or 133% */
+
+  text-align: center;
+
+  /* Primary/White */
+
+  color: #ffffff;
+}
+
+.statsCol {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.stats {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  margin: 24px 0;
+}
+
+.recipientAddress {
+  color: $subTextColor;
+  font-family: $fontFamily;
+  font-size: $fontSize;
+  width: -webkit-fill-available;
+  margin: 0px 24px;
+}
+
+.earthinput {
+  background-image: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  background: rgba(8, 25, 39, 0.65);
+  border: 2px solid rgba(36, 150, 255, 0.5);
+  padding: 16px 12px;
+  border-radius: 8px;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.tab {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  /* identical to box height, or 175% */
+
+  display: flex;
+  align-items: flex-end;
+
+  /* Primary/White */
+
+  color: #ffffff;
+
+  opacity: 0.6;
+  display: flex;
+  flex: 1;
+  user-select: none;
+  cursor: pointer;
+  opacity: 0.6;
+  border-bottom: 2px solid transparent;
+  justify-content: center;
+  padding: 12px 0;
+  &:active {
+    opacity: 0.7;
+  }
+}
+.tab_active {
+  opacity: 1;
+  border-bottom: 2px solid #2496ff;
+}
+
+.tabs {
+  display: flex;
+  width: 100vw;
+}
+
+.tabcont {
+  display: flex;
+  width: 100vw;
+  padding: 24px 16px;
+  flex-direction: column;
+}
+
+.label {
+  /* Product / Body Small Medium */
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  /* Secondary/Shuttle Gray */
+
+  color: #a5acbb;
+}
+
+.eicon {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  margin-bottom: 24px;
+}
+
+.symbol {
+  /* Product / Body Regular */
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  /* identical to box height, or 143% */
+
+  color: #fafbfb;
+}
+
+.infocolright {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  /* identical to box height, or 175% */
+
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.infocolleft,
+.infocolright {
+  flex: 1;
+  display: flex;
+}
+.inforow {
+  display: flex;
+}
+.infocolleft {
+  align-items: center;
+}

@@ -21,7 +21,7 @@ const TokenHistory = ({
     <div className={styles.page}>
       <Header
         type={'wallet'}
-        text={'Add a Network'}
+        text={'Swap'}
       ><div className={styles.empty} /></Header>
     </div>
   );

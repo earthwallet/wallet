@@ -11,3 +11,13 @@
   height: $appHeight;
   width: $appWidth;
 }
+
+.empty {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 1em;
+  margin-top: 3px;
+  width: 39px;
+  height: 39px;
+}
