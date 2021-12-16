@@ -59,6 +59,30 @@ const TokenHistory = ({
             {tab}
           </ div>)}
         </div>
+        <div className={styles.stats}>
+          <div className={styles.row}>
+            <div className={styles.col}>
+              <div className={styles.key}>Market Cap</div>
+              <div className={styles.val}>$12B</div>
+            </div>
+            <div className={styles.col}>
+              <div className={styles.key}>Trading Volume</div>
+              <div className={styles.val}>$433M</div>
+            </div>
+          </div>
+          <div className={styles.row}>
+            <div className={styles.col}>
+              <div className={styles.key}>Supply</div>
+              <div className={styles.val}>519M / 1B</div>
+            </div>
+          </div>
+          <div className={styles.row}>
+            <div className={styles.col}>
+              <div className={styles.key}>Max Supply</div>
+              <div className={styles.val}>1.0B</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

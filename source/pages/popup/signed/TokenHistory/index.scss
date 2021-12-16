@@ -10,7 +10,7 @@
   background: url('../../../../assets/images/bg_tokens.png');
   height: $appHeight;
   width: $appWidth;
-  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .empty {
@@ -131,7 +131,6 @@
   width: calc(100vw - 48px);
   flex-direction: row;
   margin: 24px;
-  padding: 0 24px;
 }
 
 .tab {
@@ -158,9 +157,62 @@
 }
 
 .graphcont {
-  padding: 0 24px;
 }
 
 .tab_active {
   background: #2496ff;
+}
+
+.key {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  /* Primary/White */
+
+  color: #ffffff;
+
+  opacity: 0.6;
+}
+
+.val {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  /* identical to box height, or 175% */
+
+  /* Primary/White */
+
+  color: #ffffff;
+}
+
+.col {
+  display: flex;
+  /* flex-direction: column; */
+  /* width: 100vw; */
+  flex: 1;
+  flex-direction: column;
+}
+.row {
+  display: flex;
+  padding: 16px;
+  border-bottom: 0.5px solid #ffffff47;
+}
+
+.row:last-child {
+  border-bottom: 0.5px solid transparent;
+}
+.stats {
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(20px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 12px;
+  margin: 24px;
+  width: calc(100vw - 24px);
 }
