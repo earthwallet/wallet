@@ -10,6 +10,7 @@
   background: url('../../../../assets/images/bg_tokens.png');
   height: $appHeight;
   width: $appWidth;
+  overflow-y: scroll;
 }
 
 .empty {

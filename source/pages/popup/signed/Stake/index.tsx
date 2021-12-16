@@ -28,20 +28,20 @@ const Stake = ({
         type={'wallet'}
         text={'Stake EARTH'}
       ><div className={styles.empty} /></Header>
-      <div className={styles.stats}>
+      <div className={styles.statsCont}>
         <div className={styles.statsCol}>
-          <div className={styles.key}>
+          <div className={styles.statKey}>
             APY
           </div>
-          <div className={styles.val}>
+          <div className={styles.statVal}>
             132.3
           </div>
         </div>
         <div className={styles.statsCol}>
-          <div className={styles.key}>
+          <div className={styles.statKey}>
             Value Locked
           </div>
-          <div className={styles.val}>
+          <div className={styles.statVal}>
             $1,654,523
           </div>
         </div>
@@ -69,7 +69,7 @@ const Stake = ({
           </div>
           <div className={styles.infocolright}>1337</div>
         </div>
-        <div>
+        <div className={styles.inputCont}>
           <input
             autoCapitalize='off'
             autoCorrect='off'
@@ -85,30 +85,31 @@ const Stake = ({
             type="number"
             value={selectedAmount}
           />
-          <div>Max</div>
-          <div>Stake</div>
+          <div className={clsx(styles.inputBtn)}>Stake</div>
+          <div className={styles.maxBtn}>Max</div>
         </div>
       </div>
 
-      <div>
-        <div>
-          <div>
-            <div>Staked</div>
-            <div>0</div>
+
+      <div className={styles.stats}>
+        <div className={styles.row}>
+          <div className={styles.col}>
+            <div className={styles.key}>Staked</div>
+            <div className={styles.val}>0</div>
           </div>
-          <div>
-            <div>Next Reward Amount</div>
-            <div>0</div>
+          <div className={styles.col}>
+            <div className={styles.key}>Next Reward Amount</div>
+            <div className={styles.val}>0</div>
           </div>
         </div>
-        <div>
-          <div>
-            <div>Staked</div>
-            <div>0</div>
+        <div className={styles.row}>
+          <div className={styles.col}>
+            <div className={styles.key}>Staked</div>
+            <div className={styles.val}>0</div>
           </div>
-          <div>
-            <div>Next Reward Amount</div>
-            <div>0</div>
+          <div className={styles.col}>
+            <div className={styles.key}>Next Reward Amount</div>
+            <div className={styles.val}>0</div>
           </div>
         </div>
       </div>
