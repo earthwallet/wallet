@@ -70,8 +70,7 @@ const PopupRouter = () => {
           <ToastProvider>
             <Switch location={item}>
               <Route path="/popup.html">
-                <Redirect to="/account/1" />
-
+                <Redirect to="/home" />
 
                 {/* <Redirect to="/todo" /> */}
               </Route>
@@ -84,7 +83,7 @@ const PopupRouter = () => {
               <Route path="/th/:address">
                 {wrapWithErrorBoundary(<TokenHistory />, 'TokenHistory')}
               </Route>
-              <Route path="/account/:address">
+              <Route path="/account/details/:address">
                 {wrapWithErrorBoundary(<TokenDetails />, 'TokenDetails')}
               </Route>
               <Route path="/home">
@@ -105,7 +104,7 @@ const PopupRouter = () => {
               <Route path="/account/import">
                 {wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}
               </Route>
-              <Route path="/account/details/:address">
+              <Route path="/account/details_old/:address">
                 {wrapWithErrorBoundary(<Wallet />, 'wallet')}
               </Route>
               <Route path="/account/transactions/:address">

@@ -30,6 +30,7 @@ import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
 import { LIVE_SYMBOLS_OBJS } from '~global/constant';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
+//import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -244,6 +245,7 @@ const TokensList = ({ address }: { address: string }) => {
 
   const history = useHistory();
 
+  //const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(account?.groupId));
 
 
   return (
@@ -255,6 +257,7 @@ const TokensList = ({ address }: { address: string }) => {
       <div className={styles.listitemscont}>
         {LIVE_SYMBOLS_OBJS?.map((token, i: number) =>
           <div
+            onClick={() => history.push('/th/' + address)}
             key={i}
             className={styles.listitem}>
             <img
@@ -335,5 +338,16 @@ const TokensGridflow = ({ address }: { address: string }) => {
 };
 
 
+const BalanceWithUSD = ({ address }: { address: string }) => {
+  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  return <div className={styles.netlast}>
+    <div className={styles.netstats}>${currentBalance?.balanceInUSD?.toFixed(3)}
+      {
+        currentBalance?.usd_24h_change && currentBalance?.balanceInUSD !== 0
+        && <span className={currentBalance?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentBalance?.usd_24h_change?.toFixed(2)}%</span>
+      }
+    </div>
+  </div>
+}
 
 export default withRouter(Wallet);
