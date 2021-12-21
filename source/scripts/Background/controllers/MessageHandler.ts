@@ -98,17 +98,14 @@ export const messagesHandler = (
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed };
       } else if (method === 'wallet.getAddress') {
-        result = mainController.provider.getAddressForDapp(origin);
+        result = mainController.provider.getAddressForDapp(origin, args[0]);
       } else if (method === 'wallet.getNetwork') {
         result = mainController.provider.getNetwork();
       } else if (method === 'wallet.getBalance') {
         result = mainController.provider.getBalance();
       } else if (method === 'wallet.getAddressMeta') {
         result = mainController.provider.getAddressMeta(origin);
-      } else if (
-        method === 'wallet.sign' ||
-        method === 'wallet.signRaw'
-      ) {
+      } else if (method === 'wallet.sign' || method === 'wallet.signRaw') {
         if (pendingWindow) {
           return Promise.resolve(null);
         }

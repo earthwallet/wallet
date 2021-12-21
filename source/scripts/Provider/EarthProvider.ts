@@ -11,6 +11,7 @@ import {
   parsePrincipalObj,
   stringifyWithBigInt,
 } from '~global/helpers';
+import { PREGENERATE_SYMBOLS } from '~global/constant';
 
 export class EarthProvider {
   constructor() {}
@@ -27,9 +28,34 @@ export class EarthProvider {
     return activeAccount?.address;
   }
 
-  getAddressForDapp(origin: string) {
+  getAddressForDapp(origin: string, assets?: keyable) {
+    console.log(assets, PREGENERATE_SYMBOLS);
     const dapp = store.getState().dapp;
-    return dapp[origin]?.address;
+    const address = dapp[origin]?.address;
+
+    const groupId = store.getState().entities.accounts.byId[address]?.groupId;
+    if (assets === null || assets === undefined) {
+      return dapp[origin]?.address;
+    } else {
+      try {
+        if (Array.isArray(assets)) {
+          return assets.map((asset) => {
+            if (PREGENERATE_SYMBOLS.includes(asset)) {
+              return Object.keys(store.getState().entities.accounts.byId)
+                .map((id) => store.getState().entities.accounts.byId[id])
+                .filter(
+                  (account) =>
+                    account.groupId === groupId && account.symbol === asset
+                )[0]?.address;
+            } else {
+              return dapp[origin]?.address;
+            }
+          });
+        }
+      } catch (error) {}
+
+      return [groupId, dapp[origin]?.address];
+    }
   }
 
   getAddressMeta(origin: string) {

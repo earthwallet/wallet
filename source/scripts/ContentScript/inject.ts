@@ -94,11 +94,11 @@ window.earth = {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.signRaw')(params)
   },
-  connect: async () => {
+  connect: async (params) => {
     const accepted = await window.providerManager.connect()
     if (!accepted) throw new Error('User rejected')
     const icp = window.providerManager.getProviderFor('ICP')
-    return icp.getMethod('wallet.getAddress')()
+    return icp.getMethod('wallet.getAddress')(params)
   },
   request: async (req) => {
     const params = req.params || []
