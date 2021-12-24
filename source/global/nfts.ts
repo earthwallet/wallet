@@ -181,6 +181,15 @@ export const ICP_NFT_LIST = [
     description: `500 years from now humans have long left earth and only the Robots remain. Robots have managed to create new identities often based on relics they have found from earths past.`,
     icon: 'https://bzsui-sqaaa-aaaah-qce2a-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=rdlwm-kakor-uwiaa-aaaaa-b4arg-qaqca-aae4h-q',
   },
+  {
+    name: 'Saga Legends #1: The Fool',
+    id: 'nges7-giaaa-aaaaj-qaiya-cai',
+    standard: 'EXT',
+    isLive: true,
+    description:
+      '',
+    icon: 'https://nges7-giaaa-aaaaj-qaiya-cai.raw.ic0.app/assets/icon.png',
+  },
 ];
 
 const LIVE_ICP_NFT_LIST_CANISTER_IDS = ICP_NFT_LIST.filter(
@@ -203,7 +212,7 @@ export const getTokenImageURL = (asset: keyable) => {
     if (asset?.canisterId === 'ahl3d-xqaaa-aaaaj-qacca-cai') {
       imageURL = `https://${asset?.canisterId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${asset?.tokenIdentifier}`;
     } else {
-      imageURL = `https://${asset?.canisterId}.raw.ic0.app/?tokenid=${asset?.tokenIdentifier}`;
+      imageURL = `https://${asset?.canisterId}.raw.ic0.app/?type=thumbnail&tokenid=${asset?.tokenIdentifier}`;
     }
   }
   return imageURL;
