@@ -74,16 +74,16 @@ const PopupRouter = () => {
 
                 {/* <Redirect to="/todo" /> */}
               </Route>
-              <Route path="/stake/:address">
+              <Route path="/stake_onhold/:address">
                 {wrapWithErrorBoundary(<Stake />, 'Stake')}
               </Route>
-              <Route path="/todo">
+              <Route path="/swap_onhold">
                 {wrapWithErrorBoundary(<Swap />, 'Swap')}
               </Route>
-              <Route path="/th/:address">
+              <Route path="/th_onhold/:address">
                 {wrapWithErrorBoundary(<TokenHistory />, 'TokenHistory')}
               </Route>
-              <Route path="/account/details/:address">
+              <Route path="/account_onhold/details/:address">
                 {wrapWithErrorBoundary(<TokenDetails />, 'TokenDetails')}
               </Route>
               <Route path="/home">
@@ -104,7 +104,7 @@ const PopupRouter = () => {
               <Route path="/account/import">
                 {wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}
               </Route>
-              <Route path="/account/details_old/:address">
+              <Route path="/account/details/:address">
                 {wrapWithErrorBoundary(<Wallet />, 'wallet')}
               </Route>
               <Route path="/account/transactions/:address">
