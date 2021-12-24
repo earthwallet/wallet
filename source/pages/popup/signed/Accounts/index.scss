@@ -48,6 +48,9 @@
 .footerCont {
   display: flex;
   margin-top: 18px;
+  background: #00000024;
+  backdrop-filter: blur(6px);
+  border-radius: 5px;
 }
 
 .orSep {
