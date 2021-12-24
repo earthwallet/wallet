@@ -70,10 +70,12 @@ const PopupRouter = () => {
           <ToastProvider>
             <Switch location={item}>
               <Route path="/popup.html">
-                <Redirect to="/home" />
-
-                {/* <Redirect to="/todo" /> */}
+                <Redirect to="/accounts" />
               </Route>
+              <Route path="/home">
+                <Redirect to="/accounts" />
+              </Route>
+
               <Route path="/stake_onhold/:address">
                 {wrapWithErrorBoundary(<Stake />, 'Stake')}
               </Route>
@@ -86,9 +88,7 @@ const PopupRouter = () => {
               <Route path="/account_onhold/details/:address">
                 {wrapWithErrorBoundary(<TokenDetails />, 'TokenDetails')}
               </Route>
-              <Route path="/home">
-                <Redirect to="/accounts" />
-              </Route>
+
               <Route path="/accounts">
                 {wrapWithErrorBoundary(<Accounts />, 'accounts')}
               </Route>

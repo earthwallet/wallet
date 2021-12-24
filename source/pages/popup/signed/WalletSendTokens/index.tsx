@@ -327,6 +327,7 @@ const WalletSendTokens = ({
     setRecpError('');
   }
 
+
   return <div className={styles.page}><>
     <Header
       backOverride={step1 ? undefined : txCompleteTxt === '' ? onBackClick : undefined}
@@ -433,6 +434,9 @@ const WalletSendTokens = ({
               type="number"
               value={selectedAmount}
             />
+            {!(isNaN(selectedAmount) || selectedAmount == 0) && <div
+              className={styles.priceInput}
+            >${((selectedAmount + fees) * currentUSDValue?.usd).toFixed(3)}</div>}
             {error && (
               <div
                 className={styles.noBalanceError}
