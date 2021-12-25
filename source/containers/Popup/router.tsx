@@ -21,10 +21,10 @@ import NFTList from '~pages/popup/signed/NFTList';
 import ListNFT from '~pages/popup/signed/ListNFT';
 import WalletSettings from '~pages/popup/signed/WalletSettings';
 import DappDetails from '~pages/popup/signed/DappDetails';
-import TokenDetails from '~pages/popup/signed/TokenDetails';
-import TokenHistory from '~pages/popup/signed/TokenHistory';
-import Stake from '~pages/popup/signed/Stake';
-import Swap from '~pages/popup/signed/Swap';
+// import TokenDetails from '~pages/popup/signed/TokenDetails';
+// import TokenHistory from '~pages/popup/signed/TokenHistory';
+// import Stake from '~pages/popup/signed/Stake';
+// import Swap from '~pages/popup/signed/Swap';
 
 
 function wrapWithErrorBoundary(
@@ -75,20 +75,6 @@ const PopupRouter = () => {
               <Route path="/home">
                 <Redirect to="/accounts" />
               </Route>
-
-              <Route path="/stake_onhold/:address">
-                {wrapWithErrorBoundary(<Stake />, 'Stake')}
-              </Route>
-              <Route path="/swap_onhold">
-                {wrapWithErrorBoundary(<Swap />, 'Swap')}
-              </Route>
-              <Route path="/th_onhold/:address">
-                {wrapWithErrorBoundary(<TokenHistory />, 'TokenHistory')}
-              </Route>
-              <Route path="/account_onhold/details/:address">
-                {wrapWithErrorBoundary(<TokenDetails />, 'TokenDetails')}
-              </Route>
-
               <Route path="/accounts">
                 {wrapWithErrorBoundary(<Accounts />, 'accounts')}
               </Route>
