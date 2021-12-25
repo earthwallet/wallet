@@ -280,3 +280,16 @@
     }
   }
 }
+
+.centerCont {
+  margin: 45px 12px;
+  text-align: center;
+  font-size: large;
+}
+
+.centerCont > span {
+  font-size: 12px;
+  margin: 24px;
+  font-style: italic;
+  opacity: 0.5;
+}

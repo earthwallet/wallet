@@ -1,0 +1,152 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(
+    0deg,
+    rgba(71, 134, 255, 0.4) 0%,
+    rgba(71, 134, 255, 0) 100%
+  );
+  background: url('../../../../assets/images/bg_tokens.png');
+  height: $appHeight;
+  width: $appWidth;
+  overflow-y: scroll;
+}
+
+.empty {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 1em;
+  margin-top: 3px;
+  width: 39px;
+  height: 39px;
+}
+
+.etxt {
+  /* Product / Body Regular */
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  /* or 143% */
+
+  /* Secondary/Shuttle Gray */
+
+  color: #a5acbb;
+  margin: 8px 16px 24px 16px;
+}
+
+.etxt {
+  /* Product / Body Small Medium */
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  /* Primary/White */
+
+  color: #ffffff;
+  align-items: center;
+  display: flex;
+}
+
+.etxtbalance {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  /* Primary/White */
+
+  color: #ffffff;
+}
+.maxbtn {
+  background: rgba(255, 255, 255, 0.17);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ffffff;
+  width: fit-content;
+  margin-left: 8px;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.sinput {
+  padding: 8px;
+
+  width: 343px;
+  height: 72px;
+
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 10px;
+  margin: 0 16px 8px;
+  display: flex;
+  align-items: center;
+}
+
+.eicon {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+}
+
+.econt {
+  display: flex;
+  background: #3b3e56;
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  border-radius: 8px;
+  width: fit-content;
+  align-items: center;
+  padding: 12px;
+}
+
+.einput {
+  width: 205px;
+  border: 0;
+  background: transparent;
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 28px;
+  /* text-align: center; */
+  color: #ffffff;
+  padding: 0 12px;
+  margin-left: 10px;
+  border-left: 1px solid #ffffff4f;
+}
+.label {
+  /* Product/Body Large Medium */
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  /* identical to box height, or 175% */
+
+  /* Primary/White */
+
+  color: #ffffff;
+  margin-left: 40px;
+}

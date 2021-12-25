@@ -96,9 +96,9 @@ const generateRandomColor = (str: string) => {
 };
 
 export const getShortAddress = (address: string, size = 6) =>
-  address.substring(0, size) +
+  address?.substring(0, size) +
   '...' +
-  address.substring(address.length - size - 1);
+  address?.substring(address.length - size - 1);
 
 export const getShortText = (text: string, count: number) => {
   return text.slice(0, count) + (text.length > count ? '...' : '');

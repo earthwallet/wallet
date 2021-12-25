@@ -10,6 +10,7 @@ import { selectAccounts_ICP } from '~state/wallet';
 import { isUndefined } from 'lodash';
 import { getSymbol } from '~utils/common';
 import useToast from '~hooks/useToast';
+import clsx from 'clsx';
 
 enum ConnectStep {
   Accounts,
@@ -72,9 +73,9 @@ export default function ConnectDappPage() {
                   {dapp.origin}
                 </i>
               </div>
-              <div className={styles.connectWith}>
+              {accounts?.length > 0 ? <div className={styles.connectWith}>
                 <label>Connect With:</label>
-                {accounts.sort((a, b) => a.symbol.localeCompare(b.symbol)).map((account, index) => (
+                {accounts?.sort((a, b) => a.symbol.localeCompare(b.symbol)).map((account, index) => (
                   <div
                     className={styles.row}
                     key={account.id}
@@ -94,6 +95,11 @@ export default function ConnectDappPage() {
                   </div>
                 ))}
               </div>
+                :
+                <div className={clsx(styles.connectWith, styles.centerCont)}>
+                  Looks like no account exist!
+                  <span>Please `Create an Account` or `import seed phrase`</span>
+                </div>}
             </>
           ) : (
             <>
@@ -136,6 +142,6 @@ export default function ConnectDappPage() {
           </div>
         </section>
       </div>
-    </div>
+    </div >
   );
 }

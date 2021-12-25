@@ -47,11 +47,13 @@ class DAppController implements IDAppController {
       const parsedRequest = Array.isArray(request)
         ? request.map((singleReq, _) => ({
             ...singleReq,
-            args: stringifyWithBigInt(singleReq?.args),
+            truncatedArgs: stringifyWithBigInt(singleReq?.args)?.length > 1000,
+            args: stringifyWithBigInt(singleReq?.args)?.substring(0, 1000),
           }))
         : {
             ...request,
-            args: stringifyWithBigInt(request?.args),
+            truncatedArgs: stringifyWithBigInt(request?.args)?.length > 1000,
+            args: stringifyWithBigInt(request?.args)?.substring(0, 1000),
           };
 
       store.dispatch(
