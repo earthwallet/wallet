@@ -68,7 +68,7 @@ const NFTDetails = ({
                                 ? 'Listed for sale'
                                 : 'Unlisted'}
                         </div>
-                        {asset?.forSale && <div className={styles.price}>{(asset?.info.price / 100000000).toFixed(3)} ICP</div>}
+                        {asset?.forSale && <div className={styles.price}>{(asset?.info?.price / 100000000).toFixed(3)} ICP</div>}
                     </div>
                     <div className={styles.sep}></div>
                     <div className={styles.creatorCont}>

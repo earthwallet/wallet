@@ -1,4 +1,5 @@
 import { keyable } from '~scripts/Background/types/IAssetsController';
+import NFT_PLACEHOLDER from '~assets/images/nft_placeholder.png';
 
 export const ICP_NFT_LIST = [
   {
@@ -186,9 +187,18 @@ export const ICP_NFT_LIST = [
     id: 'nges7-giaaa-aaaaj-qaiya-cai',
     standard: 'EXT',
     isLive: true,
-    description:
-      '',
+    description: '',
     icon: 'https://nges7-giaaa-aaaaj-qaiya-cai.raw.ic0.app/assets/icon.png',
+  },
+  {
+    name: 'Earth DAO',
+    id: 'ntwio-byaaa-aaaak-qaama-cai',
+    standard: 'EarthEXT',
+    isLive: true,
+    isAirdrop: true,
+    description:
+      'Earth DAO - Guardians NFTs. On the Motoko programming language On the Motoko programming language On the Motoko programming language On the Motoko programming language ',
+    icon: 'https://xbyjp-aqaaa-aaaai-aa5mq-cai.ic0.app/logo.svg',
   },
 ];
 
@@ -200,6 +210,10 @@ export const getTokenCollectionInfo = (canisterId: string) =>
   ICP_NFT_LIST.filter((asset) => asset.id === canisterId)[0];
 
 export const getTokenImageURL = (asset: keyable) => {
+  console.log('asset', asset);
+  if (asset?.canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
+    return NFT_PLACEHOLDER;
+  }
   const isWrapped = getTokenCollectionInfo(asset?.canisterId)?.wrapped;
   let imageURL = '';
   if (isWrapped) {

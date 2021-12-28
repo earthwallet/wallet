@@ -7,6 +7,8 @@ import { storeEntities, updateEntities } from '~state/entities';
 import { getNFTsFromCanisterExt } from '@earthwallet/assets';
 import { parseBigIntToString } from '~utils/common';
 import LIVE_ICP_NFT_LIST_CANISTER_IDS from '~global/nfts';
+import { canisterAgentApi, getTokenIdentifier } from '@earthwallet/assets';
+
 export default class AssetsController implements IAssetsController {
   fetchFiatPrice = async (currency = 'USD') => {
     try {
@@ -89,6 +91,65 @@ export default class AssetsController implements IAssetsController {
     return parsedTokens;
   };
 
+  fetchEarthEXTCollection = async (collectionId: string) => {
+    console.log('fetchEarthEXTCollection');
+    //const state = store.getState();
+
+    let response;
+    let responseListing;
+
+    response = await canisterAgentApi(collectionId, 'getRegistry');
+    response.map((item: keyable) =>
+      store.dispatch(
+        storeEntities({
+          entity: 'assets',
+          data: [
+            {
+              id: getTokenIdentifier(collectionId, item[0]),
+              index: item[0],
+              tokenIndex: item[0],
+              tokenIdentifier: getTokenIdentifier(collectionId, item[0]),
+              canisterId: collectionId,
+              address: item[1],
+              image: `https://${collectionId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${getTokenIdentifier(
+                collectionId,
+                item[0]
+              )}`,
+            },
+          ],
+        })
+      )
+    );
+
+    /*   store.dispatch(
+      storeEntities({
+        entity: 'collections',
+        data: [{ id: collectionId, loading: true }],
+      })
+    ); */
+    responseListing = await canisterAgentApi(collectionId, 'listings');
+    console.log(response, responseListing, 'fetchCollection');
+
+    responseListing.map((item: keyable) =>
+      store.dispatch(
+        updateEntities({
+          entity: 'assets',
+          key: getTokenIdentifier(collectionId, item[0]),
+          data: {
+            forSale: item[1] && item[1].price.toString() ? true : false,
+            price: item[1] && item[1].price.toString(),
+          },
+        })
+      )
+    );
+    /*     store.dispatch(
+      storeEntities({
+        entity: 'collections',
+        data: [{ id: collectionId, loading: false }],
+      })
+    ); */
+  };
+
   getICPAssetsOfAccount = async (account: keyable) => {
     let allTokens: keyable = [];
     store.dispatch(
@@ -110,7 +171,12 @@ export default class AssetsController implements IAssetsController {
         index,
         canisterId,
       ] of LIVE_ICP_NFT_LIST_CANISTER_IDS.entries()) {
-        allTokens[index] = await this.fetchICPAssets(account, canisterId);
+        if (canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
+          console.log('get tokens_ext');
+          await this.fetchEarthEXTCollection('ntwio-byaaa-aaaak-qaama-cai');
+        } else {
+          allTokens[index] = await this.fetchICPAssets(account, canisterId);
+        }
       }
 
       let tokens = allTokens.flat();
