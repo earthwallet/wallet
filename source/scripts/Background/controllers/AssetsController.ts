@@ -173,12 +173,29 @@ export default class AssetsController implements IAssetsController {
       ] of LIVE_ICP_NFT_LIST_CANISTER_IDS.entries()) {
         if (canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
           console.log('get tokens_ext');
-          await this.fetchEarthEXTCollection('ntwio-byaaa-aaaak-qaama-cai');
+          const response = await canisterAgentApi(
+            canisterId,
+            'tokens_ext',
+            account.address
+          );
+          console.log('get tokens_ext', response);
+          allTokens[index] = response.map((_token: any[]) => {
+            const id = getTokenIdentifier(canisterId, _token[0]);
+
+            return {
+              id,
+              tokenIdentifier: id,
+              address: _token[1],
+              tokenIndex: _token[0],
+              canisterId,
+            };
+          });
         } else {
           allTokens[index] = await this.fetchICPAssets(account, canisterId);
+          console.log(allTokens[index]);
         }
       }
-
+      console.log(allTokens, 'allTokens');
       let tokens = allTokens.flat();
       if (tokens.length === 0) {
         store.dispatch(
