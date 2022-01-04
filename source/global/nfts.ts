@@ -211,7 +211,6 @@ export const getTokenCollectionInfo = (canisterId: string) =>
   ICP_NFT_LIST.filter((asset) => asset.id === canisterId)[0];
 
 export const getTokenImageURL = (asset: keyable) => {
-  console.log('asset', asset);
   if (asset?.canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
     return NFT_PLACEHOLDER;
   }
