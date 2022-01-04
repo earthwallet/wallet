@@ -1,5 +1,6 @@
 import { keyable } from '~scripts/Background/types/IAssetsController';
 import NFT_PLACEHOLDER from '~assets/images/nft_placeholder.png';
+import ICON_EARTH from '~assets/images/icon-512.png';
 
 export const ICP_NFT_LIST = [
   {
@@ -197,8 +198,8 @@ export const ICP_NFT_LIST = [
     isLive: true,
     isAirdrop: true,
     description:
-      'Earth DAO - Guardians NFTs. On the Motoko programming language On the Motoko programming language On the Motoko programming language On the Motoko programming language ',
-    icon: 'https://xbyjp-aqaaa-aaaai-aa5mq-cai.ic0.app/logo.svg',
+      'Earth DAO - Guardians NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
+    icon: ICON_EARTH,
   },
 ];
 

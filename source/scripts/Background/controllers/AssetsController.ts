@@ -150,6 +150,33 @@ export default class AssetsController implements IAssetsController {
     ); */
   };
 
+  fetchEarthNFT = async (collectionId: string, tokenId: number) => {
+    console.log('fetchEarthNFT');
+    const response = await canisterAgentApi(
+      collectionId,
+      'getListingByTokenID',
+      tokenId
+    );
+    const forSale = response[0] === null ? false : true;
+    console.log(forSale, response, response[0][1].price.toString(), 'forSale');
+
+    store.dispatch(
+      updateEntities({
+        entity: 'assets',
+        key: getTokenIdentifier(collectionId, tokenId),
+        data: {
+          forSale,
+          info: {
+            price:
+              typeof response[0][1].price == 'bigint'
+                ? response[0][1].price.toString()
+                : response[0][1].price,
+          },
+        },
+      })
+    );
+  };
+
   getICPAssetsOfAccount = async (account: keyable) => {
     let allTokens: keyable = [];
     store.dispatch(
@@ -181,7 +208,7 @@ export default class AssetsController implements IAssetsController {
           console.log('get tokens_ext', response);
           allTokens[index] = response.map((_token: any[]) => {
             const id = getTokenIdentifier(canisterId, _token[0]);
-
+            this.fetchEarthNFT(canisterId, _token[0]);
             return {
               id,
               tokenIdentifier: id,
