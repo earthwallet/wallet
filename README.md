@@ -7,7 +7,7 @@
 
 ![Earth Wallet](https://i.imgur.com/eIZaUbx.png)
 
-Earth Wallet is a self custody digital asset wallet built for the next generation of Web3. Designed and developed from the ground up to make the transition to new blockchain protocols like the internet computer and reduce the environmental impacts of Proof-of-Work blockchains.
+Earth wallet is a self custody browser wallet where you can store all of your digital assets, and access the new internet, all in one place. Designed and developed from the ground up to make the transition to new blockchain protocols like the internet computer and reduce the environmental impacts of Proof-of-Work blockchains.
 
 # Download it Here:
 
@@ -15,9 +15,9 @@ Earth Wallet is a self custody digital asset wallet built for the next generatio
 | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
 | 49 & later ✔                                                                                  | 52 & later ✔                                                                                     | 36 & later ✔                                                                               | 79 & later ✔                                                                            | Latest ✔                                                                                      | Latest ✔                                                                                   | Latest ✔                                                                                         |
 
-## 🎉 Now in Beta with over 20,000 users!
+## 🎉 Now live with over 20,000 users!
 
-We are still in Beta, so please remember to backup your keys and don't store large amounts as there may be breaking changes or bugs discovered during future audits and bug bounties. Early beta testers and community may receive exclusive NFT and token drops so [join our Community Chat](https://t.me/earthwallet), or if you are looking for a full time role please [join the Earth DAO](https://discord.gg/aemgEpMye3) and let us know!
+If you have any feedback or require real time support, or just want to chat with our developers please [join the Earth DAO Discord Server](http://earthda.org)!
 
 :white_check_mark: Self Custody (your keys, your crypto) <br/>
 :white_check_mark: 100% Open Source <br/>
@@ -38,7 +38,7 @@ Looking to build on the Internet Computer? Earth Wallet enables develoeprs to bu
 
 ## 🚀 Auditors / Bug Hunters - $10k USD+ Available!!
 
-We have an on going bug bounty campaign for $10,000 USD, as well as full time positions available. If you find a bug, or simply have an idea of how to make the code better/faster/more secure, please [join our Developer Server](https://discord.gg/aemgEpMye3). Help create the most secure open source digital asset wallet and own a piece the future!
+We have an on going bug bounty campaign for $10,000 USD, as well as full time positions available. If you find a bug, or simply have an idea of how to make the code better/faster/more secure, please [join our Developer Server](http://earthda.org). Help create the most secure open source digital asset wallet and own a piece the future!
 
 To get started, ensure you have:
 
