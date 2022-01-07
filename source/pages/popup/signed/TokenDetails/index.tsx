@@ -31,6 +31,7 @@ import { LIVE_SYMBOLS_OBJS } from '~global/constant';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
 //import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
+import { selectGroupBalanceByAddress } from '~state/wallet';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -58,6 +59,12 @@ const Wallet = ({
   const [nav, setNav] = useState('list');
   const [mainNav, setMainNav] = useState('tokens');
 
+
+  useEffect(() => {
+    if (selectedAccount?.symbol !== 'ICP') {
+      history.replace('/account/details_old/' + address)
+    }
+  }, [selectedAccount]);
 
 
 
@@ -130,7 +137,9 @@ const Wallet = ({
       </div>
       {mainNav === 'nfts' && <>
         {nav === 'grid' && <AssetsCoverflow address={address} />}
-        {nav === 'list' && <AssetsList address={address} />}
+        {nav === 'list' && <div className={styles.nftslistcont}>
+          <AssetsList address={address} />
+        </div>}
       </>}
 
       {mainNav === 'tokens' && <>
@@ -244,15 +253,16 @@ export const AssetsICPCount = ({ icpAddress }: { icpAddress: string }) => {
 const TokensList = ({ address }: { address: string }) => {
 
   const history = useHistory();
+  const selectedAccount = useSelector(selectAccountById(address));
 
-  //const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(account?.groupId));
+  const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(selectedAccount?.groupId));
 
 
   return (
     <div className={styles.tokensList}>
       <div className={styles.listHeader}>
         <div className={styles.listHeaderTitle}>Total Balance</div>
-        <div className={styles.listHeaderSubtitle}>$209,092.22</div>
+        <div className={styles.listHeaderSubtitle}>${currentBalance?.balanceInUSD?.toFixed(3) || 0}</div>
       </div>
       <div className={styles.listitemscont}>
         {LIVE_SYMBOLS_OBJS?.map((token, i: number) =>
@@ -282,6 +292,12 @@ const TokensList = ({ address }: { address: string }) => {
     </div>
   )
 };
+
+const AccountBalance = ({ address }: { address: string }) => {
+
+  return <div></div>
+}
+
 
 
 

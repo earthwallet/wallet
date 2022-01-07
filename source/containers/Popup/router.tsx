@@ -21,10 +21,10 @@ import NFTList from '~pages/popup/signed/NFTList';
 import ListNFT from '~pages/popup/signed/ListNFT';
 import WalletSettings from '~pages/popup/signed/WalletSettings';
 import DappDetails from '~pages/popup/signed/DappDetails';
-// import TokenDetails from '~pages/popup/signed/TokenDetails';
-// import TokenHistory from '~pages/popup/signed/TokenHistory';
-// import Stake from '~pages/popup/signed/Stake';
-// import Swap from '~pages/popup/signed/Swap';
+import TokenDetails from '~pages/popup/signed/TokenDetails';
+import TokenHistory from '~pages/popup/signed/TokenHistory';
+import Stake from '~pages/popup/signed/Stake';
+import Swap from '~pages/popup/signed/Swap';
 
 
 function wrapWithErrorBoundary(
@@ -90,7 +90,7 @@ const PopupRouter = () => {
               <Route path="/account/import">
                 {wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}
               </Route>
-              <Route path="/account/details/:address">
+              <Route path="/account/details_old/:address">
                 {wrapWithErrorBoundary(<Wallet />, 'wallet')}
               </Route>
               <Route path="/account/transactions/:address">
@@ -131,6 +131,18 @@ const PopupRouter = () => {
               </Route>
               <Route path="/dappdetails/:origin">
                 {wrapWithErrorBoundary(<DappDetails />, 'dappdetails')}
+              </Route>
+              <Route path="/stake/:address">
+                {wrapWithErrorBoundary(<Stake />, 'Stake')}
+              </Route>
+              <Route path="/swap/:address">
+                {wrapWithErrorBoundary(<Swap />, 'Swap')}
+              </Route>
+              <Route path="/th/:address">
+                {wrapWithErrorBoundary(<TokenHistory />, 'TokenHistory')}
+              </Route>
+              <Route path="/account/details/:address">
+                {wrapWithErrorBoundary(<TokenDetails />, 'TokenDetails')}
               </Route>
             </Switch>
           </ToastProvider>

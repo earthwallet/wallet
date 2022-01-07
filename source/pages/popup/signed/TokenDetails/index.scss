@@ -194,18 +194,17 @@
   margin-top: 18px;
   height: 64px;
   display: flex;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    rgba(36, 150, 255, 0.32);
+
   box-sizing: border-box;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   cursor: pointer;
-  background: linear-gradient(0deg, #071a28, #071a28),
-    linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    rgba(36, 150, 255, 0.32);
   justify-content: space-between;
   border: 1px solid #2496ff;
   border-bottom: 0px;
+  background: linear-gradient(0deg, rgba(7, 26, 40, 0.1), rgba(7, 26, 40, 0.1)),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    rgba(36, 150, 255, 0.32);
 }
 
 .tabsView {
@@ -655,4 +654,12 @@
 
 .listHeader {
   margin-bottom: 20px;
+}
+
+.nftslistcont {
+  width: 100vw;
+  max-height: 360px;
+  padding: 0 24px;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }

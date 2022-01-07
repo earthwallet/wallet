@@ -9,6 +9,7 @@ import ICON_EARTH from '~assets/images/icon-512.png';
 import ICON_SWAP from '~assets/images/icon_swap.png';
 import ICON_STAKE from '~assets/images/icon_stake.png';
 import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -21,6 +22,7 @@ const TokenHistory = ({
 }: Props) => {
 
   console.log(address);
+  const history = useHistory();
 
   return (
     <div className={styles.page}>
@@ -38,11 +40,15 @@ const TokenHistory = ({
           <div className={styles.secsubtitle}>$4,092.22</div>
         </div>
         <div className={styles.cta}>
-          <div className={styles.btnprimary}>
+          <div
+            onClick={() => history.push('/swap/' + address)}
+            className={styles.btnprimary}>
             <img src={ICON_SWAP} className={styles.btnicon} />
             <div className={styles.btntxt}>Swap</div>
           </div>
-          <div className={clsx(styles.btnprimary, styles.btnsecondary)}>
+          <div
+            onClick={() => history.push('/stake/' + address)}
+            className={clsx(styles.btnprimary, styles.btnsecondary)}>
             <img src={ICON_STAKE} className={styles.btnicon} />
             <div className={styles.btntxt}>Stake</div>
           </div>
