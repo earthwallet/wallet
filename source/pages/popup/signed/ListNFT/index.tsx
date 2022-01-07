@@ -127,7 +127,7 @@ const ListNFT = ({
                         {
                             "token": selectedAssetObj?.id,
                             "from_subaccount": [],
-                            "price": [BigInt(selectedAmount * Math.pow(10, 8))]
+                            "price": selectedAmount === 0 ? [] : [BigInt(selectedAmount * Math.pow(10, 8))]
                         },
                         currentIdentity);
                     console.log(resp)

@@ -60,7 +60,7 @@ const NFTDetails = ({
                 <div className={styles.transCont}>
                     <div className={styles.title}>{asset?.title || asset?.tokenIndex}</div>
                     <div className={styles.subtitleCont}>
-                        <div className={styles.subtitle}>{loading
+                        <div className={styles.subtitle}>{(loading || asset?.loading)
                             ? <SkeletonTheme color="#5A597E63" highlightColor="#222">
                                 <Skeleton width={150} />
                             </SkeletonTheme>

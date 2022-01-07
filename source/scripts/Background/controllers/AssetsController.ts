@@ -151,24 +151,35 @@ export default class AssetsController implements IAssetsController {
   };
 
   fetchEarthNFT = async (collectionId: string, tokenId: number) => {
-    console.log('fetchEarthNFT');
+    console.log('fetchEarthNFT', collectionId, tokenId);
+    store.dispatch(
+      updateEntities({
+        entity: 'assets',
+        key: getTokenIdentifier(collectionId, tokenId),
+        data: {
+          loading: true,
+        },
+      })
+    );
     const response = await canisterAgentApi(
       collectionId,
       'getListingByTokenID',
       tokenId
     );
-    const forSale = response[0] === null ? false : true;
-    console.log(forSale, response, response[0][1].price.toString(), 'forSale');
+    const forSale = response[0] == null ? false : true;
 
     store.dispatch(
       updateEntities({
         entity: 'assets',
         key: getTokenIdentifier(collectionId, tokenId),
         data: {
+          loading: false,
           forSale,
           info: {
             price:
-              typeof response[0][1].price == 'bigint'
+              response[0] == null
+                ? 0
+                : typeof response[0][1].price == 'bigint'
                 ? response[0][1].price.toString()
                 : response[0][1].price,
           },
@@ -199,13 +210,12 @@ export default class AssetsController implements IAssetsController {
         canisterId,
       ] of LIVE_ICP_NFT_LIST_CANISTER_IDS.entries()) {
         if (canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
-          console.log('get tokens_ext');
           const response = await canisterAgentApi(
             canisterId,
             'tokens_ext',
             account.address
           );
-          console.log('get tokens_ext', response);
+
           allTokens[index] = response.map((_token: any[]) => {
             const id = getTokenIdentifier(canisterId, _token[0]);
             this.fetchEarthNFT(canisterId, _token[0]);
@@ -219,10 +229,8 @@ export default class AssetsController implements IAssetsController {
           });
         } else {
           allTokens[index] = await this.fetchICPAssets(account, canisterId);
-          console.log(allTokens[index]);
         }
       }
-      console.log(allTokens, 'allTokens');
       let tokens = allTokens.flat();
       if (tokens.length === 0) {
         store.dispatch(
@@ -293,6 +301,11 @@ export default class AssetsController implements IAssetsController {
   };
 
   updateTokenCollectionDetails = async (asset: keyable) => {
+    if (asset?.canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
+      this.fetchEarthNFT(asset?.canisterId, asset?.tokenIndex);
+      return;
+    }
+
     const allTokens: keyable = await this.fetchICPAssets(
       asset.address,
       asset.canisterId
@@ -308,6 +321,7 @@ export default class AssetsController implements IAssetsController {
       )
     );
   };
+
   updateTokenDetails = async ({
     id,
     address,

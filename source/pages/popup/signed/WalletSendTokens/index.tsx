@@ -456,7 +456,6 @@ const WalletSendTokens = ({
             <img
               className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
               src={getSymbol(selectedAccount?.symbol)?.icon}
-
             />
             <div>
               <div className={styles.tokenText}>{getSymbol(selectedAccount?.symbol)?.name}</div>
