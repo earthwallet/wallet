@@ -48,7 +48,7 @@ export class EarthProvider {
                     account.groupId === groupId && account.symbol === asset
                 )[0]?.address;
             } else {
-              return dapp[origin]?.address;
+              return "";
             }
           });
         }
