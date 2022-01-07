@@ -3,7 +3,7 @@ import Header from '~components/Header';
 import styles from './index.scss';
 import clsx from 'clsx';
 import NextStepButton from '~components/NextStepButton';
-import { listNFTsExt } from '@earthwallet/assets';
+import { canisterAgentApi, listNFTsExt } from '@earthwallet/assets';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
@@ -120,22 +120,48 @@ const ListNFT = ({
 
             setLoadingSend(true);
 
-            try {
-                await listNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedAssetObj?.tokenIndex, selectedAmount);
-                //update asset price after list
-                controller.assets.updateTokenDetails({ id: selectedAsset, address, price: selectedAmount }).then(() => {
-                    history.replace(`/nftdetails/${selectedAsset}`);
-                    setTxCompleteTxt('Listed');
+
+            if (selectedAssetObj?.canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
+                try {
+                    const resp = await canisterAgentApi(selectedAssetObj?.canisterId, 'list',
+                        {
+                            "token": selectedAssetObj?.id,
+                            "from_subaccount": [],
+                            "price": selectedAmount === 0 ? [] : [BigInt(selectedAmount * Math.pow(10, 8))]
+                        },
+                        currentIdentity);
+                    console.log(resp)
+                    if (resp.ok === 1) {
+                        history.replace(`/nftdetails/${selectedAsset}`);
+                        setTxCompleteTxt('Listed');
+                        setLoadingSend(false);
+                        setIsBusy(false);
+                    }
+                } catch (error) {
+                    console.log(error);
+                    setTxError("Please try again later! Error: " + JSON.stringify(error));
                     setLoadingSend(false);
                     setIsBusy(false);
-                });
-                controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' });
+                }
+            }
+            else {
+                try {
+                    await listNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedAssetObj?.tokenIndex, selectedAmount);
+                    //update asset price after list
+                    controller.assets.updateTokenDetails({ id: selectedAsset, address, price: selectedAmount }).then(() => {
+                        history.replace(`/nftdetails/${selectedAsset}`);
+                        setTxCompleteTxt('Listed');
+                        setLoadingSend(false);
+                        setIsBusy(false);
+                    });
+                    controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' });
+                } catch (error) {
+                    console.log(error);
+                    setTxError("Please try again later! Error: " + JSON.stringify(error));
+                    setLoadingSend(false);
+                    setIsBusy(false);
+                }
 
-            } catch (error) {
-                console.log(error);
-                setTxError("Please try again later! Error: " + JSON.stringify(error));
-                setLoadingSend(false);
-                setIsBusy(false);
             }
 
         } else {
