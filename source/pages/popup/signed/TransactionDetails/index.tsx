@@ -183,7 +183,7 @@ const Details = ({
             <div>
               <div className={styles.transAccount}>From</div>
               <div className={styles.transAddressCont}>
-                <img src={ICON_ICP_DETAILS} />
+                <img className={styles.transIcon} src={ICON_ICP_DETAILS} />
                 <div className={styles.transAddress}>
                   {getShortAddress(transDetail?.from || '')}
                 </div>
@@ -192,7 +192,7 @@ const Details = ({
             <div>
               <div className={styles.transAccount}>To</div>
               <div className={styles.transAddressCont}>
-                <img src={ICON_ICP_DETAILS} />
+                <img className={styles.transIcon} src={ICON_ICP_DETAILS} />
                 <div className={styles.transAddress}>
                   {getShortAddress(transDetail?.to || '')}
                 </div>
