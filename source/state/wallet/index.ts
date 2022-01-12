@@ -99,6 +99,14 @@ export const selectActiveAccountGroups = (state: AppState) => {
   return Object.keys(accountGroupsObject).map((id) => accountGroupsObject[id]);
 };
 
+export const selectGroupBalanceByGroupIdAndSymbol =
+  (groupId: string, symbol: string) => (state: AppState) => {
+    return Object.keys(state.entities.accounts.byId)
+      .map((id) => state.entities.accounts.byId[id])
+      .filter((account) => account.groupId === groupId)
+      .filter((account) => account.symbol === symbol);
+  };
+
 export const selectBalanceByAddress = (address: string) => (state: AppState) =>
   state.entities.balances.byId[address];
 

@@ -31,7 +31,7 @@ import { LIVE_SYMBOLS_OBJS } from '~global/constant';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
 //import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
-import { selectGroupBalanceByAddress } from '~state/wallet';
+import { selectGroupBalanceByAddress, selectGroupBalanceByGroupIdAndSymbol, selectBalanceInUSDByAddress } from '~state/wallet';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -279,8 +279,11 @@ const TokensList = ({ address }: { address: string }) => {
             </div>
             <div
               className={styles.liststats}
-            ><div className={styles.listprice}>{token?.symbol}</div>
-              <div className={styles.listsubtitle}>$4,092.22</div>
+            >
+              <div className={styles.listprice}>{token?.symbol}</div>
+              <div className={styles.listsubtitle}>
+                <GroupSymbolBalance groupId={selectedAccount?.groupId}
+                  symbol={token?.symbol} /></div>
             </div>
             <img
               className={styles.listforward}
@@ -293,9 +296,10 @@ const TokensList = ({ address }: { address: string }) => {
   )
 };
 
-const AccountBalance = ({ address }: { address: string }) => {
-
-  return <div></div>
+const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: string }) => {
+  const currentAccount: keyable = useSelector(selectGroupBalanceByGroupIdAndSymbol(groupId, symbol));
+  console.log(currentAccount, 'currentAccount');
+  return <BalanceWithUSD address={currentAccount[0]?.address} />
 }
 
 

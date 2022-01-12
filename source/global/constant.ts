@@ -176,7 +176,7 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_EARTH,
     symbol: 'EARTH',
     coinGeckoId: 'avalanche',
-    isLive: false,
+    isLive: true,
     preGenerate: false,
     order: 15,
     icpChain: true,

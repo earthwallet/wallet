@@ -663,3 +663,25 @@
   overflow-x: hidden;
   overflow-y: scroll;
 }
+
+.netstatspositive {
+  padding-left: 8px;
+  color: #55d171;
+}
+.netstatsnegative {
+  padding-left: 8px;
+  color: #d15555;
+}
+
+.netstats {
+  font-family: DM Mono, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 12px;
+
+  text-align: right;
+  letter-spacing: -0.01em;
+
+  color: #ffffff;
+}
