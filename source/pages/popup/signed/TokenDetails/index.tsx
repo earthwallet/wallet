@@ -277,14 +277,10 @@ const TokensList = ({ address }: { address: string }) => {
             <div className={styles.listinfo}>
               <div className={styles.listtitle}>{token?.name}</div>
             </div>
-            <div
-              className={styles.liststats}
-            >
-              <div className={styles.listprice}>{token?.symbol}</div>
-              <div className={styles.listsubtitle}>
-                <GroupSymbolBalance groupId={selectedAccount?.groupId}
-                  symbol={token?.symbol} /></div>
-            </div>
+
+            <GroupSymbolBalance groupId={selectedAccount?.groupId}
+              symbol={token?.symbol} />
+
             <img
               className={styles.listforward}
               src={ICON_FORWARD}
@@ -299,7 +295,14 @@ const TokensList = ({ address }: { address: string }) => {
 const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: string }) => {
   const currentAccount: keyable = useSelector(selectGroupBalanceByGroupIdAndSymbol(groupId, symbol));
   console.log(currentAccount, 'currentAccount');
-  return <BalanceWithUSD address={currentAccount[0]?.address} />
+  return <div
+    className={styles.liststats}
+  >
+    <div className={styles.listprice}><Balance account={currentAccount[0]} /></div>
+    <div className={styles.listsubtitle}>
+      <BalanceWithUSD address={currentAccount[0]?.address} />
+    </div>
+  </div>
 }
 
 
@@ -357,6 +360,11 @@ const TokensGridflow = ({ address }: { address: string }) => {
   )
 };
 
+
+const Balance = ({ account }: { account: keyable }) => {
+  const currentBalance: keyable = useSelector(selectBalanceByAddress(account?.address));
+  return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)} {account?.symbol}</div>
+}
 
 const BalanceWithUSD = ({ address }: { address: string }) => {
   const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
