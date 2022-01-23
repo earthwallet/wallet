@@ -310,7 +310,6 @@ const TokensList = ({ address }: { address: string }) => {
 
 const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: string }) => {
   const currentAccount: keyable = useSelector(selectGroupBalanceByGroupIdAndSymbol(groupId, symbol));
-  console.log(currentAccount, 'currentAccount');
   return <div
     className={styles.liststats}
   >
