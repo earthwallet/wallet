@@ -62,7 +62,7 @@ const Wallet = ({
 
   useEffect(() => {
     if (selectedAccount?.symbol !== 'ICP') {
-      history.replace('/account/details_old/' + address)
+      history.replace('/account/minidetails/' + address)
     }
   }, [selectedAccount]);
 
@@ -147,7 +147,7 @@ const Wallet = ({
           {nav === 'grid' && <TokensGridflow address={address} />}
           {nav === 'list' && <TokensList address={address} />}
         </div>
-        <div className={styles.tokenGrid}>
+        <div className={clsx(styles.tokenGrid, nav !== 'grid' && styles.noop)}>
           <div className={clsx(styles.balanceInfo, nav === 'list' && styles.hidden)}>
             <div className={styles.primaryBalanceLabel}>
               {currentBalance?.loading ? (
@@ -287,6 +287,22 @@ const TokensList = ({ address }: { address: string }) => {
             />
           </div>
         )}
+        <div
+          onClick={() => history.push('/account/selecttoken/' + selectedAccount?.groupId)}
+          className={styles.listitem}>
+          <div
+            className={styles.listicon} >
+            <div>💎</div>
+          </div>
+          <div className={styles.listinfo}>
+            <div className={styles.listtitle}>Select Tokens</div>
+          </div>
+          <div className={styles.liststats}></div>
+          <img
+            className={styles.listforward}
+            src={ICON_FORWARD}
+          />
+        </div>
       </div>
     </div>
   )
@@ -335,9 +351,6 @@ const TokensGridflow = ({ address }: { address: string }) => {
       el: '.swiper-pagination'
     }
   }
-  console.log(ref?.current);
-
-  console.log(ref?.current?.swiper);
   return (
     <Swiper
       ref={ref}

@@ -25,6 +25,7 @@ import TokenDetails from '~pages/popup/signed/TokenDetails';
 import TokenHistory from '~pages/popup/signed/TokenHistory';
 import Stake from '~pages/popup/signed/Stake';
 import Swap from '~pages/popup/signed/Swap';
+import SelectTokens from '~pages/popup/signed/SelectTokens';
 
 
 function wrapWithErrorBoundary(
@@ -90,7 +91,7 @@ const PopupRouter = () => {
               <Route path="/account/import">
                 {wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}
               </Route>
-              <Route path="/account/details_old/:address">
+              <Route path="/account/minidetails/:address">
                 {wrapWithErrorBoundary(<Wallet />, 'wallet')}
               </Route>
               <Route path="/account/transactions/:address">
@@ -113,6 +114,9 @@ const PopupRouter = () => {
               </Route>
               <Route path="/account/addnetwork/:groupId">
                 {wrapWithErrorBoundary(<AddNetwork />, 'accounts')}
+              </Route>
+              <Route path="/account/selecttoken/:groupId">
+                {wrapWithErrorBoundary(<SelectTokens />, 'selecttokens')}
               </Route>
               <Route path="/account/assets/nftlist/:address">
                 {wrapWithErrorBoundary(<NFTList />, 'accounts')}

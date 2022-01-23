@@ -101,6 +101,8 @@
   margin: 0 16px 8px;
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 9;
 }
 
 .eicon {
@@ -118,10 +120,18 @@
   width: fit-content;
   align-items: center;
   padding: 12px;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}
+.econtinput {
+  flex: 1;
 }
 
 .einput {
-  width: 205px;
+  width: 100%;
   border: 0;
   background: transparent;
   font-family: DM Mono;
@@ -136,8 +146,75 @@
   border-left: 1px solid #ffffff4f;
 }
 .label {
-  /* Product/Body Large Medium */
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  color: #ffffff;
+  display: flex;
+  flex: 1;
+}
 
+.careticon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.4;
+  margin-left: 12px;
+  display: flex;
+  flex-basis: 12px;
+  flex-shrink: 0px;
+}
+
+.swapbtn {
+  /* Secondary/Outer Space */
+
+  background: #0f1726;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  bottom: -22px;
+  left: 151px;
+  z-index: 9999;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.firstInput {
+  z-index: 11;
+}
+.noicon {
+  width: 32px;
+  height: 32px;
+  background: #0f1726;
+  border-radius: 50%;
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.selectDropdown {
+  cursor: pointer;
+  user-select: none;
+  padding-right: 22px;
+  &:active {
+    opacity: 0.7;
+  }
+}
+.nextCont {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: 20px 30px;
+}
+
+.txnBtn {
   font-family: Poppins;
   font-style: normal;
   font-weight: 500;
@@ -145,8 +222,43 @@
   line-height: 28px;
   /* identical to box height, or 175% */
 
-  /* Primary/White */
+  /* Brand/Social Blue/100% */
 
-  color: #ffffff;
-  margin-left: 40px;
+  color: #2496ff;
+  user-select: none;
+  cursor: pointer;
+  display: flex;
+  align-self: flex-end;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.txnBtnCont {
+  display: flex;
+  width: calc(100vw - 32px);
+  justify-content: flex-end;
+  margin: 0 16px;
+}
+
+.tokenOptions {
+  position: absolute;
+  top: 73px;
+  max-height: 216px;
+  background: #101010;
+  border-radius: 12px;
+  z-index: 200;
+  border-radius: 14px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  left: 16px;
+}
+
+.dropdownCont {
+  position: relative;
+}
+
+.selectDropdownOption {
+  margin: 0;
+  margin-bottom: 3px;
 }

@@ -128,6 +128,7 @@ export const AssetsCoverflow = ({ address }) => {
     const params = {
         grabCursor: true,
         centeredSlides: true,
+        containerClass: "nftswipercontainer",
         coverflowEffect: {
             rotate: 50,
             stretch: 0,
