@@ -6,6 +6,8 @@ import { IDAppController } from '../types/IDAppController';
 import AccountsController from './AccountsController';
 import AssetsController from './AssetsController';
 import DAppController from './DAppController';
+import TokensController from './TokensController';
+
 import store from '~state/store';
 import { preloadStateAsync } from '~state/app';
 import { storeEntities } from '~state/entities';
@@ -15,11 +17,12 @@ export default class MainController {
   assets: Readonly<IAssetsController>;
   dapp: Readonly<IDAppController>;
   provider: Readonly<EarthProvider>;
-
+  tokens: Readonly<TokensController>;
   constructor() {
     this.accounts = Object.freeze(new AccountsController());
     this.assets = Object.freeze(new AssetsController());
     this.dapp = Object.freeze(new DAppController());
+    this.tokens = Object.freeze(new TokensController());
     this.provider = Object.freeze(new EarthProvider());
   }
 
