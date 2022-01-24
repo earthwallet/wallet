@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { ITokenState } from './types';
 //import type { StoreInterface } from '~state/IStore';
 import { AppState } from '~state/store';
+import { keyable } from '~scripts/Background/types/IMainController';
 //import groupBy from 'lodash/groupBy';
 
 const initialState: ITokenState = {
@@ -45,6 +46,23 @@ export const selectActiveTokensByAddress =
         ?.map((id) => state.entities.tokens.byId[id])
         .filter((token) => token.address === address && token.active)
     );
+  };
+
+export const selectActiveTokensByAddressWithInfo =
+  (address: string) => (state: AppState) => {
+    const activeTokens =
+      state.entities.tokens?.byId &&
+      Object.keys(state.entities.tokens?.byId)
+        ?.map((id) => state.entities.tokens.byId[id])
+        .filter((token) => token.address === address && token.active);
+    if (activeTokens?.length == 0) {
+      return [];
+    } else {
+      return activeTokens.map((tokenObj: keyable) => ({
+        ...tokenObj,
+        ...state.entities.tokensInfo.byId[tokenObj.id],
+      }));
+    }
   };
 
 export default TokenState.reducer;

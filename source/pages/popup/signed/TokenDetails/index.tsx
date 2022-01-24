@@ -32,6 +32,7 @@ import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
 //import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
 import { selectGroupBalanceByAddress, selectGroupBalanceByGroupIdAndSymbol, selectBalanceInUSDByAddress } from '~state/wallet';
+import { selectActiveTokensByAddressWithInfo } from '~state/token';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -252,7 +253,9 @@ const TokensList = ({ address }: { address: string }) => {
   const selectedAccount = useSelector(selectAccountById(address));
 
   const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(selectedAccount?.groupId));
+  const tokens = useSelector(selectActiveTokensByAddressWithInfo(address));
 
+  console.log(tokens);
 
   return (
     <div className={styles.tokensList}>
@@ -283,6 +286,26 @@ const TokensList = ({ address }: { address: string }) => {
             />
           </div>
         )}
+        {tokens?.length > 0 && tokens?.map((token, i: number) => <div
+          onClick={() => history.push('/th/' + address)}
+          key={i}
+          className={styles.listitem}>
+          {token?.icon ? <img
+            className={styles.listicon}
+            src={token?.icon} >
+          </img> : <div
+            className={styles.listicon}
+          >{token?.name?.charAt(0)}
+          </div>}
+          <div className={styles.listinfo}>
+            <div className={styles.listtitle}>{token?.name}</div>
+          </div>
+          <div className={styles.liststats} />
+          <img
+            className={styles.listforward}
+            src={ICON_FORWARD}
+          />
+        </div>)}
         <div
           onClick={() => history.push('/account/selecttoken/' + selectedAccount?.id)}
           className={styles.listitem}>
