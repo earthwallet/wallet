@@ -13,12 +13,18 @@ const initialState: IEntityState = {
   assets: { byId: {} },
   assetsCount: { byId: {} },
   dappRequests: { byId: {} },
+  tokens: { byId: {} },
+  tokensInfo: { byId: {} },
 };
 
 export const entitiesState = createSlice({
   name: 'entities',
   initialState: initialState,
   reducers: {
+    createEntity: (state, action) => {
+      let { entity } = action.payload;
+      state[entity] = { byId: {} };
+    },
     storeEntities: (state, action) => {
       let { entity, data }: { entity: string; data: unknown } = action.payload;
 
@@ -81,6 +87,7 @@ export const entitiesState = createSlice({
 });
 
 export const {
+  createEntity,
   storeEntities,
   updateEntities,
   replaceEntities,

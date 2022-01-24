@@ -257,4 +257,12 @@
 .networkIcon {
   width: 25px;
   height: 25px;
+  background-color: #ababab34;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: 'Poppins';
+  font-weight: 900;
+  text-transform: uppercase;
 }
