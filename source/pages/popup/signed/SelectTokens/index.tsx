@@ -91,7 +91,7 @@ const AddNetwork = ({
       <div className={styles.container}>
         <div className={styles.earthInputCont}>
           <div className={styles.labelText}>
-            Tokens Listed {address}
+            Tokens Listed
           </div>
         </div>
         <div

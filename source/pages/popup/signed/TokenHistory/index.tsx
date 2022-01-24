@@ -10,33 +10,39 @@ import ICON_SWAP from '~assets/images/icon_swap.png';
 import ICON_STAKE from '~assets/images/icon_stake.png';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
+import { selectTokensInfoById } from '~state/token';
+import { useSelector } from 'react-redux';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
 
 
 const TokenHistory = ({
   match: {
-    params: { address },
+    params: { address, tokenId },
   },
 }: Props) => {
 
   console.log(address);
   const history = useHistory();
+  const tokenInfo = useSelector(selectTokensInfoById(tokenId));
 
   return (
     <div className={styles.page}>
       <Header
         type={'wallet'}
-        text={'Earth'}
+        text={tokenInfo?.name}
       ><div className={styles.empty} /></Header>
       <div>
         <div className={styles.top}>
         </div>
 
         <div className={styles.section}>
-          <img className={styles.icon_earth} src={ICON_EARTH} />
-          <div className={styles.sectitle}>1337 EARTH</div>
+          {tokenInfo?.icon
+            ? <img className={styles.icon_earth} src={ICON_EARTH} />
+            : <div className={styles.icon_earth}>{tokenInfo?.name?.charAt(0)}
+            </div>}
+          <div className={styles.sectitle}>1337 {tokenInfo?.symbol}</div>
           <div className={styles.secsubtitle}>$4,092.22</div>
         </div>
         <div className={styles.cta}>
@@ -53,7 +59,7 @@ const TokenHistory = ({
             <div className={styles.btntxt}>Stake</div>
           </div>
         </div>
-        <div className={styles.graphcont}>
+        {/*  <div className={styles.graphcont}>
           <div className={styles.graph}></div>
 
         </div>
@@ -64,7 +70,7 @@ const TokenHistory = ({
           >
             {tab}
           </ div>)}
-        </div>
+        </div> */}
         <div className={styles.stats}>
           <div className={styles.row}>
             <div className={styles.col}>
@@ -79,7 +85,7 @@ const TokenHistory = ({
           <div className={styles.row}>
             <div className={styles.col}>
               <div className={styles.key}>Supply</div>
-              <div className={styles.val}>519M / 1B</div>
+              <div className={styles.val}>519M / {tokenInfo?.totalSupply}</div>
             </div>
           </div>
           <div className={styles.row}>

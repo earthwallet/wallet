@@ -266,7 +266,7 @@ const TokensList = ({ address }: { address: string }) => {
       <div className={styles.listitemscont}>
         {LIVE_SYMBOLS_OBJS?.map((token, i: number) =>
           <div
-            onClick={() => history.push('/th/' + address)}
+            onClick={() => history.push('/th/' + address + '/' + token.symbol)}
             key={i}
             className={styles.listitem}>
             <img
@@ -287,7 +287,7 @@ const TokensList = ({ address }: { address: string }) => {
           </div>
         )}
         {tokens?.length > 0 && tokens?.map((token, i: number) => <div
-          onClick={() => history.push('/th/' + address)}
+          onClick={() => history.push('/th/' + address + '/' + token.id)}
           key={i}
           className={styles.listitem}>
           {token?.icon ? <img

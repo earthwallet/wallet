@@ -38,6 +38,15 @@ export const selectTokensInfo = (state: AppState) => {
     )
   );
 };
+export const selectTokensInfoById = (tokenId: string) => (state: AppState) => {
+  return (
+    state.entities.tokensInfo?.byId &&
+    Object.keys(state.entities.tokensInfo?.byId)
+      ?.map((id) => state.entities.tokensInfo.byId[id])
+      .filter((token) => token.id === tokenId)[0]
+  );
+};
+
 export const selectActiveTokensByAddress =
   (address: string) => (state: AppState) => {
     return (
