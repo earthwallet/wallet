@@ -14,6 +14,25 @@ import {
 } from '@earthwallet/assets';
 import { createEntity } from '~state/entities';
 export default class TokensController implements ITokensController {
+  getTokenBalances = async (address: string) => {
+    console.log(address, 'getTokenBalances');
+    const state = store.getState();
+
+    const accountInfo = state.entities.accounts.byId[address];
+    console.log(accountInfo?.meta?.principalId, 'getTokenBalances');
+
+    const activeTokens =
+      state.entities.tokens?.byId &&
+      Object.keys(state.entities.tokens?.byId)
+        ?.map((id) => state.entities.tokens.byId[id])
+        .filter((token) => token.address === address && token.active);
+    console.log(activeTokens, 'getTokenBalances');
+    for (const tokenInfo of activeTokens) {
+      const response = await getMetadata(tokenInfo.id);
+      console.log(response, 'getTokenBalances');
+    }
+    return;
+  };
   getTokens = async (callback?: ((address: string) => void) | undefined) => {
     console.log('getTokens');
     const state = store.getState();

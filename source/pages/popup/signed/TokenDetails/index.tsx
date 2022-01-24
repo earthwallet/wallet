@@ -67,6 +67,11 @@ const Wallet = ({
     }
   }, [selectedAccount]);
 
+  useEffect(() => {
+    if (address != null) {
+      controller.tokens.getTokenBalances(address);
+    }
+  }, []);
 
 
   useEffect(() => {
