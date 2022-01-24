@@ -1,6 +1,7 @@
 
 
-import React, { //useState, 
+import React, {
+  useState,
   useEffect, useCallback
 } from 'react';
 import styles from './index.scss';
@@ -15,24 +16,28 @@ import { useController } from '~hooks/useController';
 import { useHistory } from 'react-router-dom';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
-import { selectTokensInfo } from '~state/token';
+import { selectActiveTokensByAddress, selectTokensInfo } from '~state/token';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 //import { useSelector } from 'react-redux';
 //import { selectActiveAccountsByGroupId } from '~state/wallet';
 //import { LIVE_SYMBOLS_OBJS } from '~global/constant';
 
-interface Props extends RouteComponentProps<{ groupId: string }> {
+interface Props extends RouteComponentProps<{ address: string }> {
 }
 
 const AddNetwork = ({
   match: {
-    params: { groupId },
+    params: { address },
   },
 }: Props) => {
   const controller = useController();
   const history = useHistory();
-  const tokens = useSelector(selectTokensInfo);
+  const tokenInfos = useSelector(selectTokensInfo);
+  const tokens = useSelector(selectActiveTokensByAddress(address));
+  const [checkedArr, setCheckedArr] = useState<string[]>([]);
+  const [existingActive, setExistingActive] = useState<string[]>([]);
 
+  console.log(tokens, existingActive, checkedArr, 'tokens');
   const getTokens = useCallback(() => {
     //)
     controller.tokens.getTokens()
@@ -41,19 +46,42 @@ const AddNetwork = ({
 
   useEffect(() => {
     getTokens();
+
+    let existingActiveAccountTokens = tokens.map((token: { id: string; }) => token.id);
+    console.log(existingActiveAccountTokens);
+    tokens.length !== 0 && setCheckedArr(existingActiveAccountTokens);
+    setExistingActive(existingActiveAccountTokens);
   }, []);
 
-  /*  const toggleSymbol = (symbol: string) => {
-     setCheckedArr(checkedArr => {
-       if (checkedArr.includes(symbol)) {
-         return checkedArr.filter(_symbol => _symbol !== symbol);
-       }
-       else {
-         return [...checkedArr, symbol]
-       }
-     });
-   }; */
+  const toggleToken = (symbol: string) => {
+    setCheckedArr(checkedArr => {
+      if (checkedArr.includes(symbol)) {
+        return checkedArr.filter(_symbol => _symbol !== symbol);
+      }
+      else {
+        return [...checkedArr, symbol]
+      }
+    });
+  };
 
+  const updateTokens = useCallback(() => {
+
+    if (existingActive.length > checkedArr.length) {
+      //remove tokens
+      console.log('remove tokens')
+      const removeArr = existingActive.filter(x => !checkedArr.includes(x));
+      const callback = () => history.replace(`/account/details/${address}`);
+      controller.tokens.updateTokensOfNetwork(address, removeArr, false, callback);
+    }
+    else {
+      //add tokens
+      console.log('add tokens')
+
+      const callback = (address: string | undefined) => history.replace(`/account/details/${address}`);
+      controller.tokens.updateTokensOfNetwork(address, checkedArr, true, callback);
+    }
+
+  }, [history, checkedArr, checkedArr.length, existingActive.length]);
   return (
     <div className={styles.page}>
       <Header
@@ -63,27 +91,27 @@ const AddNetwork = ({
       <div className={styles.container}>
         <div className={styles.earthInputCont}>
           <div className={styles.labelText}>
-            Tokens Listed {groupId}
+            Tokens Listed {address}
           </div>
         </div>
         <div
           className={clsx(styles.earthInputCont, styles.mnemonicInputCont)}
         >
-          {tokens.map((symbolObj: keyable) => <div
-            onClick={() => console.log(symbolObj.symbol)}
-            key={symbolObj.symbol}
-            className={clsx(styles.checkboxCont, symbolObj.symbol === "ICP" && styles.checkboxCont_disabled)}>
+          {tokenInfos.map((tokenObj: keyable) => <div
+            onClick={() => toggleToken(tokenObj.id)}
+            key={tokenObj.symbol}
+            className={clsx(styles.checkboxCont, tokenObj.symbol === "ICP" && styles.checkboxCont_disabled)}>
             <div className={styles.checkboxContent}>
-              <div className={styles.networkIcon}>{symbolObj?.name?.charAt(0)}</div>
+              <div className={styles.networkIcon}>{tokenObj?.name?.charAt(0)}</div>
               <div className={styles.checkboxTitle}>
-                <div>{symbolObj.name}</div>
-                <div>{symbolObj.symbol}</div>
+                <div>{tokenObj.name}</div>
+                <div>{tokenObj.symbol}</div>
               </div>
             </div>
-            {[''].includes(symbolObj?.symbol) ? (
+            {checkedArr.includes(tokenObj?.id) ? (
               <img
                 className={
-                  clsx(styles.checkboxIcon, symbolObj.symbol === "ICP" && styles.checkboxIcon_disabled)}
+                  clsx(styles.checkboxIcon)}
                 src={ICON_CHECKED}
               />
             ) : (
@@ -97,7 +125,8 @@ const AddNetwork = ({
       </div>
       <div className={styles.nextCont}>
         <NextStepButton
-          disabled={true}
+          disabled={existingActive.length === checkedArr.length}
+          onClick={() => updateTokens()}
         >
           {'Update'}
         </NextStepButton>

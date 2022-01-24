@@ -147,8 +147,8 @@ const Wallet = ({
           {nav === 'grid' && <TokensGridflow address={address} />}
           {nav === 'list' && <TokensList address={address} />}
         </div>
-        <div className={clsx(styles.tokenGrid, nav !== 'grid' && styles.noop)}>
-          <div className={clsx(styles.balanceInfo, nav === 'list' && styles.hidden)}>
+        <div className={clsx(styles.tokenGrid, nav === 'list' && styles.tokenGridList)}>
+          <div className={clsx(styles.balanceInfo, nav === 'list' && styles.noop)}>
             <div className={styles.primaryBalanceLabel}>
               {currentBalance?.loading ? (
                 <SkeletonTheme color="#222" highlightColor="#000">
@@ -158,7 +158,6 @@ const Wallet = ({
                 <div className={styles.primaryBalanceLabel}>{currentBalance &&
                   `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
                 }</div>
-
               )}
             </div>
             <div className={styles.secondaryBalanceLabel}>
@@ -171,7 +170,6 @@ const Wallet = ({
               )}
             </div>
           </div>
-
           {selectedAccount?.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
             <div
               className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
@@ -183,7 +181,6 @@ const Wallet = ({
                 </div>
               </Link>
             </div>
-
             <div className={clsx(styles.tokenActionView, styles.sendTokenAction)}>
               <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
                 <div className={styles.tokenActionButton}>
@@ -193,7 +190,6 @@ const Wallet = ({
               </Link>
             </div>
           </div>}
-
           {selectedAccount?.symbol === 'ICP_Ed25519' && <div className={styles.walletNoSupportActionsView}>
             <div className={styles.noSupportText}>
               <img src={ICON_NOTICE} className={styles.noticeIcon}></img>
@@ -288,7 +284,7 @@ const TokensList = ({ address }: { address: string }) => {
           </div>
         )}
         <div
-          onClick={() => history.push('/account/selecttoken/' + selectedAccount?.groupId)}
+          onClick={() => history.push('/account/selecttoken/' + selectedAccount?.id)}
           className={styles.listitem}>
           <div
             className={styles.listicon} >

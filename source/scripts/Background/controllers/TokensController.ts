@@ -4,6 +4,7 @@ import store from '~state/store';
 import type { ITokensController } from '../types/ITokensController';
 import {
   storeEntities,
+  updateEntities,
   //updateEntities
 } from '~state/entities';
 import {
@@ -61,5 +62,42 @@ export default class TokensController implements ITokensController {
     }
     callback && callback('address');
     return;
+  };
+
+  updateTokensOfNetwork = async (
+    address: string,
+    tokens: string[],
+    status: boolean,
+    callback?: (address?: string) => void
+  ) => {
+    console.log(address, tokens, status);
+    //const state = store.getState();
+
+    /*     const existingAllTokens = Object.keys(state.entities.tokens.byId)
+      .map((id) => state.entities.tokens.byId[id])
+      .filter((token) => token.address === address)
+      .sort((a, b) => a.order - b.order);
+ */
+    let forwardAddress = '';
+    for (const token of tokens) {
+      /*     const selectedAccount = existingAllTokens.filter(
+        (a) => a.id === token
+      )[0]; */
+      forwardAddress = address;
+      store.dispatch(
+        updateEntities({
+          entity: 'tokens',
+          key: token,
+          data: {
+            id: token,
+            active: status,
+            address: address,
+            type: 'ICP',
+          },
+        })
+      );
+    }
+
+    callback && callback(forwardAddress);
   };
 }

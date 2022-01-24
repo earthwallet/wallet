@@ -462,6 +462,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 72px;
+  margin-bottom: 15px;
 }
 
 .tokenGrid {
@@ -691,4 +693,8 @@
 
 .noop {
   display: none;
+}
+
+.tokenGridList {
+  height: 37px;
 }

@@ -115,7 +115,7 @@ const PopupRouter = () => {
               <Route path="/account/addnetwork/:groupId">
                 {wrapWithErrorBoundary(<AddNetwork />, 'accounts')}
               </Route>
-              <Route path="/account/selecttoken/:groupId">
+              <Route path="/account/selecttoken/:address">
                 {wrapWithErrorBoundary(<SelectTokens />, 'selecttokens')}
               </Route>
               <Route path="/account/assets/nftlist/:address">

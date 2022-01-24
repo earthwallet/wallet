@@ -37,13 +37,14 @@ export const selectTokensInfo = (state: AppState) => {
     )
   );
 };
-export const selectTokensByGroupId = (groupId: string) => (state: AppState) => {
-  return (
-    state.entities.tokens?.byId &&
-    Object.keys(state.entities.tokens?.byId)
-      ?.map((id) => state.entities.tokens.byId[id])
-      .filter((token) => token.groupId === groupId)
-  );
-};
+export const selectActiveTokensByAddress =
+  (address: string) => (state: AppState) => {
+    return (
+      state.entities.tokens?.byId &&
+      Object.keys(state.entities.tokens?.byId)
+        ?.map((id) => state.entities.tokens.byId[id])
+        .filter((token) => token.address === address && token.active)
+    );
+  };
 
 export default TokenState.reducer;
