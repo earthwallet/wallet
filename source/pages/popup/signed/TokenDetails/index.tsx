@@ -305,7 +305,9 @@ const TokensList = ({ address }: { address: string }) => {
           <div className={styles.listinfo}>
             <div className={styles.listtitle}>{token?.name}</div>
           </div>
-          <div className={styles.liststats} />
+          <div className={styles.liststats} >
+            <div className={styles.listprice}>{token?.balance} {token?.symbol}</div>
+          </div>
           <img
             className={styles.listforward}
             src={ICON_FORWARD}

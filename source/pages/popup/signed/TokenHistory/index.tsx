@@ -10,7 +10,7 @@ import ICON_SWAP from '~assets/images/icon_swap.png';
 import ICON_STAKE from '~assets/images/icon_stake.png';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
-import { selectTokensInfoById } from '~state/token';
+import { selectTokenByTokenPair, selectTokensInfoById } from '~state/token';
 import { useSelector } from 'react-redux';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
@@ -26,7 +26,7 @@ const TokenHistory = ({
   console.log(address);
   const history = useHistory();
   const tokenInfo = useSelector(selectTokensInfoById(tokenId));
-
+  const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
   return (
     <div className={styles.page}>
       <Header
@@ -42,18 +42,18 @@ const TokenHistory = ({
             ? <img className={styles.icon_earth} src={ICON_EARTH} />
             : <div className={styles.icon_earth}>{tokenInfo?.name?.charAt(0)}
             </div>}
-          <div className={styles.sectitle}>1337 {tokenInfo?.symbol}</div>
+          <div className={styles.sectitle}>{tokenPair?.balance} {tokenInfo?.symbol}</div>
           <div className={styles.secsubtitle}>$4,092.22</div>
         </div>
         <div className={styles.cta}>
           <div
-            onClick={() => history.push('/swap/' + address)}
+            onClick={() => history.push('/swap/' + address + "/" + tokenId)}
             className={styles.btnprimary}>
             <img src={ICON_SWAP} className={styles.btnicon} />
             <div className={styles.btntxt}>Swap</div>
           </div>
           <div
-            onClick={() => history.push('/stake/' + address)}
+            onClick={() => history.push('/stake/' + address + "/" + tokenId)}
             className={clsx(styles.btnprimary, styles.btnsecondary)}>
             <img src={ICON_STAKE} className={styles.btnicon} />
             <div className={styles.btntxt}>Stake</div>

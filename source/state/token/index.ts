@@ -57,6 +57,11 @@ export const selectActiveTokensByAddress =
     );
   };
 
+export const selectTokenByTokenPair =
+  (tokenPair: string) => (state: AppState) => {
+    return state.entities.tokens?.byId[tokenPair];
+  };
+
 export const selectActiveTokensByAddressWithInfo =
   (address: string) => (state: AppState) => {
     const activeTokens =

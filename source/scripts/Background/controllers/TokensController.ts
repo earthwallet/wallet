@@ -7,12 +7,10 @@ import {
   updateEntities,
   //updateEntities
 } from '~state/entities';
-import {
-  getAllTokens,
-  getMetadata,
-  //tokenAPI
-} from '@earthwallet/assets';
+import { getAllTokens, getMetadata, tokenAPI } from '@earthwallet/assets';
 import { createEntity } from '~state/entities';
+import { Principal } from '@dfinity/principal';
+
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
     console.log(address, 'getTokenBalances');
@@ -28,11 +26,26 @@ export default class TokensController implements ITokensController {
         .filter((token) => token.address === address && token.active);
     console.log(activeTokens, 'getTokenBalances');
     for (const tokenInfo of activeTokens) {
-      const response = await getMetadata(tokenInfo.id);
-      console.log(response, 'getTokenBalances');
+      const response = await tokenAPI(
+        tokenInfo.tokenId,
+        'balanceOf',
+        Principal.fromText(accountInfo?.meta?.principalId)
+      );
+      const balance = {
+        id: address + '_WITH_' + tokenInfo.tokenId,
+        balance: response.toString(),
+      };
+      store.dispatch(
+        storeEntities({
+          entity: 'tokens',
+          data: [balance],
+        })
+      );
+      console.log(response.toString(), balance, 'getTokenBalances');
     }
     return;
   };
+
   getTokens = async (callback?: ((address: string) => void) | undefined) => {
     console.log('getTokens');
     const state = store.getState();
@@ -50,17 +63,6 @@ export default class TokensController implements ITokensController {
       const { decimals, fee, feeTo, name, owner, symbol, totalSupply } =
         response;
 
-      console.log(
-        response,
-        decimals,
-        fee?.toString(),
-        feeTo?.toText(),
-        name,
-        owner?.toText(),
-        symbol,
-        totalSupply.toString(),
-        tokenCanisterId
-      );
       const tokenInfo = {
         id: tokenCanisterId,
         decimals,
