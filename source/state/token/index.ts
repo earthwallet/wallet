@@ -69,7 +69,7 @@ export const selectActiveTokensByAddressWithInfo =
     } else {
       return activeTokens.map((tokenObj: keyable) => ({
         ...tokenObj,
-        ...state.entities.tokensInfo.byId[tokenObj.id],
+        ...state.entities.tokensInfo.byId[tokenObj.tokenId],
       }));
     }
   };

@@ -98,19 +98,18 @@ export default class TokensController implements ITokensController {
       .sort((a, b) => a.order - b.order);
  */
     let forwardAddress = '';
-    for (const token of tokens) {
-      /*     const selectedAccount = existingAllTokens.filter(
-        (a) => a.id === token
-      )[0]; */
+    for (const tokenPair of tokens) {
+      const tokenId = tokenPair.split('_WITH_', 2)[1];
       forwardAddress = address;
       store.dispatch(
         updateEntities({
           entity: 'tokens',
-          key: token,
+          key: tokenPair,
           data: {
-            id: token,
+            tokenId,
+            id: tokenPair,
             active: status,
-            address: address,
+            address,
             type: 'ICP',
           },
         })

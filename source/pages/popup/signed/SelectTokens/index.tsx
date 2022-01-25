@@ -37,7 +37,6 @@ const AddNetwork = ({
   const [checkedArr, setCheckedArr] = useState<string[]>([]);
   const [existingActive, setExistingActive] = useState<string[]>([]);
 
-  console.log(tokens, existingActive, checkedArr, 'tokens');
   const getTokens = useCallback(() => {
     //)
     controller.tokens.getTokens()
@@ -48,18 +47,17 @@ const AddNetwork = ({
     getTokens();
 
     let existingActiveAccountTokens = tokens.map((token: { id: string; }) => token.id);
-    console.log(existingActiveAccountTokens);
     tokens.length !== 0 && setCheckedArr(existingActiveAccountTokens);
     setExistingActive(existingActiveAccountTokens);
   }, []);
 
-  const toggleToken = (symbol: string) => {
+  const toggleToken = (tokenPair: string) => {
     setCheckedArr(checkedArr => {
-      if (checkedArr.includes(symbol)) {
-        return checkedArr.filter(_symbol => _symbol !== symbol);
+      if (checkedArr.includes(tokenPair)) {
+        return checkedArr.filter(_tokenPair => _tokenPair !== tokenPair);
       }
       else {
-        return [...checkedArr, symbol]
+        return [...checkedArr, tokenPair]
       }
     });
   };
@@ -98,7 +96,7 @@ const AddNetwork = ({
           className={clsx(styles.earthInputCont, styles.mnemonicInputCont)}
         >
           {tokenInfos.map((tokenObj: keyable) => <div
-            onClick={() => toggleToken(tokenObj.id)}
+            onClick={() => toggleToken(address + '_WITH_' + tokenObj.id)}
             key={tokenObj.symbol}
             className={clsx(styles.checkboxCont, tokenObj.symbol === "ICP" && styles.checkboxCont_disabled)}>
             <div className={styles.checkboxContent}>
@@ -108,7 +106,7 @@ const AddNetwork = ({
                 <div>{tokenObj.symbol}</div>
               </div>
             </div>
-            {checkedArr.includes(tokenObj?.id) ? (
+            {checkedArr.includes(address + '_WITH_' + tokenObj?.id) ? (
               <img
                 className={
                   clsx(styles.checkboxIcon)}
