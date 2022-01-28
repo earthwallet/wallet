@@ -7,9 +7,18 @@ import {
   updateEntities,
   //updateEntities
 } from '~state/entities';
-import { getAllTokens, getMetadata, tokenAPI } from '@earthwallet/assets';
+import {
+  getAllTokens,
+  getMetadata,
+  tokenAPI,
+  pairFactoryAPI,
+  get_current_price,
+  swap,
+} from '@earthwallet/assets';
 import { createEntity } from '~state/entities';
 import { Principal } from '@dfinity/principal';
+import { keyable } from '../types/IAssetsController';
+import { createWallet } from '@earthwallet/keyring';
 
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
@@ -82,6 +91,57 @@ export default class TokensController implements ITokensController {
     }
     callback && callback('address');
     return;
+  };
+
+  getPair = async (token1: string, token2: string) => {
+    console.log(token1, token2, 'getPair');
+    let response = await pairFactoryAPI('get_pair', [
+      Principal.fromText(token1),
+      Principal.fromText(token2),
+    ]);
+    if (response == undefined) {
+      response = await pairFactoryAPI('create_pair', [
+        Principal.fromText(token1),
+        Principal.fromText(token2),
+      ]);
+    }
+    const pair = response[0].toText();
+    const price: keyable = await get_current_price(pair);
+    const price1 = price[0];
+    const price2 = price[1];
+    const ratio = (price1 / price2) * 100;
+    return { token1, token2, pair, price1, price2, ratio };
+  };
+
+  mint = async (token1: string, token2: string) => {
+    console.log(token1, token2, 'mint');
+    let response = await pairFactoryAPI('get_pair', [
+      Principal.fromText(token1),
+      Principal.fromText(token2),
+    ]);
+    if (response == undefined) {
+      response = await pairFactoryAPI('create_pair', [
+        Principal.fromText(token1),
+        Principal.fromText(token2),
+      ]);
+    }
+    const pair = response[0].toText();
+    const price: keyable = await get_current_price(pair);
+    const price1 = price[0];
+    const price2 = price[1];
+    const ratio = (price1 / price2) * 100;
+    const seedPhrase =
+      'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano';
+
+    const walletObj = await createWallet(seedPhrase, 'ICP');
+
+    const status = await swap(
+      walletObj.identity,
+      'wxns6-qiaaa-aaaaa-aaaqa-cai',
+      'tmxop-wyaaa-aaaaa-aaapa-cai',
+      1666
+    );
+    return { token1, token2, pair, price1, price2, price, ratio, status };
   };
 
   updateTokensOfNetwork = async (

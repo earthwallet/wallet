@@ -1987,10 +1987,10 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.5.tgz#9283c9ce5b289a3c4f61c12757469e59377f81f3"
   integrity sha512-6nFkfkmSeV/rqSaS4oWHgmpnYw194f6hmWF5is6b0J1naJZoiD0NTc9AiUwPHvWsowkjuHErCZT1wa0jg+BLIA==
 
-"@earthwallet/assets@^0.3.17":
-  version "0.3.17"
-  resolved "https://registry.yarnpkg.com/@earthwallet/assets/-/assets-0.3.17.tgz#b9d8baa791ecd8a80aa47197102ca69c92eb79a0"
-  integrity sha512-6TH5AetS4mRwBukMI/SvcZLhyjJ1fRlW8t05pC6w9DLVLfNyDPthXHazShHmSFm04MocCd8aFsqovyp/paagYQ==
+"@earthwallet/assets@^0.3.19":
+  version "0.3.19"
+  resolved "https://registry.yarnpkg.com/@earthwallet/assets/-/assets-0.3.19.tgz#3a6005459509974abc90f6d6a3b937b82d393aca"
+  integrity sha512-BWkIJRH/i/dxo1qFc6wRtbEjqM+jvTjkA7j0HjpNg4bFMsfBoqGz5ls54giG9Nl3fLdEg02w7E0UK1CL3zQkrg==
   dependencies:
     "@dfinity/agent" "^0.9.3"
     "@dfinity/principal" "^0.9.3"

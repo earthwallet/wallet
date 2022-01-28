@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.scss';
 
 import Header from '~components/Header';
@@ -11,6 +11,9 @@ import { useSelector } from 'react-redux';
 import { selectTokenByTokenPair, selectTokensInfo, selectTokensInfoById } from '~state/token';
 import NextStepButton from '~components/NextStepButton';
 import { keyable } from '~scripts/Background/types/IMainController';
+import { useController } from '~hooks/useController';
+//import { mint } from '@earthwallet/assets';
+import useToast from '~hooks/useToast';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
@@ -25,14 +28,41 @@ const Stake = ({
   console.log(address);
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
   const [selectedSecondAmount, setSelectedSecondAmount] = useState<number | undefined>(undefined);
-  const [selectedToken, setSelectedToken] = useState<string>('');
+  const [selectedToken, setSelectedToken] = useState<keyable>({ symbol: "", id: "" });
 
   const [tab, setTab] = useState<number>(0);
   const tokenInfo = useSelector(selectTokensInfoById(tokenId));
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
   const tokenInfos = useSelector(selectTokensInfo);
   const [open, setOpen] = useState<boolean>(false);
+  const controller = useController();
+  const [pairRatio, setPairRatio] = useState<number>(0);
 
+  const [loading, setLoading] = useState<boolean>(false);
+  const { show } = useToast();
+
+  //const selectedTokenInfo = useSelector(selectedToken.id => selectTokensInfoById(selectedToken.id));
+  useEffect((): void => {
+    console.log('useEffect', selectedToken);
+    if (selectedToken.id !== "") {
+      controller.tokens.getPair(tokenId, selectedToken.id).then((response) => {
+        console.log('do something', response);
+        setPairRatio(response.ratio);
+      });
+    }
+  }, [selectedToken.id !== ""]);
+
+  const mint = async () => {
+    setLoading(true);
+    const response = await controller.tokens.mint(tokenId, selectedToken.id);
+    console.log(response);
+    setPairRatio(response.ratio);
+    show("Mint Complete! Updating Balances");
+    await controller.tokens.getTokenBalances(address);
+    show("Done!");
+    setLoading(false);
+
+  }
   console.log(tokenInfos);
   return (
     <div className={styles.page}>
@@ -65,14 +95,7 @@ const Stake = ({
           </div>
           <div className={styles.infocolright}>{tokenPair.balance}</div>
         </div>
-        <div className={styles.inforow}>
-          <div className={styles.infocolleft}>
-            <div className={styles.eicon}>{selectedToken == "" ? "?" : selectedToken.charAt(0)}
-            </div>
-            <div className={styles.symbol}>{selectedToken == "" ? "-" : selectedToken}</div>
-          </div>
-          <div className={styles.infocolright}>{selectedToken == "" ? "-" : tokenPair.balance}</div>
-        </div>
+        <SecondTokenInfo selectedToken={selectedToken} address={address} />
         <div className={styles.inputCont}>
           <div className={styles.inputIcon}>
             <div className={styles.eicon}>{tokenInfo?.name?.charAt(0)}
@@ -86,7 +109,10 @@ const Stake = ({
             key={'price'}
             max="1.00"
             min="0.00"
-            onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
+            onChange={(e) => {
+              setSelectedAmount(parseFloat(e.target.value));
+              setSelectedSecondAmount(pairRatio * parseFloat(e.target.value));
+            }}
             placeholder="amount upto 8 decimals"
             required
             step="0.001"
@@ -99,7 +125,7 @@ const Stake = ({
           <div
             onClick={() => setOpen(true)}
             className={styles.inputIcon}>
-            <div className={styles.eicon}>{selectedToken === "" ? "?" : selectedToken.charAt(0)}
+            <div className={styles.eicon}>{selectedToken.symbol === "" ? "?" : selectedToken.symbol.charAt(0)}
             </div>
           </div>
 
@@ -112,7 +138,7 @@ const Stake = ({
             max="1.00"
             min="0.00"
             onChange={(e) => setSelectedSecondAmount(parseFloat(e.target.value))}
-            placeholder={selectedToken == "" ? "Select Token Pair" : "amount upto 8 decimals"}
+            placeholder={selectedToken.symbol == "" ? "Select Token Pair" : "amount upto 8 decimals"}
             required
             step="0.001"
             type="number"
@@ -122,7 +148,7 @@ const Stake = ({
           {open && <div className={styles.tokenOptions}>
             {tokenInfos.filter((token: keyable) => token.id !== tokenId).map((token: keyable) => <div
               onClick={() => {
-                setSelectedToken(token.symbol);
+                setSelectedToken({ symbol: token.symbol, id: token.id });
                 setOpen(false);
               }}
               key={token.id}
@@ -147,10 +173,10 @@ const Stake = ({
             Price
           </div>
           <div className={styles.statVal}>
-            88
+            {selectedToken.symbol == "" ? "-" : pairRatio}
           </div>
           <div className={styles.statKey}>
-            {tokenInfo.symbol}/{selectedToken || "?"}
+            {tokenInfo.symbol}/{selectedToken.symbol || "?"}
           </div>
         </div>
         <div className={styles.statsCol}>
@@ -187,8 +213,9 @@ const Stake = ({
       </div> */}
       <div className={styles.nextCont}>
         <NextStepButton
-          disabled={true}
-          onClick={console.log}
+          disabled={selectedAmount == 0}
+          loading={loading}
+          onClick={() => mint()}
         >
           {'Add Stake To Liquidity Pool'}
         </NextStepButton>
@@ -197,5 +224,18 @@ const Stake = ({
   );
 };
 
+const SecondTokenInfo = ({ selectedToken, address }: { selectedToken: keyable, address: string }) => {
+  console.log(selectedToken, 'SecondTokenInfo');
+  const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + selectedToken.id));
+
+  return <div className={styles.inforow}>
+    <div className={styles.infocolleft}>
+      <div className={styles.eicon}>{selectedToken.symbol == "" ? "?" : selectedToken.symbol?.charAt(0)}
+      </div>
+      <div className={styles.symbol}>{selectedToken.symbol == "" ? "-" : selectedToken.symbol}</div>
+    </div>
+    <div className={styles.infocolright}>{selectedToken.symbol == "" ? "-" : tokenPair?.balance}</div>
+  </div>
+}
 
 export default withRouter(Stake);
