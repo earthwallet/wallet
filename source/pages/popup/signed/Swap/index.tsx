@@ -24,7 +24,6 @@ const TokenHistory = ({
   },
 }: Props) => {
 
-  console.log(address);
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
   const [selectedToken, setSelectedToken] = useState<number>(0);
   const [open, setOpen] = useState<boolean>(false);

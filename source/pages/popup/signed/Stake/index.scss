@@ -67,7 +67,7 @@
   display: flex;
   flex-direction: row;
   width: 100vw;
-  margin: 24px 0;
+  align-items: center;
 }
 
 .recipientAddress {
@@ -81,6 +81,7 @@
   position: relative;
   flex: 1;
   display: flex;
+  margin-top: 10px;
 }
 
 .maxBtn {
@@ -93,7 +94,7 @@
   text-align: right;
   color: #3aa1ff;
   position: absolute;
-  right: 125px;
+  right: 35px;
   cursor: pointer;
   user-select: none;
   &:active {
@@ -102,16 +103,13 @@
 }
 
 .earthinput {
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
   box-shadow: none;
   background: rgba(8, 25, 39, 0.65);
   border: 2px solid rgba(36, 150, 255, 0.5);
   padding: 16px 12px;
-  border-radius: 8px 0 0 8px;
-  width: 250px;
-  border-right: 0px;
+  border-radius: 8px;
+  width: 343px;
+  padding-left: 48px;
   &:focus-visible {
     outline: none;
   }
@@ -209,6 +207,11 @@
   width: 32px;
   height: 32px;
   margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ffffff0d;
 }
 
 .symbol {
@@ -243,8 +246,8 @@
 }
 .inforow {
   display: flex;
-  margin-bottom: 24px;
-  margin-top: 7px;
+  margin-bottom: 3px;
+  margin-top: 4px;
 }
 .infocolleft {
   align-items: center;
@@ -302,4 +305,79 @@
   border-radius: 12px;
   margin: 24px;
   width: calc(100vw - 24px);
+}
+
+.nextCont {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: 20px 30px;
+}
+
+.icon_earth {
+  width: 64px;
+  height: 64px;
+  background: #ffffff0d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.inputIcon {
+  position: absolute;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  margin: 0 8px;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.tokenOptions {
+  position: absolute;
+  top: 55px;
+  max-height: 216px;
+  background: #101010;
+  border-radius: 12px;
+  z-index: 200;
+  border-radius: 14px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.selectDropdown {
+  cursor: pointer;
+  user-select: none;
+  padding-right: 22px;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.sinput {
+  padding: 8px;
+  width: 343px;
+  height: 72px;
+
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 10px;
+  margin: 0 16px 8px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 9;
+}
+.selectDropdownOption {
+  margin: 0;
+  margin-bottom: 3px;
 }

@@ -15,6 +15,7 @@ const initialState: IEntityState = {
   dappRequests: { byId: {} },
   tokens: { byId: {} },
   tokensInfo: { byId: {} },
+  pairs: { byId: {} },
 };
 
 export const entitiesState = createSlice({

@@ -1,0 +1,288 @@
+.container {
+  height: $appHeight - 40px;
+  overflow-y: scroll;
+  padding-bottom: 10px;
+}
+
+.nextCont {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: 20px 30px;
+}
+
+.helpPassword {
+  font-family: DM Sans, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 140%;
+  /* or 20px */
+
+  color: #ffffff;
+  opacity: 0.5;
+  margin: 20px 0;
+}
+.checkboxTitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 15px;
+  /* identical to box height, or 107% */
+
+  color: #fafbfb;
+  margin-left: 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+.checkboxSubTitle {
+  margin-top: 5px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  color: #fafbfb;
+
+  opacity: 0.54;
+  margin-left: 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow-wrap: break-word;
+}
+
+.checkboxIcon {
+  cursor: pointer;
+  user-select: none;
+}
+.checkboxCont {
+  padding: 0 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 2px 0px;
+  user-select: none;
+  cursor: pointer;
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  width: 327px;
+  height: 73px;
+  justify-content: space-between;
+  &:active {
+    opacity: 0.7;
+  }
+  &:hover {
+    background: rgba(90, 89, 126, 0.45);
+  }
+}
+
+.checkboxCont_disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.mnemonicCont {
+  background: rgba(36, 150, 255, 0.22);
+  backdrop-filter: blur(8px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  flex-wrap: wrap;
+  display: flex;
+  padding: 16px;
+  border: 1px solid #3a60d4;
+}
+
+.mnemonicContWrap {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    rgba(36, 150, 255, 0.47);
+  backdrop-filter: blur(5px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+}
+
+.mnemonicHelpTitle {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 129%;
+  text-align: center;
+  color: rgb(219, 228, 242);
+  margin-bottom: 12px;
+
+  & > small {
+    margin-top: 12px;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 150%;
+    opacity: 0.8;
+  }
+}
+
+.mnemonicHelpSubTitle {
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 150%;
+  /* or 18px */
+
+  text-align: center;
+  letter-spacing: 0.02em;
+
+  color: #dbe4f2;
+
+  opacity: 0.8;
+}
+.mnemonicActionsCont {
+  display: flex;
+  flex-direction: row;
+  margin-top: 16px;
+}
+.mnemonicActionIcon {
+  height: 16px;
+  width: 16px;
+  margin-right: 10px;
+}
+.mnemonicAction {
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 3px;
+  padding: 4px 9px;
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin-right: 16px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 12px;
+  /* identical to box height, or 92% */
+
+  text-align: center;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.mnemonicHelp {
+  padding: 16px;
+}
+
+.mnemonicWords {
+  background: rgba(0, 0, 0, 0.31);
+  border-radius: 5px;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px 8px 5px 0px;
+  padding: 4px 13px;
+}
+
+.labelText {
+  font-family: DM Sans, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 150%;
+  /* identical to box height, or 18px */
+
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  color: #dbe4f2;
+  margin-bottom: 10px;
+}
+
+.mnemonicWords {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  text-align: center;
+
+  color: #ffffff;
+}
+.earthInputCont {
+  padding: 0 24px;
+  margin: 20px 0;
+}
+
+.earthInputContPassword {
+  padding: 0;
+}
+
+.earthInput {
+  width: 100%;
+  background-image: none;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  background: linear-gradient(0deg, rgba(8, 25, 39, 0.6), rgba(8, 25, 39, 0.6));
+  border: 2px solid rgba(36, 150, 255, 0.5);
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: 16px 12px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+  /* identical to box height */
+  letter-spacing: 0.025em;
+  &:focus-visible {
+    outline: none;
+  }
+  &::placeholder {
+    color: #dbe4f2;
+    opacity: 0.25;
+  }
+}
+
+.password {
+  margin: 0 24px 0 24px;
+}
+
+.empty {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+  padding-left: 1em;
+  margin-top: 3px;
+}
+
+.checkboxContent {
+  display: flex;
+  align-items: center;
+}
+
+.networkIcon {
+  width: 25px;
+  height: 25px;
+}

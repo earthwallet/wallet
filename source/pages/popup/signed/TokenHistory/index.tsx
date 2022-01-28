@@ -6,8 +6,8 @@ import Header from '~components/Header';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 import ICON_EARTH from '~assets/images/icon-512.png';
-import ICON_SWAP from '~assets/images/icon_swap.png';
-import ICON_STAKE from '~assets/images/icon_stake.png';
+import ICON_SWAP from '~assets/images/th/swap.svg';
+import ICON_STAKE from '~assets/images/th/stake.svg';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import { selectTokenByTokenPair, selectTokensInfoById } from '~state/token';

@@ -41,7 +41,6 @@ export default class TokensController implements ITokensController {
           data: [balance],
         })
       );
-      console.log(response.toString(), balance, 'getTokenBalances');
     }
     return;
   };
