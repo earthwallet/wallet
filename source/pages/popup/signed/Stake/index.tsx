@@ -173,7 +173,7 @@ const Stake = ({
             Price
           </div>
           <div className={styles.statVal}>
-            {selectedToken.symbol == "" ? "-" : pairRatio}
+            {selectedToken.symbol == "" ? "-" : pairRatio?.toFixed(3)}
           </div>
           <div className={styles.statKey}>
             {tokenInfo.symbol}/{selectedToken.symbol || "?"}

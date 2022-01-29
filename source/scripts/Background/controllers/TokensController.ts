@@ -99,7 +99,8 @@ export default class TokensController implements ITokensController {
       Principal.fromText(token1),
       Principal.fromText(token2),
     ]);
-    if (response == undefined) {
+    console.log(response, 'get_pair');
+    if (response == undefined || response.length == 0) {
       response = await pairFactoryAPI('create_pair', [
         Principal.fromText(token1),
         Principal.fromText(token2),
