@@ -5,11 +5,12 @@
   line-height: 16px;
   top: 500px;
   padding: 0 25px;
-  left: calc(50% - 50px);
+  /* left: calc(50% - 50px); */
   z-index: 200;
   border-radius: 25px;
-  background: $highlightedAreaBackground;
+  /* background: #212226; */
   display: flex;
+  width: 100vw;
 }
 
 .noop {
@@ -22,5 +23,9 @@
   font-weight: 500;
   font-size: 16px;
   margin: auto;
-
+  width: fit-content;
+  display: inline-block;
+  background: #212226;
+  padding: 12px 48px;
+  border-radius: 25px;
 }
