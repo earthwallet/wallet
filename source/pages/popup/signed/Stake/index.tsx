@@ -105,7 +105,7 @@ const Stake = ({
     <div className={styles.page}>
       <Header
         type={'wallet'}
-        text={'Stake EARTH'}
+        text={'Stake ' + selectedToken.symbol}
       ><div className={styles.empty} /></Header>
 
       <div className={styles.tabs}>
