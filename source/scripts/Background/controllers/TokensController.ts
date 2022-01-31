@@ -22,6 +22,7 @@ import { createEntity } from '~state/entities';
 import { Principal } from '@dfinity/principal';
 import { keyable } from '../types/IAssetsController';
 import { createWallet } from '@earthwallet/keyring';
+import { parseBigIntToString } from '~utils/common';
 
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
@@ -110,15 +111,24 @@ export default class TokensController implements ITokensController {
       ]);
     }
     const pair = response[0].toText();
-    const price: keyable = await get_current_price(pair);
-    const price1 = price[0];
-    const price2 = price[1];
-    const ratio = isNaN(price[0]) ? 1 : price[0];
-    return { token1, token2, pair, price1, price2, ratio };
+    const stats: keyable = await pairAPI(pair, 'stats');
+
+    const price1 = stats.token0_price;
+    const price2 = stats.token1_price;
+    const ratio = isNaN(price1) ? 1 : price1;
+    return {
+      token1,
+      token2,
+      pair,
+      price1,
+      price2,
+      ratio,
+      stats: parseBigIntToString(stats),
+    };
   };
 
-  mint = async (token1: string, token2: string) => {
-    console.log(token1, token2, 'mint');
+  swap = async (token1: string, token2: string, amount: number) => {
+    console.log(token1, token2, amount, 'swap');
     let response = await pairFactoryAPI('get_pair', [
       Principal.fromText(token1),
       Principal.fromText(token2),
@@ -139,12 +149,7 @@ export default class TokensController implements ITokensController {
 
     const walletObj = await createWallet(seedPhrase, 'ICP');
 
-    const status = await swap(
-      walletObj.identity,
-      'wxns6-qiaaa-aaaaa-aaaqa-cai',
-      'tmxop-wyaaa-aaaaa-aaapa-cai',
-      1666
-    );
+    const status = await swap(walletObj.identity, pair, token1, amount);
     return { token1, token2, pair, price1, price2, price, ratio, status };
   };
 

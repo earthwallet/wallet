@@ -12,7 +12,7 @@ export interface ITokensController {
     callback?: (address?: string) => void
   ) => Promise<void>;
   getPair: (token1: string, token2: string) => Promise<keyable>;
-  mint: (token1: string, token2: string) => Promise<keyable>;
+  swap: (token1: string, token2: string, amount: number) => Promise<keyable>;
   stake: (
     token1: string,
     token2: string,

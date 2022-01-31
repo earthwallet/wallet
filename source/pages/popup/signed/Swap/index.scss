@@ -24,19 +24,20 @@
 }
 
 .etxt {
-  /* Product / Body Regular */
-
   font-family: Poppins;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
-  line-height: 20px;
-  /* or 143% */
+  font-size: 13px;
+  line-height: 16px;
+  /* or 122% */
 
-  /* Secondary/Shuttle Gray */
+  text-align: center;
 
-  color: #a5acbb;
-  margin: 8px 16px 24px 16px;
+  /* white/1 */
+
+  color: #ffffff;
+  opacity: 0.51;
+  margin: 12px;
 }
 
 .etxt {
@@ -184,16 +185,19 @@
   display: flex;
   bottom: -22px;
   left: 151px;
-  z-index: 9999;
+  z-index: 99;
   cursor: pointer;
   user-select: none;
   &:active {
     opacity: 0.7;
   }
 }
-
-.firstInput {
-  z-index: 11;
+.firstInputCont {
+  position: relative;
+  margin-bottom: 9px;
+}
+.dropdownCont {
+  position: relative;
 }
 .noicon {
   width: 32px;
@@ -243,7 +247,7 @@
   display: flex;
   width: calc(100vw - 32px);
   justify-content: flex-end;
-  margin: 0 16px;
+  margin: 8px 16px;
 }
 
 .tokenOptions {
@@ -266,4 +270,58 @@
 .selectDropdownOption {
   margin: 0;
   margin-bottom: 3px;
+}
+
+.statKey {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 16px;
+  /* identical to box height, or 145% */
+
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  /* Secondary/Shuttle Gray */
+
+  color: #a5acbb;
+}
+
+.statVal {
+  /* Product/H4 */
+
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 28px;
+  /* identical to box height, or 133% */
+
+  text-align: center;
+
+  /* Primary/White */
+
+  color: #ffffff;
+}
+
+.statsCol {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.statsCont {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  align-items: center;
+}
+
+.swapCont {
+  display: flex;
+  width: 100vw;
+  padding: 0px 16px 12px;
+  flex-direction: column;
 }
