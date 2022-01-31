@@ -61,12 +61,24 @@ const Stake = ({
     }
   }, [selectedToken.id, selectedSecondToken.id]);
 
-  const mint = async () => {
+  /*  const mint = async () => {
+     setLoading(true);
+     const response = await controller.tokens.mint(selectedToken.id, selectedSecondToken.id);
+     console.log(response);
+     setPairRatio(response.ratio);
+     show("Mint Complete! Updating Balances");
+     await controller.tokens.getTokenBalances(address);
+     show("Done!");
+     setLoading(false);
+ 
+   } */
+
+  const stake = async () => {
     setLoading(true);
-    const response = await controller.tokens.mint(selectedToken.id, selectedSecondToken.id);
+    const response = await controller.tokens.stake(selectedToken.id, selectedSecondToken.id, selectedAmount);
     console.log(response);
     setPairRatio(response.ratio);
-    show("Mint Complete! Updating Balances");
+    show("Stake Complete! Updating Balances");
     await controller.tokens.getTokenBalances(address);
     show("Done!");
     setLoading(false);
@@ -175,7 +187,7 @@ const Stake = ({
         <NextStepButton
           disabled={selectedAmount == 0}
           loading={loading}
-          onClick={() => mint()}
+          onClick={() => stake()}
         >
           {'Add Stake To Liquidity Pool'}
         </NextStepButton>

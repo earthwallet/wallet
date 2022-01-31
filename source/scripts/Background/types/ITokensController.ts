@@ -13,5 +13,10 @@ export interface ITokensController {
   ) => Promise<void>;
   getPair: (token1: string, token2: string) => Promise<keyable>;
   mint: (token1: string, token2: string) => Promise<keyable>;
-
+  stake: (
+    token1: string,
+    token2: string,
+    amount: number,
+    callback?: (message?: string) => void
+  ) => Promise<keyable>;
 }
