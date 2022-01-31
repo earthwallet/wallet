@@ -63,7 +63,7 @@ const Stake = ({
 
   const mint = async () => {
     setLoading(true);
-    const response = await controller.tokens.mint(tokenId, selectedToken.id);
+    const response = await controller.tokens.mint(selectedToken.id, selectedSecondToken.id);
     console.log(response);
     setPairRatio(response.ratio);
     show("Mint Complete! Updating Balances");
@@ -118,6 +118,7 @@ const Stake = ({
             selectedAmount={selectedAmount}
             setSelectedToken={setSelectedToken}
             selectedToken={selectedToken}
+            address={address}
           />
           <div className={styles.swapbtn}><img src={ICON_STAKE} /></div>
         </div>
@@ -129,6 +130,7 @@ const Stake = ({
           selectedAmount={selectedSecondAmount}
           setSelectedToken={setSelectedSecondToken}
           selectedToken={selectedSecondToken}
+          address={address}
         />
 
       </div>
@@ -189,7 +191,8 @@ export const TokenSelectorDropdown = ({
   setSelectedAmount,
   selectedAmount,
   setSelectedToken,
-  selectedToken
+  selectedToken,
+  address
 }: {
   filterTokenId?: string,
   tokenInfos: keyable,
@@ -197,7 +200,8 @@ export const TokenSelectorDropdown = ({
   setSelectedAmount: any,
   selectedAmount: any,
   setSelectedToken: any,
-  selectedToken: any
+  selectedToken: any,
+  address: string
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [overSecond, setOverSecond] = React.useState(false);
@@ -241,7 +245,7 @@ export const TokenSelectorDropdown = ({
             type="number"
             value={selectedAmount}
             className={styles.einput}></input>
-          <div className={styles.balanceData}><span className={styles.balanceLabel}>Balance:</span><div className={styles.balanceText}>666 {selectedToken.symbol}</div></div>
+          <div className={styles.balanceData}><span className={styles.balanceLabel}>Balance:</span><div className={styles.balanceText}><TokenBalance address={address} selectedToken={selectedToken} /></div></div>
         </div>
       </div>}
     {open && <div className={styles.tokenOptions}>
@@ -261,6 +265,15 @@ export const TokenSelectorDropdown = ({
     </div>}
   </div>
 }
+
+export const TokenBalance = ({ selectedToken, address }: { selectedToken: keyable, address: string }) => {
+  const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + selectedToken.id));
+
+  return <div className={styles.tokenBalance}>
+    {selectedToken.symbol == "" ? "-" : tokenPair?.balance} {selectedToken.symbol}
+  </div>
+}
+
 export const SecondTokenInfo = ({ selectedToken, address }: { selectedToken: keyable, address: string }) => {
   console.log(selectedToken, 'SecondTokenInfo');
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + selectedToken.id));

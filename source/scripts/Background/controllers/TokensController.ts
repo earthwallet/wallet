@@ -120,7 +120,7 @@ export default class TokensController implements ITokensController {
       Principal.fromText(token1),
       Principal.fromText(token2),
     ]);
-    if (response == undefined) {
+    if (response == undefined || response.length == 0) {
       response = await pairFactoryAPI('create_pair', [
         Principal.fromText(token1),
         Principal.fromText(token2),
