@@ -12,8 +12,6 @@ import {
   getMetadata,
   tokenAPI,
   pairFactoryAPI,
-  get_current_price,
-  swap,
   approve,
   transfer_from,
   pairAPI,
@@ -115,7 +113,7 @@ export default class TokensController implements ITokensController {
 
     const price1 = stats.token0_price;
     const price2 = stats.token1_price;
-    const ratio = isNaN(price1) ? 1 : price1;
+    const ratio = isNaN(price2) ? 1 : price2;
     return {
       token1,
       token2,
@@ -139,18 +137,52 @@ export default class TokensController implements ITokensController {
         Principal.fromText(token2),
       ]);
     }
-    const pair = response[0].toText();
-    const price: keyable = await get_current_price(pair);
-    const price1 = price[0];
-    const price2 = price[1];
-    const ratio = isNaN(price[0]) ? 1 : price[0];
+    const pairCanisterId = response[0].toText();
+    const stats: keyable = await pairAPI(pairCanisterId, 'stats');
+
+    const price1 = stats.token0_price;
+    const price2 = stats.token1_price;
+    const ratio = isNaN(price2) ? 1 : price2;
     const seedPhrase =
       'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano';
 
     const walletObj = await createWallet(seedPhrase, 'ICP');
+    const identity = walletObj.identity;
+    const get_transit = await pairAPI(
+      pairCanisterId,
+      'get_transit',
+      undefined,
+      identity
+    );
+    if (get_transit[1] > 0n && get_transit[0] > 0n) {
+      const refund_transfer = await pairAPI(
+        pairCanisterId,
+        'refund_transfer',
+        undefined,
+        identity
+      );
+      console.log(refund_transfer, 'refund_transfer');
+    }
+    const _approve1 = await approve(identity, token1, pairCanisterId, amount);
+    const _transfer_from1 = await transfer_from(
+      token1,
+      amount,
+      identity,
+      pairCanisterId
+    );
 
-    const status = await swap(walletObj.identity, pair, token1, amount);
-    return { token1, token2, pair, price1, price2, price, ratio, status };
+    console.log(_approve1, _transfer_from1, get_transit);
+    const swap = await pairAPI(pairCanisterId, 'swap', undefined, identity);
+    return {
+      token1,
+      token2,
+      pair: pairCanisterId,
+      price1,
+      price2,
+      ratio,
+      swap,
+      stats: parseBigIntToString(stats),
+    };
   };
 
   stake = async (token1: string, token2: string, amount: number) => {
@@ -166,10 +198,11 @@ export default class TokensController implements ITokensController {
       ]);
     }
     const pairCanisterId = response[0].toText();
-    const price: keyable = await get_current_price(pairCanisterId);
-    const price1 = price[0];
-    const price2 = price[1];
-    const ratio = isNaN(price[0]) ? 1 : price[0];
+    const stats: keyable = await pairAPI(pairCanisterId, 'stats');
+
+    const price1 = stats.token0_price;
+    const price2 = stats.token1_price;
+    const ratio = isNaN(price2) ? 1 : price2;
     const seedPhrase =
       'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano';
 
@@ -219,7 +252,7 @@ export default class TokensController implements ITokensController {
       pair: pairCanisterId,
       price1,
       price2,
-      price,
+      stats: parseBigIntToString(stats),
       ratio,
     };
   };
