@@ -15,8 +15,9 @@ import { useController } from '~hooks/useController';
 //import { mint } from '@earthwallet/assets';
 import useToast from '~hooks/useToast';
 import ICON_EARTH from '~assets/images/icon-512.png';
-import ICON_SWAP from '~assets/images/icon_swap.svg';
+import ICON_STAKE from '~assets/images/th/stake.svg';
 import ICON_CARET from '~assets/images/icon_caret.svg';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
@@ -30,30 +31,35 @@ const Stake = ({
 
   console.log(address);
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
-  const [selectedSecondAmount, setSelectedSecondAmount] = useState<number | undefined>(undefined);
   const [selectedToken, setSelectedToken] = useState<keyable>({ symbol: "", id: "" });
+  const [selectedSecondAmount, setSelectedSecondAmount] = useState<number>(0);
+  const [selectedSecondToken, setSelectedSecondToken] = useState<keyable>({ symbol: "", id: "" });
 
   const [tab, setTab] = useState<number>(0);
   const tokenInfo = useSelector(selectTokensInfoById(tokenId));
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
   const tokenInfos = useSelector(selectTokensInfo);
-  const [open, setOpen] = useState<boolean>(false);
   const controller = useController();
   const [pairRatio, setPairRatio] = useState<number>(0);
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [priceFetch, setPriceFetch] = useState<boolean>(false);
   const { show } = useToast();
   console.log(tokenPair, 'tokenPair');
   //const selectedTokenInfo = useSelector(selectedToken.id => selectTokensInfoById(selectedToken.id));
   useEffect((): void => {
     console.log('useEffect', selectedToken);
-    if (selectedToken.id !== "") {
-      controller.tokens.getPair(tokenId, selectedToken.id).then((response) => {
+    if ((selectedToken.id != "") && selectedSecondToken.id != "" && selectedSecondToken.id != null) {
+      console.log('useEffect', selectedToken, selectedSecondToken);
+
+      setPriceFetch(true);
+      controller.tokens.getPair(selectedToken.id, selectedSecondToken.id).then((response) => {
         console.log('do something', response);
         setPairRatio(response.ratio);
+        setPriceFetch(false);
       });
     }
-  }, [selectedToken.id !== ""]);
+  }, [selectedToken.id, selectedSecondToken.id]);
 
   const mint = async () => {
     setLoading(true);
@@ -66,6 +72,7 @@ const Stake = ({
     setLoading(false);
 
   }
+
   console.log(tokenInfos);
   return (
     <div className={styles.page}>
@@ -87,115 +94,28 @@ const Stake = ({
         </div>
       </div>
       <div className={styles.tabcont}>
-        <div className={clsx(styles.sinput, styles.firstInput)}>
-          <div className={styles.econt}>
-            {tokenInfo.icon ? <img className={styles.eicon} src={ICON_EARTH}></img> : <div className={styles.eicon}>{tokenInfo?.name?.charAt(0)}</div>}
-            <div>{tokenInfo.symbol}</div>
-            <img className={styles.careticon} src={ICON_CARET} />
-          </div>
-          <div className={styles.econtinput}>
-            <input
-              autoCapitalize='off'
-              autoCorrect='off'
-              autoFocus={false}
-              key={'price'}
-              max="1.00"
-              min="0.00"
-              onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
-              placeholder="8 decimal"
-              required
-              step="0.001"
-              type="number"
-              value={selectedAmount}
-              className={styles.einput}></input>
-          </div>
-          <div className={styles.swapbtn}><img src={ICON_SWAP} /></div>
-        </div>
-        <div className={clsx(styles.sinput)}>
-          <div className={styles.econt}>
-            {tokenInfo.icon ? <img className={styles.eicon} src={ICON_EARTH}></img> : <div className={styles.eicon}>{tokenInfo?.name?.charAt(0)}</div>}
-            <div>{tokenInfo.symbol}</div>
-            <img className={styles.careticon} src={ICON_CARET} />
-          </div>
-          <div className={styles.econtinput}>
-            <input
-              autoCapitalize='off'
-              autoCorrect='off'
-              autoFocus={false}
-              key={'price'}
-              max="1.00"
-              min="0.00"
-              onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
-              placeholder="8 decimal"
-              required
-              step="0.001"
-              type="number"
-              value={selectedAmount}
-              className={styles.einput}></input>
-          </div>
-        </div>
-        {/*  <div className={styles.inputCont}>
-          <div className={styles.inputIcon}>
-            <div className={styles.eicon}>{tokenInfo?.name?.charAt(0)}
-            </div>
-          </div>
-          <input
-            autoCapitalize='off'
-            autoCorrect='off'
-            autoFocus={false}
-            className={clsx(styles.recipientAddress, styles.earthinput)}
-            key={'price'}
-            max="1.00"
-            min="0.00"
-            onChange={(e) => {
-              setSelectedAmount(parseFloat(e.target.value));
-              setSelectedSecondAmount(pairRatio * parseFloat(e.target.value));
-            }}
-            placeholder="amount upto 8 decimals"
-            required
-            step="0.001"
-            type="number"
-            value={selectedAmount}
+        <div className={styles.firstInputCont}>
+          <TokenSelectorDropdown
+            tokenInfo={tokenInfo}
+            tokenInfos={tokenInfos}
+            filterTokenId={tokenId}
+            setSelectedAmount={setSelectedAmount}
+            selectedAmount={selectedAmount}
+            setSelectedToken={setSelectedToken}
+            selectedToken={selectedToken}
           />
-          <div className={styles.maxBtn}>Max</div>
+          <div className={styles.swapbtn}><img src={ICON_STAKE} /></div>
         </div>
-        <div className={styles.inputCont}>
-          <div
-            onClick={() => setOpen(true)}
-            className={styles.inputIcon}>
-            <div className={styles.eicon}>{selectedToken.symbol === "" ? "?" : selectedToken.symbol.charAt(0)}
-            </div>
-          </div>
+        <TokenSelectorDropdown
+          tokenInfo={{}}
+          tokenInfos={tokenInfos}
+          filterTokenId={tokenId}
+          setSelectedAmount={setSelectedSecondAmount}
+          selectedAmount={selectedSecondAmount}
+          setSelectedToken={setSelectedSecondToken}
+          selectedToken={selectedSecondToken}
+        />
 
-          <input
-            autoCapitalize='off'
-            autoCorrect='off'
-            autoFocus={false}
-            className={clsx(styles.recipientAddress, styles.earthinput)}
-            key={'price'}
-            max="1.00"
-            min="0.00"
-            onChange={(e) => setSelectedSecondAmount(parseFloat(e.target.value))}
-            placeholder={selectedToken.symbol == "" ? "Select Token Pair" : "amount upto 8 decimals"}
-            required
-            step="0.001"
-            type="number"
-            value={selectedSecondAmount}
-          />
-          <div className={styles.maxBtn}>Max</div>
-          {open && <div className={styles.tokenOptions}>
-            {tokenInfos.filter((token: keyable) => token.id !== tokenId).map((token: keyable) => <div
-              onClick={() => {
-                setSelectedToken({ symbol: token.symbol, id: token.id });
-                setOpen(false);
-              }}
-              key={token.id}
-              className={clsx(styles.sinput, styles.selectDropdown, styles.selectDropdownOption)}>
-              <div className={styles.eicon} >{token.symbol.charAt(0)}</div>
-              <div className={styles.label}>{token.symbol}</div>
-            </div>)}
-          </div>}
-        </div> */}
       </div>
       <div className={styles.statsCont}>
         <div className={styles.statsCol}>
@@ -211,10 +131,17 @@ const Stake = ({
             Price
           </div>
           <div className={styles.statVal}>
-            {selectedToken.symbol == "" ? "-" : pairRatio?.toFixed(3)}
+            {priceFetch
+              ? <SkeletonTheme color="#a5acbb36" highlightColor="#eee">
+                <Skeleton width={60} />
+              </SkeletonTheme>
+              : selectedToken.symbol == ""
+                ? "-"
+                : pairRatio?.toFixed(3)
+            }
           </div>
           <div className={styles.statKey}>
-            {tokenInfo.symbol}/{selectedToken.symbol || "?"}
+            {selectedToken.symbol}/{selectedSecondToken.symbol || "?"}
           </div>
         </div>
         <div className={styles.statsCol}>
@@ -226,29 +153,7 @@ const Stake = ({
           </div>
         </div>
       </div>
-      {/* 
-      <div className={styles.stats}>
-        <div className={styles.row}>
-          <div className={styles.col}>
-            <div className={styles.key}>Staked</div>
-            <div className={styles.val}>0</div>
-          </div>
-          <div className={styles.col}>
-            <div className={styles.key}>Next Reward Amount</div>
-            <div className={styles.val}>0</div>
-          </div>
-        </div>
-        <div className={styles.row}>
-          <div className={styles.col}>
-            <div className={styles.key}>Staked</div>
-            <div className={styles.val}>0</div>
-          </div>
-          <div className={styles.col}>
-            <div className={styles.key}>Next Reward Amount</div>
-            <div className={styles.val}>0</div>
-          </div>
-        </div>
-      </div> */}
+
       <div className={styles.nextCont}>
         <NextStepButton
           disabled={selectedAmount == 0}
@@ -262,6 +167,85 @@ const Stake = ({
   );
 };
 
+export const TokenSelectorDropdown = ({
+  filterTokenId,
+  tokenInfo,
+  tokenInfos,
+  setSelectedAmount,
+  selectedAmount,
+  setSelectedToken,
+  selectedToken
+}: {
+  filterTokenId?: string,
+  tokenInfos: keyable,
+  tokenInfo: keyable,
+  setSelectedAmount: any,
+  selectedAmount: any,
+  setSelectedToken: any,
+  selectedToken: any
+}) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const [overSecond, setOverSecond] = React.useState(false);
+  useEffect(() => {
+    setSelectedToken({ symbol: tokenInfo.symbol, id: tokenInfo.id })
+  }, [tokenInfo !== null]);
+  return <div className={styles.dropdownCont}>
+    {(selectedToken.id == "" || selectedToken.id == null)
+      ? <div>
+        <div
+          onClick={() => setOpen(!open)}
+          className={clsx(styles.sinput, styles.selectDropdown)}>
+          <div className={styles.noicon}></div>
+          <div className={styles.label}>Select an asset</div>
+          <img className={styles.careticon} src={ICON_CARET} />
+        </div>
+      </div>
+      : <div className={clsx(styles.sinput, overSecond && styles.sinput_active)}>
+        <div
+          onClick={() => setOpen(!open)}
+          className={styles.econt}>
+          {tokenInfo.icon ? <img className={styles.eicon} src={ICON_EARTH}></img> : <div className={styles.eicon}>{selectedToken.symbol?.charAt(0)}</div>}
+          <div>{selectedToken.symbol}</div>
+          <img className={styles.careticon} src={ICON_CARET} />
+        </div>
+        <div className={styles.econtinput}>
+          <div className={styles.maxBtn}>Max</div>
+          <input
+            onMouseOver={() => setOverSecond(true)}
+            onMouseOut={() => setOverSecond(false)}
+            autoCapitalize='off'
+            autoCorrect='off'
+            autoFocus={false}
+            key={'price'}
+            max="1.00"
+            min="0.00"
+            onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
+            placeholder="8 decimal"
+            required
+            step="0.001"
+            type="number"
+            value={selectedAmount}
+            className={styles.einput}></input>
+          <div className={styles.balanceData}><span className={styles.balanceLabel}>Balance:</span><div className={styles.balanceText}>666 {selectedToken.symbol}</div></div>
+        </div>
+      </div>}
+    {open && <div className={styles.tokenOptions}>
+      {tokenInfos.filter((token: keyable) => token.id !== filterTokenId).map((token: keyable) => <div
+        onClick={() => {
+          setSelectedToken({
+            symbol: token.symbol,
+            id: token.id
+          });
+          setOpen(false);
+        }}
+        key={token.id}
+        className={clsx(styles.sinput, styles.selectDropdown, styles.selectDropdownOption)}>
+        <div className={styles.noicon} ></div>
+        <div className={styles.label}>{token.symbol}</div>
+      </div>)}
+    </div>}
+  </div>
+}
 export const SecondTokenInfo = ({ selectedToken, address }: { selectedToken: keyable, address: string }) => {
   console.log(selectedToken, 'SecondTokenInfo');
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + selectedToken.id));

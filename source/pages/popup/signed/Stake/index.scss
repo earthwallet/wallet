@@ -84,24 +84,6 @@
   margin-top: 10px;
 }
 
-.maxBtn {
-  top: 13px;
-  font-family: Poppins;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 28px;
-  text-align: right;
-  color: #3aa1ff;
-  position: absolute;
-  right: 35px;
-  cursor: pointer;
-  user-select: none;
-  &:active {
-    opacity: 0.7;
-  }
-}
-
 .earthinput {
   box-shadow: none;
   background: rgba(8, 25, 39, 0.65);
@@ -342,7 +324,7 @@
 
 .tokenOptions {
   position: absolute;
-  top: 55px;
+  top: 102px;
   max-height: 216px;
   background: #1010105f;
   border-radius: 12px;
@@ -364,7 +346,7 @@
 .sinput {
   padding: 8px;
   width: 343px;
-  height: 72px;
+  height: 99px;
 
   background: rgba(90, 89, 126, 0.39);
   backdrop-filter: blur(7px);
@@ -375,6 +357,10 @@
   align-items: center;
   position: relative;
   z-index: 9;
+  border: 1px solid transparent;
+}
+.sinput_active {
+  border: 1px solid rgba(36, 150, 255, 0.3);
 }
 .selectDropdownOption {
   margin: 0;
@@ -406,6 +392,9 @@
 
 .econtinput {
   flex: 1;
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
 }
 
 .einput {
@@ -415,13 +404,12 @@
   font-family: DM Mono;
   font-style: normal;
   font-weight: 500;
-  font-size: 21px;
-  line-height: 28px;
+  font-size: 24px;
+  line-height: 45px;
   /* text-align: center; */
   color: #ffffff;
-  padding: 0 12px;
   margin-left: 10px;
-  border-left: 1px solid #ffffff4f;
+  text-align: right;
 }
 
 .econt {
@@ -435,6 +423,7 @@
   padding: 12px;
   cursor: pointer;
   user-select: none;
+  height: 79px;
   &:active {
     opacity: 0.7;
   }
@@ -459,4 +448,64 @@
   &:active {
     opacity: 0.7;
   }
+}
+
+.einput::-webkit-inner-spin-button,
+.einput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.firstInputCont {
+  position: relative;
+  margin-bottom: 9px;
+}
+.dropdownCont {
+  position: relative;
+}
+
+.maxBtn {
+  width: 37px;
+  height: 16px;
+  /* left: 318px; */
+  /* top: 138px; */
+  background: rgba(255, 255, 255, 0.17);
+  border-radius: 25px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  &:active {
+    opacity: 0.7;
+  }
+}
+.balanceLabel {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  color: rgba(255, 255, 255, 0.6);
+}
+.balanceText {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.balanceData {
+  display: flex;
 }
