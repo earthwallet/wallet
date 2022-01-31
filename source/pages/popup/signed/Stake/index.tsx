@@ -14,6 +14,9 @@ import { keyable } from '~scripts/Background/types/IMainController';
 import { useController } from '~hooks/useController';
 //import { mint } from '@earthwallet/assets';
 import useToast from '~hooks/useToast';
+import ICON_EARTH from '~assets/images/icon-512.png';
+import ICON_SWAP from '~assets/images/icon_swap.svg';
+import ICON_CARET from '~assets/images/icon_caret.svg';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
@@ -40,7 +43,7 @@ const Stake = ({
 
   const [loading, setLoading] = useState<boolean>(false);
   const { show } = useToast();
-
+  console.log(tokenPair, 'tokenPair');
   //const selectedTokenInfo = useSelector(selectedToken.id => selectTokensInfoById(selectedToken.id));
   useEffect((): void => {
     console.log('useEffect', selectedToken);
@@ -75,28 +78,63 @@ const Stake = ({
         <div
           onClick={() => setTab(0)}
           className={clsx(styles.tab, tab === 0 && styles.tab_active)}>
-          Stake
+          Add
         </div>
         <div
           onClick={() => setTab(1)}
           className={clsx(styles.tab, tab === 1 && styles.tab_active)}>
-          Unstake
+          Stakes
         </div>
       </div>
       <div className={styles.tabcont}>
-        <div className={styles.label}>
-          Available to Deposit
-        </div>
-        <div className={styles.inforow}>
-          <div className={styles.infocolleft}>
-            <div className={styles.eicon}>{tokenInfo?.name?.charAt(0)}
-            </div>
-            <div className={styles.symbol}>{tokenInfo.symbol}</div>
+        <div className={clsx(styles.sinput, styles.firstInput)}>
+          <div className={styles.econt}>
+            {tokenInfo.icon ? <img className={styles.eicon} src={ICON_EARTH}></img> : <div className={styles.eicon}>{tokenInfo?.name?.charAt(0)}</div>}
+            <div>{tokenInfo.symbol}</div>
+            <img className={styles.careticon} src={ICON_CARET} />
           </div>
-          <div className={styles.infocolright}>{tokenPair.balance}</div>
+          <div className={styles.econtinput}>
+            <input
+              autoCapitalize='off'
+              autoCorrect='off'
+              autoFocus={false}
+              key={'price'}
+              max="1.00"
+              min="0.00"
+              onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
+              placeholder="8 decimal"
+              required
+              step="0.001"
+              type="number"
+              value={selectedAmount}
+              className={styles.einput}></input>
+          </div>
+          <div className={styles.swapbtn}><img src={ICON_SWAP} /></div>
         </div>
-        <SecondTokenInfo selectedToken={selectedToken} address={address} />
-        <div className={styles.inputCont}>
+        <div className={clsx(styles.sinput)}>
+          <div className={styles.econt}>
+            {tokenInfo.icon ? <img className={styles.eicon} src={ICON_EARTH}></img> : <div className={styles.eicon}>{tokenInfo?.name?.charAt(0)}</div>}
+            <div>{tokenInfo.symbol}</div>
+            <img className={styles.careticon} src={ICON_CARET} />
+          </div>
+          <div className={styles.econtinput}>
+            <input
+              autoCapitalize='off'
+              autoCorrect='off'
+              autoFocus={false}
+              key={'price'}
+              max="1.00"
+              min="0.00"
+              onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
+              placeholder="8 decimal"
+              required
+              step="0.001"
+              type="number"
+              value={selectedAmount}
+              className={styles.einput}></input>
+          </div>
+        </div>
+        {/*  <div className={styles.inputCont}>
           <div className={styles.inputIcon}>
             <div className={styles.eicon}>{tokenInfo?.name?.charAt(0)}
             </div>
@@ -157,7 +195,7 @@ const Stake = ({
               <div className={styles.label}>{token.symbol}</div>
             </div>)}
           </div>}
-        </div>
+        </div> */}
       </div>
       <div className={styles.statsCont}>
         <div className={styles.statsCol}>
@@ -224,7 +262,7 @@ const Stake = ({
   );
 };
 
-const SecondTokenInfo = ({ selectedToken, address }: { selectedToken: keyable, address: string }) => {
+export const SecondTokenInfo = ({ selectedToken, address }: { selectedToken: keyable, address: string }) => {
   console.log(selectedToken, 'SecondTokenInfo');
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + selectedToken.id));
 

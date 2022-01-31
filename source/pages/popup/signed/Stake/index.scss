@@ -371,7 +371,6 @@
   /* Note: backdrop-filter has minimal browser support */
 
   border-radius: 10px;
-  margin: 0 16px 8px;
   display: flex;
   align-items: center;
   position: relative;
@@ -380,4 +379,84 @@
 .selectDropdownOption {
   margin: 0;
   margin-bottom: 3px;
+}
+
+.firstInput {
+  z-index: 11;
+  margin-bottom: 9px;
+}
+.noicon {
+  width: 32px;
+  height: 32px;
+  background: #0f1726;
+  border-radius: 50%;
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.careticon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.4;
+  margin-left: 12px;
+  display: flex;
+  flex-basis: 12px;
+  flex-shrink: 0px;
+}
+
+.econtinput {
+  flex: 1;
+}
+
+.einput {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 28px;
+  /* text-align: center; */
+  color: #ffffff;
+  padding: 0 12px;
+  margin-left: 10px;
+  border-left: 1px solid #ffffff4f;
+}
+
+.econt {
+  display: flex;
+  background: #3b3e56;
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  border-radius: 8px;
+  width: fit-content;
+  align-items: center;
+  padding: 12px;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.swapbtn {
+  /* Secondary/Outer Space */
+
+  background: #0f1726;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  bottom: -22px;
+  left: 151px;
+  z-index: 9999;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
 }

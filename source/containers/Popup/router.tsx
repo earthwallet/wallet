@@ -71,8 +71,8 @@ const PopupRouter = () => {
           <ToastProvider>
             <Switch location={item}>
               <Route path="/popup.html">
-                {/* <Redirect to="/stake/02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47/tfuft-aqaaa-aaaaa-aaaoq-cai" /> */}
-                <Redirect to="/accounts" />
+                <Redirect to="/stake/02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47/tfuft-aqaaa-aaaaa-aaaoq-cai" />
+                {/*   <Redirect to="/accounts" /> */}
               </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
@@ -102,9 +102,6 @@ const PopupRouter = () => {
                 {wrapWithErrorBoundary(<TransactionDetails />, 'transactions')}
               </Route>
               <Route path="/account/send/:address">
-                {wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}
-              </Route>
-              <Route path="/account/stake/:address">
                 {wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}
               </Route>
               <Route path="/account/receive/:address">
