@@ -73,6 +73,21 @@ const Stake = ({
 
   }
 
+  const updateAmount = (amount: number) => {
+    setSelectedAmount(amount);
+    setSelectedSecondAmount(Number((pairRatio * amount)?.toFixed(3)));
+  }
+  const updateSecondAmount = (amount: number) => {
+    if (pairRatio != 0) {
+      let selectedAmount: number = amount / pairRatio;
+      setSelectedAmount(Number(selectedAmount?.toFixed(3)));
+      setSelectedSecondAmount(amount);
+    }
+    else {
+      setSelectedSecondAmount(amount);
+    }
+
+  }
   console.log(tokenInfos);
   return (
     <div className={styles.page}>
@@ -99,7 +114,7 @@ const Stake = ({
             tokenInfo={tokenInfo}
             tokenInfos={tokenInfos}
             filterTokenId={tokenId}
-            setSelectedAmount={setSelectedAmount}
+            setSelectedAmount={updateAmount}
             selectedAmount={selectedAmount}
             setSelectedToken={setSelectedToken}
             selectedToken={selectedToken}
@@ -110,7 +125,7 @@ const Stake = ({
           tokenInfo={{}}
           tokenInfos={tokenInfos}
           filterTokenId={tokenId}
-          setSelectedAmount={setSelectedSecondAmount}
+          setSelectedAmount={updateSecondAmount}
           selectedAmount={selectedSecondAmount}
           setSelectedToken={setSelectedSecondToken}
           selectedToken={selectedSecondToken}
