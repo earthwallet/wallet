@@ -92,6 +92,13 @@ const TokenHistory = ({
     setLoading(false);
 
   }
+  const swapSelectedTokens = () => {
+    const _selectedToken = { ...selectedToken };
+    const _selectedSecondToken = { ...selectedSecondToken };
+
+    setSelectedToken(_selectedSecondToken);
+    setSelectedSecondToken(_selectedToken);
+  }
   return (
     <div className={styles.page}>
       <Header
@@ -114,7 +121,9 @@ const TokenHistory = ({
               selectedToken={selectedToken}
               address={address}
             />
-            <div className={styles.swapbtn}><img src={ICON_SWAP} /></div>
+            <div
+              onClick={() => swapSelectedTokens()}
+              className={styles.swapbtn}><img src={ICON_SWAP} /></div>
           </div>
           <TokenSelectorDropdown
             tokenInfo={{}}

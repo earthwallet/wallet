@@ -71,8 +71,9 @@ const PopupRouter = () => {
           <ToastProvider>
             <Switch location={item}>
               <Route path="/popup.html">
-                <Redirect to="/swap/02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47/tfuft-aqaaa-aaaaa-aaaoq-cai" />
-                {/*   <Redirect to="/accounts" /> */}
+                {/*                 <Redirect to="/swap/02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47/tfuft-aqaaa-aaaaa-aaaoq-cai" />
+ */}
+                <Redirect to="/accounts" />
               </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
