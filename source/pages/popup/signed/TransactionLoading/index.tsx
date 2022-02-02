@@ -16,15 +16,15 @@ const TransactionLoading = () => {
         <img src={downArrow} />
       </div>
       <div className={styles.internetCompWrapContainer}>
-          <div className={styles.ethIconContainer}></div>
-          <div className={styles.ethTextContainer}>
-            <span className={styles.ethereumText}>Ethereum</span>
-            <span className={styles.ethVal}>1.0869565 ETH</span>
-            <span className={styles.usdText}>$10,092.22</span>
-            <span className={styles.conversionText}>
-              1 EARTH = 0.002173913043 ETH
-            </span>
-          </div>
+        <div className={styles.ethIconContainer}></div>
+        <div className={styles.ethTextContainer}>
+          <span className={styles.ethereumText}>Ethereum</span>
+          <span className={styles.ethVal}>1.0869565 ETH</span>
+          <span className={styles.usdText}>$10,092.22</span>
+          <span className={styles.conversionText}>
+            1 EARTH = 0.002173913043 ETH
+          </span>
+        </div>
         <div className={styles.gasFeeContainer}>
           <div className={styles.leftSideContainer}>
             <span className={styles.gasFeeText}>Estimated Gas Fee</span>
