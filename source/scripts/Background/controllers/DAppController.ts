@@ -23,6 +23,11 @@ class DAppController implements IDAppController {
     return !!dapp[origin];
   }
 
+  isPageOriginAllowed(origin: string) {
+    const dapp: ConnectedDApps = store.getState().dapp;
+    return !!dapp[origin];
+  }
+
   fromUserConnectDApp(origin: string, dapp: DAppInfo) {
     store.dispatch(listNewDapp({ id: origin, dapp }));
   }

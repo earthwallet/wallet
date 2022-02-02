@@ -67,7 +67,6 @@ export const messagesHandler = (
       const popup = await mainController.createPopup(windowId);
       pendingWindow = true;
 
-      console.log(popup, 'popup', pendingWindow);
       if (popup) {
         window.addEventListener(
           'connectWallet',
@@ -93,7 +92,7 @@ export const messagesHandler = (
       return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
-      console.log('CAL_REQUEST.method', method, args);
+      //console.log('CAL_REQUEST.method', method, args);
       let result: any = undefined;
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed };
@@ -180,6 +179,38 @@ export const messagesHandler = (
 
     return Promise.resolve(null);
   };
+
+  const checkAllowedOrigins = (origin: string) => {
+    const allowed = mainController.dapp.isPageOriginAllowed(origin);
+    if (origin && allowed) {
+      browser.browserAction.setIcon({
+        path: '/assets/images/icon-38-glow.png',
+      });
+    } else {
+      browser.browserAction.setIcon({
+        path: '/assets/images/icon-38.png',
+      });
+    }
+    if (!mainController.isHydrated()) {
+      //hydrate app if not hydrated
+      mainController.preloadState();
+    }
+  };
+  browser.tabs.onActivated.addListener(function (activeInfo) {
+    chrome.tabs.get(activeInfo.tabId, function (tab) {
+      const url = tab?.url;
+      const origin = url && new URL(url as string).origin;
+      checkAllowedOrigins(origin || '');
+    });
+  });
+
+  browser.tabs.onUpdated.addListener((_, change, tab) => {
+    if (tab.active && change.url) {
+      const url = change.url;
+      const origin = url && new URL(url as string).origin;
+      checkAllowedOrigins(origin || '');
+    }
+  });
 
   port.onMessage.addListener(listener);
 };
