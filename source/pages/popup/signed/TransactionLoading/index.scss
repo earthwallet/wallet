@@ -1,13 +1,237 @@
 .page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: linear-gradient(
-      0deg,
-      rgba(71, 134, 255, 0.4) 0%,
-      rgba(71, 134, 255, 0) 100%
-    );
-    background: url('../../../../assets/images/bg_tokens.png');
-    height: $appHeight;
-    width: $appWidth;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(
+    0deg,
+    rgba(71, 134, 255, 0.4) 0%,
+    rgba(71, 134, 255, 0) 100%
+  );
+  background: url('../../../../assets/images/bg_tokens.png');
+  height: $appHeight;
+  width: $appWidth;
+  padding: 24px 16px 16px 16px;
+}
+.updateTime {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  color: #a5acbb;
+  margin-bottom: 22px;
+}
+.ethWrapContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80px;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+}
+.ethWrapText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  color: #ffffff;
+  margin: 0px 0px 0px !important;
+}
+.logo {
+  height: 31.98548126220703px;
+  width: 32.000003814697266px;
+}
+.downArrowContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #0f1726;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  box-sizing: border-box;
+  border-radius: 50px;
+  position: absolute;
+  top: 127px;
+  z-index: 1;
+}
+.internetCompWrapContainer {
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  border-radius: 10px;
+  padding: 10.17px 16px 16px 16px;
+  margin-top: 8px;
+}
+.ethIconContainer {
+  width: 55.37px;
+  height: 55.34px;
+}
+.ethTextContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  padding-left: 30.5px;
+  padding-right: 30.5px;
+}
+.ethereumText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  color: #e6e9ed;
+  opacity: 0.7;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+.ethVal {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 40px;
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+.usdText {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  text-align: center;
+  color: #a5acbb;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+.conversionText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  color: #ffffff;
+  display: inline-block;
+}
+.gasFeeContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  padding-bottom: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.leftSideContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.gasFeeText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  color: #a5acbb;
+}
+.editButton {
+  width: 39px;
+  height: 24px;
+  background: #6f747d;
+  border-radius: 4px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ffffff;
+  cursor: pointer;
+  margin-left: 8px;
+  &:active {
+    opacity: 0.7;
   }
+}
+.earthText {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  color: #fafbfb;
+}
+.convertedVal {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  color: #a5acbb;
+}
+.rightSideContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.earthFeeContainer {
+  @extend .gasFeeContainer;
+}
+.earthFeeRightSideContainer {
+  @extend .rightSideContainer;
+}
+.earthVal {
+  @extend .earthText;
+}
+.earthFeeText {
+  @extend .gasFeeText;
+}
+.totalContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  padding-bottom: 20px;
+}
+.totalText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ffffff;
+}
+.rightSideTotalContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.totalEarthVal{
+  font-family: DM Mono;
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 28px;
+color: #FAFBFB;
+}
+.totalUSDVal{
+  font-family: DM Mono;
+font-style: normal;
+font-weight: normal;
+font-size: 12px;
+line-height: 16px;
+color: #A5ACBB;
+}
