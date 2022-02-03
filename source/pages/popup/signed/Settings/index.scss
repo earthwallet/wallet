@@ -1,0 +1,156 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(
+    0deg,
+    rgba(71, 134, 255, 0.4) 0%,
+    rgba(71, 134, 255, 0) 100%
+  );
+  background: url('../../../../assets/images/bg_tokens.png');
+  height: $appHeight;
+  width: $appWidth;
+}
+.transactionSettingsContainer {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-top: 50px;
+}
+.slippageText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+.autoButtonContainer {
+  width: 343px;
+  position: relative;
+}
+.autoButton {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  position: absolute;
+  border-radius: 29px;
+  z-index: 2;
+  border: none;
+  width: 65px;
+  height: 36px;
+  cursor: pointer;
+  color: #ffffff;
+  background-color: #2496ff;
+  transform: translate(16px, 8px);
+  &:active {
+    opacity: 0.7;
+  }
+}
+.inputBox {
+  border: 1px solid rgba(36, 150, 255, 0.3);
+  backdrop-filter: blur(7px);
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  color: #ffffff;
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  outline: none;
+  height: 56px;
+  border-radius: 10px;
+  background: rgba(90, 89, 126, 0.39);
+  padding: 8px 16px 8px 85px;
+  text-align: right;
+}
+.inputBox::placeholder {
+  text-align: end;
+}
+.disableContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: 40px;
+  justify-content: space-between;
+  align-items: center;
+  height: 38px;
+  width: 100%;
+}
+
+.disableText {
+  @extend .slippageText;
+}
+.buttonContainer {
+  width: 112px;
+  height:38px;
+  position: relative;
+  background: #0F1726;
+border-radius: 10px;
+}
+.activeOnButton{
+  background: #42495F;
+backdrop-filter: blur(7px);
+border-radius: 10px;
+width: 56px;
+height: 38px;
+font-family: Poppins;
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 28px;
+color: #FFFFFF;
+cursor: pointer;
+&:active{
+  opacity: 0.7;
+}
+}
+.inActiveOnButton{
+  font-family: Poppins;
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 28px;
+text-align: center;
+color: #A5ACBB;
+background: #0F1726;
+border-radius: 10px;
+padding: 6px 17px 4px 16px;
+cursor: pointer;
+}
+.activeOffButton{
+background: #42495F;
+backdrop-filter: blur(7px);
+border-radius: 10px;
+width: 56px;
+height: 38px;
+font-family: Poppins;
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 28px;
+color: #FFFFFF;
+cursor: pointer;
+&:active{
+  opacity: 0.7;
+}
+}
+.inActiveOffButton{
+  font-family: Poppins;
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 28px;
+text-align: center;
+color: #A5ACBB;
+background: #0F1726;
+border-radius: 10px;
+position: absolute;
+padding: 6px 17px 4px 16px;
+cursor: pointer;
+}
