@@ -1,7 +1,7 @@
 .mainContainer {
   width: 342px;
   height: 456px;
-  margin: 40px 17px 0px 16px;
+  margin: 7px 17px 0px 16px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   border-radius: 12px;
@@ -9,11 +9,11 @@
   display: flex;
   flex-direction: column;
 }
-.imgContainer{
+.imgContainer {
   display: flex;
   justify-content: center;
 }
-.img{
+.img {
   width: 160px;
   height: 160px;
 }

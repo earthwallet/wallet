@@ -4,7 +4,7 @@ import styles from './index.scss';
 const MarketplaceDropCard = (props: any) => {
   return (
     <div className={styles.mainContainer}>
-      <div className={styles.imgContainer}><img src={props.img} className={styles.img}/></div>
+      <div className={styles.imgContainer}><img src={props.img} className={styles.img} /></div>
       <span className={styles.text}>{props.text}</span>
       <span className={styles.subText}>{props.subText}</span>
       <div className={styles.priceContainer}>
