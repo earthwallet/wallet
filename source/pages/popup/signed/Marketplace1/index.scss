@@ -1,0 +1,13 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(
+      0deg,
+      rgba(71, 134, 255, 0.4) 0%,
+      rgba(71, 134, 255, 0) 100%
+    );
+    background: url('../../../../assets/images/bg_tokens.png');
+    height: $appHeight;
+    width: $appWidth;
+  }
