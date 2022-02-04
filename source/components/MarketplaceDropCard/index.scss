@@ -9,6 +9,14 @@
   display: flex;
   flex-direction: column;
 }
+.imgContainer{
+  display: flex;
+  justify-content: center;
+}
+.img{
+  width: 160px;
+  height: 160px;
+}
 .text {
   margin: 24px 0px 24px 0px;
   font-family: Poppins;
@@ -56,7 +64,7 @@
   line-height: 28px;
   color: #ffffff;
 }
-.rightSideContaier {
+.rightSideContainer {
   @extend .leftSideContainer;
 }
 .volumeText {
