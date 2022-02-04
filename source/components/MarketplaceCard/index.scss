@@ -1,0 +1,66 @@
+.container {
+  width: 168px;
+  height: 248px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  margin: 7px;
+}
+.imgContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.img {
+  width: 156px;
+  height: 156px;
+}
+.text {
+  margin-bottom: 6px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 24px;
+  color: #ffffff;
+}
+.priceContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 31px;
+}
+.leftSideContainer {
+  display: flex;
+  flex-direction: column;
+}
+.priceText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 16px;
+  color: #ffffff;
+  opacity: 0.6;
+}
+.price {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 28px;
+  color: #ffffff;
+}
+.rightSideContainer {
+  @extend .leftSideContainer;
+}
+.volumeText {
+  @extend .priceText;
+}
+.volPrice {
+  @extend .price;
+}

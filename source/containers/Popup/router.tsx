@@ -32,6 +32,7 @@ import Settings from '~pages/popup/signed/Settings';
 import SwapTransactions from '~pages/popup/signed/SwapTransactions';
 import Marketplace from '~pages/popup/signed/Marketplace';
 import Marketplace1 from '~pages/popup/signed/Marketplace1';
+import Marketplace2 from '~pages/popup/signed/Marketplace2';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -78,7 +79,7 @@ const PopupRouter = () => {
               <Route path="/popup.html">
                 {/*                 <Redirect to="/swap/02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47/tfuft-aqaaa-aaaaa-aaaoq-cai" />
                  */}
-                <Redirect to="/task6" />
+                <Redirect to="/task7" />
               </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
@@ -104,6 +105,9 @@ const PopupRouter = () => {
               </Route>
               <Route path="/task6">
                 {wrapWithErrorBoundary(<Marketplace1 />, 'accounts')}
+              </Route>
+              <Route path="/task7">
+                {wrapWithErrorBoundary(<Marketplace2 />, 'accounts')}
               </Route>
               <Route path="/portfolio">
                 {wrapWithErrorBoundary(<Portfolio />, 'portfolio')}
