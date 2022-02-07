@@ -271,7 +271,7 @@ const TokensList = ({ address }: { address: string }) => {
       <div className={styles.listitemscont}>
         {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
           <div
-            onClick={() => history.push('/th/' + address + '/' + token.symbol)}
+            onClick={() => history.push('/account/send/' + address)}
             key={i}
             className={styles.listitem}>
             <img
@@ -389,7 +389,7 @@ const TokensGridflow = ({ address }: { address: string }) => {
           <img
             key={i}
             className={styles.imageIcon}
-            onClick={() => history.push(`/nftdetails/${token?.id}`)}
+            onClick={() => history.push(`/account/send/${selectedAccount.id}`)}
             src={token?.icon} >
           </img>
         </div>
