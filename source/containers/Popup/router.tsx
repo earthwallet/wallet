@@ -26,7 +26,13 @@ import TokenHistory from '~pages/popup/signed/TokenHistory';
 import Stake from '~pages/popup/signed/Stake';
 import Swap from '~pages/popup/signed/Swap';
 import SelectTokens from '~pages/popup/signed/SelectTokens';
-
+import TransactionLoading from '~pages/popup/signed/TransactionLoading';
+import SubmittingTransactions from '~pages/popup/signed/SubmittingTransactions';
+import Settings from '~pages/popup/signed/Settings';
+import SwapTransactions from '~pages/popup/signed/SwapTransactions';
+import Marketplace from '~pages/popup/signed/Marketplace';
+import Marketplace1 from '~pages/popup/signed/Marketplace1';
+import Marketplace2 from '~pages/popup/signed/Marketplace2';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -51,7 +57,7 @@ const PopupRouter = () => {
       try {
         controller.migrateLocalStorage();
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     });
   }, []);
@@ -72,14 +78,36 @@ const PopupRouter = () => {
             <Switch location={item}>
               <Route path="/popup.html">
                 {/*                 <Redirect to="/swap/02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47/tfuft-aqaaa-aaaaa-aaaoq-cai" />
- */}
-                <Redirect to="/accounts" />
+                 */}
+                <Redirect to="/task7" />
               </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
               </Route>
+
               <Route path="/accounts">
                 {wrapWithErrorBoundary(<Accounts />, 'accounts')}
+              </Route>
+              <Route path="/task1">
+                {wrapWithErrorBoundary(<TransactionLoading />, 'accounts')}
+              </Route>
+              <Route path="/task2">
+                {wrapWithErrorBoundary(<SubmittingTransactions />, 'accounts')}
+              </Route>
+              <Route path="/task3">
+                {wrapWithErrorBoundary(<Settings />, 'accounts')}
+              </Route>
+              <Route path="/task4">
+                {wrapWithErrorBoundary(<SwapTransactions />, 'accounts')}
+              </Route>
+              <Route path="/task5">
+                {wrapWithErrorBoundary(<Marketplace />, 'accounts')}
+              </Route>
+              <Route path="/task6">
+                {wrapWithErrorBoundary(<Marketplace1 />, 'accounts')}
+              </Route>
+              <Route path="/task7">
+                {wrapWithErrorBoundary(<Marketplace2 />, 'accounts')}
               </Route>
               <Route path="/portfolio">
                 {wrapWithErrorBoundary(<Portfolio />, 'portfolio')}
@@ -103,7 +131,10 @@ const PopupRouter = () => {
                 {wrapWithErrorBoundary(<TransactionDetails />, 'transactions')}
               </Route>
               <Route path="/account/send/:address">
-                {wrapWithErrorBoundary(<WalletSendTokens />, 'wallet-send-token')}
+                {wrapWithErrorBoundary(
+                  <WalletSendTokens />,
+                  'wallet-send-token'
+                )}
               </Route>
               <Route path="/account/receive/:address">
                 {wrapWithErrorBoundary(

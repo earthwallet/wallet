@@ -1,0 +1,98 @@
+.mainContainer {
+  width: 342px;
+  height: 456px;
+  margin: 7px 17px 0px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.imgContainer {
+  display: flex;
+  justify-content: center;
+}
+.img {
+  width: 160px;
+  height: 160px;
+}
+.text {
+  margin: 24px 0px 24px 0px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 24px;
+  text-align: center;
+  color: #ffffff;
+}
+.subText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  color: #ffffff;
+  opacity: 0.7;
+  margin-bottom: 32px;
+}
+.priceContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.leftSideContainer {
+  display: flex;
+  flex-direction: column;
+}
+.priceText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ffffff;
+  opacity: 0.6;
+}
+.price {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  color: #ffffff;
+}
+.rightSideContainer {
+  @extend .leftSideContainer;
+}
+.volumeText {
+  @extend .priceText;
+}
+.volPrice {
+  @extend .price;
+}
+.button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 294px;
+  height: 36px;
+  margin-top: 32px;
+  border: 2px solid #2496ff;
+  box-sizing: border-box;
+  border-radius: 29px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  &:active {
+    opacity: 0.7;
+  }
+}
