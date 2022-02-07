@@ -203,6 +203,12 @@ export const LIVE_SYMBOLS_OBJS = DEFAULT_SYMBOLS.filter(
   .sort((a, b) => a.order - b.order)
   .map((symbolObj) => symbolObj);
 
+export const SELECT_SYMBOLS_OBJS = (symbol: string) =>
+  DEFAULT_SYMBOLS.filter((symbolObj) => symbolObj.isLive)
+    .sort((a, b) => a.order - b.order)
+    .map((symbolObj) => symbolObj)
+    .filter((symbolObj) => symbolObj.symbol === symbol);
+
 export const LIVE_SYMBOLS_GECKOIDs = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive
 )

@@ -321,16 +321,32 @@
 }
 
 .listinfo {
-  width: 130px;
+  width: 150px;
   margin-left: 8px;
-  flex-basis: 130px;
+  flex-basis: 150px;
   flex-shrink: 0;
 }
 
 .liststats {
-  width: 110px;
-  flex-basis: 110px;
+  width: 90px;
+  flex-basis: 90px;
   flex-shrink: 0;
   margin-right: 8px;
   text-align: right;
+}
+
+.listicon {
+  margin-left: 12px;
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  background: #ffffff0d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-weight: 700;
 }

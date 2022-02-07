@@ -27,7 +27,7 @@ import ICON_LIST from '~assets/images/icon_list.svg';
 import { selectAssetsICPByAddress } from '~state/wallet';
 import Swiper from 'react-id-swiper';
 import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
-import { LIVE_SYMBOLS_OBJS } from '~global/constant';
+import { SELECT_SYMBOLS_OBJS } from '~global/constant';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
 //import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
@@ -269,7 +269,7 @@ const TokensList = ({ address }: { address: string }) => {
         <div className={styles.listHeaderSubtitle}>${currentBalance?.balanceInUSD?.toFixed(3) || 0}</div>
       </div>
       <div className={styles.listitemscont}>
-        {LIVE_SYMBOLS_OBJS?.map((token, i: number) =>
+        {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
           <div
             onClick={() => history.push('/th/' + address + '/' + token.symbol)}
             key={i}
@@ -291,7 +291,7 @@ const TokensList = ({ address }: { address: string }) => {
             />
           </div>
         )}
-        {tokens?.length > 0 && tokens?.map((token, i: number) => <div
+        {false && tokens?.length > 0 && tokens?.map((token, i: number) => <div
           onClick={() => history.push('/th/' + address + '/' + token.id)}
           key={i}
           className={styles.listitem}>
@@ -313,7 +313,7 @@ const TokensList = ({ address }: { address: string }) => {
             src={ICON_FORWARD}
           />
         </div>)}
-        <div
+        {false && <div
           onClick={() => history.push('/account/selecttoken/' + selectedAccount?.id)}
           className={styles.listitem}>
           <div
@@ -328,7 +328,7 @@ const TokensList = ({ address }: { address: string }) => {
             className={styles.listforward}
             src={ICON_FORWARD}
           />
-        </div>
+        </div>}
       </div>
     </div>
   )
@@ -382,7 +382,7 @@ const TokensGridflow = ({ address }: { address: string }) => {
       effect={'coverflow'}
       slidesPerView={'auto'}
       {...params}>
-      {LIVE_SYMBOLS_OBJS?.map((token, i: number) =>
+      {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
         <div
           key={i}
           className={styles.imagecont}>

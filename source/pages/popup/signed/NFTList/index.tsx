@@ -14,6 +14,7 @@ import ICON_GRID from '~assets/images/icon_grid.svg';
 import ICON_LIST from '~assets/images/icon_list.svg';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
+import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -100,7 +101,12 @@ export const AssetsList = ({ address }) => {
             key={i}
             onClick={() => history.push(`/nftdetails/${asset.id}`)}
             className={styles.listitem}>
-            <img className={styles.listicon} src={getTokenImageURL(asset)} />
+            <img className={styles.listicon}
+                onError={({ currentTarget }) => {
+                    currentTarget.onerror = null;
+                    currentTarget.src = ICON_PLACEHOLDER;
+                }}
+                src={getTokenImageURL(asset)} />
             <div className={styles.listinfo}>
                 <div className={styles.listtitle}>{asset?.title || asset?.tokenIndex}</div>
                 <div className={styles.listsubtitle}>{getTokenCollectionInfo(asset?.canisterId)?.name}</div>
@@ -117,6 +123,22 @@ export const AssetsList = ({ address }) => {
                 src={ICON_FORWARD}
             />
         </div>))}
+        <div
+            onClick={() => history.push('/account/selecttoken/' + selectedAccount?.id)}
+            className={styles.listitem}>
+            <div
+                className={styles.listicon} >
+                <div>💎</div>
+            </div>
+            <div className={styles.listinfo}>
+                <div className={styles.listtitle}>Explore Collections</div>
+            </div>
+            <div className={styles.liststats}></div>
+            <img
+                className={styles.listforward}
+                src={ICON_FORWARD}
+            />
+        </div>
     </div>
 }
 
