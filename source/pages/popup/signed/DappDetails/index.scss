@@ -300,6 +300,8 @@
 
   color: #ffffff;
   padding: 0px 18px;
+  display: flex;
+  align-items: center;
 }
 
 .value {
@@ -344,4 +346,10 @@
   background-color: rgba(0, 0, 0, 0.2);
   margin: 6px 0;
   padding: 12px 0;
+}
+
+.errorIcon {
+  width: 16px;
+  display: inline-block;
+  margin-left: 6px;
 }

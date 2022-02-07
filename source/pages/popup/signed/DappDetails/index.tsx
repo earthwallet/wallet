@@ -13,12 +13,12 @@ import { getShortAddress } from '~utils/common';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 import { keyable } from '~scripts/Background/types/IAssetsController';
-import { stringifyWithBigInt } from '~global/helpers';
+import { safeParseJSON, stringifyWithBigInt } from '~global/helpers';
 import moment from 'moment-mini';
 import useToast from '~hooks/useToast';
 import { useHistory } from 'react-router-dom';
 import { useController } from '~hooks/useController';
-
+import ICON_TX_ERROR from '~assets/images/icon_tx_error.svg';
 
 interface Props extends RouteComponentProps<{ origin: string }> {
 }
@@ -115,7 +115,7 @@ const DappDetails = ({
                 {Array.isArray(dappRequest.request) ? 'True' : 'False'}
               </div>
               <div className={styles.label}>
-                Response
+                Response{safeParseJSON(dappRequest?.response)?.type == 'error' && <img className={styles.errorIcon} src={ICON_TX_ERROR} />}
               </div>
               <div className={styles.value}>
                 {dappRequest.response}
@@ -163,7 +163,7 @@ const DappDetails = ({
               </> : <>
                 <div className={styles.requestBody}>
                   <div className={styles.label}>
-                   signRaw Request Message
+                    signRaw Request Message
                   </div>
                   <div className={styles.value}>
                     {dappRequest.request?.message}

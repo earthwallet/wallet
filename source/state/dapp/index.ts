@@ -49,13 +49,20 @@ export const selectRequestStatusById =
 export const selectConnectedDapps = (state: AppState) =>
   state?.dapp && Object.keys(state?.dapp).map((id) => state?.dapp[id]);
 
+export const selectConnectedDappsByAddress =
+  (address: string) => (state: AppState) =>
+    state?.dapp &&
+    Object.keys(state?.dapp)
+      .map((id) => state?.dapp[id])
+      .filter((dapp) => dapp.address === address);
+
 export const selectDapp = (origin: string) => (state: AppState) =>
   state?.dapp[origin];
 
 export const selectDappRequests = (origin: string) => (state: AppState) =>
   state.entities?.dappRequests &&
-  Object.keys(state.entities?.dappRequests.byId).map((id) => state.entities?.dappRequests.byId[id]).filter(
-    (dappRequest) => dappRequest.origin === origin
-  );
+  Object.keys(state.entities?.dappRequests.byId)
+    .map((id) => state.entities?.dappRequests.byId[id])
+    .filter((dappRequest) => dappRequest.origin === origin);
 
 export default DAppState.reducer;

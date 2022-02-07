@@ -181,6 +181,9 @@ export const messagesHandler = (
   };
 
   const checkAllowedOrigins = (origin: string) => {
+    if (origin == '') {
+      return;
+    }
     const allowed = mainController.dapp.isPageOriginAllowed(origin);
     if (origin && allowed) {
       browser.browserAction.setIcon({
@@ -206,7 +209,7 @@ export const messagesHandler = (
 
   browser.tabs.onUpdated.addListener((_, change, tab) => {
     if (tab.active && change.url) {
-      const url = change.url;
+      const url = change?.url;
       const origin = url && new URL(url as string).origin;
       checkAllowedOrigins(origin || '');
     }

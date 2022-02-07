@@ -33,6 +33,7 @@ import { AssetsList, AssetsCoverflow } from '../NFTList';
 //import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
 import { selectGroupBalanceByAddress, selectGroupBalanceByGroupIdAndSymbol, selectBalanceInUSDByAddress } from '~state/wallet';
 import { selectActiveTokensByAddressWithInfo } from '~state/token';
+import AppsList from '~components/AppsList';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -141,6 +142,12 @@ const Wallet = ({
 
         <div className={styles.tabsep}></div>
       </div>
+      {mainNav === 'apps' &&
+        <>
+          {nav === 'grid' && <AppsList address={address} />}
+          {nav === 'list' && <AppsList address={address} />}
+        </>
+      }
       {mainNav === 'nfts' && <>
         {nav === 'grid' && <AssetsCoverflow address={address} />}
         {nav === 'list' && <div className={styles.nftslistcont}>

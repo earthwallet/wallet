@@ -28,3 +28,11 @@
   width: 39px;
   height: 39px;
 }
+
+.nft {
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}

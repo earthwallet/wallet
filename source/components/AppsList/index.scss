@@ -1,7 +1,11 @@
 .container {
-  height: $appHeight - 40px;
+  height: 360px;
   overflow-y: scroll;
   padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  width: $appWidth;
+  align-items: center;
 }
 
 .nextCont {
@@ -82,6 +86,7 @@
   width: 327px;
   height: 73px;
   justify-content: space-between;
+  flex-shrink: 0;
   &:active {
     opacity: 0.7;
   }
@@ -285,4 +290,12 @@
 .networkIcon {
   width: 25px;
   height: 25px;
+}
+
+.centerDiv {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
 }

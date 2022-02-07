@@ -26,6 +26,20 @@ export const stringifyWithBigInt = (obj: keyable) =>
     typeof value === 'bigint' ? 'BigInt:' + value.toString() : value
   );
 
+export const safeParseJSON = (jsonString: string) => {
+  // This function cannot be optimised, it's best to
+  // keep it small!
+  var parsed;
+
+  try {
+    parsed = JSON.parse(jsonString);
+  } catch (e) {
+    // Oh well, but whatever...
+    parsed = jsonString;
+  }
+
+  return parsed; // Could be undefined!
+};
 /* 
 GNU General Public License v3.0
 https://github.com/Psychedelic/plug/blob/e4242a26f288556ee478ff9f4ac02d375d93c284/source/shared/utils/ids.js#L23

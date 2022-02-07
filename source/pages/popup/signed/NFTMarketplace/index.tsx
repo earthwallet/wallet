@@ -20,6 +20,7 @@ const NFTMarketplace = () => {
             <div className={styles.mainContainer}>
                 {LIVE_ICP_NFT_LIST.map((nftObj: keyable) => <div
                     key={nftObj.id}
+                    className={styles.nft}
                     onClick={() => history.push('/nft/collection/' + nftObj.id)}
                 >
                     <MarketplaceCard

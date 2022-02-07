@@ -10,7 +10,7 @@ import { isJsonString } from '~utils/common';
 import { validateMnemonic } from '@earthwallet/keyring';
 import InputWithLabel from '~components/InputWithLabel';
 import Warning from '~components/Warning';
-import { stringifyWithBigInt } from '~global/helpers';
+import { safeParseJSON, stringifyWithBigInt } from '~global/helpers';
 import { ClipLoader } from 'react-spinners';
 //import { keyable } from '~scripts/Background/types/IMainController';
 import { selectRequestStatusById } from '~state/dapp';
@@ -100,12 +100,12 @@ const SignTransactionPage = () => {
     <div
       id={'response'}
       className={styles.title}>Signature Request</div>
-    {requestStatus?.response && <div className={clsx(styles.accountInfo, styles.response)}>
+    {requestStatus?.response && <div className={clsx(styles.accountInfo, styles.response, safeParseJSON(requestStatus?.response)?.type == 'error' && styles.errorResponse)}>
       <div
         className={styles.label}>
         Response</div>
       <div className={clsx(styles.value, styles.valueMono)}>
-        {stringifyWithBigInt(requestStatus?.response)}
+        {typeof requestStatus?.response === 'string' ? requestStatus?.response : stringifyWithBigInt(requestStatus?.response)}
       </div>
     </div>}
     <div className={styles.accountInfo}>
@@ -153,7 +153,7 @@ const SignTransactionPage = () => {
             Message
           </div>
           <div className={clsx(styles.value, styles.valueMono)}>
-            {singleReq?.args === undefined ? 'undefined' : stringifyWithBigInt(singleReq?.args)}
+            {singleReq?.args === undefined ? 'undefined' : stringifyWithBigInt(singleReq?.args)?.length > 1000 ? stringifyWithBigInt(singleReq?.args)?.substring(0, 1000) + '...' : stringifyWithBigInt(singleReq?.args)}
           </div>
         </div>)
         : <div className={styles.requestBody}>
@@ -173,7 +173,7 @@ const SignTransactionPage = () => {
             Message
           </div>
           <div className={clsx(styles.value, styles.valueMono)}>
-            {request?.args === undefined ? 'undefined' : stringifyWithBigInt(request?.args)}
+            {request?.args === undefined ? 'undefined' : stringifyWithBigInt(request?.args)?.length > 1000 ? stringifyWithBigInt(request?.args)?.substring(0, 1000) + '...' : stringifyWithBigInt(request?.args)}
           </div>
         </div>}
 

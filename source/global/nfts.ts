@@ -195,8 +195,8 @@ export const ICP_NFT_LIST = [
     name: 'Earth DAO',
     id: 'ntwio-byaaa-aaaak-qaama-cai',
     standard: 'EarthEXT',
-    isLive: true,
-    isAirdrop: true,
+    isLive: false,
+    isAirdrop: false,
     description:
       'Earth DAO - Guardians NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
     icon: ICON_EARTH,
@@ -207,9 +207,7 @@ const LIVE_ICP_NFT_LIST_CANISTER_IDS = ICP_NFT_LIST.filter(
   (asset) => asset.isLive
 ).map((asset) => asset.id);
 
-export const LIVE_ICP_NFT_LIST = ICP_NFT_LIST.filter(
-  (asset) => asset.isLive
-);
+export const LIVE_ICP_NFT_LIST = ICP_NFT_LIST.filter((asset) => asset.isLive);
 
 export const getTokenCollectionInfo = (canisterId: string) =>
   ICP_NFT_LIST.filter((asset) => asset.id === canisterId)[0];
