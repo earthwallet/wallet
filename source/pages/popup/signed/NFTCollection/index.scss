@@ -15,4 +15,16 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.empty {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 1em;
+  margin-top: 3px;
+  width: 39px;
+  height: 39px;
 }

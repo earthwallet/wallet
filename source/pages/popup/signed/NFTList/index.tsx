@@ -124,7 +124,7 @@ export const AssetsList = ({ address }) => {
             />
         </div>))}
         <div
-            onClick={() => history.push('/account/selecttoken/' + selectedAccount?.id)}
+            onClick={() => history.push('/account/marketplace/' + address)}
             className={styles.listitem}>
             <div
                 className={styles.listicon} >

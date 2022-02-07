@@ -27,6 +27,19 @@
   font-size: 12px;
   line-height: 24px;
   color: #ffffff;
+  margin-bottom: 6px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 24px;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 .priceContainer {
   display: flex;
