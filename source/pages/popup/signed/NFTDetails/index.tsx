@@ -62,7 +62,7 @@ const NFTDetails = ({
                     <div className={styles.subtitleCont}>
                         <div className={styles.subtitle}>{(loading || asset?.loading)
                             ? <SkeletonTheme color="#5A597E63" highlightColor="#222">
-                                <Skeleton width={150} />
+                                <Skeleton width={72} />
                             </SkeletonTheme>
                             : asset?.forSale
                                 ? 'Listed for sale'
