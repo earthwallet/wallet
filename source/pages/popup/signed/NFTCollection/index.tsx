@@ -4,7 +4,7 @@ import styles from "./index.scss";
 import Header from '~components/Header';
 import { getTokenCollectionInfo } from '~global/nfts';
 import { keyable } from '~scripts/Background/types/IMainController';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
 import {
     canisterAgentApi,
     //decodeTokenId,
@@ -24,6 +24,7 @@ const NFTCollection = ({
     },
 }: Props) => {
 
+    const history = useHistory();
     const nftCollObj = getTokenCollectionInfo(nftId);
     const [loading, setLoading] = useState<boolean>(false);
     const [listings, setListings] = useState<keyable>([]);
@@ -37,6 +38,10 @@ const NFTCollection = ({
             const listings = response.map((list: keyable) => ({
                 id: list[0],
                 price: list[1].price?.toString(),
+                tokenId: getTokenIdentifier(
+                    nftId,
+                    list[0]
+                ),
                 icon: `https://${nftId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${getTokenIdentifier(
                     nftId,
                     list[0]
@@ -60,9 +65,12 @@ const NFTCollection = ({
             ><div className={styles.empty} /></Header>
             {loading ? <div className={styles.loadingCont}><ClipLoader color={'#fffff'} /></div> : <div className={styles.mainContainer}>
                 {listings.map((nftObj: keyable) => <div
-                    key={nftObj.id}
+                    key={nftObj.tokenId}
+                    className={styles.nftcardcont}
+                    onClick={() => history.push(`/nft/buy/${nftObj.tokenId}?price=${nftObj.price}`)}
                 >
                     <NFTCard
+                        id={nftObj.id}
                         img={nftObj.icon}
                         text={nftObj.price / Math.pow(10, 8)}
                         price={nftObj.price / Math.pow(10, 8) * currentUSDValue?.usd}

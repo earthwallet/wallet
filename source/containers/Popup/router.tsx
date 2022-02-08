@@ -34,6 +34,8 @@ import Marketplace from '~pages/popup/signed/Marketplace';
 import Marketplace1 from '~pages/popup/signed/Marketplace1';
 import NFTMarketplace from '~pages/popup/signed/NFTMarketplace';
 import NFTCollection from '~pages/popup/signed/NFTCollection';
+import NFTBuyDetails from '~pages/popup/signed/NFTBuyDetails';
+import NFTSettle from '~pages/popup/signed/NFTSettle';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -78,7 +80,7 @@ const PopupRouter = () => {
           <ToastProvider>
             <Switch location={item}>
               <Route path="/popup.html">
-                <Redirect to="/accounts" />
+                <Redirect to="/nft/settle/jta7g-wqkor-uwiaa-aaaaa-cmaaq-qaqca-aadet-a?price=12000000" />
               </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
@@ -106,10 +108,16 @@ const PopupRouter = () => {
                 {wrapWithErrorBoundary(<Marketplace1 />, 'accounts')}
               </Route>
               <Route path="/account/marketplace/:address">
-                {wrapWithErrorBoundary(<NFTMarketplace />, 'accounts')}
+                {wrapWithErrorBoundary(<NFTMarketplace />, 'NFTMarketplace')}
               </Route>
               <Route path="/nft/collection/:nftId">
-                {wrapWithErrorBoundary(<NFTCollection />, 'accounts')}
+                {wrapWithErrorBoundary(<NFTCollection />, 'NFTCollection')}
+              </Route>
+              <Route path="/nft/buy/:nftId">
+                {wrapWithErrorBoundary(<NFTBuyDetails />, 'NFTBuyDetails')}
+              </Route>
+              <Route path="/nft/settle/:nftId">
+                {wrapWithErrorBoundary(<NFTSettle />, 'accounts')}
               </Route>
               <Route path="/portfolio">
                 {wrapWithErrorBoundary(<Portfolio />, 'portfolio')}

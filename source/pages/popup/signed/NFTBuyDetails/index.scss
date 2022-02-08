@@ -1,0 +1,155 @@
+.page {
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: $appHeight;
+  position: relative;
+  background: url('../../../../assets/images/bg_nft_details.png');
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.fullImage {
+  width: 375px;
+  height: 430px;
+  //background: url('../../../../assets/images/nft_bg.png');
+
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.mainCont {
+}
+
+.action {
+  background: #2496ff;
+  border-radius: 29px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  color: #fafbfb;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: fit-content;
+  padding: 8px 22px;
+  /* margin: 300px 24px 30px; */
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  &:hover {
+    opacity: 0.9;
+    backdrop-filter: blur(20px);
+  }
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.title {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 28px;
+  line-height: 20px;
+  padding: 24px 30px 8px 24px;
+}
+
+.subtitle {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 22px;
+  /* or 19px */
+
+  color: #ffffff;
+}
+
+.price {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.subtitleCont {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  justify-content: space-between;
+}
+.sep {
+  opacity: 0.15;
+  border: 1px solid #ffffff;
+  margin: 12px;
+}
+
+.creatorIcon {
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+  display: flex;
+  flex-basis: 39px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+.creatorCont {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  margin: 12px 0px;
+}
+.creatorSubtitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 150%;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  opacity: 0.55;
+}
+
+.creatorTitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 150%;
+  /* identical to box height, or 21px */
+
+  color: #ffffff;
+}
+.creatorInfo {
+  margin-left: 12px;
+}
+
+.stickyheader {
+  position: fixed;
+  z-index: 1000;
+}
+
+.actions {
+  position: absolute;
+  bottom: 30px;
+  left: 20px;
+  display: flex;
+}
+
+.secAction {
+  margin-left: 6px;
+}

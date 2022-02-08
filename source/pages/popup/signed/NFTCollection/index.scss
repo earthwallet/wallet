@@ -35,3 +35,11 @@
   align-items: center;
   justify-content: center;
 }
+
+.nftcardcont {
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}
