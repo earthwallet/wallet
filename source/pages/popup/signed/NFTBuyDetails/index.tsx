@@ -49,7 +49,8 @@ const NFTBuyDetails = ({
                 style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
                 <div className={styles.actions}>
                     <div
-                        onClick={() => history.push(`/account/listnft/${asset?.address}?assetid=${asset.id}`)}
+                    
+                        onClick={() => history.push(`/nft/settle/${nftId}?price=${price}`)}
                         className={clsx(styles.action, styles.secAction)}>Buy</div>
                 </div>
             </div>

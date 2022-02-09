@@ -80,8 +80,10 @@ const PopupRouter = () => {
           <ToastProvider>
             <Switch location={item}>
               <Route path="/popup.html">
-                <Redirect to="/nft/settle/jta7g-wqkor-uwiaa-aaaaa-cmaaq-qaqca-aadet-a?price=12000000" />
-              </Route>
+                <Redirect to="/accounts" />
+
+                {/*                 <Redirect to="/nft/settle/jta7g-wqkor-uwiaa-aaaaa-cmaaq-qaqca-aadet-a?price=12000000" />
+ */}              </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
               </Route>

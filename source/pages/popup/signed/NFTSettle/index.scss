@@ -10,7 +10,6 @@
   background: url('../../../../assets/images/bg_tokens.png');
   height: $appHeight;
   width: $appWidth;
-  padding: 24px 16px 16px 16px;
 }
 .updateTime {
   font-family: Poppins;
@@ -63,15 +62,19 @@
   z-index: 1;
 }
 .internetCompWrapContainer {
+  margin: 24px 16px 16px 16px;
   background: rgba(90, 89, 126, 0.39);
   backdrop-filter: blur(7px);
   border-radius: 10px;
   padding: 10.17px 16px 16px 16px;
-  margin-top: 8px;
+  width: calc(100vw - 48px);
+  height: 400px;
+  overflow: scroll;
 }
 .ethIconContainer {
-  width: 55.37px;
-  height: 55.34px;
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
 }
 .ethTextContainer {
   display: flex;
@@ -234,4 +237,22 @@
   font-size: 12px;
   line-height: 16px;
   color: #a5acbb;
+}
+
+.empty {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 1em;
+  margin-top: 3px;
+  width: 39px;
+  height: 39px;
+}
+
+.imgCont {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
