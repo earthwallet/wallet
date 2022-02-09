@@ -1,4 +1,4 @@
-import { decodeTokenId } from '@earthwallet/assets';
+import { canisterAgentApi, decodeTokenId } from '@earthwallet/assets';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -13,9 +13,10 @@ import NextStepButton from '~components/NextStepButton';
 import InputWithLabel from '~components/InputWithLabel';
 import { decryptString } from '~utils/vault';
 import { selectAccountById } from '~state/wallet';
-import { validateMnemonic } from '@earthwallet/keyring';
+import { send, validateMnemonic } from '@earthwallet/keyring';
 import Warning from '~components/Warning';
 import useToast from '~hooks/useToast';
+import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 
 //import logo from '~assets/images/ew.svg';
 //import downArrow from '~assets/images/downArrow.svg';
@@ -82,7 +83,41 @@ const NFTSettle = ({
     }
 
     if (isJsonString(secret)) {
-      show('Purchasing..');
+      show('Locking..');
+      const currentIdentity = Secp256k1KeyIdentity.fromJSON(secret);
+
+      const lockAddressRes = await canisterAgentApi(canisterId, 'lock',
+        [nftId,
+          price,
+          address,
+          []],
+        currentIdentity
+      );
+      const lockAddress = lockAddressRes?.ok;
+      console.log('lockAddress', lockAddressRes, lockAddress);
+      show('Sending..');
+      const selectedAmount = parseFloat((price / Math.pow(10, 8)).toFixed(8));
+
+      const index: BigInt = await send(
+        currentIdentity,
+        lockAddress,
+        address,
+        selectedAmount,
+        'ICP'
+      );
+      console.log(index);
+      show('Settling..');
+
+      const settle = await canisterAgentApi(canisterId, 'settle',
+        nftId,
+        currentIdentity
+      );
+      show('Purchase complete');
+
+      console.log('settle', settle);
+      setIsBusy(false);
+
+
       //purchase
       //controller.dapp.setApprovedIdentityJSON(secret);
       //await approveSign();
