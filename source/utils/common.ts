@@ -135,3 +135,6 @@ export const parseBigIntToString = (data: keyable): keyable =>
   deSerializeJsonWithBigInt(serializeJsonWithBigInt(data));
 
 export default generateRandomColor;
+
+
+export const PASSWORD_MIN_LENGTH = 6;

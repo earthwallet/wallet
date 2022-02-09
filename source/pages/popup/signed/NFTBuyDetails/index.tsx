@@ -27,6 +27,7 @@ const NFTBuyDetails = ({
 }: Props) => {
     const queryParams = useQuery();
     const price: number = parseInt(queryParams.get('price') || '');
+    const address: string = queryParams.get('address') || '';
     const history = useHistory();
     //const controller = useController();
     console.log(nftId, price);
@@ -49,8 +50,8 @@ const NFTBuyDetails = ({
                 style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
                 <div className={styles.actions}>
                     <div
-                    
-                        onClick={() => history.push(`/nft/settle/${nftId}?price=${price}`)}
+
+                        onClick={() => history.push(`/nft/settle/${nftId}?price=${price}&address=${address}`)}
                         className={clsx(styles.action, styles.secAction)}>Buy</div>
                 </div>
             </div>

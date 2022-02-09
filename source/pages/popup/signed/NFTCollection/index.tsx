@@ -15,6 +15,7 @@ import NFTCard from '~components/NFTCard';
 import { useSelector } from 'react-redux';
 import { selectAssetBySymbol } from '~state/assets';
 import { getSymbol } from '~utils/common';
+import useQuery from '~hooks/useQuery';
 interface Props extends RouteComponentProps<{ nftId: string }> {
 }
 
@@ -23,12 +24,14 @@ const NFTCollection = ({
         params: { nftId },
     },
 }: Props) => {
+    const queryParams = useQuery();
 
     const history = useHistory();
     const nftCollObj = getTokenCollectionInfo(nftId);
     const [loading, setLoading] = useState<boolean>(false);
     const [listings, setListings] = useState<keyable>([]);
     const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
+    const address: string = queryParams.get('address') || '';
 
     useEffect(() => {
         const fetchNfts = async () => {
@@ -67,7 +70,7 @@ const NFTCollection = ({
                 {listings.map((nftObj: keyable) => <div
                     key={nftObj.tokenId}
                     className={styles.nftcardcont}
-                    onClick={() => history.push(`/nft/buy/${nftObj.tokenId}?price=${nftObj.price}`)}
+                    onClick={() => history.push(`/nft/buy/${nftObj.tokenId}?price=${nftObj.price}&address=${address}`)}
                 >
                     <NFTCard
                         id={nftObj.id}

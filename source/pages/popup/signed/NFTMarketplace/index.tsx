@@ -5,9 +5,19 @@ import styles from "./index.scss";
 import Header from '~components/Header';
 import { LIVE_ICP_NFT_LIST } from '~global/nfts';
 import { keyable } from '~scripts/Background/types/IMainController';
-import { useHistory } from 'react-router-dom';
+import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
 
-const NFTMarketplace = () => {
+interface Props extends RouteComponentProps<{ address: string }> {
+    className?: string;
+}
+
+const NFTMarketplace = ({
+    match: {
+        params: {
+            address,
+        },
+    },
+}: Props) => {
     const history = useHistory();
     return (
         <div className={styles.page}>
@@ -21,7 +31,7 @@ const NFTMarketplace = () => {
                 {LIVE_ICP_NFT_LIST.map((nftObj: keyable) => <div
                     key={nftObj.id}
                     className={styles.nft}
-                    onClick={() => history.push('/nft/collection/' + nftObj.id)}
+                    onClick={() => history.push(`/nft/collection/${nftObj.id}?address=${address}`)}
                 >
                     <MarketplaceCard
                         img={nftObj.icon}
@@ -38,4 +48,4 @@ const NFTMarketplace = () => {
     )
 }
 
-export default NFTMarketplace
+export default withRouter(NFTMarketplace)

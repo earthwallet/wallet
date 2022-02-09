@@ -62,14 +62,13 @@
   z-index: 1;
 }
 .internetCompWrapContainer {
-  margin: 24px 16px 16px 16px;
+  margin: 16px;
   background: rgba(90, 89, 126, 0.39);
   backdrop-filter: blur(7px);
   border-radius: 10px;
-  padding: 10.17px 16px 16px 16px;
-  width: calc(100vw - 48px);
-  height: 400px;
-  overflow: scroll;
+  padding: 10px 16px 16px 16px;
+  width: calc(100vw - 32px);
+  height: fit-content;
 }
 .ethIconContainer {
   width: 90px;
@@ -255,4 +254,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 15px;
+}
+
+.footer {
+  height: 180px;
+  position: fixed;
+  bottom: 0;
+  width: $appWidth;
+  padding: 0 24px;
+  background: #34343447;
+  backdrop-filter: blur(7px);
+}
+
+.scrollCont {
+  height: 531px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-bottom: 180px;
 }
