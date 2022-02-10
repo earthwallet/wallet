@@ -1,7 +1,7 @@
 import { canisterAgentApi, decodeTokenId } from '@earthwallet/assets';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
 import Header from '~components/Header';
 import { getTokenImageURL } from '~global/nfts';
 import useQuery from '~hooks/useQuery';
@@ -17,6 +17,7 @@ import { send, validateMnemonic } from '@earthwallet/keyring';
 import Warning from '~components/Warning';
 import useToast from '~hooks/useToast';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
+import { useController } from '~hooks/useController';
 
 //import logo from '~assets/images/ew.svg';
 //import downArrow from '~assets/images/downArrow.svg';
@@ -44,7 +45,8 @@ const NFTSettle = ({
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
   const usdValue = currentUSDValue?.usd;
   const { show } = useToast();
-
+  const controller = useController();
+  const history = useHistory();
 
   const onPassChange = useCallback(
     (password: string) => {
@@ -97,14 +99,20 @@ const NFTSettle = ({
       console.log('lockAddress', lockAddressRes, lockAddress);
       show('Sending..');
       const selectedAmount = parseFloat((price / Math.pow(10, 8)).toFixed(8));
+      let index: BigInt = 0n;
+      try {
+        index = await send(
+          currentIdentity,
+          lockAddress,
+          address,
+          selectedAmount,
+          'ICP'
+        );
+      } catch (error: any) {
+        console.log(error)
+        console.log(error?.message);
+      }
 
-      const index: BigInt = await send(
-        currentIdentity,
-        lockAddress,
-        address,
-        selectedAmount,
-        'ICP'
-      );
       console.log(index);
       show('Settling..');
 
@@ -113,7 +121,8 @@ const NFTSettle = ({
         currentIdentity
       );
       show('Purchase complete');
-
+      controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' });
+      history.push(`/account/details/${address}`)
       console.log('settle', settle);
       setIsBusy(false);
 
