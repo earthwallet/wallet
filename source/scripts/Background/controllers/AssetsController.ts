@@ -260,6 +260,25 @@ export default class AssetsController implements IAssetsController {
             ],
           })
         );
+
+        const state = store.getState();
+        const existingAssets =
+          state.entities.assets?.byId &&
+          Object.keys(state.entities.assets?.byId)
+            ?.map((id) => state.entities.assets.byId[id])
+            .filter((assets) => assets.address === account.address);
+        const existingCount = existingAssets?.length;
+
+        if (existingCount != tokens?.length) {
+          existingAssets?.map((token: keyable) =>
+            store.dispatch(
+              storeEntities({
+                entity: 'assets',
+                data: [{ ...token, ...{ address: '' } }],
+              })
+            )
+          );
+        }
         //cache the assets
         tokens.map((token: keyable) =>
           store.dispatch(

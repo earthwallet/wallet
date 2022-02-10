@@ -34,6 +34,7 @@ import { AssetsList, AssetsCoverflow } from '../NFTList';
 import { selectGroupBalanceByAddress, selectGroupBalanceByGroupIdAndSymbol, selectBalanceInUSDByAddress } from '~state/wallet';
 import { selectActiveTokensByAddressWithInfo } from '~state/token';
 import AppsList from '~components/AppsList';
+import useQuery from '~hooks/useQuery';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -46,6 +47,10 @@ const Wallet = ({
     params: { address },
   },
 }: Props) => {
+
+  const queryParams = useQuery();
+  const navQuery: string = queryParams.get('nav') || '';
+
 
   const controller = useController();
 
@@ -73,6 +78,12 @@ const Wallet = ({
       controller.tokens.getTokenBalances(address);
     }
   }, []);
+
+  useEffect(() => {
+    if (navQuery != '') {
+      setMainNav(navQuery);
+    }
+  }, [navQuery != '']);
 
 
   useEffect(() => {
