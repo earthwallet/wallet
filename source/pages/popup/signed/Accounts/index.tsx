@@ -43,9 +43,9 @@ const Page = () => {
         <>
           <>
             <div className={styles.fixedHeader}>
-              <div 
-              onClick={() => history.push('/walletsettings')}
-              className={styles.backButtonCont}>
+              <div
+                onClick={() => history.push('/walletsettings')}
+                className={styles.backButtonCont}>
                 <div className={styles.backButtonIcon}>
                   <img src={ICON_SETTINGS} />
                 </div>

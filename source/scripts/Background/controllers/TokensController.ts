@@ -46,6 +46,7 @@ export default class TokensController implements ITokensController {
         id: address + '_WITH_' + tokenInfo.tokenId,
         balance: response.toString(),
       };
+      console.log(response, 'balanceOf');
       store.dispatch(
         storeEntities({
           entity: 'tokens',

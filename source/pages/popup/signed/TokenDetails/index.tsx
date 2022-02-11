@@ -73,11 +73,11 @@ const Wallet = ({
     }
   }, [selectedAccount]);
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (address != null) {
       controller.tokens.getTokenBalances(address);
     }
-  }, []);
+  }, []); */
 
   useEffect(() => {
     if (navQuery != '') {
@@ -155,8 +155,8 @@ const Wallet = ({
       </div>
       {mainNav === 'apps' &&
         <>
-          {nav === 'grid' && <AppsList address={address} />}
-          {nav === 'list' && <AppsList address={address} />}
+          {nav === 'grid' && <AppsList address={address} hideAddress />}
+          {nav === 'list' && <AppsList address={address} hideAddress />}
         </>
       }
       {mainNav === 'nfts' && <>

@@ -15,7 +15,7 @@ import { keyable } from '~scripts/Background/types/IMainController';
 
 
 
-const AppsList = ({ address }: { address: string }) => {
+const AppsList = ({ address, hideAddress }: { address: string, hideAddress: boolean }) => {
     const history = useHistory();
     const dapps = useSelector(selectConnectedDappsByAddress(address));
 
@@ -29,14 +29,21 @@ const AppsList = ({ address }: { address: string }) => {
                 className={styles.checkboxCont}>
                 <div className={styles.checkboxContent}>
                     <img src={dapp?.logo} className={styles.networkIcon} />
-                    <div>
+                    {hideAddress ? <div>
+                        <div className={styles.checkboxTitle}>
+                            {dapp?.title}
+                        </div>
+                        <div className={styles.checkboxSubTitle}>
+                            {dapp?.origin}
+                        </div>
+                    </div> : <div>
                         <div className={styles.checkboxTitle}>
                             {dapp?.origin} {dapp?.title}
                         </div>
                         <div className={styles.checkboxSubTitle}>
                             {dapp?.address && getShortAddress(dapp?.address)}
                         </div>
-                    </div>
+                    </div>}
                 </div>
                 <img
                     src={ICON_FORWARD}
