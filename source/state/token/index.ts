@@ -5,6 +5,7 @@ import type { ITokenState } from './types';
 import { AppState } from '~state/store';
 import { keyable } from '~scripts/Background/types/IMainController';
 //import groupBy from 'lodash/groupBy';
+import TOKENS from '~utils/swapData';
 
 const initialState: ITokenState = {
   loading: false,
@@ -31,6 +32,7 @@ const TokenState = createSlice({
 export const { updateError, updateLoading, hydrateWallet } = TokenState.actions;
 
 export const selectTokensInfo = (state: AppState) => {
+  return TOKENS;
   return (
     state.entities.tokensInfo?.byId &&
     Object.keys(state.entities.tokensInfo?.byId)?.map(

@@ -10,17 +10,17 @@ import {
 import {
   getAllTokens,
   getMetadata,
-  tokenAPI,
-  pairFactoryAPI,
-  approve,
-  transfer_from,
-  pairAPI,
+  //tokenAPI,
+  //pairFactoryAPI,
+  //approve,
+  //transfer_from,
+  //pairAPI,
 } from '@earthwallet/assets';
 import { createEntity } from '~state/entities';
-import { Principal } from '@dfinity/principal';
-import { keyable } from '../types/IAssetsController';
-import { createWallet } from '@earthwallet/keyring';
-import { parseBigIntToString } from '~utils/common';
+//import { Principal } from '@dfinity/principal';
+//import { keyable } from '../types/IAssetsController';
+//import { createWallet } from '@earthwallet/keyring';
+//import { parseBigIntToString } from '~utils/common';
 
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
@@ -37,16 +37,12 @@ export default class TokensController implements ITokensController {
         .filter((token) => token.address === address && token.active);
     console.log(activeTokens, 'getTokenBalances');
     for (const tokenInfo of activeTokens) {
-      const response = await tokenAPI(
-        tokenInfo.tokenId,
-        'balanceOf',
-        Principal.fromText(accountInfo?.meta?.principalId)
-      );
+      await this.delay(1000);
+
       const balance = {
         id: address + '_WITH_' + tokenInfo.tokenId,
-        balance: response.toString(),
+        balance: 123456,
       };
-      console.log(response, 'balanceOf');
       store.dispatch(
         storeEntities({
           entity: 'tokens',
@@ -58,7 +54,6 @@ export default class TokensController implements ITokensController {
   };
 
   getTokens = async (callback?: ((address: string) => void) | undefined) => {
-    console.log('getTokens');
     const state = store.getState();
 
     if (state.entities.tokens == null) {
@@ -68,7 +63,6 @@ export default class TokensController implements ITokensController {
       store.dispatch(createEntity({ entity: 'tokensInfo' }));
     }
     const tokens = await getAllTokens();
-    console.log('getTokens', tokens);
     for (const tokenCanisterId of tokens) {
       const response = await getMetadata(tokenCanisterId);
       const { decimals, fee, feeTo, name, owner, symbol, totalSupply } =
@@ -96,8 +90,12 @@ export default class TokensController implements ITokensController {
     return;
   };
 
+  delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
   getPair = async (token1: string, token2: string) => {
-    console.log(token1, token2, 'getPair');
+    await this.delay(5000);
+
+    /*  console.log(token1, token2, 'getPair');
     let response = await pairFactoryAPI('get_pair', [
       Principal.fromText(token1),
       Principal.fromText(token2),
@@ -114,21 +112,18 @@ export default class TokensController implements ITokensController {
 
     const price1 = stats.token0_price;
     const price2 = stats.token1_price;
-    const ratio = isNaN(price2) ? 1 : price2;
+    const ratio = isNaN(price2) ? 1 : price2; */
     return {
       token1,
       token2,
-      pair,
-      price1,
-      price2,
-      ratio,
-      stats: parseBigIntToString(stats),
+      ratio: 1.4,
+      stats: { total_supply: 12111122 },
     };
   };
 
   swap = async (token1: string, token2: string, amount: number) => {
     console.log(token1, token2, amount, 'swap');
-    let response = await pairFactoryAPI('get_pair', [
+    /* let response = await pairFactoryAPI('get_pair', [
       Principal.fromText(token1),
       Principal.fromText(token2),
     ]);
@@ -173,22 +168,21 @@ export default class TokensController implements ITokensController {
     );
 
     console.log(_approve1, _transfer_from1, get_transit);
-    const swap = await pairAPI(pairCanisterId, 'swap', undefined, identity);
+    const swap = await pairAPI(pairCanisterId, 'swap', undefined, identity); */
+    await this.delay(5000);
     return {
       token1,
       token2,
-      pair: pairCanisterId,
-      price1,
-      price2,
-      ratio,
-      swap,
-      stats: parseBigIntToString(stats),
+      ratio: 1.6,
+      stats: { total_supply: 12111122 },
     };
   };
 
   stake = async (token1: string, token2: string, amount: number) => {
-    console.log(token1, token2, 'mint');
-    let response = await pairFactoryAPI('get_pair', [
+    console.log(token1, token2, amount, 'stake');
+    await this.delay(5000);
+
+    /*  let response = await pairFactoryAPI('get_pair', [
       Principal.fromText(token1),
       Principal.fromText(token2),
     ]);
@@ -246,15 +240,12 @@ export default class TokensController implements ITokensController {
       _approve2,
       _transfer_from2,
       'stake'
-    );
+    ); */
     return {
       token1,
       token2,
-      pair: pairCanisterId,
-      price1,
-      price2,
-      stats: parseBigIntToString(stats),
-      ratio,
+      stats: { total_supply: 12111122 },
+      ratio: 1.1,
     };
   };
   updateTokensOfNetwork = async (

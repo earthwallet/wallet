@@ -21,7 +21,6 @@ import { keyable } from '~scripts/Background/types/IAssetsController';
 //import { useSelector } from 'react-redux';
 //import { selectActiveAccountsByGroupId } from '~state/wallet';
 //import { LIVE_SYMBOLS_OBJS } from '~global/constant';
-
 interface Props extends RouteComponentProps<{ address: string }> {
 }
 

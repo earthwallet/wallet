@@ -73,11 +73,11 @@ const Wallet = ({
     }
   }, [selectedAccount]);
 
-/*   useEffect(() => {
-    if (address != null) {
-      controller.tokens.getTokenBalances(address);
-    }
-  }, []); */
+  /*   useEffect(() => {
+      if (address != null) {
+        controller.tokens.getTokenBalances(address);
+      }
+    }, []); */
 
   useEffect(() => {
     if (navQuery != '') {
@@ -309,7 +309,7 @@ const TokensList = ({ address }: { address: string }) => {
             />
           </div>
         )}
-        {false && tokens?.length > 0 && tokens?.map((token, i: number) => <div
+        {tokens?.length > 0 && tokens?.map((token, i: number) => <div
           onClick={() => history.push('/th/' + address + '/' + token.id)}
           key={i}
           className={styles.listitem}>
@@ -324,14 +324,14 @@ const TokensList = ({ address }: { address: string }) => {
             <div className={styles.listtitle}>{token?.name}</div>
           </div>
           <div className={styles.liststats} >
-            <div className={styles.listprice}>{token?.balance} {token?.symbol}</div>
+            <div className={styles.listprice}>{123456} {token?.symbol}</div>
           </div>
           <img
             className={styles.listforward}
             src={ICON_FORWARD}
           />
         </div>)}
-        {false && <div
+        {true && <div
           onClick={() => history.push('/account/selecttoken/' + selectedAccount?.id)}
           className={styles.listitem}>
           <div

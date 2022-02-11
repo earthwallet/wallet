@@ -27,6 +27,7 @@ const TokenHistory = ({
   const history = useHistory();
   const tokenInfo = useSelector(selectTokensInfoById(tokenId));
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
+  console.log(tokenPair);
   return (
     <div className={styles.page}>
       <Header
@@ -42,7 +43,7 @@ const TokenHistory = ({
             ? <img className={styles.icon_earth} src={ICON_EARTH} />
             : <div className={styles.icon_earth}>{tokenInfo?.name?.charAt(0)}
             </div>}
-          <div className={styles.sectitle}>{tokenPair?.balance} {tokenInfo?.symbol}</div>
+          <div className={styles.sectitle}>{1234} {tokenInfo?.symbol}</div>
           <div className={styles.secsubtitle}>$4,092.22</div>
         </div>
         <div className={styles.cta}>
