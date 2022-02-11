@@ -122,7 +122,8 @@ const NFTSettle = ({
       );
       show('Purchase complete');
       controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' });
-      history.push(`/account/details/${address}?nav=nfts`)
+      //history.push(`/account/details/${address}?nav=nfts`);
+      history.push(`/nft/bought/${nftId}?address=${address}`);
       console.log('settle', settle);
       setIsBusy(false);
 
