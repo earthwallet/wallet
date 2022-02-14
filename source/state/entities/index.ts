@@ -12,6 +12,7 @@ const initialState: IEntityState = {
   groupbalances: { byId: {} },
   assets: { byId: {} },
   assetsCount: { byId: {} },
+  collectionStats: { byId: {} },
   dappRequests: { byId: {} },
   tokens: { byId: {} },
   tokensInfo: { byId: {} },

@@ -12,6 +12,7 @@ import useGetAccountGroupBalances from '~hooks/useGetAccountGroupBalances';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import useGetAccountGroupAssetBalances from '~hooks/useGetAccountGroupAssetBalances';
 import ICON_SETTINGS from '~assets/images/icon_more_settings.svg';
+import useGetCollectionStats from '~hooks/useGetCollectionStats';
 
 const Page = () => {
   const history = useHistory();
@@ -19,6 +20,7 @@ const Page = () => {
   const loading = useGetAccountGroupBalances(accountGroups);
 
   useGetAccountGroupAssetBalances(accountGroups);
+  useGetCollectionStats();
 
   return (
     <div className={styles.page}>

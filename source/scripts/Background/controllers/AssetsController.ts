@@ -3,11 +3,12 @@ import { updateFiatPrice } from '~state/assets';
 import { IAssetState } from '~state/assets/types';
 import store from '~state/store';
 import type { IAssetsController, keyable } from '../types/IAssetsController';
-import { storeEntities, updateEntities } from '~state/entities';
+import { createEntity, storeEntities, updateEntities } from '~state/entities';
 import { getNFTsFromCanisterExt } from '@earthwallet/assets';
 import { parseBigIntToString } from '~utils/common';
 import LIVE_ICP_NFT_LIST_CANISTER_IDS from '~global/nfts';
 import { canisterAgentApi, getTokenIdentifier } from '@earthwallet/assets';
+import { isArray } from 'lodash';
 
 export default class AssetsController implements IAssetsController {
   fetchFiatPrice = async (currency = 'USD') => {
@@ -186,6 +187,55 @@ export default class AssetsController implements IAssetsController {
         },
       })
     );
+  };
+  getCollectionStats = async () => {
+    console.log('allStats', 'getCollectionStats');
+    let allStats: keyable = [];
+
+    const state = store.getState();
+
+    if (state.entities.collectionStats == null) {
+      store.dispatch(createEntity({ entity: 'collectionStats' }));
+    }
+    for (const [
+      index,
+      canisterId,
+    ] of LIVE_ICP_NFT_LIST_CANISTER_IDS.entries()) {
+      let response: keyable = [];
+      try {
+        const response: keyable = await canisterAgentApi(canisterId, 'stats');
+        allStats[index] = response;
+      } catch (error) {
+        console.log(error);
+      }
+
+      console.log(response, canisterId, 'getCollectionStats');
+      if (isArray(response) && response?.length > 0) {
+        const _stats = {
+          total: (Number(response[0] / 1000000n) / 100).toFixed(2),
+          high: (Number(response[1] / 1000000n) / 100).toFixed(2),
+          low: (Number(response[2] / 1000000n) / 100).toFixed(2),
+          floor: (Number(response[3] / 1000000n) / 100).toFixed(2),
+          listings: Number(response[4]),
+          tokens: Number(response[5]),
+          sales: Number(response[6]),
+          average: Number(response[6])
+            ? (Number(response[0] / (response[6] * 1000000n)) / 100).toFixed(2)
+            : '-',
+        };
+        store.dispatch(
+          storeEntities({
+            entity: 'collectionStats',
+            data: [
+              {
+                id: canisterId,
+                ..._stats,
+              },
+            ],
+          })
+        );
+      }
+    }
   };
 
   getICPAssetsOfAccount = async (account: keyable) => {

@@ -4,6 +4,7 @@ import { getSymbol } from '~utils/common';
 
 import { IAssetState } from './types';
 import { AppState } from '~state/store';
+import { keyable } from '~scripts/Background/types/IAssetsController';
 
 const initialState: IAssetState = {
   assetList: {},
@@ -39,4 +40,15 @@ export const selectAssetBySymbol = (symbol: string) => (state: AppState) =>
 export const selectAssetByCoinGeckoId = (symbol: string) =>
   selectAssetBySymbol(getSymbol(symbol)?.coinGeckoId || '');
 
+export const selectStatsOfCollection =
+  (collectionId: string) => (state: AppState) =>
+    state.entities?.collectionStats.byId[collectionId];
+
+export const selectStatsOfCollections =
+  (nftObjs: keyable) => (state: AppState) =>
+    nftObjs.map((nftObj: keyable) => ({
+      ...nftObj,
+      ...state.entities?.collectionStats.byId[nftObj.id],
+    }));
+    
 export default AssetState.reducer;
