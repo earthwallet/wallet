@@ -44,6 +44,7 @@
     "file-saver": "2.0.5",
     "filesaver": "0.0.13",
     "lodash": "4.17.21",
+    "millify": "^4.0.0",
     "moment-mini": "2.24.0",
     "node-inspect-extracted": "1.0.8",
     "node-polyfill-webpack-plugin": "1.1.4",

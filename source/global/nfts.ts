@@ -51,7 +51,7 @@ export const ICP_NFT_LIST = [
     id: 'tde7l-3qaaa-aaaah-qansa-cai',
     isLive: true,
     standard: 'EXT',
-    order: 12,
+    order: 22,
     description:
       'Wearable NFTs, usable with the Cronics NFT collection. A Play-to-earn NFT game being developed by ToniqLabs for the Internet Computer. Cronics  incorporates breeding mechanics, wearable NFTs, a p2e minigame ecosystem, and more.',
     icon: 'https://entrepot.app/collections/tde7l-3qaaa-aaaah-qansa-cai.jpg',

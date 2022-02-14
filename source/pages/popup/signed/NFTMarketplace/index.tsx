@@ -9,6 +9,8 @@ import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectAssetBySymbol, selectStatsOfCollections } from '~state/assets';
 import { getSymbol } from '~utils/common';
+import millify from "millify";
+
 
 interface Props extends RouteComponentProps<{ address: string }> {
     className?: string;
@@ -34,7 +36,7 @@ const NFTMarketplace = ({
             ><div className={styles.empty} /></Header>
             <div className={styles.mainContainer}>
                 {LIVE_NFTS_WITH_STATS
-                    .sort((a: keyable, b: keyable) => b.order - a.order)
+                    .sort((a: keyable, b: keyable) => a.order - b.order)
                     .sort((a: keyable, b: keyable) => b.total - a.total)
                     .map((nftObj: keyable) => <div
                         key={nftObj.id}
@@ -42,8 +44,14 @@ const NFTMarketplace = ({
                         onClick={() => history.push(`/nft/collection/${nftObj.id}?address=${address}`)}
                     >
                         <MarketplaceCard
-                            price={nftObj?.floor ? (nftObj?.floor * currentUSDValue?.usd)?.toFixed(2) : '-'}
-                            volPrice={nftObj.total ? (nftObj?.total * currentUSDValue?.usd)?.toFixed(2) : '-'}
+                            price={nftObj?.floor ? millify(nftObj?.floor * currentUSDValue?.usd, {
+                                precision: 2,
+                                lowercase: true
+                            }) : '-'}
+                            volPrice={nftObj.total ? millify(nftObj?.total * currentUSDValue?.usd, {
+                                precision: 2,
+                                lowercase: true
+                            }) : '-'}
                             id={nftObj.id}
                             img={nftObj.icon}
                             text={nftObj.name}
