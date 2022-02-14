@@ -106,7 +106,7 @@ export const AssetsList = ({ address }) => {
             <div
                 className={styles.listicon} >
                 <SkeletonTheme color="#222" highlightColor="#000">
-                    <Skeleton className={styles.loadingicon} width={36} height={36} />
+                    <Skeleton className={styles.loadingicon} width={36} height={38} />
                 </SkeletonTheme>
             </div>
             <div className={styles.listinfo}>

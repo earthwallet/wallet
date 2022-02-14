@@ -82,6 +82,7 @@ const PopupRouter = () => {
             <Switch location={item}>
               <Route path="/popup.html">
                 <Redirect to="/accounts" />
+                {/* <Redirect to="/nft/collection/bzsui-sqaaa-aaaah-qce2a-cai?address=02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47" /> */}
 
                 {/*                 <Redirect to="/nft/bought/urleq-fikor-uwiaa-aaaaa-cmaaq-qaqca-aaext-a?price=14000000&address=07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992" />
  */}              </Route>

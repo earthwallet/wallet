@@ -43,3 +43,51 @@
     opacity: 0.7;
   }
 }
+.stats {
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  width: calc(100vw - 32px);
+  margin: 8px 16px;
+}
+
+.key {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  /* Primary/White */
+
+  color: #ffffff;
+
+  opacity: 0.6;
+}
+
+.val {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  /* identical to box height, or 175% */
+
+  /* Primary/White */
+
+  color: #ffffff;
+}
+
+.statcol {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 9px 12px;
+}
+
+.statrow {
+  display: flex;
+}

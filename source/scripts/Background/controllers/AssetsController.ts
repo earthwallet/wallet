@@ -189,9 +189,7 @@ export default class AssetsController implements IAssetsController {
     );
   };
   getCollectionStats = async () => {
-    console.log('allStats', 'getCollectionStats');
     let allStats: keyable = [];
-
     const state = store.getState();
 
     if (state.entities.collectionStats == null) {
@@ -203,15 +201,37 @@ export default class AssetsController implements IAssetsController {
     ] of LIVE_ICP_NFT_LIST_CANISTER_IDS.entries()) {
       let response: keyable = [];
       try {
+        store.dispatch(
+          storeEntities({
+            entity: 'collectionStats',
+            data: [
+              {
+                id: canisterId,
+                loading: true,
+              },
+            ],
+          })
+        );
         const response: keyable = await canisterAgentApi(canisterId, 'stats');
         allStats[index] = response;
       } catch (error) {
+        store.dispatch(
+          storeEntities({
+            entity: 'collectionStats',
+            data: [
+              {
+                id: canisterId,
+                error: 'Error with method stats',
+                loading: false,
+              },
+            ],
+          })
+        );
         console.log(error);
       }
 
-      console.log(response, canisterId, 'getCollectionStats');
       if (isArray(response) && response?.length > 0) {
-        const _stats = {
+        const stats = {
           total: (Number(response[0] / 1000000n) / 100).toFixed(2),
           high: (Number(response[1] / 1000000n) / 100).toFixed(2),
           low: (Number(response[2] / 1000000n) / 100).toFixed(2),
@@ -229,7 +249,8 @@ export default class AssetsController implements IAssetsController {
             data: [
               {
                 id: canisterId,
-                ..._stats,
+                ...stats,
+                loading: false,
               },
             ],
           })
