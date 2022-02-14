@@ -8,13 +8,14 @@ import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import Swiper from 'react-id-swiper';
-import { selectAssetsICPByAddress } from '~state/wallet';
+import { selectAssetsICPByAddress, selectAssetsICPCountLoadingByAddress } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import ICON_GRID from '~assets/images/icon_grid.svg';
 import ICON_LIST from '~assets/images/icon_list.svg';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -94,9 +95,33 @@ const NFTList = ({
 
 export const AssetsList = ({ address }) => {
     const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+    const loading: boolean = useSelector(selectAssetsICPCountLoadingByAddress(address));
+
 
     const history = useHistory();
+
     return <div className={styles.listitemscont}>
+        {loading && <div
+            className={clsx(styles.listitem, styles.listitemloading)}>
+            <div
+                className={styles.listicon} >
+                <SkeletonTheme color="#222" highlightColor="#000">
+                    <Skeleton className={styles.loadingicon} width={36} height={36} />
+                </SkeletonTheme>
+            </div>
+            <div className={styles.listinfo}>
+                <div className={styles.listtitle}>
+                    <SkeletonTheme color="#222" highlightColor="#000">
+                        <Skeleton />
+                    </SkeletonTheme>
+                </div>
+            </div>
+            <div className={styles.liststats}></div>
+            <SkeletonTheme color="#222" highlightColor="#000">
+                <Skeleton className={styles.listforward} />
+            </SkeletonTheme>
+
+        </div>}
         {assets?.map((asset, i: number) => (<div
             key={i}
             onClick={() => history.push(`/nftdetails/${asset.id}`)}

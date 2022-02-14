@@ -132,6 +132,10 @@ export const selectAssetsICPByAddress =
     );
   };
 
+export const selectAssetsICPCountLoadingByAddress =
+  (address: string) => (state: AppState) =>
+    state.entities.assetsCount?.byId[address]?.loading;
+
 export const selectAssetById = (id: string) => (state: AppState) =>
   state.entities.assets?.byId[id];
 

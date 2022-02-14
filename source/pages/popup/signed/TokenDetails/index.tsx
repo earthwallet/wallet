@@ -278,7 +278,6 @@ const TokensList = ({ address }: { address: string }) => {
   const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(selectedAccount?.groupId));
   const tokens = useSelector(selectActiveTokensByAddressWithInfo(address));
 
-  console.log(tokens);
 
   return (
     <div className={styles.tokensList}>
