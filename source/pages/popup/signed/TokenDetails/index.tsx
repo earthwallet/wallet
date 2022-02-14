@@ -308,7 +308,7 @@ const TokensList = ({ address }: { address: string }) => {
             />
           </div>
         )}
-        {tokens?.length > 0 && tokens?.map((token, i: number) => <div
+        {false && tokens?.length > 0 && tokens?.map((token, i: number) => <div
           onClick={() => history.push('/th/' + address + '/' + token.id)}
           key={i}
           className={styles.listitem}>
@@ -330,7 +330,7 @@ const TokensList = ({ address }: { address: string }) => {
             src={ICON_FORWARD}
           />
         </div>)}
-        {true && <div
+        {false && <div
           onClick={() => history.push('/account/selecttoken/' + selectedAccount?.id)}
           className={styles.listitem}>
           <div

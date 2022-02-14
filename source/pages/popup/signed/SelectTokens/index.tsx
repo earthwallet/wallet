@@ -24,7 +24,7 @@ import { keyable } from '~scripts/Background/types/IAssetsController';
 interface Props extends RouteComponentProps<{ address: string }> {
 }
 
-const AddNetwork = ({
+const SelectTokens = ({
   match: {
     params: { address },
   },
@@ -38,7 +38,7 @@ const AddNetwork = ({
 
   const getTokens = useCallback(() => {
     //)
-    controller.tokens.getTokens()
+    //controller.tokens.getTokens()
 
   }, [history]);
 
@@ -132,4 +132,4 @@ const AddNetwork = ({
   );
 };
 
-export default withRouter(AddNetwork);
+export default withRouter(SelectTokens);

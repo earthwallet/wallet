@@ -10,7 +10,7 @@ import {
     //decodeTokenId,
     getTokenIdentifier,
 } from "@earthwallet/assets";
-import { ClipLoader } from 'react-spinners';
+//import { ClipLoader } from 'react-spinners';
 import NFTCard from '~components/NFTCard';
 import { useSelector } from 'react-redux';
 import { selectAssetBySymbol } from '~state/assets';
@@ -66,7 +66,12 @@ const NFTCollection = ({
                 type={'wallet'}
                 text={nftCollObj.name}
             ><div className={styles.empty} /></Header>
-            {loading ? <div className={styles.loadingCont}><ClipLoader color={'#fffff'} /></div> : <div className={styles.mainContainer}>
+            {loading ? <div className={styles.mainContainer}>
+                {[...Array(4)].map((_, index: number) => <NFTCard
+                    key={index}
+                    loading
+                />)}
+            </div> : <div className={styles.mainContainer}>
                 {listings.map((nftObj: keyable) => <div
                     key={nftObj.tokenId}
                     className={styles.nftcardcont}

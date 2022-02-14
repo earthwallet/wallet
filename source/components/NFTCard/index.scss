@@ -49,6 +49,7 @@
 .leftSideContainer {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 .priceText {
   font-family: Poppins;
@@ -66,6 +67,7 @@
   font-size: 12px;
   line-height: 28px;
   color: #ffffff;
+  height: 28px;
 }
 .rightSideContainer {
   @extend .leftSideContainer;

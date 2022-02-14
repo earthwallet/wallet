@@ -212,6 +212,15 @@ export const ICP_NFT_LIST = [
     icon: 'https://nges7-giaaa-aaaaj-qaiya-cai.raw.ic0.app/assets/icon.png',
   },
   {
+    name: 'ICP Squad',
+    id: 'jmuqr-yqaaa-aaaaj-qaicq-cai',
+    standard: 'EXT',
+    isLive: true,
+    order: 6,
+    description: '',
+    icon: 'https://jmuqr-yqaaa-aaaaj-qaicq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=ewpzr-jqkor-uwiaa-aaaaa-cmaca-uaqca-aabwo-a',
+  },
+  {
     name: 'Earth DAO',
     id: 'ntwio-byaaa-aaaak-qaama-cai',
     standard: 'EarthEXT',
