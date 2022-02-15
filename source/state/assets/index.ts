@@ -50,5 +50,8 @@ export const selectStatsOfCollections =
       ...nftObj,
       ...state.entities?.collectionStats.byId[nftObj.id],
     }));
-    
+
+export const getPopupTxn = (txnId: string) => (state: AppState) =>
+  state.entities?.popupRequests.byId[txnId];
+
 export default AssetState.reducer;

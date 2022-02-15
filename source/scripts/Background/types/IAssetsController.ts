@@ -20,6 +20,14 @@ export interface IAssetsController {
     address: string;
     price?: number;
   }) => Promise<void>;
+  buyNft: (
+    txnId: string,
+    identityJSON: string,
+    nftId: string,
+    price: number,
+    address: string,
+    callback?: (path: string) => void
+  ) => Promise<void>;
 }
 
 export interface keyable {

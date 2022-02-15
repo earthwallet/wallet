@@ -4,11 +4,13 @@ import { IAssetState } from '~state/assets/types';
 import store from '~state/store';
 import type { IAssetsController, keyable } from '../types/IAssetsController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
-import { getNFTsFromCanisterExt } from '@earthwallet/assets';
+import { decodeTokenId, getNFTsFromCanisterExt } from '@earthwallet/assets';
 import { parseBigIntToString } from '~utils/common';
 import LIVE_ICP_NFT_LIST_CANISTER_IDS from '~global/nfts';
 import { canisterAgentApi, getTokenIdentifier } from '@earthwallet/assets';
 import { isArray } from 'lodash';
+import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
+import { send } from '@earthwallet/keyring';
 
 export default class AssetsController implements IAssetsController {
   fetchFiatPrice = async (currency = 'USD') => {
@@ -453,5 +455,174 @@ export default class AssetsController implements IAssetsController {
         })
       );
     }
+  };
+
+  buyNft = async (
+    txnId: string,
+    identityJSON: string,
+    nftId: string,
+    price: number,
+    address: string,
+    callback?: (path: string) => void
+  ) => {
+    console.log(txnId);
+    const state = store.getState();
+
+    if (state.entities.popupRequests == null) {
+      store.dispatch(createEntity({ entity: 'popupRequests' }));
+    }
+
+    store.dispatch(
+      storeEntities({
+        entity: 'popupRequests',
+        data: [
+          {
+            id: txnId,
+            loading: true,
+            status: 'Making Offer',
+            current: 1,
+            total: 3,
+          },
+        ],
+      })
+    );
+    const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
+    const canisterId = decodeTokenId(nftId).canister;
+
+    const lockAddressRes = await canisterAgentApi(
+      canisterId,
+      'lock',
+      [nftId, price, address, []],
+      currentIdentity
+    );
+    const lockAddress = lockAddressRes?.ok;
+    console.log('lockAddress', lockAddress);
+    console.log('lockAddress', lockAddressRes, lockAddress);
+
+    if (lockAddress == undefined) {
+      store.dispatch(
+        storeEntities({
+          entity: 'popupRequests',
+          data: [
+            {
+              id: txnId,
+              loading: false,
+              status: '',
+              error: lockAddressRes?.err.Other,
+              current: 1,
+              total: 3,
+            },
+          ],
+        })
+      );
+      return;
+    }
+    console.log('lockAddress', lockAddressRes, lockAddress);
+    store.dispatch(
+      storeEntities({
+        entity: 'popupRequests',
+        data: [
+          {
+            id: txnId,
+            loading: true,
+            status: 'Transferring ICP',
+            current: 2,
+            total: 3,
+          },
+        ],
+      })
+    );
+    //show('Sending..');
+    const selectedAmount = parseFloat((price / Math.pow(10, 8)).toFixed(8));
+    let index: BigInt = 0n;
+    try {
+      index = await send(
+        currentIdentity,
+        lockAddress,
+        address,
+        selectedAmount,
+        'ICP'
+      );
+    } catch (error: any) {
+      console.log(error);
+      console.log(error?.message);
+      store.dispatch(
+        storeEntities({
+          entity: 'popupRequests',
+          data: [
+            {
+              id: txnId,
+              loading: false,
+              status: '',
+              error: error?.message,
+              current: 2,
+              total: 3,
+            },
+          ],
+        })
+      );
+      return;
+    }
+
+    console.log(index);
+    //show('Settling..');
+    store.dispatch(
+      storeEntities({
+        entity: 'popupRequests',
+        data: [
+          {
+            id: txnId,
+            loading: true,
+            status: 'Settling Transaction',
+            current: 3,
+            total: 3,
+          },
+        ],
+      })
+    );
+    const settle = await canisterAgentApi(
+      canisterId,
+      'settle',
+      nftId,
+      currentIdentity
+    );
+    store.dispatch(
+      storeEntities({
+        entity: 'popupRequests',
+        data: [
+          {
+            id: txnId,
+            loading: false,
+            status: '',
+            current: 3,
+            total: 3,
+          },
+        ],
+      })
+    );
+    //show('Purchase complete');
+    this.getICPAssetsOfAccount({ address, symbol: 'ICP' });
+    if (settle?.err.Other == 'Insufficient funds sent') {
+      // setIsBusy(false);
+      store.dispatch(
+        storeEntities({
+          entity: 'popupRequests',
+          data: [
+            {
+              id: txnId,
+              loading: false,
+              status: '',
+              error: 'Insufficient funds sent',
+              current: 3,
+              total: 3,
+            },
+          ],
+        })
+      );
+    } else {
+      callback && callback(`/nft/bought/${nftId}?address=${address}`);
+      //setIsBusy(false);
+    }
+    console.log('settle', settle);
   };
 }

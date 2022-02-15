@@ -1,4 +1,4 @@
-import { canisterAgentApi, decodeTokenId } from '@earthwallet/assets';
+import { decodeTokenId } from '@earthwallet/assets';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
@@ -6,18 +6,21 @@ import Header from '~components/Header';
 import { getTokenImageURL } from '~global/nfts';
 import useQuery from '~hooks/useQuery';
 import { keyable } from '~scripts/Background/types/IMainController';
-import { selectAssetBySymbol } from '~state/assets';
+import { getPopupTxn, selectAssetBySymbol } from '~state/assets';
 import { getSymbol, isJsonString, PASSWORD_MIN_LENGTH } from '~utils/common';
 import styles from './index.scss';
 import NextStepButton from '~components/NextStepButton';
 import InputWithLabel from '~components/InputWithLabel';
 import { decryptString } from '~utils/vault';
 import { selectAccountById } from '~state/wallet';
-import { send, validateMnemonic } from '@earthwallet/keyring';
+import { validateMnemonic } from '@earthwallet/keyring';
 import Warning from '~components/Warning';
-import useToast from '~hooks/useToast';
-import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
+//import useToast from '~hooks/useToast';
 import { useController } from '~hooks/useController';
+import { v4 as uuid } from 'uuid';
+import swapCircle from '~assets/images/swapLoadingCircle.svg';
+
+const txnId = uuid();
 
 //import logo from '~assets/images/ew.svg';
 //import downArrow from '~assets/images/downArrow.svg';
@@ -32,7 +35,7 @@ const NFTSettle = ({
   const price: number = parseInt(queryParams.get('price') || '');
   const address: string = queryParams.get('address') || '';
 
-  console.log(address, 'NFTSettle');
+  //console.log(address, 'NFTSettle');
   const canisterId = decodeTokenId(nftId).canister;
   const index = decodeTokenId(nftId).index;
   const [isBusy, setIsBusy] = useState(false);
@@ -44,9 +47,12 @@ const NFTSettle = ({
   const asset: keyable = { canisterId, id: nftId, tokenIdentifier: nftId };
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
   const usdValue = currentUSDValue?.usd;
-  const { show } = useToast();
+  //const { show } = useToast();
   const controller = useController();
   const history = useHistory();
+
+  const txnStatusObj: keyable = useSelector(getPopupTxn(txnId));
+  console.log(txnStatusObj, txnId, 'txnStatusObj');
 
   const onPassChange = useCallback(
     (password: string) => {
@@ -85,54 +91,11 @@ const NFTSettle = ({
     }
 
     if (isJsonString(secret)) {
-      show('Locking..');
-      const currentIdentity = Secp256k1KeyIdentity.fromJSON(secret);
-
-      const lockAddressRes = await canisterAgentApi(canisterId, 'lock',
-        [nftId,
-          price,
-          address,
-          []],
-        currentIdentity
-      );
-      const lockAddress = lockAddressRes?.ok;
-      console.log('lockAddress', lockAddressRes, lockAddress);
-      show('Sending..');
-      const selectedAmount = parseFloat((price / Math.pow(10, 8)).toFixed(8));
-      let index: BigInt = 0n;
-      try {
-        index = await send(
-          currentIdentity,
-          lockAddress,
-          address,
-          selectedAmount,
-          'ICP'
-        );
-      } catch (error: any) {
-        console.log(error)
-        console.log(error?.message);
-      }
-
-      console.log(index);
-      show('Settling..');
-
-      const settle = await canisterAgentApi(canisterId, 'settle',
-        nftId,
-        currentIdentity
-      );
-      show('Purchase complete');
-      controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' });
-      //history.push(`/account/details/${address}?nav=nfts`);
-      history.push(`/nft/bought/${nftId}?address=${address}`);
-      console.log('settle', settle);
-      setIsBusy(false);
-
-
-      //purchase
-      //controller.dapp.setApprovedIdentityJSON(secret);
-      //await approveSign();
+      const callback = (path: string) => history.replace(path);
+      controller.assets.buyNft(txnId, secret, nftId, price, address, callback).then(() => {
+        setIsBusy(false);
+      });
     }
-    setIsBusy(false);
   };
 
   return (
@@ -141,9 +104,10 @@ const NFTSettle = ({
         className={styles.header}
         showMenu
         type={'wallet'}
-        text={'Confirm Buy'}
+        text={txnStatusObj?.loading ? 'Buying..' : 'Confirm Buy'}
       ><div className={styles.empty} /></Header>
-      <div className={styles.scrollCont}>
+      {txnStatusObj?.loading ? <Settling asset={asset} {...txnStatusObj} /> : <div className={styles.scrollCont}>
+        {txnStatusObj?.error && <div className={styles.errorResponse}>{txnStatusObj?.error}</div>}
         <div className={styles.internetCompWrapContainer}>
           <div className={styles.imgCont}>
             <img src={getTokenImageURL(asset)} className={styles.ethIconContainer}></img>
@@ -179,8 +143,8 @@ const NFTSettle = ({
           </div>
         </div>
 
-      </div>
-      <section className={styles.footer}>
+      </div>}
+      {txnStatusObj?.loading ? <div /> : <section className={styles.footer}>
         <InputWithLabel
           data-export-password
           disabled={isBusy}
@@ -207,8 +171,24 @@ const NFTSettle = ({
             {'Buy NFT'}
           </NextStepButton>
         </div>
-      </section>
+      </section>}
 
+    </div>
+  );
+};
+
+
+const Settling = (props: keyable) => {
+  return (
+    <div className={styles.settleContainer}>
+      <img src={swapCircle} className={styles.swapCircleImg} />
+      <img src={getTokenImageURL(props.asset)} className={styles.nftLoadingImg}></img>
+      <span className={styles.quoteText}>Step {props.current} of {props.total}</span>
+      <span className={styles.submittingText}>{props.status}</span>
+      <div className={styles.progressBar}>
+        <div className={styles.leftSide} style={{ width: ((270 / props.total) * props.current) }}></div>
+        <div className={styles.rightSide} style={{ width: ((270 / props.total) * (props.total - props.current)) }}></div>
+      </div>
     </div>
   );
 };
