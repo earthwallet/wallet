@@ -12,6 +12,9 @@ import clsx from 'clsx';
 //import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import useQuery from '~hooks/useQuery';
 import { decodeTokenId } from '@earthwallet/assets';
+import useToast from '~hooks/useToast';
+import { useSelector } from 'react-redux';
+import { selectBalanceByAddress } from '~state/wallet';
 
 
 interface Props extends RouteComponentProps<{ nftId: string }> {
@@ -29,14 +32,22 @@ const NFTBuyDetails = ({
     const price: number = parseInt(queryParams.get('price') || '');
     const address: string = queryParams.get('address') || '';
     const history = useHistory();
-    //const controller = useController();
-    console.log(nftId, price);
+    const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
 
     const canisterId = decodeTokenId(nftId).canister;
     const index = decodeTokenId(nftId).index;
 
     const asset: keyable = { canisterId, id: nftId, tokenIdentifier: nftId };
-
+    const { show } = useToast();
+    const buy = () => {
+        console.log(currentBalance?.value)
+        if (currentBalance?.value < price) {
+            show('Not Enough Balance');
+        }
+        else {
+            history.push(`/nft/settle/${nftId}?price=${price}&address=${address}`);
+        }
+    };
     return (
         <div className={styles.page}>
             <div className={styles.stickyheader}>
@@ -51,7 +62,7 @@ const NFTBuyDetails = ({
                 <div className={styles.actions}>
                     <div
 
-                        onClick={() => history.push(`/nft/settle/${nftId}?price=${price}&address=${address}`)}
+                        onClick={() => buy()}
                         className={clsx(styles.action, styles.secAction)}>Buy</div>
                 </div>
             </div>
@@ -73,7 +84,7 @@ const NFTBuyDetails = ({
                 </div>
             </div>
 
-        </div>
+        </div >
     );
 };
 

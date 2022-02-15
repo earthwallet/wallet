@@ -13,6 +13,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import useQuery from '~hooks/useQuery';
 import { decodeTokenId } from '@earthwallet/assets';
 import Confetti from 'react-confetti'
+import { ClipLoader } from 'react-spinners';
 
 
 interface Props extends RouteComponentProps<{ nftId: string }> {
@@ -62,11 +63,12 @@ const NFTBuyDetails = ({
                 <div className={styles.congrats}>Congrats on your new NFT! 🎉</div>
                 <Confetti
                     width={375}
-                    height={430}
+                    height={600}
                 />
                 <div className={styles.actions}>
                     <div
-                        className={clsx(styles.action, styles.secAction)}>...</div>
+                        className={clsx(styles.action, styles.secAction)}><ClipLoader color={'#fffff'}
+                            size={15} /></div>
                 </div>
             </div>
             <div className={styles.mainCont}>

@@ -141,7 +141,7 @@ export const AssetsList = ({ address }) => {
             ><div className={styles.listprice}>{asset?.forSale
                 ? 'For sale'
                 : 'Unlisted'}</div>
-                {asset?.forSale && <div className={styles.listsubtitle}>{Math.floor(asset?.info?.price / 100000000)} ICP</div>}
+                {asset?.forSale && <div className={styles.listsubtitle}>{(asset?.info?.price / 100000000)?.toFixed(2)} ICP</div>}
             </div>
             <img
                 className={styles.listforward}

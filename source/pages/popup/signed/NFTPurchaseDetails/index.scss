@@ -153,6 +153,10 @@
 
 .secAction {
   margin-left: 6px;
+  min-width: 45px;
+  display: flex;
+  align-items: center;
+  justify-self: center;
 }
 
 .congrats {
