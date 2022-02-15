@@ -43,7 +43,7 @@ const NFTBuyDetails = ({
     useEffect((): void => {
         setLoading(true);
         controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' }).then(() => {
-            history.push(`/nftdetails/${nftId}`);
+            history.replace(`/nftdetails/${nftId}`);
             setLoading(false);
         });
     }, []);

@@ -10,6 +10,7 @@ import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
 import clsx from 'clsx';
 import { useController } from '~hooks/useController';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import { decodeTokenId } from '@earthwallet/assets';
 
 
 interface Props extends RouteComponentProps<{ assetid: string }> {
@@ -24,7 +25,11 @@ const NFTDetails = ({
     },
 }: Props) => {
     const history = useHistory();
-    const asset: keyable = useSelector(selectAssetById(assetid));
+    const canisterId = decodeTokenId(assetid).canister;
+    const index = decodeTokenId(assetid).index;
+    const assetInfo: keyable = { canisterId, tokenIndex: index, id: assetid, tokenIdentifier: assetid };
+
+    const asset: keyable = useSelector(selectAssetById(assetid)) || assetInfo;
     const [loading, setLoading] = useState(false);
     const controller = useController();
 
