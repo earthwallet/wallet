@@ -82,13 +82,7 @@ const PopupRouter = () => {
             <Switch location={item}>
               <Route path="/popup.html">
                 <Redirect to="/accounts" />
-                {/*                 <Redirect to="/nft/settle/v7bvc-5ykor-uwiaa-aaaaa-cuaab-eaqca-aaafc-q?price=1950000000&address=0ba1b7b1643929210dc41a8afbe031bd1b5e81dbc8e3b3b64978f5f743f058c3" />
- */}                {/* <Redirect to="/nft/buy/v7bvc-5ykor-uwiaa-aaaaa-cuaab-eaqca-aaafc-q?price=1950000000&address=02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47" /> */}
-                {/*                 <Redirect to="/task4" />
- */}                {/* <Redirect to="/nft/collection/bzsui-sqaaa-aaaah-qce2a-cai?address=02f2326544f2040d3985e31db5e7021402c541d3cde911cd20e951852ee4da47" /> */}
-
-                {/*                 <Redirect to="/nft/bought/urleq-fikor-uwiaa-aaaaa-cmaaq-qaqca-aaext-a?price=14000000&address=07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992" />
- */}              </Route>
+              </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
               </Route>
