@@ -52,6 +52,26 @@ export const selectStatsOfCollections =
     }));
 
 export const getPopupTxn = (txnId: string) => (state: AppState) =>
-  state.entities?.popupRequests.byId[txnId];
+  state.entities?.txnRequests.byId[txnId];
+
+export const selectTxnRequestsByAddress =
+  (address: string) => (state: AppState) => {
+    return (
+      state.entities.txnRequests?.byId &&
+      Object.keys(state.entities.txnRequests?.byId)
+        ?.map((id) => ({
+          ...state.entities.txnRequests.byId[id],
+          ...{
+            transaction: {
+              metadata: {
+                timestamp:
+                  state.entities.txnRequests.byId[id].createdAt * 1000000,
+              },
+            },
+          },
+        }))
+        .filter((txnReq) => txnReq.address == address)
+    );
+  };
 
 export default AssetState.reducer;

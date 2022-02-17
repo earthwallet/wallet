@@ -39,7 +39,6 @@ const NFTCollection = ({
         const fetchNfts = async () => {
             setLoading(true);
             const response = await canisterAgentApi(nftId, 'listings');
-            console.log(response, 'listings');
             const listings = response.map((list: keyable) => ({
                 id: list[0],
                 price: list[1].price?.toString(),
@@ -47,12 +46,14 @@ const NFTCollection = ({
                     nftId,
                     list[0]
                 ),
+                locked: list[1] && list[1]?.locked && list[1]?.locked[0] && Date.now() >= Number(list[1]?.locked[0] / 1000000n),
                 icon: `https://${nftId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${getTokenIdentifier(
                     nftId,
                     list[0]
                 )}`
-            })).sort((a: keyable, b: keyable) => (a.price - b.price));
+            })).filter((a: keyable) => !(a.locked)).sort((a: keyable, b: keyable) => (a.price - b.price));
             //[0][1].price
+            console.log(listings, 'listings');
             setListings(listings);
             setLoading(false);
 

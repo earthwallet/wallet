@@ -41,7 +41,7 @@ const NFTBuyDetails = ({
     const { show } = useToast();
     const buy = () => {
         console.log(currentBalance?.value)
-        if (currentBalance?.value < price) {
+        if (1 != 1 && currentBalance?.value < price) {
             show('Not Enough Balance');
         }
         else {

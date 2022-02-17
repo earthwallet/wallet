@@ -14,7 +14,9 @@ import { ClipLoader } from 'react-spinners';
 import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import { getSymbol } from '~utils/common';
-import { selectAssetBySymbol } from '~state/assets';
+import { selectAssetBySymbol, selectTxnRequestsByAddress } from '~state/assets';
+import clsx from 'clsx';
+import { getTokenImageUrlFromnftId } from '~global/nfts';
 
 interface Props extends RouteComponentProps<{ address: string }> {
   className?: string;
@@ -37,13 +39,19 @@ const Transactions = ({
   const [loading, setLoading] = useState<boolean>(false);
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
   const usdValue = currentUSDValue?.usd;
+  const txnReqs = useSelector(selectTxnRequestsByAddress(address));
 
-
+  console.log(txnReqs, address, 'txnReqs', walletTransactions);
 
   const getTransactionTime = (transaction: any): any => {
     const timestamp: number = transaction.transaction?.metadata?.timestamp;
 
     return moment(timestamp / 1000000).format('MMM DD');
+  };
+  const getTransactionTimestamp = (transaction: any): any => {
+    const timestamp: number = transaction.transaction.metadata.timestamp;
+
+    return timestamp;
   };
 
 
@@ -133,6 +141,45 @@ const Transactions = ({
         </div>
       </div>
     }
+
+    if (transaction.type == 'buyNft')
+      return <div className={clsx(styles.transItem, styles.transItem_noclick)}
+        key={index}>
+        <div className={styles.transColIcon}>
+          {transaction.loading
+            ? <div><ClipLoader color={'#fffff'}
+              size={10} /></div>
+            : transaction.error != '' ? <img src={ICON_FAILED} />
+              : transaction.current == transaction.total ? <img src={ICON_RECV} /> : ''}
+        </div>
+        <div className={styles.transColStatus}>
+          <div className={styles.transFirstline}>
+            {transaction.loading
+              ? 'Buying..'
+              : transaction.error != ''
+                ? <div className={styles.errorText}>{transaction.error}</div>
+                : transaction.current == transaction.total ? 'Complete' : ''}
+          </div>
+          <div className={styles.transSubColTime}>
+            <div>{getTransactionTime(transaction) || '-'}</div>
+            <div className={styles.transSubColDot}></div>
+            <div>
+              {transaction.loading
+                ? transaction.status
+                : transaction.error != ''
+                  ? <div>{'Error at ' + ['Making Offer', 'Transferring ICP', 'Settling'][transaction.current - 1]}</div>
+                  : transaction.current == transaction.total ? 'Complete' : `At ${transaction.current} of ${transaction.total}`
+              }
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.transColValue}>
+          <img
+            src={getTokenImageUrlFromnftId(transaction.nftId)}
+            className={styles.nftImage} />
+        </div>
+      </div>
 
     return <div
       className={styles.transItem}
@@ -268,9 +315,8 @@ const Transactions = ({
           : <div className={styles.transItems}>
             {walletTransactions &&
               walletTransactions?.txs &&
-              walletTransactions?.txs?.sort((a: keyable, b: keyable) =>
-                getTransactionTime(a) - getTransactionTime(b))
-                .reverse().map((transaction: keyable, index: number) =>
+              [...txnReqs, ...walletTransactions?.txs]?.sort((a: keyable, b: keyable) =>
+                getTransactionTimestamp(b) - getTransactionTimestamp(a)).map((transaction: keyable, index: number) =>
                   <TxnItem key={index} transaction={transaction} index={index} symbol={selectedAccount?.symbol} />)}
           </div>}
       </div>

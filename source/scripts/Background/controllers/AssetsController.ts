@@ -465,20 +465,24 @@ export default class AssetsController implements IAssetsController {
   ) => {
     const state = store.getState();
 
-    if (state.entities.popupRequests == null) {
-      store.dispatch(createEntity({ entity: 'popupRequests' }));
+    if (state.entities.txnRequests == null) {
+      store.dispatch(createEntity({ entity: 'txnRequests' }));
     }
 
     store.dispatch(
       storeEntities({
-        entity: 'popupRequests',
+        entity: 'txnRequests',
         data: [
           {
             id: txnId,
             loading: true,
+            address: address,
+            createdAt: new Date().getTime(),
             status: 'Making Offer',
             current: 1,
             total: 3,
+            type: 'buyNft',
+            nftId,
           },
         ],
       })
@@ -504,7 +508,7 @@ export default class AssetsController implements IAssetsController {
       console.log(error);
       store.dispatch(
         storeEntities({
-          entity: 'popupRequests',
+          entity: 'txnRequests',
           data: [
             {
               id: txnId,
@@ -527,7 +531,7 @@ export default class AssetsController implements IAssetsController {
     if (lockAddress == undefined) {
       store.dispatch(
         storeEntities({
-          entity: 'popupRequests',
+          entity: 'txnRequests',
           data: [
             {
               id: txnId,
@@ -546,7 +550,7 @@ export default class AssetsController implements IAssetsController {
     }
     store.dispatch(
       storeEntities({
-        entity: 'popupRequests',
+        entity: 'txnRequests',
         data: [
           {
             id: txnId,
@@ -573,11 +577,9 @@ export default class AssetsController implements IAssetsController {
       );
       console.log(index);
     } catch (error: any) {
-      console.log(error);
-      console.log(error?.message);
       store.dispatch(
         storeEntities({
-          entity: 'popupRequests',
+          entity: 'txnRequests',
           data: [
             {
               id: txnId,
@@ -598,7 +600,7 @@ export default class AssetsController implements IAssetsController {
     //show('Settling..');
     store.dispatch(
       storeEntities({
-        entity: 'popupRequests',
+        entity: 'txnRequests',
         data: [
           {
             id: txnId,
@@ -620,7 +622,7 @@ export default class AssetsController implements IAssetsController {
     );
     store.dispatch(
       storeEntities({
-        entity: 'popupRequests',
+        entity: 'txnRequests',
         data: [
           {
             id: txnId,
@@ -640,7 +642,7 @@ export default class AssetsController implements IAssetsController {
       // setIsBusy(false);
       store.dispatch(
         storeEntities({
-          entity: 'popupRequests',
+          entity: 'txnRequests',
           data: [
             {
               id: txnId,

@@ -14,7 +14,7 @@ const initialState: IEntityState = {
   assetsCount: { byId: {} },
   collectionStats: { byId: {} },
   dappRequests: { byId: {} },
-  popupRequests: { byId: {} },
+  txnRequests: { byId: {} },
   tokens: { byId: {} },
   tokensInfo: { byId: {} },
   pairs: { byId: {} },

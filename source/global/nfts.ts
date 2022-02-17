@@ -1,6 +1,7 @@
 import { keyable } from '~scripts/Background/types/IAssetsController';
 import NFT_PLACEHOLDER from '~assets/images/nft_placeholder.png';
 import ICON_EARTH from '~assets/images/icon-512.png';
+import { decodeTokenId } from '@earthwallet/assets';
 
 export const ICP_NFT_LIST = [
   {
@@ -263,6 +264,13 @@ export const getTokenImageURL = (asset: keyable) => {
     }
   }
   return imageURL;
+};
+
+export const getTokenImageUrlFromnftId = (nftId: string) => {
+  const canisterId = decodeTokenId(nftId).canister;
+
+  const asset: keyable = { canisterId, id: nftId, tokenIdentifier: nftId };
+  return getTokenImageURL(asset);
 };
 
 export default LIVE_ICP_NFT_LIST_CANISTER_IDS;

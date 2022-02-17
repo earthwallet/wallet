@@ -111,6 +111,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  flex-shrink: 0;
 }
 
 .transColValue > div {
@@ -157,4 +159,33 @@
 
 .noTrans {
   opacity: 0.5;
+}
+
+.transFirstline {
+  max-height: 1.33em; /* Or whatever line height works for you */
+  word-break: break-all;
+  overflow: hidden;
+}
+
+.transItem_noclick {
+  cursor: initial;
+}
+
+.errorText {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  /* identical to box height, or 114% */
+
+  /* red/1 */
+
+  color: #f83b69;
+}
+
+.nftImage {
+  display: flex;
+  width: 27px;
+  height: 27px;
+  background-color: #989da90b;
+  border-radius: 3px;
 }
