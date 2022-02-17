@@ -41,7 +41,6 @@ const Transactions = ({
   const usdValue = currentUSDValue?.usd;
   const txnReqs = useSelector(selectTxnRequestsByAddress(address));
 
-  console.log(txnReqs, address, 'txnReqs', walletTransactions);
 
   const getTransactionTime = (transaction: any): any => {
     const timestamp: number = transaction.transaction?.metadata?.timestamp;
@@ -149,16 +148,16 @@ const Transactions = ({
           {transaction.loading
             ? <div><ClipLoader color={'#fffff'}
               size={10} /></div>
-            : transaction.error != '' ? <img src={ICON_FAILED} />
+            : (transaction.error != '' && transaction.error != null) ? <img src={ICON_FAILED} />
               : transaction.current == transaction.total ? <img src={ICON_RECV} /> : ''}
         </div>
         <div className={styles.transColStatus}>
           <div className={styles.transFirstline}>
             {transaction.loading
               ? 'Buying..'
-              : transaction.error != ''
+              : (transaction.error != '' && transaction.error != null)
                 ? <div className={styles.errorText}>{transaction.error}</div>
-                : transaction.current == transaction.total ? 'Complete' : ''}
+                : transaction.current == transaction.total ? 'NFT Buy' : ''}
           </div>
           <div className={styles.transSubColTime}>
             <div>{getTransactionTime(transaction) || '-'}</div>
@@ -166,7 +165,7 @@ const Transactions = ({
             <div>
               {transaction.loading
                 ? transaction.status
-                : transaction.error != ''
+                : (transaction.error != '' && transaction.error != null)
                   ? <div>{'Error at ' + ['Making Offer', 'Transferring ICP', 'Settling'][transaction.current - 1]}</div>
                   : transaction.current == transaction.total ? 'Complete' : `At ${transaction.current} of ${transaction.total}`
               }

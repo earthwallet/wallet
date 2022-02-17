@@ -590,6 +590,7 @@ export default class AssetsController implements IAssetsController {
               total: 3,
               type: 'buyNft',
               nftId,
+              sendIndex: index?.toString(),
             },
           ],
         })
@@ -620,22 +621,7 @@ export default class AssetsController implements IAssetsController {
       nftId,
       currentIdentity
     );
-    store.dispatch(
-      storeEntities({
-        entity: 'txnRequests',
-        data: [
-          {
-            id: txnId,
-            loading: false,
-            status: '',
-            current: 3,
-            total: 3,
-            type: 'buyNft',
-            nftId,
-          },
-        ],
-      })
-    );
+
     //show('Purchase complete');
     this.getICPAssetsOfAccount({ address, symbol: 'ICP' });
     if (settle?.err?.Other == 'Insufficient funds sent') {
@@ -658,6 +644,22 @@ export default class AssetsController implements IAssetsController {
         })
       );
     } else {
+      store.dispatch(
+        storeEntities({
+          entity: 'txnRequests',
+          data: [
+            {
+              id: txnId,
+              loading: false,
+              status: '',
+              current: 3,
+              total: 3,
+              type: 'buyNft',
+              nftId,
+            },
+          ],
+        })
+      );
       callback && callback(`/nft/bought/${nftId}?address=${address}`);
       //setIsBusy(false);
     }
