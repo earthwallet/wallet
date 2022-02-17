@@ -39,6 +39,7 @@ const NFTCollection = ({
         const fetchNfts = async () => {
             setLoading(true);
             const response = await canisterAgentApi(nftId, 'listings');
+            console.log(response, 'listings');
             const listings = response.map((list: keyable) => ({
                 id: list[0],
                 price: list[1].price?.toString(),

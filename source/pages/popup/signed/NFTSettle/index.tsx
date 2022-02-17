@@ -35,7 +35,6 @@ const NFTSettle = ({
   const price: number = parseInt(queryParams.get('price') || '');
   const address: string = queryParams.get('address') || '';
 
-  //console.log(address, 'NFTSettle');
   const canisterId = decodeTokenId(nftId).canister;
   const index = decodeTokenId(nftId).index;
   const [isBusy, setIsBusy] = useState(false);
@@ -52,7 +51,6 @@ const NFTSettle = ({
   const history = useHistory();
 
   const txnStatusObj: keyable = useSelector(getPopupTxn(txnId));
-  console.log(txnStatusObj, txnId, 'txnStatusObj');
 
   const onPassChange = useCallback(
     (password: string) => {

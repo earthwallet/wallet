@@ -131,7 +131,6 @@ export default class AssetsController implements IAssetsController {
       })
     ); */
     responseListing = await canisterAgentApi(collectionId, 'listings');
-    console.log(response, responseListing, 'fetchCollection');
 
     responseListing.map((item: keyable) =>
       store.dispatch(
@@ -154,7 +153,6 @@ export default class AssetsController implements IAssetsController {
   };
 
   fetchEarthNFT = async (collectionId: string, tokenId: number) => {
-    console.log('fetchEarthNFT', collectionId, tokenId);
     store.dispatch(
       updateEntities({
         entity: 'assets',
@@ -465,7 +463,6 @@ export default class AssetsController implements IAssetsController {
     address: string,
     callback?: (path: string) => void
   ) => {
-    console.log(txnId);
     const state = store.getState();
 
     if (state.entities.popupRequests == null) {
@@ -488,16 +485,44 @@ export default class AssetsController implements IAssetsController {
     );
     const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
     const canisterId = decodeTokenId(nftId).canister;
+    let lockAddressRes: any;
+    const _getRandomBytes = () => {
+      var bs = [];
+      for (var i = 0; i < 32; i++) {
+        bs.push(Math.floor(Math.random() * 256));
+      }
+      return bs;
+    };
+    try {
+      lockAddressRes = await canisterAgentApi(
+        canisterId,
+        'lock',
+        [nftId, price, address, _getRandomBytes()],
+        currentIdentity
+      );
+    } catch (error: any) {
+      console.log(error);
+      store.dispatch(
+        storeEntities({
+          entity: 'popupRequests',
+          data: [
+            {
+              id: txnId,
+              loading: false,
+              status: '',
+              error: error?.message,
+              current: 1,
+              total: 3,
+              type: 'buyNft',
+              nftId,
+            },
+          ],
+        })
+      );
+      return;
+    }
 
-    const lockAddressRes = await canisterAgentApi(
-      canisterId,
-      'lock',
-      [nftId, price, address, []],
-      currentIdentity
-    );
     const lockAddress = lockAddressRes?.ok;
-    console.log('lockAddress', lockAddress);
-    console.log('lockAddress', lockAddressRes, lockAddress);
 
     if (lockAddress == undefined) {
       store.dispatch(
@@ -511,13 +536,14 @@ export default class AssetsController implements IAssetsController {
               error: lockAddressRes?.err.Other,
               current: 1,
               total: 3,
+              type: 'buyNft',
+              nftId,
             },
           ],
         })
       );
       return;
     }
-    console.log('lockAddress', lockAddressRes, lockAddress);
     store.dispatch(
       storeEntities({
         entity: 'popupRequests',
@@ -528,6 +554,8 @@ export default class AssetsController implements IAssetsController {
             status: 'Transferring ICP',
             current: 2,
             total: 3,
+            type: 'buyNft',
+            nftId,
           },
         ],
       })
@@ -543,6 +571,7 @@ export default class AssetsController implements IAssetsController {
         selectedAmount,
         'ICP'
       );
+      console.log(index);
     } catch (error: any) {
       console.log(error);
       console.log(error?.message);
@@ -557,6 +586,8 @@ export default class AssetsController implements IAssetsController {
               error: error?.message,
               current: 2,
               total: 3,
+              type: 'buyNft',
+              nftId,
             },
           ],
         })
@@ -564,7 +595,6 @@ export default class AssetsController implements IAssetsController {
       return;
     }
 
-    console.log(index);
     //show('Settling..');
     store.dispatch(
       storeEntities({
@@ -576,6 +606,8 @@ export default class AssetsController implements IAssetsController {
             status: 'Settling Transaction',
             current: 3,
             total: 3,
+            type: 'buyNft',
+            nftId,
           },
         ],
       })
@@ -596,13 +628,15 @@ export default class AssetsController implements IAssetsController {
             status: '',
             current: 3,
             total: 3,
+            type: 'buyNft',
+            nftId,
           },
         ],
       })
     );
     //show('Purchase complete');
     this.getICPAssetsOfAccount({ address, symbol: 'ICP' });
-    if (settle?.err.Other == 'Insufficient funds sent') {
+    if (settle?.err?.Other == 'Insufficient funds sent') {
       // setIsBusy(false);
       store.dispatch(
         storeEntities({
@@ -615,6 +649,8 @@ export default class AssetsController implements IAssetsController {
               error: 'Insufficient funds sent',
               current: 3,
               total: 3,
+              type: 'buyNft',
+              nftId,
             },
           ],
         })
@@ -623,6 +659,5 @@ export default class AssetsController implements IAssetsController {
       callback && callback(`/nft/bought/${nftId}?address=${address}`);
       //setIsBusy(false);
     }
-    console.log('settle', settle);
   };
 }
