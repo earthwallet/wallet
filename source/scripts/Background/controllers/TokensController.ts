@@ -8,6 +8,7 @@ import {
   //updateEntities
 } from '~state/entities';
 import {
+  canisterAgent,
   getAllTokens,
   getMetadata,
   //tokenAPI,
@@ -17,7 +18,8 @@ import {
   //pairAPI,
 } from '@earthwallet/assets';
 import { createEntity } from '~state/entities';
-//import { Principal } from '@dfinity/principal';
+import { getTokenInfo } from '~global/tokens';
+import { Principal } from '@dfinity/principal';
 //import { keyable } from '../types/IAssetsController';
 //import { createWallet } from '@earthwallet/keyring';
 //import { parseBigIntToString } from '~utils/common';
@@ -36,12 +38,37 @@ export default class TokensController implements ITokensController {
         ?.map((id) => state.entities.tokens.byId[id])
         .filter((token) => token.address === address && token.active);
     console.log(activeTokens, 'getTokenBalances');
-    for (const tokenInfo of activeTokens) {
-      await this.delay(1000);
+    for (const activeToken of activeTokens) {
+      const tokenInfo = getTokenInfo(activeToken.tokenId);
+      let response;
+      let usd;
+      if (tokenInfo.type == 'DIP20') {
+        response = await canisterAgent({
+          canisterId: activeToken.tokenId,
+          method: 'balanceOf',
+          args: Principal.fromText(accountInfo?.meta?.principalId),
+        });
+        usd = await canisterAgent({
+          canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
+          method: 'get_icp_xdr_conversion_rate',
+        });
 
+        console.log(response, usd, 'getTokenBalances DIP20');
+      }
+      const TRILLION_SDR_IN_USD =
+        usd?.data?.xdr_permyriad_per_icp.toString() / 100000;
+
+      const balanceTxt =
+        (response?.toString() &&
+          Number(
+            response?.toString() / Math.pow(10, tokenInfo.decimals)
+          ).toFixed(2)) ||
+        0;
       const balance = {
-        id: address + '_WITH_' + tokenInfo.tokenId,
-        balance: 123456,
+        id: address + '_WITH_' + activeToken.tokenId,
+        balance: response?.toString(),
+        price: (balanceTxt * TRILLION_SDR_IN_USD)?.toFixed(2),
+        balanceTxt: balanceTxt,
       };
       store.dispatch(
         storeEntities({

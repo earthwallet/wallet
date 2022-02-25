@@ -1576,10 +1576,10 @@
   resolved "https://registry.npmjs.org/@discoveryjs/json-ext/-/json-ext-0.5.5.tgz"
   integrity sha512-6nFkfkmSeV/rqSaS4oWHgmpnYw194f6hmWF5is6b0J1naJZoiD0NTc9AiUwPHvWsowkjuHErCZT1wa0jg+BLIA==
 
-"@earthwallet/assets@^0.3.19":
-  version "0.3.19"
-  resolved "https://registry.npmjs.org/@earthwallet/assets/-/assets-0.3.19.tgz"
-  integrity sha512-BWkIJRH/i/dxo1qFc6wRtbEjqM+jvTjkA7j0HjpNg4bFMsfBoqGz5ls54giG9Nl3fLdEg02w7E0UK1CL3zQkrg==
+"@earthwallet/assets@^0.3.23":
+  version "0.3.23"
+  resolved "https://registry.yarnpkg.com/@earthwallet/assets/-/assets-0.3.23.tgz#9278ac25f80ff69d0021ca0db2cd63b6f4ebcfa3"
+  integrity sha512-oh22CmUcC1XToH7dusMmMdNj9VSI5QlnGvPn0Ah2AVdnRaLgrInoqClM6xtQAc2+Yt8bJ2OYBPr+Uq6uMko/lQ==
   dependencies:
     "@dfinity/agent" "^0.9.3"
     "@dfinity/principal" "^0.9.3"

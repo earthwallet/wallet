@@ -11,6 +11,7 @@ import { canisterAgentApi, getTokenIdentifier } from '@earthwallet/assets';
 import { isArray } from 'lodash';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
+import { parseObjWithOutBigInt } from '~global/helpers';
 
 export default class AssetsController implements IAssetsController {
   fetchFiatPrice = async (currency = 'USD') => {
@@ -243,13 +244,14 @@ export default class AssetsController implements IAssetsController {
             ? (Number(response[0] / (response[6] * 1000000n)) / 100).toFixed(2)
             : '-',
         };
+        const _stats = parseObjWithOutBigInt(stats);
         store.dispatch(
           storeEntities({
             entity: 'collectionStats',
             data: [
               {
                 id: canisterId,
-                ...stats,
+                ..._stats,
                 loading: false,
               },
             ],

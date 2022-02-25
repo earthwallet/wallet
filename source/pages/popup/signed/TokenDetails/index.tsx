@@ -73,11 +73,11 @@ const Wallet = ({
     }
   }, [selectedAccount]);
 
-  /*   useEffect(() => {
-      if (address != null) {
-        controller.tokens.getTokenBalances(address);
-      }
-    }, []); */
+  useEffect(() => {
+    if (address != null) {
+      controller.tokens.getTokenBalances(address);
+    }
+  }, []);
 
   useEffect(() => {
     if (navQuery != '') {
@@ -323,7 +323,8 @@ const TokensList = ({ address }: { address: string }) => {
             <div className={styles.listtitle}>{token?.name}</div>
           </div>
           <div className={styles.liststats} >
-            <div className={styles.listprice}>{123456} {token?.symbol}</div>
+            <div className={styles.listprice}>{token?.balanceTxt} {token?.symbol}</div>
+            <div className={styles.listsubtitle}>${token?.price}</div>
           </div>
           <img
             className={styles.listforward}
