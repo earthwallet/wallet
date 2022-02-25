@@ -277,7 +277,7 @@ const TokensList = ({ address }: { address: string }) => {
 
   const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(selectedAccount?.groupId));
   const tokens = useSelector(selectActiveTokensByAddressWithInfo(address));
-
+  console.log(tokens, 'tokens');
 
   return (
     <div className={styles.tokensList}>
@@ -308,7 +308,7 @@ const TokensList = ({ address }: { address: string }) => {
             />
           </div>
         )}
-        {false && tokens?.length > 0 && tokens?.map((token, i: number) => <div
+        {tokens?.length > 0 && tokens?.map((token, i: number) => <div
           onClick={() => history.push('/th/' + address + '/' + token.id)}
           key={i}
           className={styles.listitem}>
@@ -330,7 +330,7 @@ const TokensList = ({ address }: { address: string }) => {
             src={ICON_FORWARD}
           />
         </div>)}
-        {false && <div
+        {<div
           onClick={() => history.push('/account/selecttoken/' + selectedAccount?.id)}
           className={styles.listitem}>
           <div

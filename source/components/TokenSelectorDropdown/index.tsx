@@ -34,10 +34,10 @@ export const TokenSelectorDropdown = ({
     const [open, setOpen] = useState<boolean>(false);
     const [overSecond, setOverSecond] = React.useState(false);
     useEffect(() => {
-        setSelectedToken({ symbol: tokenInfo.symbol, id: tokenInfo.id })
+        setSelectedToken({ symbol: tokenInfo?.symbol, id: tokenInfo?.id })
     }, [tokenInfo !== null]);
     return <div className={styles.dropdownCont}>
-        {(selectedToken.id == "" || selectedToken.id == null)
+        {(selectedToken?.id == "" || selectedToken?.id == null)
             ? <div>
                 <div
                     onClick={() => setOpen(!open)}
@@ -51,8 +51,8 @@ export const TokenSelectorDropdown = ({
                 <div
                     onClick={() => setOpen(!open)}
                     className={styles.econt}>
-                    {tokenInfo.icon ? <img className={styles.eicon} src={ICON_EARTH}></img> : <div className={styles.eicon}>{selectedToken.symbol?.charAt(0)}</div>}
-                    <div>{selectedToken.symbol}</div>
+                    {tokenInfo.icon ? <img className={styles.eicon} src={ICON_EARTH}></img> : <div className={styles.eicon}>{selectedToken?.symbol?.charAt(0)}</div>}
+                    <div>{selectedToken?.symbol}</div>
                     <img className={styles.careticon} src={ICON_CARET} />
                 </div>
                 <div className={styles.econtinput}>
@@ -77,28 +77,28 @@ export const TokenSelectorDropdown = ({
                 </div>
             </div>}
         {open && <div className={styles.tokenOptions}>
-            {tokenInfos.filter((token: keyable) => token.id !== filterTokenId).map((token: keyable) => <div
+            {tokenInfos.filter((token: keyable) => token?.id !== filterTokenId).map((token: keyable) => <div
                 onClick={() => {
                     setSelectedToken({
-                        symbol: token.symbol,
-                        id: token.id
+                        symbol: token?.symbol,
+                        id: token?.id
                     });
                     setOpen(false);
                 }}
-                key={token.id}
+                key={token?.id}
                 className={clsx(styles.sinput, styles.selectDropdown, styles.selectDropdownOption)}>
                 <div className={styles.noicon} ></div>
-                <div className={styles.label}>{token.symbol}</div>
+                <div className={styles.label}>{token?.symbol}</div>
             </div>)}
         </div>}
     </div>
 }
 
 export const TokenBalance = ({ selectedToken, address }: { selectedToken: keyable, address: string }) => {
-    const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + selectedToken.id));
+    const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + selectedToken?.id));
 
     return <div className={styles.tokenBalance}>
-        {selectedToken.symbol == "" ? "-" : tokenPair?.balance} {selectedToken.symbol}
+        {selectedToken?.symbol == "" ? "-" : tokenPair?.balance} {selectedToken?.symbol}
     </div>
 }
 

@@ -44,7 +44,7 @@ const TokenHistory = ({
             : <div className={styles.icon_earth}>{tokenInfo?.name?.charAt(0)}
             </div>}
           <div className={styles.sectitle}>{1234} {tokenInfo?.symbol}</div>
-          <div className={styles.secsubtitle}>$4,092.22</div>
+          <div className={styles.secsubtitle}>$1480.80</div>
         </div>
         <div className={styles.cta}>
           <div
@@ -53,12 +53,12 @@ const TokenHistory = ({
             <img src={ICON_SWAP} className={styles.btnicon} />
             <div className={styles.btntxt}>Swap</div>
           </div>
-          <div
+          {false && <div
             onClick={() => history.push('/stake/' + address + "/" + tokenId)}
             className={clsx(styles.btnprimary, styles.btnsecondary)}>
             <img src={ICON_STAKE} className={styles.btnicon} />
             <div className={styles.btntxt}>Stake</div>
-          </div>
+          </div>}
         </div>
         {/*  <div className={styles.graphcont}>
           <div className={styles.graph}></div>
@@ -86,7 +86,7 @@ const TokenHistory = ({
           <div className={styles.row}>
             <div className={styles.col}>
               <div className={styles.key}>Supply</div>
-              <div className={styles.val}>519M / {tokenInfo?.totalSupply}</div>
+              <div className={styles.val}>∞ Unlimited</div>
             </div>
           </div>
           <div className={styles.row}>

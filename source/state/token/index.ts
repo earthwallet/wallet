@@ -5,7 +5,7 @@ import type { ITokenState } from './types';
 import { AppState } from '~state/store';
 import { keyable } from '~scripts/Background/types/IMainController';
 //import groupBy from 'lodash/groupBy';
-import TOKENS from '~utils/swapData';
+import TOKENS, { getTokenInfo } from '~global/tokens';
 
 const initialState: ITokenState = {
   loading: false,
@@ -76,7 +76,7 @@ export const selectActiveTokensByAddressWithInfo =
     } else {
       return activeTokens.map((tokenObj: keyable) => ({
         ...tokenObj,
-        ...state.entities.tokensInfo.byId[tokenObj.tokenId],
+        ...getTokenInfo(tokenObj.tokenId),
       }));
     }
   };

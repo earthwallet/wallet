@@ -155,13 +155,13 @@ const TokenHistory = ({
               ? <SkeletonTheme color="#a5acbb36" highlightColor="#eee">
                 <Skeleton width={60} />
               </SkeletonTheme>
-              : selectedToken.symbol == ""
+              : selectedToken?.symbol == ""
                 ? "-"
                 : pairRatio?.toFixed(3)
             }
           </div>
           <div className={styles.statKey}>
-            {selectedToken.symbol}/{selectedSecondToken.symbol || "?"}
+            {selectedToken?.symbol}/{selectedSecondToken?.symbol || "?"}
           </div>
         </div>
         <div className={styles.statsCol}>
@@ -173,7 +173,7 @@ const TokenHistory = ({
               ? <SkeletonTheme color="#a5acbb36" highlightColor="#eee">
                 <Skeleton width={45} />
               </SkeletonTheme>
-              : selectedToken.symbol == ""
+              : selectedToken?.symbol == ""
                 ? "-"
                 : totalSupply
             }
