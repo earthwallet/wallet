@@ -5,13 +5,13 @@ import styles from './index.scss';
 import Header from '~components/Header';
 
 import { RouteComponentProps, withRouter } from 'react-router';
-import ICON_EARTH from '~assets/images/icon-512.png';
 import ICON_SWAP from '~assets/images/th/swap.svg';
 import ICON_STAKE from '~assets/images/th/stake.svg';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
-import { selectTokenByTokenPair, selectTokensInfoById } from '~state/token';
+import { selectTokenByTokenPair } from '~state/token';
 import { useSelector } from 'react-redux';
+import { getTokenInfo } from '~global/tokens';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
@@ -25,9 +25,9 @@ const TokenHistory = ({
 
   console.log(address);
   const history = useHistory();
-  const tokenInfo = useSelector(selectTokensInfoById(tokenId));
+  const tokenInfo = getTokenInfo(tokenId);
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
-  console.log(tokenPair);
+  console.log(tokenPair, tokenInfo);
   return (
     <div className={styles.page}>
       <Header
@@ -39,19 +39,19 @@ const TokenHistory = ({
         </div>
 
         <div className={styles.section}>
-          {tokenInfo?.icon
-            ? <img className={styles.icon_earth} src={ICON_EARTH} />
+          {tokenInfo?.logo
+            ? <img className={styles.icon_earth} src={tokenInfo?.logo} />
             : <div className={styles.icon_earth}>{tokenInfo?.name?.charAt(0)}
             </div>}
-          <div className={styles.sectitle}>{1234} {tokenInfo?.symbol}</div>
-          <div className={styles.secsubtitle}>$1480.80</div>
+          <div className={styles.sectitle}>{tokenPair?.balanceTxt} {tokenInfo?.symbol}</div>
+          <div className={styles.secsubtitle}>${tokenPair.price}</div>
         </div>
         <div className={styles.cta}>
           <div
-            onClick={() => history.push('/swap/' + address + "/" + tokenId)}
+            onClick={() => history.push('/swap/' + address + "/" + tokenId + '?type=mint')}
             className={styles.btnprimary}>
             <img src={ICON_SWAP} className={styles.btnicon} />
-            <div className={styles.btntxt}>Swap</div>
+            <div className={styles.btntxt}>Mint</div>
           </div>
           {false && <div
             onClick={() => history.push('/stake/' + address + "/" + tokenId)}

@@ -17,6 +17,7 @@ import TokenSelectorDropdown from '~components/TokenSelectorDropdown';
 import useToast from '~hooks/useToast';
 import { useController } from '~hooks/useController';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import useQuery from '~hooks/useQuery';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
@@ -27,6 +28,8 @@ const TokenHistory = ({
     params: { address, tokenId },
   },
 }: Props) => {
+  const queryParams = useQuery();
+  const type: string = queryParams.get('type') || '';
 
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
   const [selectedToken, setSelectedToken] = useState<keyable>({ symbol: "", id: "" });
@@ -44,7 +47,7 @@ const TokenHistory = ({
   const [priceFetch, setPriceFetch] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  console.log(tokenPair);
+  console.log(tokenPair, tokenInfos);
 
   useEffect((): void => {
     console.log('useEffect', selectedToken);
@@ -103,7 +106,7 @@ const TokenHistory = ({
     <div className={styles.page}>
       <Header
         type={'wallet'}
-        text={'Swap'}
+        text={type == 'mint' ? 'Mint' : 'Swap'}
       ><div className={styles.empty} /></Header>
       <div>
         <div className={styles.etxt}>Earth Wallet connects you to the fastest,
@@ -128,7 +131,6 @@ const TokenHistory = ({
           <TokenSelectorDropdown
             tokenInfo={{}}
             tokenInfos={tokenInfos}
-            filterTokenId={tokenId}
             setSelectedAmount={updateSecondAmount}
             selectedAmount={selectedSecondAmount}
             setSelectedToken={setSelectedSecondToken}
@@ -190,7 +192,7 @@ const TokenHistory = ({
           {'Swap'}
         </NextStepButton>
       </div>
-    </div>
+    </div >
   );
 };
 

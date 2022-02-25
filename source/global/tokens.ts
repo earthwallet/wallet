@@ -9,6 +9,7 @@ const TOKENS = [
     symbol: 'SDR',
     tokenCanisterId: 'qlttm-2yaaa-aaaak-qafvq-cai',
     totalSupply: 'Infinite',
+    logo: undefined,
   },
 ];
 
