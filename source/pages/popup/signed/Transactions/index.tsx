@@ -48,7 +48,7 @@ const Transactions = ({
     return moment(timestamp / 1000000).format('MMM DD');
   };
   const getTransactionTimestamp = (transaction: any): any => {
-    const timestamp: number = transaction.transaction.metadata.timestamp;
+    const timestamp: number = transaction.transaction?.metadata?.timestamp;
 
     return timestamp;
   };
