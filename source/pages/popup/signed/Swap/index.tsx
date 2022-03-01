@@ -18,6 +18,7 @@ import useToast from '~hooks/useToast';
 import { useController } from '~hooks/useController';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import useQuery from '~hooks/useQuery';
+import ICON_MINT from '~assets/images/icon_mint.svg';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
@@ -37,6 +38,7 @@ const TokenHistory = ({
   const [selectedSecondToken, setSelectedSecondToken] = useState<keyable>({ symbol: "", id: "" });
 
   const tokenInfo = useSelector(selectTokensInfoById(tokenId));
+  console.log(tokenInfo)
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
   const tokenInfos = useSelector(selectTokensInfo);
   const { show } = useToast();
@@ -56,7 +58,7 @@ const TokenHistory = ({
 
       setPriceFetch(true);
       controller.tokens.getPair(selectedToken.id, selectedSecondToken.id).then((response) => {
-        console.log('do something', response);
+        console.log('do something', selectedToken.id, selectedSecondToken.id, response);
         setTotalSupply(response?.stats?.total_supply);
         setPairRatio(response.ratio);
         setPriceFetch(false);
@@ -115,7 +117,7 @@ const TokenHistory = ({
         <div className={styles.swapCont}>
           <div className={styles.firstInputCont}>
             <TokenSelectorDropdown
-              tokenInfo={tokenInfo}
+              tokenInfo={{ symbol: 'ICP', id: 'ICP', type: 'network' }}
               tokenInfos={tokenInfos}
               filterTokenId={tokenId}
               setSelectedAmount={updateAmount}
@@ -125,11 +127,11 @@ const TokenHistory = ({
               address={address}
             />
             <div
-              onClick={() => swapSelectedTokens()}
-              className={styles.swapbtn}><img src={ICON_SWAP} /></div>
+              onClick={() => type == 'mint' ? console.log() : swapSelectedTokens()}
+              className={styles.swapbtn}><img src={type == 'mint' ? ICON_MINT : ICON_SWAP} /></div>
           </div>
           <TokenSelectorDropdown
-            tokenInfo={{}}
+            tokenInfo={{ symbol: 'SDR', id: tokenId }}
             tokenInfos={tokenInfos}
             setSelectedAmount={updateSecondAmount}
             selectedAmount={selectedSecondAmount}
@@ -182,14 +184,15 @@ const TokenHistory = ({
           </div>
         </div>
       </div>
-      <div className={styles.txnBtnCont}><div className={styles.txnBtn}>Transaction Settings</div></div>
+      {false && <div className={styles.txnBtnCont}><div className={styles.txnBtn}>Transaction Settings</div></div>
+      }
       <div className={styles.nextCont}>
         <NextStepButton
           disabled={selectedAmount == 0}
           loading={loading}
           onClick={() => swap()}
         >
-          {'Swap'}
+          {type == 'mint' ? 'Mint' : 'Swap'}
         </NextStepButton>
       </div>
     </div >

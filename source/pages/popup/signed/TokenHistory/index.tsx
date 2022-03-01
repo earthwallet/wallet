@@ -5,7 +5,7 @@ import styles from './index.scss';
 import Header from '~components/Header';
 
 import { RouteComponentProps, withRouter } from 'react-router';
-import ICON_SWAP from '~assets/images/th/swap.svg';
+import ICON_MINT from '~assets/images/icon_mint.svg';
 import ICON_STAKE from '~assets/images/th/stake.svg';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
@@ -50,7 +50,7 @@ const TokenHistory = ({
           <div
             onClick={() => history.push('/swap/' + address + "/" + tokenId + '?type=mint')}
             className={styles.btnprimary}>
-            <img src={ICON_SWAP} className={styles.btnicon} />
+            <img src={ICON_MINT} className={styles.btnicon} />
             <div className={styles.btntxt}>Mint</div>
           </div>
           {false && <div

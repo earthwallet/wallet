@@ -11,6 +11,7 @@ import { selectTokenByTokenPair } from '~state/token';
 import { keyable } from '~scripts/Background/types/IMainController';
 //import { mint } from '@earthwallet/assets';
 import ICON_CARET from '~assets/images/icon_caret.svg';
+import { selectBalanceByAddress } from '~state/wallet';
 
 export const TokenSelectorDropdown = ({
     filterTokenId,
@@ -73,7 +74,9 @@ export const TokenSelectorDropdown = ({
                         type="number"
                         value={selectedAmount}
                         className={styles.einput}></input>
-                    <div className={styles.balanceData}><span className={styles.balanceLabel}>Balance:</span><div className={styles.balanceText}><TokenBalance address={address} selectedToken={selectedToken} /></div></div>
+                    <div className={styles.balanceData}><span className={styles.balanceLabel}>Balance:</span><div className={styles.balanceText}>
+                        {selectedToken.symbol == 'ICP' ? <ICPBalance address={address} /> : <TokenBalance address={address} selectedToken={selectedToken} />}
+                    </div></div>
                 </div>
             </div>}
         {open && <div className={styles.tokenOptions}>
@@ -98,8 +101,13 @@ export const TokenBalance = ({ selectedToken, address }: { selectedToken: keyabl
     const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + selectedToken?.id));
 
     return <div className={styles.tokenBalance}>
-        {selectedToken?.symbol == "" ? "-" : tokenPair?.balance} {selectedToken?.symbol}
+        {selectedToken?.symbol == "" ? "-" : tokenPair?.balanceTxt} {selectedToken?.symbol}
     </div>
+}
+
+const ICPBalance = ({ address }: { address: string }) => {
+    const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+    return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)} {"ICP"}</div>
 }
 
 export default TokenSelectorDropdown;

@@ -120,7 +120,23 @@ export default class TokensController implements ITokensController {
   delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   getPair = async (token1: string, token2: string) => {
-    await this.delay(5000);
+    let TRILLION_SDR_IN_USD;
+    let ICP_PRICE_IN_USD;
+    if (token1 == 'ICP') {
+      const usd = await canisterAgent({
+        canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
+        method: 'get_icp_xdr_conversion_rate',
+      });
+      TRILLION_SDR_IN_USD =
+        usd?.data?.xdr_permyriad_per_icp.toString() / 100000;
+      //internet-computer
+      const state = store.getState();
+
+      const currentUSDValue = state.entities.prices.byId['internet-computer'];
+      ICP_PRICE_IN_USD = currentUSDValue?.usd;
+    } else {
+      await this.delay(5000);
+    }
 
     /*  console.log(token1, token2, 'getPair');
     let response = await pairFactoryAPI('get_pair', [
@@ -143,8 +159,11 @@ export default class TokensController implements ITokensController {
     return {
       token1,
       token2,
-      ratio: 1.4,
-      stats: { total_supply: 12111122 },
+      ratio:
+        TRILLION_SDR_IN_USD == undefined
+          ? ''
+          : ICP_PRICE_IN_USD / TRILLION_SDR_IN_USD,
+      stats: { total_supply: '∞' },
     };
   };
 
