@@ -98,7 +98,7 @@ const TransactionConfirm = ({
         type={'wallet'}
         text={txnStatusObj?.loading ? 'Minting..' : 'Confirm ' + txnStatusObj?.type}
       ><div className={styles.empty} /></Header>
-      {txnStatusObj?.loading ? <Settling asset={{}} {...txnStatusObj} /> : <div className={styles.scrollCont}>
+      {txnStatusObj?.loading ? <Settling   {...txnStatusObj} /> : <div className={styles.scrollCont}>
         {txnStatusObj?.error && <div className={styles.errorResponse}>{txnStatusObj?.error}</div>}
 
         <div className={styles.swapCont}>

@@ -9,6 +9,7 @@ import {
 } from '~state/entities';
 import {
   canisterAgent,
+  canisterAgentApi,
   getAllTokens,
   getMetadata,
   principal_to_address,
@@ -281,15 +282,56 @@ export default class TokensController implements ITokensController {
   ) => {
     console.log(txnId);
     const state = store.getState();
-    const txnObj = state.entities.txnRequests.byId(txnId);
+    const txnObj = state.entities.txnRequests.byId[txnId];
     const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
-    const selectedAmount = parseFloat(
-      (txnObj.params.fromAmount / Math.pow(10, 8)).toFixed(8)
-    );
+    const selectedAmount = txnObj.params.fromAmount;
     let index: BigInt = 0n;
     const tokenAddress = principal_to_address(
       Principal.fromText(txnObj.params.to)
     );
+    try {
+      store.dispatch(
+        storeEntities({
+          entity: 'txnRequests',
+          data: [
+            {
+              id: txnId,
+              loading: true,
+              status: 'Sending ICP',
+              current: 1,
+              total: 2,
+              type: 'mint',
+            },
+          ],
+        })
+      );
+      index = await send(
+        currentIdentity,
+        tokenAddress,
+        txnObj.address,
+        selectedAmount,
+        'ICP'
+      );
+      console.log(index, 'amount');
+    } catch (error: any) {
+      store.dispatch(
+        storeEntities({
+          entity: 'txnRequests',
+          data: [
+            {
+              id: txnId,
+              loading: false,
+              status: '',
+              error: error?.message,
+              current: 1,
+              total: 2,
+              type: 'mint',
+            },
+          ],
+        })
+      );
+    }
+
     try {
       store.dispatch(
         storeEntities({
@@ -307,14 +349,48 @@ export default class TokensController implements ITokensController {
           ],
         })
       );
-      index = await send(
-        currentIdentity,
-        tokenAddress,
-        txnObj.address,
-        selectedAmount,
-        'ICP'
+      const response: any = await canisterAgentApi(
+        txnObj.params.to,
+        'mint_by_icp',
+        [[], index],
+        currentIdentity
       );
-      console.log(index);
+      if (response['Ok'] != undefined) {
+        store.dispatch(
+          storeEntities({
+            entity: 'txnRequests',
+            data: [
+              {
+                id: txnId,
+                loading: false,
+                status: '',
+                current: 2,
+                total: 2,
+                type: 'mint',
+                sendIndex: index?.toString(),
+              },
+            ],
+          })
+        );
+      } else {
+        store.dispatch(
+          storeEntities({
+            entity: 'txnRequests',
+            data: [
+              {
+                id: txnId,
+                loading: false,
+                status: '',
+                error: JSON.stringify(response['Err']),
+                current: 1,
+                total: 2,
+                type: 'mint',
+                sendIndex: index?.toString(),
+              },
+            ],
+          })
+        );
+      }
     } catch (error: any) {
       store.dispatch(
         storeEntities({
@@ -335,8 +411,8 @@ export default class TokensController implements ITokensController {
       );
       return;
     }
-
-    callback && callback('');
+    this.getTokenBalances(txnObj.address);
+    callback && callback('/account/details/' + txnObj.address);
   };
 
   stake = async (token1: string, token2: string, amount: number) => {

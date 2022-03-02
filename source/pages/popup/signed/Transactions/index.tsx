@@ -194,7 +194,7 @@ const Transactions = ({
             {transaction.loading
               ? 'Mint..'
               : (transaction.error != '' && transaction.error != null)
-                ? <div className={styles.errorText}>{transaction.error}</div>
+                ? <div className={styles.errorText}>{typeof transaction.error == 'string' ? transaction.error : '-'}</div>
                 : transaction.current == transaction.total ? 'Mint' : ''}
           </div>
           <div className={styles.transSubColTime}>
