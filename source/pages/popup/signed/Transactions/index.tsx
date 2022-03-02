@@ -179,6 +179,44 @@ const Transactions = ({
             className={styles.nftImage} />
         </div>
       </div>
+    if (transaction.type == 'mint')
+      return transaction.current == 0 ? <div></div> : <div className={clsx(styles.transItem, styles.transItem_noclick)}
+        key={index}>
+        <div className={styles.transColIcon}>
+          {transaction.loading
+            ? <div><ClipLoader color={'#fffff'}
+              size={10} /></div>
+            : (transaction.error != '' && transaction.error != null) ? <img src={ICON_FAILED} />
+              : transaction.current == transaction.total ? <img src={ICON_RECV} /> : ''}
+        </div>
+        <div className={styles.transColStatus}>
+          <div className={styles.transFirstline}>
+            {transaction.loading
+              ? 'Mint..'
+              : (transaction.error != '' && transaction.error != null)
+                ? <div className={styles.errorText}>{transaction.error}</div>
+                : transaction.current == transaction.total ? 'Mint' : ''}
+          </div>
+          <div className={styles.transSubColTime}>
+            <div>{getTransactionTime(transaction) || '-'}</div>
+            <div className={styles.transSubColDot}></div>
+            <div>
+              {transaction.loading
+                ? transaction.status
+                : (transaction.error != '' && transaction.error != null)
+                  ? <div>{'Error at ' + ['Making Offer', 'Transferring ICP', 'Settling'][transaction.current - 1]}</div>
+                  : transaction.current == transaction.total ? 'Complete' : `At ${transaction.current} of ${transaction.total}`
+              }
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.transColValue}>
+          {/*  <img
+          src={getTokenImageUrlFromnftId(transaction.nftId)}
+          className={styles.nftImage} /> */}
+        </div>
+      </div>
 
     return <div
       className={styles.transItem}

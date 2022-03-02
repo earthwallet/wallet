@@ -74,9 +74,10 @@ export const TokenSelectorDropdown = ({
                         type="number"
                         value={selectedAmount}
                         className={styles.einput}></input>
-                    <div className={styles.balanceData}><span className={styles.balanceLabel}>Balance:</span><div className={styles.balanceText}>
+                    <div className={styles.balanceData}><span className={styles.balanceLabel}>Balance: </span><div className={styles.balanceText}>
                         {selectedToken.symbol == 'ICP' ? <ICPBalance address={address} /> : <TokenBalance address={address} selectedToken={selectedToken} />}
-                    </div></div>
+                    </div>
+                    </div>
                 </div>
             </div>}
         {open && <div className={styles.tokenOptions}>

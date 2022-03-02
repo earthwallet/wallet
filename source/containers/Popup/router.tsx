@@ -37,6 +37,7 @@ import NFTCollection from '~pages/popup/signed/NFTCollection';
 import NFTBuyDetails from '~pages/popup/signed/NFTBuyDetails';
 import NFTSettle from '~pages/popup/signed/NFTSettle';
 import NFTPurchaseDetails from '~pages/popup/signed/NFTPurchaseDetails';
+import TransactionConfirm from '~pages/popup/signed/TransactionConfirm';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -144,6 +145,9 @@ const PopupRouter = () => {
               <Route path="/account/transaction/:txnId">
                 {wrapWithErrorBoundary(<TransactionDetails />, 'transactions')}
               </Route>
+              <Route path="/transaction/confirm/:txnId">
+                {wrapWithErrorBoundary(<TransactionConfirm />, 'Swap')}
+              </Route>
               <Route path="/account/send/:address">
                 {wrapWithErrorBoundary(
                   <WalletSendTokens />,
@@ -186,6 +190,7 @@ const PopupRouter = () => {
               <Route path="/swap/:address/:tokenId">
                 {wrapWithErrorBoundary(<Swap />, 'Swap')}
               </Route>
+
               <Route path="/th/:address/:tokenId">
                 {wrapWithErrorBoundary(<TokenHistory />, 'TokenHistory')}
               </Route>

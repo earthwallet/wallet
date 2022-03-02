@@ -53,7 +53,6 @@ const Stake = ({
 
       setPriceFetch(true);
       controller.tokens.getPair(selectedToken.id, selectedSecondToken.id).then((response) => {
-        console.log('do something', response);
         setPairRatio(response.ratio);
         setPriceFetch(false);
       });

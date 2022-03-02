@@ -4,7 +4,7 @@ import styles from './index.scss';
 
 import Header from '~components/Header';
 
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps, useHistory, withRouter } from 'react-router';
 //import ICON_EARTH from '~assets/images/icon-512.png';
 //import ICON_CARET from '~assets/images/icon_caret.svg';
 import ICON_SWAP from '~assets/images/icon_swap.svg';
@@ -19,12 +19,13 @@ import { useController } from '~hooks/useController';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import useQuery from '~hooks/useQuery';
 import ICON_MINT from '~assets/images/icon_mint.svg';
+import clsx from 'clsx';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
 
 
-const TokenHistory = ({
+const Swap = ({
   match: {
     params: { address, tokenId },
   },
@@ -48,6 +49,7 @@ const TokenHistory = ({
   const controller = useController();
   const [priceFetch, setPriceFetch] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const history = useHistory();
 
   console.log(tokenPair, tokenInfos);
 
@@ -58,7 +60,6 @@ const TokenHistory = ({
 
       setPriceFetch(true);
       controller.tokens.getPair(selectedToken.id, selectedSecondToken.id).then((response) => {
-        console.log('do something', selectedToken.id, selectedSecondToken.id, response);
         setTotalSupply(response?.stats?.total_supply);
         setPairRatio(response.ratio);
         setPriceFetch(false);
@@ -96,6 +97,18 @@ const TokenHistory = ({
     show("Done!");
     setLoading(false);
 
+  }
+
+  const mint = async () => {
+    const txnId = await controller.tokens.createMintTx({
+      from: selectedToken.id,
+      to: selectedSecondToken.id,
+      fromAmount: selectedAmount.toString(),
+      address,
+      pairRatio: pairRatio.toString()
+    })
+    history.push('/transaction/confirm/' + txnId);
+    console.log(txnId);
   }
   const swapSelectedTokens = () => {
     const _selectedToken = { ...selectedToken };
@@ -144,10 +157,10 @@ const TokenHistory = ({
       <div className={styles.statsCont}>
         <div className={styles.statsCol}>
           <div className={styles.statKey}>
-            Swap Fees
+            {type == "mint" ? "Mint Fees" : "Swap Fees"}
           </div>
-          <div className={styles.statVal}>
-            0.3%
+          <div className={clsx(styles.statVal, styles.statVal_small)}>
+            {type == "mint" ? "0.0002 ICP" : "0.3%"}
           </div>
         </div>
         <div className={styles.statsCol}>
@@ -190,9 +203,9 @@ const TokenHistory = ({
         <NextStepButton
           disabled={selectedAmount == 0}
           loading={loading}
-          onClick={() => swap()}
+          onClick={() => type == 'mint' ? mint() : swap()}
         >
-          {type == 'mint' ? 'Mint' : 'Swap'}
+          {type == 'mint' ? 'Next' : 'Swap'}
         </NextStepButton>
       </div>
     </div >
@@ -200,4 +213,4 @@ const TokenHistory = ({
 };
 
 
-export default withRouter(TokenHistory);
+export default withRouter(Swap);

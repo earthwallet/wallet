@@ -19,4 +19,22 @@ export interface ITokensController {
     amount: number,
     callback?: (message?: string) => void
   ) => Promise<keyable>;
+  createMintTx: ({
+    from,
+    to,
+    fromAmount,
+    address,
+    pairRatio,
+  }: {
+    from: string;
+    to: string;
+    fromAmount: string;
+    address: string;
+    pairRatio: string;
+  }) => Promise<string>;
+  mintToken: (
+    txnId: string,
+    identityJSON: string,
+    callback?: (path: string) => void
+  ) => Promise<void>;
 }

@@ -11,6 +11,7 @@ import {
   canisterAgent,
   getAllTokens,
   getMetadata,
+  principal_to_address,
   //tokenAPI,
   //pairFactoryAPI,
   //approve,
@@ -23,6 +24,9 @@ import { Principal } from '@dfinity/principal';
 //import { keyable } from '../types/IAssetsController';
 //import { createWallet } from '@earthwallet/keyring';
 //import { parseBigIntToString } from '~utils/common';
+import { v4 as uuid } from 'uuid';
+import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
+import { send } from '@earthwallet/keyring';
 
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
@@ -222,6 +226,117 @@ export default class TokensController implements ITokensController {
       ratio: 1.6,
       stats: { total_supply: 12111122 },
     };
+  };
+  createMintTx = async ({
+    from,
+    to,
+    fromAmount,
+    address,
+    pairRatio,
+  }: {
+    from: string;
+    to: string;
+    fromAmount: string;
+    address: string;
+    pairRatio: string;
+  }) => {
+    console.log(from, to, fromAmount);
+    const state = store.getState();
+
+    const txnId = uuid();
+    if (state.entities.txnRequests == null) {
+      store.dispatch(createEntity({ entity: 'txnRequests' }));
+    }
+
+    store.dispatch(
+      storeEntities({
+        entity: 'txnRequests',
+        data: [
+          {
+            id: txnId,
+            loading: false,
+            current: 0,
+            total: 2,
+            type: 'mint',
+            address: address,
+            createdAt: new Date().getTime(),
+            params: {
+              from,
+              to,
+              fromAmount,
+              pairRatio,
+            },
+          },
+        ],
+      })
+    );
+    return txnId;
+  };
+
+  mintToken = async (
+    txnId: string,
+    identityJSON: string,
+
+    callback?: (path: string) => void
+  ) => {
+    console.log(txnId);
+    const state = store.getState();
+    const txnObj = state.entities.txnRequests.byId(txnId);
+    const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
+    const selectedAmount = parseFloat(
+      (txnObj.params.fromAmount / Math.pow(10, 8)).toFixed(8)
+    );
+    let index: BigInt = 0n;
+    const tokenAddress = principal_to_address(
+      Principal.fromText(txnObj.params.to)
+    );
+    try {
+      store.dispatch(
+        storeEntities({
+          entity: 'txnRequests',
+          data: [
+            {
+              id: txnId,
+              loading: true,
+              status: 'Minting',
+              current: 1,
+              total: 2,
+              type: 'mint',
+              sendIndex: index?.toString(),
+            },
+          ],
+        })
+      );
+      index = await send(
+        currentIdentity,
+        tokenAddress,
+        txnObj.address,
+        selectedAmount,
+        'ICP'
+      );
+      console.log(index);
+    } catch (error: any) {
+      store.dispatch(
+        storeEntities({
+          entity: 'txnRequests',
+          data: [
+            {
+              id: txnId,
+              loading: false,
+              status: '',
+              error: error?.message,
+              current: 1,
+              total: 2,
+              type: 'mint',
+              sendIndex: index?.toString(),
+            },
+          ],
+        })
+      );
+      return;
+    }
+
+    callback && callback('');
   };
 
   stake = async (token1: string, token2: string, amount: number) => {

@@ -11,5 +11,18 @@
 @import 'variable';
 
 * {
-    font-family: Poppins, sans-serif;
+  font-family: Poppins, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+}
+
+img:not([alt]),
+img:not([height]),
+img:not([width]) {
+  filter: unset;
 }
