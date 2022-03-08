@@ -67,7 +67,7 @@ export default class TokensController implements ITokensController {
         (response?.toString() &&
           Number(
             response?.toString() / Math.pow(10, tokenInfo.decimals)
-          ).toFixed(2)) ||
+          ).toFixed(4)) ||
         0;
       const balance = {
         id: address + '_WITH_' + activeToken.tokenId,

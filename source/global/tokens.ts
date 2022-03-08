@@ -11,6 +11,18 @@ const TOKENS = [
     totalSupply: 'Infinite',
     logo: undefined,
   },
+  {
+    usesPrincipal: true,
+    type: 'DIP20',
+    isLive: true,
+    decimals: 8,
+    id: 'utozz-siaaa-aaaam-qaaxq-cai',
+    name: 'Wrapped ICP',
+    symbol: 'WICP',
+    tokenCanisterId: 'utozz-siaaa-aaaam-qaaxq-cai',
+    totalSupply: 'Infinite',
+    logo: undefined,
+  },
 ];
 
 export const getTokenInfo = (tokenCanisterId: string) =>
