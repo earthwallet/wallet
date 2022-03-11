@@ -43,11 +43,14 @@ export default class TokensController implements ITokensController {
         ?.map((id) => state.entities.tokens.byId[id])
         .filter((token) => token.address === address && token.active);
     console.log(activeTokens, 'getTokenBalances');
+
     for (const activeToken of activeTokens) {
       const tokenInfo = getTokenInfo(activeToken.tokenId);
       let response;
       let usd;
-      if (tokenInfo.type == 'DIP20') {
+      let price;
+      let balanceTxt;
+      if (tokenInfo.wrappedSymbol != null && tokenInfo.wrappedSymbol == 'XDR') {
         response = await canisterAgent({
           canisterId: activeToken.tokenId,
           method: 'balanceOf',
@@ -57,23 +60,43 @@ export default class TokensController implements ITokensController {
           canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
           method: 'get_icp_xdr_conversion_rate',
         });
+        const TRILLION_SDR_IN_USD =
+          usd?.data?.xdr_permyriad_per_icp.toString() / 100000;
 
-        console.log(response, usd, 'getTokenBalances DIP20');
+        balanceTxt =
+          (response?.toString() &&
+            Number(
+              response?.toString() / Math.pow(10, tokenInfo.decimals)
+            ).toFixed(4)) ||
+          0;
+        price = (balanceTxt * TRILLION_SDR_IN_USD)?.toFixed(2);
+      } else if (
+        tokenInfo.wrappedSymbol != null &&
+        tokenInfo.wrappedSymbol == 'ICP'
+      ) {
+        response = await canisterAgent({
+          canisterId: activeToken.tokenId,
+          method: 'balanceOf',
+          args: Principal.fromText(accountInfo?.meta?.principalId),
+        });
+        balanceTxt =
+          (response?.toString() &&
+            Number(
+              response?.toString() / Math.pow(10, tokenInfo.decimals)
+            ).toFixed(4)) ||
+          0;
+        const currentUSDValue = state.entities.prices.byId['internet-computer'];
+        const ICP_PRICE_IN_USD = currentUSDValue?.usd;
+        price = (balanceTxt * ICP_PRICE_IN_USD)?.toFixed(2);
       }
-      const TRILLION_SDR_IN_USD =
-        usd?.data?.xdr_permyriad_per_icp.toString() / 100000;
 
-      const balanceTxt =
-        (response?.toString() &&
-          Number(
-            response?.toString() / Math.pow(10, tokenInfo.decimals)
-          ).toFixed(4)) ||
-        0;
+      console.log(response, usd, 'getTokenBalances DIP20');
+
       const balance = {
         id: address + '_WITH_' + activeToken.tokenId,
         balance: response?.toString(),
-        price: (balanceTxt * TRILLION_SDR_IN_USD)?.toFixed(2),
-        balanceTxt: balanceTxt,
+        price,
+        balanceTxt,
       };
       store.dispatch(
         storeEntities({
@@ -127,48 +150,41 @@ export default class TokensController implements ITokensController {
   getPair = async (token1: string, token2: string) => {
     let TRILLION_SDR_IN_USD;
     let ICP_PRICE_IN_USD;
+    let total_supply;
+    let ratio = 0;
     if (token1 == 'ICP') {
-      const usd = await canisterAgent({
-        canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
-        method: 'get_icp_xdr_conversion_rate',
-      });
-      TRILLION_SDR_IN_USD =
-        usd?.data?.xdr_permyriad_per_icp.toString() / 100000;
-      //internet-computer
-      const state = store.getState();
+      total_supply = getTokenInfo(token2).totalSupply == 'Infinite' ? '∞' : '';
+      if (
+        getTokenInfo(token2).wrappedSymbol != null &&
+        getTokenInfo(token2).wrappedSymbol == 'XDR'
+      ) {
+        const usd = await canisterAgent({
+          canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
+          method: 'get_icp_xdr_conversion_rate',
+        });
+        TRILLION_SDR_IN_USD =
+          usd?.data?.xdr_permyriad_per_icp.toString() / 100000;
+        const state = store.getState();
 
-      const currentUSDValue = state.entities.prices.byId['internet-computer'];
-      ICP_PRICE_IN_USD = currentUSDValue?.usd;
+        const currentUSDValue = state.entities.prices.byId['internet-computer'];
+        ICP_PRICE_IN_USD = currentUSDValue?.usd;
+        ratio =
+          TRILLION_SDR_IN_USD == undefined
+            ? 0
+            : ICP_PRICE_IN_USD / TRILLION_SDR_IN_USD;
+      } else if (
+        getTokenInfo(token2).wrappedSymbol != null &&
+        getTokenInfo(token2).wrappedSymbol == 'ICP'
+      ) {
+        ratio = 1;
+      }
     } else {
       await this.delay(5000);
     }
 
-    /*  console.log(token1, token2, 'getPair');
-    let response = await pairFactoryAPI('get_pair', [
-      Principal.fromText(token1),
-      Principal.fromText(token2),
-    ]);
-    console.log(response, 'get_pair');
-    if (response == undefined || response.length == 0) {
-      response = await pairFactoryAPI('create_pair', [
-        Principal.fromText(token1),
-        Principal.fromText(token2),
-      ]);
-    }
-    const pair = response[0].toText();
-    const stats: keyable = await pairAPI(pair, 'stats');
-
-    const price1 = stats.token0_price;
-    const price2 = stats.token1_price;
-    const ratio = isNaN(price2) ? 1 : price2; */
     return {
-      token1,
-      token2,
-      ratio:
-        TRILLION_SDR_IN_USD == undefined
-          ? ''
-          : ICP_PRICE_IN_USD / TRILLION_SDR_IN_USD,
-      stats: { total_supply: '∞' },
+      ratio,
+      stats: { total_supply },
     };
   };
 
@@ -297,7 +313,7 @@ export default class TokensController implements ITokensController {
             {
               id: txnId,
               loading: true,
-              status: 'Sending ICP',
+              status: 'Transferring ICP',
               current: 1,
               total: 2,
               type: 'mint',
@@ -351,7 +367,7 @@ export default class TokensController implements ITokensController {
       );
       const response: any = await canisterAgentApi(
         txnObj.params.to,
-        'mint_by_icp',
+        getTokenInfo(txnObj.params.to).mintMethod,
         [[], index],
         currentIdentity
       );

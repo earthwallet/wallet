@@ -41,6 +41,7 @@ export const selectTokensInfo = (state: AppState) => {
   );
 };
 export const selectTokensInfoById = (tokenId: string) => (state: AppState) => {
+  return getTokenInfo(tokenId);
   return (
     state.entities.tokensInfo?.byId &&
     Object.keys(state.entities.tokensInfo?.byId)

@@ -20,6 +20,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import useQuery from '~hooks/useQuery';
 import ICON_MINT from '~assets/images/icon_mint.svg';
 import clsx from 'clsx';
+import { getTokenInfo } from '~global/tokens';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
@@ -73,12 +74,23 @@ const Swap = ({
       return;
     }
     setSelectedAmount(amount);
-    setSelectedSecondAmount(Number((pairRatio * amount)?.toFixed(3)));
+    if (pairRatio != 1) {
+      setSelectedSecondAmount(Number((pairRatio * amount)?.toFixed(4)));
+
+    }
+    else if (pairRatio == 1) {
+      setSelectedSecondAmount(Number(amount - getTokenInfo(tokenId).fees));
+    }
   }
   const updateSecondAmount = (amount: number) => {
-    if (pairRatio != 0) {
+    if (pairRatio != 0 && pairRatio != 1) {
       let selectedAmount: number = amount / pairRatio;
-      setSelectedAmount(Number(selectedAmount?.toFixed(3)));
+      setSelectedAmount(Number(selectedAmount?.toFixed(4)));
+      setSelectedSecondAmount(amount);
+    }
+    else if (pairRatio == 1) {
+      let selectedAmount: number = amount;
+      setSelectedAmount(Number(selectedAmount?.toFixed(4) + getTokenInfo(tokenId).fees));
       setSelectedSecondAmount(amount);
     }
     else {
@@ -144,7 +156,7 @@ const Swap = ({
               className={styles.swapbtn}><img src={type == 'mint' ? ICON_MINT : ICON_SWAP} /></div>
           </div>
           <TokenSelectorDropdown
-            tokenInfo={{ symbol: 'SDR', id: tokenId }}
+            tokenInfo={{ symbol: tokenInfo.symbol, id: tokenId }}
             tokenInfos={tokenInfos}
             setSelectedAmount={updateSecondAmount}
             selectedAmount={selectedSecondAmount}
@@ -160,7 +172,7 @@ const Swap = ({
             {type == "mint" ? "Mint Fees" : "Swap Fees"}
           </div>
           <div className={clsx(styles.statVal, styles.statVal_small)}>
-            {type == "mint" ? "0.0002 ICP" : "0.3%"}
+            {type == "mint" ? tokenInfo.fees : "0.3%"}
           </div>
         </div>
         <div className={styles.statsCol}>

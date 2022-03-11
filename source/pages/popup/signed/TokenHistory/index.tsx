@@ -92,7 +92,7 @@ const TokenHistory = ({
           <div className={styles.row}>
             <div className={styles.col}>
               <div className={styles.key}>Max Supply</div>
-              <div className={styles.val}>1.0B</div>
+              <div className={styles.val}>∞ Unlimited</div>
             </div>
           </div>
         </div>

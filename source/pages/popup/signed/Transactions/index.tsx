@@ -17,6 +17,7 @@ import { getSymbol } from '~utils/common';
 import { selectAssetBySymbol, selectTxnRequestsByAddress } from '~state/assets';
 import clsx from 'clsx';
 import { getTokenImageUrlFromnftId } from '~global/nfts';
+import { getTokenInfo } from '~global/tokens';
 
 interface Props extends RouteComponentProps<{ address: string }> {
   className?: string;
@@ -178,6 +179,9 @@ const Transactions = ({
             src={getTokenImageUrlFromnftId(transaction.nftId)}
             className={styles.nftImage} />
         </div>
+        <div className={clsx(styles.transColAction, styles.noop)}>
+          <img src={ICON_FORWARD} />
+        </div>
       </div>
     if (transaction.type == 'mint')
       return transaction.current == 0 ? <div></div> : <div className={clsx(styles.transItem, styles.transItem_noclick)}
@@ -204,7 +208,7 @@ const Transactions = ({
               {transaction.loading
                 ? transaction.status
                 : (transaction.error != '' && transaction.error != null)
-                  ? <div>{'Error at ' + ['Making Offer', 'Transferring ICP', 'Settling'][transaction.current - 1]}</div>
+                  ? <div>{'Error at ' + ['Transferring ICP', 'Minting'][transaction.current - 1]}</div>
                   : transaction.current == transaction.total ? 'Complete' : `At ${transaction.current} of ${transaction.total}`
               }
             </div>
@@ -212,9 +216,11 @@ const Transactions = ({
         </div>
 
         <div className={styles.transColValue}>
-          {/*  <img
-          src={getTokenImageUrlFromnftId(transaction.nftId)}
-          className={styles.nftImage} /> */}
+          <div
+            className={styles.nftImage} >{getTokenInfo(transaction.params.to).symbol}</div>
+        </div>
+        <div className={clsx(styles.transColAction, styles.noop)}>
+          <img src={ICON_FORWARD} />
         </div>
       </div>
 

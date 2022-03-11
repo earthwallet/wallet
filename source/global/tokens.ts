@@ -7,9 +7,12 @@ const TOKENS = [
     id: 'qlttm-2yaaa-aaaak-qafvq-cai',
     name: 'Special Drawing Rights',
     symbol: 'SDR',
+    wrappedSymbol: 'XDR',
     tokenCanisterId: 'qlttm-2yaaa-aaaak-qafvq-cai',
     totalSupply: 'Infinite',
     logo: undefined,
+    fees: 0.0002,
+    mintMethod: 'mint_by_icp',
   },
   {
     usesPrincipal: true,
@@ -19,9 +22,12 @@ const TOKENS = [
     id: 'utozz-siaaa-aaaam-qaaxq-cai',
     name: 'Wrapped ICP',
     symbol: 'WICP',
+    wrappedSymbol: 'ICP',
     tokenCanisterId: 'utozz-siaaa-aaaam-qaaxq-cai',
     totalSupply: 'Infinite',
     logo: undefined,
+    fees: 0.0001,
+    mintMethod: 'mint',
   },
 ];
 
