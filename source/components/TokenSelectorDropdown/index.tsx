@@ -21,7 +21,9 @@ export const TokenSelectorDropdown = ({
     selectedAmount,
     setSelectedToken,
     selectedToken,
-    address
+    address,
+    loading,
+    hideMax
 }: {
     filterTokenId?: string,
     tokenInfos: keyable,
@@ -30,10 +32,18 @@ export const TokenSelectorDropdown = ({
     selectedAmount: any,
     setSelectedToken: any,
     selectedToken: any,
-    address: string
+    address: string,
+    loading?: boolean,
+    hideMax?: boolean
 }) => {
     const [open, setOpen] = useState<boolean>(false);
     const [overSecond, setOverSecond] = React.useState(false);
+    const [balance, setBalance] = React.useState<number | string>(0);
+
+    const maxBalance = () => {
+        setSelectedAmount(typeof balance == 'string' ? parseFloat(balance) : balance);
+    };
+
     useEffect(() => {
         setSelectedToken({ symbol: tokenInfo?.symbol, id: tokenInfo?.id })
     }, [tokenInfo !== null]);
@@ -57,7 +67,9 @@ export const TokenSelectorDropdown = ({
                     <img className={styles.careticon} src={ICON_CARET} />
                 </div>
                 <div className={styles.econtinput}>
-                    <div className={styles.maxBtn}>Max</div>
+                    {!hideMax && <div
+                        onClick={() => maxBalance()}
+                        className={clsx(styles.maxBtn, loading && styles.maxBtn_loading)}>Max</div>}
                     <input
                         onMouseOver={() => setOverSecond(true)}
                         onMouseOut={() => setOverSecond(false)}
@@ -75,7 +87,11 @@ export const TokenSelectorDropdown = ({
                         value={selectedAmount}
                         className={styles.einput}></input>
                     <div className={styles.balanceData}><span className={styles.balanceLabel}>Balance: </span><div className={styles.balanceText}>
-                        {selectedToken.symbol == 'ICP' ? <ICPBalance address={address} /> : <TokenBalance address={address} selectedToken={selectedToken} />}
+                        {selectedToken.symbol == 'ICP' ? <ICPBalance
+                            setBalance={setBalance}
+                            address={address} /> : <TokenBalance
+                            setBalance={setBalance}
+                            address={address} selectedToken={selectedToken} />}
                     </div>
                     </div>
                 </div>
@@ -98,16 +114,25 @@ export const TokenSelectorDropdown = ({
     </div>
 }
 
-export const TokenBalance = ({ selectedToken, address }: { selectedToken: keyable, address: string }) => {
+export const TokenBalance = ({ selectedToken, address, setBalance }: { selectedToken: keyable, address: string, setBalance: (balance: string | number) => void }) => {
     const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + selectedToken?.id));
+
+    useEffect(() => {
+        setBalance(tokenPair?.balanceTxt)
+    }, [tokenPair?.balanceTxt !== null]);
 
     return <div className={styles.tokenBalance}>
         {selectedToken?.symbol == "" ? "-" : tokenPair?.balanceTxt} {selectedToken?.symbol}
     </div>
 }
 
-const ICPBalance = ({ address }: { address: string }) => {
+const ICPBalance = ({ address, setBalance }: { address: string, setBalance: (balance: string | number) => void }) => {
     const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+
+    useEffect(() => {
+        setBalance((currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0))
+    }, []);
+
     return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)} {"ICP"}</div>
 }
 

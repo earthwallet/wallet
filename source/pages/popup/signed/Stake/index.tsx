@@ -47,9 +47,7 @@ const Stake = ({
   console.log(tokenPair, 'tokenPair');
   //const selectedTokenInfo = useSelector(selectedToken.id => selectTokensInfoById(selectedToken.id));
   useEffect((): void => {
-    console.log('useEffect', selectedToken);
     if ((selectedToken.id != "") && selectedSecondToken.id != "" && selectedSecondToken.id != null) {
-      console.log('useEffect', selectedToken, selectedSecondToken);
 
       setPriceFetch(true);
       controller.tokens.getPair(selectedToken.id, selectedSecondToken.id).then((response) => {
@@ -125,6 +123,7 @@ const Stake = ({
       <div className={styles.tabcont}>
         <div className={styles.firstInputCont}>
           <TokenSelectorDropdown
+            loading={priceFetch}
             tokenInfo={tokenInfo}
             tokenInfos={tokenInfos}
             filterTokenId={tokenId}
@@ -138,6 +137,7 @@ const Stake = ({
         </div>
         <TokenSelectorDropdown
           tokenInfo={{}}
+          loading={priceFetch}
           tokenInfos={tokenInfos}
           filterTokenId={tokenId}
           setSelectedAmount={updateSecondAmount}

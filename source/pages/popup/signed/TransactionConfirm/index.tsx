@@ -176,7 +176,7 @@ const TransactionConfirm = ({
             loading={isBusy}
             disabled={error != 'NO_ERROR'}
             onClick={() => handleSign()}>
-            {txnStatusObj?.type}
+            {txnStatusObj?.type == 'mint' ? 'Mint' : txnStatusObj?.type}
           </NextStepButton>
         </div>
       </section>}
