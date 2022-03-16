@@ -1,4 +1,4 @@
-const TOKENS = [
+const TOKENS_LIST = [
   {
     usesPrincipal: true,
     type: 'DIP20',
@@ -32,6 +32,8 @@ const TOKENS = [
 ];
 
 export const getTokenInfo = (tokenCanisterId: string) =>
-  TOKENS.filter((token) => token.id === tokenCanisterId)[0] || {};
+  TOKENS_LIST.filter((token) => token.id === tokenCanisterId)[0] || {};
 
-export default TOKENS;
+const LIVE_TOKENS = TOKENS_LIST.filter((token) => token.isLive);
+
+export default LIVE_TOKENS;
