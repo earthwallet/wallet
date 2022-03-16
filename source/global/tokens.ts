@@ -17,7 +17,7 @@ const TOKENS = [
   {
     usesPrincipal: true,
     type: 'DIP20',
-    isLive: true,
+    isLive: false,
     decimals: 8,
     id: 'utozz-siaaa-aaaam-qaaxq-cai',
     name: 'Wrapped ICP',
