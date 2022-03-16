@@ -44,7 +44,7 @@ const TokenHistory = ({
             : <div className={styles.icon_earth}>{tokenInfo?.name?.charAt(0)}
             </div>}
           <div className={styles.sectitle}>{tokenPair?.balanceTxt} {tokenInfo?.symbol}</div>
-          <div className={styles.secsubtitle}>${tokenPair.price}</div>
+          <div className={styles.secsubtitle}>${tokenPair?.price}</div>
         </div>
         <div className={styles.cta}>
           <div
