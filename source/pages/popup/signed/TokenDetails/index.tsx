@@ -277,7 +277,6 @@ const TokensList = ({ address }: { address: string }) => {
 
   const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(selectedAccount?.groupId));
   const tokens = useSelector(selectActiveTokensByAddressWithInfo(address));
-  console.log(tokens, 'tokens');
 
   return (
     <div className={styles.tokensList}>
@@ -403,11 +402,11 @@ const TokensGridflow = ({ address }: { address: string }) => {
       {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
         <div
           key={i}
+          onClick={() => history.push(`/account/send/${address}`)}
           className={styles.imagecont}>
           <img
             key={i}
             className={styles.imageIcon}
-            onClick={() => history.push(`/account/send/${selectedAccount.id}`)}
             src={token?.icon} >
           </img>
         </div>

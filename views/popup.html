@@ -21,6 +21,12 @@
       href="https://unpkg.com/swiper@6.0.2/swiper-bundle.min.css"
     />
     <style>
+      img:not([alt]),
+      img:not([height]),
+      img:not([width]) {
+        filter: unset !important;
+      }
+
       .swiper-slide {
         background-position: center;
         background-size: cover;
@@ -52,6 +58,9 @@
       }
       .nftswipercontainer {
         perspective: 300px;
+      }
+      .nftswipercontainer > .swiper-pagination-bullets {
+        display: none;
       }
 
       .tokensswipercontainer > .swiper-pagination-bullets {

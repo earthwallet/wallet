@@ -26,12 +26,6 @@ import TokenHistory from '~pages/popup/signed/TokenHistory';
 import Stake from '~pages/popup/signed/Stake';
 import Swap from '~pages/popup/signed/Swap';
 import SelectTokens from '~pages/popup/signed/SelectTokens';
-import TransactionLoading from '~pages/popup/signed/TransactionLoading';
-import SubmittingTransactions from '~pages/popup/signed/SubmittingTransactions';
-import Settings from '~pages/popup/signed/Settings';
-import SwapTransactions from '~pages/popup/signed/SwapTransactions';
-import Marketplace from '~pages/popup/signed/Marketplace';
-import Marketplace1 from '~pages/popup/signed/Marketplace1';
 import NFTMarketplace from '~pages/popup/signed/NFTMarketplace';
 import NFTCollection from '~pages/popup/signed/NFTCollection';
 import NFTBuyDetails from '~pages/popup/signed/NFTBuyDetails';
@@ -90,24 +84,6 @@ const PopupRouter = () => {
 
               <Route path="/accounts">
                 {wrapWithErrorBoundary(<Accounts />, 'accounts')}
-              </Route>
-              <Route path="/task1">
-                {wrapWithErrorBoundary(<TransactionLoading />, 'accounts')}
-              </Route>
-              <Route path="/task2">
-                {wrapWithErrorBoundary(<SubmittingTransactions />, 'accounts')}
-              </Route>
-              <Route path="/task3">
-                {wrapWithErrorBoundary(<Settings />, 'accounts')}
-              </Route>
-              <Route path="/task4">
-                {wrapWithErrorBoundary(<SwapTransactions />, 'accounts')}
-              </Route>
-              <Route path="/task5">
-                {wrapWithErrorBoundary(<Marketplace />, 'accounts')}
-              </Route>
-              <Route path="/task6">
-                {wrapWithErrorBoundary(<Marketplace1 />, 'accounts')}
               </Route>
               <Route path="/account/marketplace/:address">
                 {wrapWithErrorBoundary(<NFTMarketplace />, 'NFTMarketplace')}
