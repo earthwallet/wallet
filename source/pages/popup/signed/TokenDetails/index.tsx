@@ -312,9 +312,9 @@ const TokensList = ({ address }: { address: string }) => {
           onClick={() => history.push('/th/' + address + '/' + token.id)}
           key={i}
           className={styles.listitem}>
-          {token?.icon ? <img
+          {token?.logo ? <img
             className={styles.listicon}
-            src={token?.icon} >
+            src={token?.logo} >
           </img> : <div
             className={styles.listicon}
           >{token?.name?.charAt(0)}

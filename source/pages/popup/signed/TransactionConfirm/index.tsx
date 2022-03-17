@@ -98,7 +98,7 @@ const TransactionConfirm = ({
         type={'wallet'}
         text={txnStatusObj?.loading ? 'Minting..' : 'Confirm ' + txnStatusObj?.type}
       ><div className={styles.empty} /></Header>
-      {txnStatusObj?.loading ? <Settling   {...txnStatusObj} /> : <div className={styles.scrollCont}>
+      {txnStatusObj?.loading ? <Settling {...txnStatusObj} logo={getTokenInfo(txnStatusObj?.params?.to)?.logo} /> : <div className={styles.scrollCont}>
         {txnStatusObj?.error && <div className={styles.errorResponse}>{txnStatusObj?.error}</div>}
 
         <div className={styles.swapCont}>
@@ -110,7 +110,7 @@ const TransactionConfirm = ({
           <div className={styles.swapArrow} >
             <img src={ICON_DOWN} className={styles.swapArrowIcon} /></div>
           <div className={styles.swapBelow}>
-            <div className={styles.swapBelowIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.symbol?.substring(0, 1)?.toUpperCase()}</div>
+            <div className={styles.swapBelowIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.logo ? <img className={styles.swapToIcon} src={getTokenInfo(txnStatusObj?.params?.to)?.logo}></img> : <div className={styles.swapToIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.symbol?.charAt(0)}</div>}</div>
             <div className={styles.swapBelowTxt}>{getTokenInfo(txnStatusObj?.params?.to).name}</div>
             <div className={styles.swapBelowVal}>{(txnStatusObj?.params?.pairRatio * txnStatusObj?.params?.fromAmount)?.toFixed(3) || '-'} {getTokenInfo(txnStatusObj?.params?.to)?.symbol}</div>
             <div className={styles.swapBelowUsd}>${(usdValue * txnStatusObj?.params?.fromAmount)?.toFixed(2)}</div>
@@ -187,11 +187,12 @@ const TransactionConfirm = ({
 
 
 const Settling = (props: keyable) => {
+
   return (
     <div className={styles.settleContainer}>
       <img src={swapCircle} className={styles.swapCircleImg} />
-      {/*       <img src={getTokenImageURL(props.asset)} className={styles.nftLoadingImg}></img>
- */}      <span className={styles.quoteText}>Step {props.current} of {props.total}</span>
+      <img src={props.logo} className={styles.nftLoadingImg}></img>
+      <span className={styles.quoteText}>Step {props.current} of {props.total}</span>
       <span className={styles.submittingText}>{props.status}</span>
       <div className={styles.progressBar}>
         <div className={styles.leftSide} style={{ width: ((270 / props.total) * props.current) }}></div>

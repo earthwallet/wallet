@@ -436,7 +436,7 @@ const WalletSendTokens = ({
             />
             {!(isNaN(selectedAmount) || selectedAmount == 0) && <div
               className={styles.priceInput}
-            >${((selectedAmount + fees) * currentUSDValue?.usd).toFixed(3)}</div>}
+            >${((selectedAmount + fees) * currentUSDValue?.usd).toFixed(2)}</div>}
             {error && (
               <div
                 className={styles.noBalanceError}

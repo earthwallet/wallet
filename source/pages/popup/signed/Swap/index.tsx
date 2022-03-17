@@ -21,6 +21,7 @@ import useQuery from '~hooks/useQuery';
 import ICON_MINT from '~assets/images/icon_mint.svg';
 import clsx from 'clsx';
 import { getTokenInfo } from '~global/tokens';
+import ICON_ICP from '~assets/images/icon_icp_details.png';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
@@ -136,14 +137,13 @@ const Swap = ({
         text={type == 'mint' ? 'Mint' : 'Swap'}
       ><div className={styles.empty} /></Header>
       <div>
-        <div className={styles.etxt}>Earth Wallet connects you to the fastest,
-          most secure decentralized exchange protocols in the world.</div>
+        <div className={styles.etxt}>Earth DEX lets you swap your tokens with no central middleman. Fees are used to offset emissions.</div>
 
         <div className={styles.swapCont}>
           <div className={styles.firstInputCont}>
             <TokenSelectorDropdown
               loading={priceFetch}
-              tokenInfo={{ symbol: 'ICP', id: 'ICP', type: 'network' }}
+              tokenInfo={{ symbol: 'ICP', logo: ICON_ICP, id: 'ICP', type: 'network' }}
               tokenInfos={tokenInfos}
               filterTokenId={tokenId}
               setSelectedAmount={updateAmount}
@@ -158,7 +158,7 @@ const Swap = ({
           </div>
           <TokenSelectorDropdown
             loading={priceFetch}
-            tokenInfo={{ symbol: tokenInfo.symbol, id: tokenId }}
+            tokenInfo={{ logo: tokenInfo.logo, symbol: tokenInfo.symbol, id: tokenId }}
             tokenInfos={tokenInfos}
             setSelectedAmount={updateSecondAmount}
             selectedAmount={selectedSecondAmount}

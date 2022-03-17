@@ -29,7 +29,7 @@ const WalletReceiveTokens = ({
     <div className={styles.page}>
       <Header showAccountsDropdown showMenu type="wallet" />
       <div className={styles.container}>
-        <div className={styles.accountShare}>Share your Public Address</div>
+        <div className={styles.accountShare}>Your Public Address</div>
         <div className={styles.accountDetail}>
           {selectedAccount?.id && (
             <div className={styles.addressDisplay}>

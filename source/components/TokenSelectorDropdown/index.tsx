@@ -1,11 +1,7 @@
-
-
-
 import React, { useEffect, useState } from 'react';
 import styles from './index.scss';
 
 import clsx from 'clsx';
-import ICON_EARTH from '~assets/images/icon-512.png';
 import { useSelector } from 'react-redux';
 import { selectTokenByTokenPair } from '~state/token';
 import { keyable } from '~scripts/Background/types/IMainController';
@@ -45,7 +41,7 @@ export const TokenSelectorDropdown = ({
     };
 
     useEffect(() => {
-        setSelectedToken({ symbol: tokenInfo?.symbol, id: tokenInfo?.id })
+        setSelectedToken({ logo: tokenInfo?.logo, symbol: tokenInfo?.symbol, id: tokenInfo?.id })
     }, [tokenInfo !== null]);
     return <div className={styles.dropdownCont}>
         {(selectedToken?.id == "" || selectedToken?.id == null)
@@ -62,7 +58,7 @@ export const TokenSelectorDropdown = ({
                 <div
                     onClick={() => setOpen(!open)}
                     className={styles.econt}>
-                    {tokenInfo.icon ? <img className={styles.eicon} src={ICON_EARTH}></img> : <div className={styles.eicon}>{selectedToken?.symbol?.charAt(0)}</div>}
+                    {selectedToken?.logo ? <img className={styles.eicon} src={selectedToken?.logo}></img> : <div className={styles.eicon}>{selectedToken?.symbol?.charAt(0)}</div>}
                     <div>{selectedToken?.symbol}</div>
                     <img className={styles.careticon} src={ICON_CARET} />
                 </div>
@@ -87,7 +83,7 @@ export const TokenSelectorDropdown = ({
                         value={selectedAmount}
                         className={styles.einput}></input>
                     <div className={styles.balanceData}><span className={styles.balanceLabel}>Balance: </span><div className={styles.balanceText}>
-                        {selectedToken.symbol == 'ICP' ? <ICPBalance
+                        {selectedToken?.symbol == 'ICP' ? <ICPBalance
                             setBalance={setBalance}
                             address={address} /> : <TokenBalance
                             setBalance={setBalance}
@@ -101,13 +97,14 @@ export const TokenSelectorDropdown = ({
                 onClick={() => {
                     setSelectedToken({
                         symbol: token?.symbol,
-                        id: token?.id
+                        id: token?.id,
+                        logo: token?.logo
                     });
                     setOpen(false);
                 }}
                 key={token?.id}
                 className={clsx(styles.sinput, styles.selectDropdown, styles.selectDropdownOption)}>
-                <div className={styles.noicon} ></div>
+                <div className={styles.noicon}>{token?.logo ? <img className={styles.eicon} src={token?.logo}></img> : <div></div>}</div>
                 <div className={styles.label}>{token?.symbol}</div>
             </div>)}
         </div>}

@@ -99,72 +99,75 @@ export const AssetsList = ({ address }) => {
 
 
     const history = useHistory();
+    if (!loading && assets?.length == 0) {
+      return <div className={styles.centerDiv}>No NFTs Found</div>
+    } else {
+      return <div className={styles.listitemscont}>
+          {loading && <div
+              className={clsx(styles.listitem, styles.listitemloading)}>
+              <div
+                  className={styles.listicon} >
+                  <SkeletonTheme color="#222" highlightColor="#000">
+                      <Skeleton className={styles.loadingicon} width={36} height={38} />
+                  </SkeletonTheme>
+              </div>
+              <div className={styles.listinfo}>
+                  <div className={styles.listtitle}>
+                      <SkeletonTheme color="#222" highlightColor="#000">
+                          <Skeleton />
+                      </SkeletonTheme>
+                  </div>
+              </div>
+              <div className={styles.liststats}></div>
+              <SkeletonTheme color="#222" highlightColor="#000">
+                  <Skeleton className={styles.listforward} />
+              </SkeletonTheme>
 
-    return <div className={styles.listitemscont}>
-        {loading && <div
-            className={clsx(styles.listitem, styles.listitemloading)}>
-            <div
-                className={styles.listicon} >
-                <SkeletonTheme color="#222" highlightColor="#000">
-                    <Skeleton className={styles.loadingicon} width={36} height={38} />
-                </SkeletonTheme>
-            </div>
-            <div className={styles.listinfo}>
-                <div className={styles.listtitle}>
-                    <SkeletonTheme color="#222" highlightColor="#000">
-                        <Skeleton />
-                    </SkeletonTheme>
-                </div>
-            </div>
-            <div className={styles.liststats}></div>
-            <SkeletonTheme color="#222" highlightColor="#000">
-                <Skeleton className={styles.listforward} />
-            </SkeletonTheme>
-
-        </div>}
-        {assets?.map((asset, i: number) => (<div
-            key={i}
-            onClick={() => history.push(`/nftdetails/${asset.id}`)}
-            className={styles.listitem}>
-            <img className={styles.listicon}
-                onError={({ currentTarget }) => {
-                    currentTarget.onerror = null;
-                    currentTarget.src = ICON_PLACEHOLDER;
-                }}
-                src={getTokenImageURL(asset)} />
-            <div className={styles.listinfo}>
-                <div className={styles.listtitle}>{asset?.title || asset?.tokenIndex}</div>
-                <div className={styles.listsubtitle}>{getTokenCollectionInfo(asset?.canisterId)?.name}</div>
-            </div>
-            <div
-                className={styles.liststats}
-            ><div className={styles.listprice}>{asset?.forSale
-                ? 'For sale'
-                : 'Unlisted'}</div>
-                {asset?.forSale && <div className={styles.listsubtitle}>{(asset?.info?.price / 100000000)?.toFixed(2)} ICP</div>}
-            </div>
-            <img
-                className={styles.listforward}
-                src={ICON_FORWARD}
-            />
-        </div>))}
-        <div
-            onClick={() => history.push('/account/marketplace/' + address)}
-            className={styles.listitem}>
-            <div
-                className={styles.listicon} >
-                <div>💎</div>
-            </div>
-            <div className={styles.listinfo}>
-                <div className={styles.listtitle}>Explore Collections</div>
-            </div>
-            <div className={styles.liststats}></div>
-            <img
-                className={styles.listforward}
-                src={ICON_FORWARD}
-            />
-        </div>
-    </div>
+          </div>}
+          {assets?.map((asset, i: number) => (<div
+              key={i}
+              onClick={() => history.push(`/nftdetails/${asset.id}`)}
+              className={styles.listitem}>
+              <img className={styles.listicon}
+                  onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src = ICON_PLACEHOLDER;
+                  }}
+                  src={getTokenImageURL(asset)} />
+              <div className={styles.listinfo}>
+                  <div className={styles.listtitle}>{asset?.title || asset?.tokenIndex}</div>
+                  <div className={styles.listsubtitle}>{getTokenCollectionInfo(asset?.canisterId)?.name}</div>
+              </div>
+              <div
+                  className={styles.liststats}
+              ><div className={styles.listprice}>{asset?.forSale
+                  ? 'For sale'
+                  : 'Unlisted'}</div>
+                  {asset?.forSale && <div className={styles.listsubtitle}>{(asset?.info?.price / 100000000)?.toFixed(2)} ICP</div>}
+              </div>
+              <img
+                  className={styles.listforward}
+                  src={ICON_FORWARD}
+              />
+          </div>))}
+          {false && <div
+              onClick={() => history.push('/account/marketplace/' + address)}
+              className={styles.listitem}>
+              <div
+                  className={styles.listicon} >
+                  <div>💎</div>
+              </div>
+              <div className={styles.listinfo}>
+                  <div className={styles.listtitle}>Explore Collections</div>
+              </div>
+              <div className={styles.liststats}></div>
+              <img
+                  className={styles.listforward}
+                  src={ICON_FORWARD}
+              />
+          </div>}
+      </div>
+    }
 }
 
 export const AssetsCoverflow = ({ address }) => {
@@ -187,26 +190,30 @@ export const AssetsCoverflow = ({ address }) => {
             el: '.swiper-pagination'
         }
     }
-    return (
-        <Swiper
-            effect={'coverflow'}
-            slidesPerView={'auto'}
-            {...params}>
-            {assets?.map((asset, i: number) => {
-                return <div
-                    key={i}
-                    onClick={() => history.push(`/nftdetails/${asset.id}`)}
-                    className={styles.imagecont}
-                    style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
-                    <div className={styles.imagedesc}>
-                        <div
-                            onClick={() => history.push(`/nftdetails/${asset.id}`)}
-                            className={styles.imagetitle}>{asset?.title || asset?.tokenIndex}</div>
-                        <div className={styles.imagepagin}>{i + 1} of {assets.length}</div></div>
-                </div>
-            })}
-        </Swiper>
-    )
+    if (assets?.length == 0) {
+      return <div className={styles.centerDivGrid}>No NFTs Found</div>
+    } else {
+      return (
+          <Swiper
+              effect={'coverflow'}
+              slidesPerView={'auto'}
+              {...params}>
+              {assets?.map((asset, i: number) => {
+                  return <div
+                      key={i}
+                      onClick={() => history.push(`/nftdetails/${asset.id}`)}
+                      className={styles.imagecont}
+                      style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
+                      <div className={styles.imagedesc}>
+                          <div
+                              onClick={() => history.push(`/nftdetails/${asset.id}`)}
+                              className={styles.imagetitle}>{asset?.title || asset?.tokenIndex}</div>
+                          <div className={styles.imagepagin}>{i + 1} of {assets.length}</div></div>
+                  </div>
+              })}
+          </Swiper>
+      )
+    }
 };
 
 export default withRouter(NFTList);

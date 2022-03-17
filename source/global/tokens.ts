@@ -1,3 +1,4 @@
+import icon_SDR from '~assets/images/icon_SDR.png';
 const TOKENS_LIST = [
   {
     usesPrincipal: true,
@@ -5,12 +6,12 @@ const TOKENS_LIST = [
     isLive: true,
     decimals: 12,
     id: 'cyiep-riaaa-aaaam-qadnq-cai',
-    name: 'Cycles-Special Drawing Rights',
+    name: 'Earth SDR',
     symbol: 'SDR',
     wrappedSymbol: 'XDR',
     tokenCanisterId: 'cyiep-riaaa-aaaam-qadnq-cai',
     totalSupply: 'Infinite',
-    logo: undefined,
+    logo: icon_SDR,
     fees: 0.0002,
     mintMethod: 'mint_by_icp',
   },

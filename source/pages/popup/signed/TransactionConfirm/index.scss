@@ -315,12 +315,11 @@
   left: 0px;
   position: absolute;
   z-index: 109;
-  width: 45px;
-  height: 45px;
+  width: 65px;
+  height: 65px;
   border-radius: 5px;
-  top: 200px;
-  left: 120px;
-  display: none;
+  top: 221px;
+  left: 155px;
 }
 
 @keyframes rotation {
@@ -379,6 +378,12 @@
 .swapIcon {
   width: 32px;
   height: 32px;
+  margin: 0 9px;
+}
+
+.swapToIcon {
+  width: 54px;
+  height: 54px;
   margin: 0 9px;
 }
 

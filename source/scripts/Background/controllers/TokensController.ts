@@ -427,7 +427,7 @@ export default class TokensController implements ITokensController {
       );
       return;
     }
-    this.getTokenBalances(txnObj.address);
+    await this.getTokenBalances(txnObj.address);
     callback && callback('/account/details/' + txnObj.address);
   };
 

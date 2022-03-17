@@ -349,3 +349,18 @@
   align-items: center;
   justify-content: center;
 }
+.centerDiv {
+  display: flex;
+  flex: 1;
+  height: 350px;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.centerDivGrid {
+  display: flex;
+  height: 350px;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
