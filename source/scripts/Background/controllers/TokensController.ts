@@ -31,18 +31,15 @@ import { send } from '@earthwallet/keyring';
 
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
-    console.log(address, 'getTokenBalances');
     const state = store.getState();
 
     const accountInfo = state.entities.accounts.byId[address];
-    console.log(accountInfo?.meta?.principalId, 'getTokenBalances');
 
     const activeTokens =
       state.entities.tokens?.byId &&
       Object.keys(state.entities.tokens?.byId)
         ?.map((id) => state.entities.tokens.byId[id])
         .filter((token) => token.address === address && token.active);
-    console.log(activeTokens, 'getTokenBalances');
 
     for (const activeToken of activeTokens) {
       const tokenInfo = getTokenInfo(activeToken.tokenId);
@@ -61,7 +58,7 @@ export default class TokensController implements ITokensController {
           method: 'get_icp_xdr_conversion_rate',
         });
         const TRILLION_SDR_PER_ICP =
-          usd?.data?.xdr_permyriad_per_icp.toString() / 100000;
+          usd?.data?.xdr_permyriad_per_icp.toString() / 10000;
 
         balanceTxt =
           (response?.toString() &&
@@ -69,7 +66,10 @@ export default class TokensController implements ITokensController {
               response?.toString() / Math.pow(10, tokenInfo.decimals)
             ).toFixed(4)) ||
           0;
-        price = (balanceTxt * TRILLION_SDR_PER_ICP)?.toFixed(2);
+        const currentUSDValue = state.entities.prices.byId['internet-computer'];
+        const ICP_PRICE_IN_USD = currentUSDValue?.usd;
+        const SDR_PRICE_IN_USD = ICP_PRICE_IN_USD / TRILLION_SDR_PER_ICP;
+        price = (balanceTxt * SDR_PRICE_IN_USD)?.toFixed(2);
       } else if (
         tokenInfo.wrappedSymbol != null &&
         tokenInfo.wrappedSymbol == 'ICP'
@@ -89,8 +89,6 @@ export default class TokensController implements ITokensController {
         const ICP_PRICE_IN_USD = currentUSDValue?.usd;
         price = (balanceTxt * ICP_PRICE_IN_USD)?.toFixed(2);
       }
-
-      console.log(response, usd, 'getTokenBalances DIP20');
 
       const balance = {
         id: address + '_WITH_' + activeToken.tokenId,
@@ -162,7 +160,7 @@ export default class TokensController implements ITokensController {
           method: 'get_icp_xdr_conversion_rate',
         });
         TRILLION_SDR_PER_ICP =
-          usd?.data?.xdr_permyriad_per_icp.toString() / 100000;
+          usd?.data?.xdr_permyriad_per_icp.toString() / 10000;
         console.log('TRILLION_SDR_PER_ICP', TRILLION_SDR_PER_ICP);
 
         ratio = TRILLION_SDR_PER_ICP == undefined ? 0 : TRILLION_SDR_PER_ICP;
@@ -501,7 +499,6 @@ export default class TokensController implements ITokensController {
     status: boolean,
     callback?: (address?: string) => void
   ) => {
-    console.log(address, tokens, status);
     //const state = store.getState();
 
     /*     const existingAllTokens = Object.keys(state.entities.tokens.byId)
