@@ -11,7 +11,7 @@ import ICON_SWAP from '~assets/images/icon_swap.svg';
 //import clsx from 'clsx';
 import NextStepButton from '~components/NextStepButton';
 import { useSelector } from 'react-redux';
-import { selectTokenByTokenPair, selectTokensInfo, selectTokensInfoById } from '~state/token';
+import { selectTokensInfo, selectTokensInfoById } from '~state/token';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 import TokenSelectorDropdown from '~components/TokenSelectorDropdown';
 import useToast from '~hooks/useToast';
@@ -42,7 +42,6 @@ const Swap = ({
 
   const tokenInfo = useSelector(selectTokensInfoById(tokenId));
   console.log(tokenInfo)
-  const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
   const tokenInfos = useSelector(selectTokensInfo);
   const { show } = useToast();
   const [pairRatio, setPairRatio] = useState<number>(0);
@@ -53,18 +52,16 @@ const Swap = ({
   const [loading, setLoading] = useState<boolean>(false);
   const history = useHistory();
 
-  console.log(tokenPair, tokenInfos);
 
   useEffect((): void => {
-    console.log('useEffect', selectedToken);
     if ((selectedToken.id != "") && selectedSecondToken.id != "" && selectedSecondToken.id != null) {
-      console.log('useEffect', selectedToken, selectedSecondToken);
 
       setPriceFetch(true);
       controller.tokens.getPair(selectedToken.id, selectedSecondToken.id).then((response) => {
         setTotalSupply(response?.stats?.total_supply);
         setPairRatio(response.ratio);
         setPriceFetch(false);
+        updateAmount(0);
       });
     }
   }, [selectedToken.id, selectedSecondToken.id]);
@@ -76,8 +73,8 @@ const Swap = ({
     }
     setSelectedAmount(amount);
     if (pairRatio != 1) {
-      setSelectedSecondAmount(Number((pairRatio * amount)?.toFixed(4)));
-
+      let selectedAmount: number = pairRatio * (amount - getTokenInfo(tokenId).fees);
+      setSelectedSecondAmount(Number(selectedAmount?.toFixed(5)));
     }
     else if (pairRatio == 1) {
       setSelectedSecondAmount(Number(amount - getTokenInfo(tokenId).fees));
@@ -85,8 +82,8 @@ const Swap = ({
   }
   const updateSecondAmount = (amount: number) => {
     if (pairRatio != 0 && pairRatio != 1) {
-      let selectedAmount: number = amount / pairRatio;
-      setSelectedAmount(Number(selectedAmount?.toFixed(4)));
+      let selectedAmount: number = (amount + getTokenInfo(tokenId).fees) / pairRatio;
+      setSelectedAmount(Number(selectedAmount?.toFixed(5)));
       setSelectedSecondAmount(amount);
     }
     else if (pairRatio == 1) {

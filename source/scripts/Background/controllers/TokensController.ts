@@ -60,7 +60,7 @@ export default class TokensController implements ITokensController {
           canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
           method: 'get_icp_xdr_conversion_rate',
         });
-        const TRILLION_SDR_IN_USD =
+        const TRILLION_SDR_PER_ICP =
           usd?.data?.xdr_permyriad_per_icp.toString() / 100000;
 
         balanceTxt =
@@ -69,7 +69,7 @@ export default class TokensController implements ITokensController {
               response?.toString() / Math.pow(10, tokenInfo.decimals)
             ).toFixed(4)) ||
           0;
-        price = (balanceTxt * TRILLION_SDR_IN_USD)?.toFixed(2);
+        price = (balanceTxt * TRILLION_SDR_PER_ICP)?.toFixed(2);
       } else if (
         tokenInfo.wrappedSymbol != null &&
         tokenInfo.wrappedSymbol == 'ICP'
@@ -148,8 +148,7 @@ export default class TokensController implements ITokensController {
   delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   getPair = async (token1: string, token2: string) => {
-    let TRILLION_SDR_IN_USD;
-    let ICP_PRICE_IN_USD;
+    let TRILLION_SDR_PER_ICP;
     let total_supply;
     let ratio = 0;
     if (token1 == 'ICP') {
@@ -162,16 +161,11 @@ export default class TokensController implements ITokensController {
           canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
           method: 'get_icp_xdr_conversion_rate',
         });
-        TRILLION_SDR_IN_USD =
+        TRILLION_SDR_PER_ICP =
           usd?.data?.xdr_permyriad_per_icp.toString() / 100000;
-        const state = store.getState();
+        console.log('TRILLION_SDR_PER_ICP', TRILLION_SDR_PER_ICP);
 
-        const currentUSDValue = state.entities.prices.byId['internet-computer'];
-        ICP_PRICE_IN_USD = currentUSDValue?.usd;
-        ratio =
-          TRILLION_SDR_IN_USD == undefined
-            ? 0
-            : ICP_PRICE_IN_USD / TRILLION_SDR_IN_USD;
+        ratio = TRILLION_SDR_PER_ICP == undefined ? 0 : TRILLION_SDR_PER_ICP;
       } else if (
         getTokenInfo(token2).wrappedSymbol != null &&
         getTokenInfo(token2).wrappedSymbol == 'ICP'
