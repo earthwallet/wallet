@@ -32,7 +32,7 @@ import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
 //import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
 import { selectGroupBalanceByAddress, selectGroupBalanceByGroupIdAndSymbol, selectBalanceInUSDByAddress } from '~state/wallet';
-import { selectActiveTokensByAddressWithInfo } from '~state/token';
+import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance } from '~state/token';
 import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
 
@@ -65,6 +65,7 @@ const Wallet = ({
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [nav, setNav] = useState('list');
   const [mainNav, setMainNav] = useState('tokens');
+  const [tokenBalanceLoading, setTokenBalanceLoading] = useState(false);
 
 
   useEffect(() => {
@@ -277,12 +278,13 @@ const TokensList = ({ address }: { address: string }) => {
 
   const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(selectedAccount?.groupId));
   const tokens = useSelector(selectActiveTokensByAddressWithInfo(address));
+  const activeTokenAndAddressBalance = useSelector(selectActiveTokenAndAddressBalance(address));
 
   return (
     <div className={styles.tokensList}>
       <div className={styles.listHeader}>
         <div className={styles.listHeaderTitle}>Total Balance</div>
-        <div className={styles.listHeaderSubtitle}>${currentBalance?.balanceInUSD?.toFixed(3) || 0}</div>
+        <div className={styles.listHeaderSubtitle}>${activeTokenAndAddressBalance?.toFixed(3) || 0}</div>
       </div>
       <div className={styles.listitemscont}>
         {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
@@ -322,8 +324,8 @@ const TokensList = ({ address }: { address: string }) => {
             <div className={styles.listtitle}>{token?.name}</div>
           </div>
           <div className={styles.liststats} >
-            <div className={styles.listprice}>{token?.balanceTxt} {token?.symbol}</div>
-            <div className={styles.listsubtitle}>${token?.price}</div>
+            <div className={styles.listprice}>{token?.balanceTxt || 0} {token?.symbol}</div>
+            <div className={styles.listsubtitle}>${token?.price || 0}</div>
           </div>
           <img
             className={styles.listforward}
@@ -356,7 +358,7 @@ const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: stri
   return <div
     className={styles.liststats}
   >
-    <div className={styles.listprice}><Balance account={currentAccount[0]} /></div>
+    <div><Balance account={currentAccount[0]} /></div>
     <div className={styles.listsubtitle}>
       <BalanceWithUSD address={currentAccount[0]?.address} />
     </div>
@@ -418,7 +420,7 @@ const TokensGridflow = ({ address }: { address: string }) => {
 
 const Balance = ({ account }: { account: keyable }) => {
   const currentBalance: keyable = useSelector(selectBalanceByAddress(account?.address));
-  return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)} {account?.symbol}</div>
+  return <div className={styles.listprice}>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)} {account?.symbol}</div>
 }
 
 const BalanceWithUSD = ({ address }: { address: string }) => {
