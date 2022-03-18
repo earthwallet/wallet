@@ -47,6 +47,7 @@ export default class TokensController implements ITokensController {
       let usd;
       let price;
       let balanceTxt;
+      let ratio_per_icp;
       if (tokenInfo.wrappedSymbol != null && tokenInfo.wrappedSymbol == 'XDR') {
         response = await canisterAgent({
           canisterId: activeToken.tokenId,
@@ -59,7 +60,7 @@ export default class TokensController implements ITokensController {
         });
         const TRILLION_SDR_PER_ICP =
           usd?.data?.xdr_permyriad_per_icp.toString() / 10000;
-
+        ratio_per_icp = TRILLION_SDR_PER_ICP;
         balanceTxt =
           (response?.toString() &&
             Number(
@@ -95,6 +96,7 @@ export default class TokensController implements ITokensController {
         balance: response?.toString(),
         price,
         balanceTxt,
+        ratio_per_icp,
       };
       store.dispatch(
         storeEntities({

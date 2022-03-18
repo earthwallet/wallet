@@ -73,10 +73,18 @@ const Swap = ({
     }
     setSelectedAmount(amount);
     if (pairRatio != 1) {
+      if (amount < getTokenInfo(tokenId).fees) {
+        setSelectedSecondAmount(0);
+        return;
+      }
       let selectedAmount: number = pairRatio * (amount - getTokenInfo(tokenId).fees);
       setSelectedSecondAmount(Number(selectedAmount?.toFixed(5)));
     }
     else if (pairRatio == 1) {
+      if (amount < getTokenInfo(tokenId).fees) {
+        setSelectedSecondAmount(0);
+        return;
+      }
       setSelectedSecondAmount(Number(amount - getTokenInfo(tokenId).fees));
     }
   }
@@ -213,7 +221,7 @@ const Swap = ({
       }
       <div className={styles.nextCont}>
         <NextStepButton
-          disabled={selectedAmount == 0}
+          disabled={selectedAmount == 0 || selectedAmount < getTokenInfo(tokenId).fees}
           loading={loading}
           onClick={() => type == 'mint' ? mint() : swap()}
         >

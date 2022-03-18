@@ -98,60 +98,62 @@ const TransactionConfirm = ({
         type={'wallet'}
         text={txnStatusObj?.loading ? 'Minting..' : 'Confirm ' + txnStatusObj?.type}
       ><div className={styles.empty} /></Header>
-      {txnStatusObj?.loading ? <Settling {...txnStatusObj} logo={getTokenInfo(txnStatusObj?.params?.to)?.logo} /> : <div className={styles.scrollCont}>
-        {txnStatusObj?.error && <div className={styles.errorResponse}>{txnStatusObj?.error}</div>}
+      {txnStatusObj?.loading
+        ? <Settling {...txnStatusObj} logo={getTokenInfo(txnStatusObj?.params?.to)?.logo} />
+        : <div className={styles.scrollCont}>
+          {txnStatusObj?.error && <div className={styles.errorResponse}>{txnStatusObj?.error}</div>}
 
-        <div className={styles.swapCont}>
-          <div className={styles.swap}>
-            <div className={styles.swapAmount}>{txnStatusObj?.params?.fromAmount}</div>
-            <img src={ICON_ICP} className={styles.swapIcon} />
-            <div className={styles.swapTxt}>{txnStatusObj?.params?.from}</div>
-          </div>
-          <div className={styles.swapArrow} >
-            <img src={ICON_DOWN} className={styles.swapArrowIcon} /></div>
-          <div className={styles.swapBelow}>
-            <div className={styles.swapBelowIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.logo ? <img className={styles.swapToIcon} src={getTokenInfo(txnStatusObj?.params?.to)?.logo}></img> : <div className={styles.swapToIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.symbol?.charAt(0)}</div>}</div>
-            <div className={styles.swapBelowTxt}>{getTokenInfo(txnStatusObj?.params?.to).name}</div>
-            <div className={styles.swapBelowVal}>{(txnStatusObj?.params?.pairRatio * txnStatusObj?.params?.fromAmount)?.toFixed(3) || '-'} {getTokenInfo(txnStatusObj?.params?.to)?.symbol}</div>
-            <div className={styles.swapBelowUsd}>${(usdValue * txnStatusObj?.params?.fromAmount)?.toFixed(2)}</div>
-          </div>
-        </div>
-        {/*  <div className={styles.internetCompWrapContainer}>
-          <div className={styles.imgCont}>
-            <img src={getTokenImageURL(asset)} className={styles.ethIconContainer}></img>
-          </div>
-          <div className={styles.ethTextContainer}>
-            <span className={styles.ethereumText}>{index}</span>
-            <span className={styles.ethVal}>{price / Math.pow(10, 8)} ICP</span>
-            <span className={styles.usdText}>${(price * usdValue / Math.pow(10, 8)).toFixed(3)}</span>
-          </div>
-          <div className={styles.earthFeeContainer}>
-            <span className={styles.earthFeeText}>Network Fee</span>
-            <div className={styles.earthFeeRightSideContainer}>
-              <span className={styles.earthVal}>0.0001 ICP</span>
-              <span className={styles.convertedVal}>${(0.0001 * usdValue).toFixed(3)}</span>
+          <div className={styles.swapCont}>
+            <div className={styles.swap}>
+              <div className={styles.swapAmount}>{txnStatusObj?.params?.fromAmount}</div>
+              <img src={ICON_ICP} className={styles.swapIcon} />
+              <div className={styles.swapTxt}>{txnStatusObj?.params?.from}</div>
+            </div>
+            <div className={styles.swapArrow} >
+              <img src={ICON_DOWN} className={styles.swapArrowIcon} /></div>
+            <div className={styles.swapBelow}>
+              <div className={styles.swapBelowIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.logo ? <img className={styles.swapToIcon} src={getTokenInfo(txnStatusObj?.params?.to)?.logo}></img> : <div className={styles.swapToIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.symbol?.charAt(0)}</div>}</div>
+              <div className={styles.swapBelowTxt}>{getTokenInfo(txnStatusObj?.params?.to).name}</div>
+              <div className={styles.swapBelowVal}>{(txnStatusObj?.params?.pairRatio * (txnStatusObj?.params?.fromAmount - getTokenInfo(txnStatusObj?.params?.to).fees))?.toFixed(3) || '-'} {getTokenInfo(txnStatusObj?.params?.to)?.symbol}</div>
+              <div className={styles.swapBelowUsd}>${(usdValue * txnStatusObj?.params?.fromAmount)?.toFixed(2)}</div>
             </div>
           </div>
-          <div className={styles.gasFeeContainer}>
-            <div className={styles.leftSideContainer}>
-              <span className={styles.gasFeeText}>Marketplace Fee</span>
+          <div className={styles.internetCompWrapContainer}>
+            {/*     <div className={styles.imgCont}>
+              <img src={getTokenImageURL(asset)} className={styles.ethIconContainer}></img>
             </div>
-            <div className={styles.rightSideContainer}>
-              <span className={styles.earthText}>Free</span>
-              <span className={styles.convertedVal}>$0.00</span>
+            <div className={styles.ethTextContainer}>
+              <span className={styles.ethereumText}>{index}</span>
+              <span className={styles.ethVal}>{price / Math.pow(10, 8)} ICP</span>
+              <span className={styles.usdText}>${(price * usdValue / Math.pow(10, 8)).toFixed(3)}</span>
+            </div> */}
+            <div className={styles.earthFeeContainer}>
+              <span className={styles.earthFeeText}>Network Fee</span>
+              <div className={styles.earthFeeRightSideContainer}>
+                <span className={styles.earthVal}>{getTokenInfo(txnStatusObj?.params?.to).fees} ICP</span>
+                <span className={styles.convertedVal}>${(getTokenInfo(txnStatusObj?.params?.to).fees * usdValue).toFixed(3)}</span>
+              </div>
+            </div>
+            <div className={styles.gasFeeContainer}>
+              <div className={styles.leftSideContainer}>
+                <span className={styles.gasFeeText}>DEX Fee</span>
+              </div>
+              <div className={styles.rightSideContainer}>
+                <span className={styles.earthText}>Free</span>
+                <span className={styles.convertedVal}>$0.00</span>
+              </div>
+            </div>
+
+            <div className={styles.totalContainer}>
+              <span className={styles.totalText}>Total</span>
+              <div className={styles.rightSideTotalContainer}>
+                <span className={styles.totalEarthVal}>{txnStatusObj?.params?.fromAmount} ICP</span>
+                <span className={styles.totalUSDVal}>${(txnStatusObj?.params?.fromAmount * usdValue).toFixed(3)}</span>
+              </div>
             </div>
           </div>
 
-          <div className={styles.totalContainer}>
-            <span className={styles.totalText}>Total</span>
-            <div className={styles.rightSideTotalContainer}>
-              <span className={styles.totalEarthVal}>{price / Math.pow(10, 8)} ICP</span>
-              <span className={styles.totalUSDVal}>${(price * usdValue / Math.pow(10, 8)).toFixed(3)}</span>
-            </div>
-          </div>
-        </div> */}
-
-      </div>}
+        </div>}
       {txnStatusObj?.loading ? <div /> : <section className={styles.footer}>
         <InputWithLabel
           data-export-password
