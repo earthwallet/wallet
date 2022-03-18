@@ -180,7 +180,7 @@ const Settling = (props: keyable) => {
   return (
     <div className={styles.settleContainer}>
       <img src={swapCircle} className={styles.swapCircleImg} />
-      <img src={getTokenImageURL(props.asset)} className={styles.nftLoadingImg}></img>
+      <img src={props.logo} className={styles.nftLoadingImg}></img>
       <span className={styles.quoteText}>Step {props.current} of {props.total}</span>
       <span className={styles.submittingText}>{props.status}</span>
       <div className={styles.progressBar}>

@@ -489,6 +489,10 @@
   width: 160px;
   height: 160px;
   border-radius: 50%;
+  cursor: pointer;
+  &:active {
+    opacity: 0.7;
+  }
 }
 
 .hidden {

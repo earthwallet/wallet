@@ -310,17 +310,18 @@
   animation: rotation 10s infinite linear;
   z-index: 99;
 }
+
 .nftLoadingImg {
   margin-top: 180px;
   left: 0px;
   position: absolute;
   z-index: 109;
-  width: 45px;
-  height: 45px;
-  border-radius: 5px;
-  top: 200px;
-  left: 120px;
-  display: none;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  top: 221px;
+  left: 155px;
+  border: 1px solid #2495ffa2;
 }
 
 @keyframes rotation {

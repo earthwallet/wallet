@@ -82,4 +82,23 @@ export const selectActiveTokensByAddressWithInfo =
     }
   };
 
+export const selectActiveTokenAndAddressBalance =
+  (address: string) => (state: AppState) => {
+    const currentBalanceInUSD =
+      state.entities.balances.byId[address].balanceInUSD;
+
+    const activeTokenPrices =
+      state.entities.tokens?.byId &&
+      Object.keys(state.entities.tokens?.byId)
+        ?.map((id) => state.entities.tokens.byId[id])
+        .filter((token) => token.address === address && token.active)
+        .map((token) => token.price || 0);
+    const tokenBalanceSumInUsd = activeTokenPrices.reduce(
+      (a: number, b: number) => a + b,
+      0
+    );
+
+    return Number(currentBalanceInUSD) + Number(tokenBalanceSumInUsd);
+  };
+
 export default TokenState.reducer;
