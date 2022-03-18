@@ -22,6 +22,7 @@ import ICON_MINT from '~assets/images/icon_mint.svg';
 import clsx from 'clsx';
 import { getTokenInfo } from '~global/tokens';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
+import { selectBalanceByAddress } from '~state/wallet';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
@@ -41,7 +42,6 @@ const Swap = ({
   const [selectedSecondToken, setSelectedSecondToken] = useState<keyable>({ symbol: "", id: "" });
 
   const tokenInfo = useSelector(selectTokensInfoById(tokenId));
-  console.log(tokenInfo)
   const tokenInfos = useSelector(selectTokensInfo);
   const { show } = useToast();
   const [pairRatio, setPairRatio] = useState<number>(0);
@@ -51,6 +51,8 @@ const Swap = ({
   const [priceFetch, setPriceFetch] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const history = useHistory();
+  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - getTokenInfo(tokenId).fees;
 
 
   useEffect((): void => {
@@ -87,23 +89,32 @@ const Swap = ({
       }
       setSelectedSecondAmount(Number(amount - getTokenInfo(tokenId).fees));
     }
+    if (selectedAmount > maxAmount) {
+      show('Insufficient Balance');
+    }
   }
   const updateSecondAmount = (amount: number) => {
     if (pairRatio != 0 && pairRatio != 1) {
       let selectedAmount: number = (amount + getTokenInfo(tokenId).fees) / pairRatio;
       setSelectedAmount(Number(selectedAmount?.toFixed(5)));
       setSelectedSecondAmount(amount);
+      if (selectedAmount > maxAmount) {
+        show('Insufficient Balance');
+      }
     }
     else if (pairRatio == 1) {
-      let selectedAmount: number = amount;
-      setSelectedAmount(Number(selectedAmount?.toFixed(4) + getTokenInfo(tokenId).fees));
+      let selectedAmount: number = Number(amount?.toFixed(4) + getTokenInfo(tokenId).fees);
+      setSelectedAmount(selectedAmount);
       setSelectedSecondAmount(amount);
+      if (selectedAmount > maxAmount) {
+        show('Insufficient Balance');
+      }
     }
     else {
       setSelectedSecondAmount(amount);
     }
-
   }
+
   const swap = async () => {
     setLoading(true);
     const response = await controller.tokens.swap(selectedToken.id, selectedSecondToken.id, selectedAmount);
@@ -221,11 +232,11 @@ const Swap = ({
       }
       <div className={styles.nextCont}>
         <NextStepButton
-          disabled={selectedAmount == 0 || selectedAmount < getTokenInfo(tokenId).fees}
+          disabled={selectedAmount == 0 || selectedAmount < getTokenInfo(tokenId).fees || selectedAmount > maxAmount}
           loading={loading}
           onClick={() => type == 'mint' ? mint() : swap()}
         >
-          {type == 'mint' ? 'Next' : 'Swap'}
+          {type == 'mint' ? selectedAmount > maxAmount ? 'Insufficient Balance' : 'Next' : 'Swap'}
         </NextStepButton>
       </div>
     </div >

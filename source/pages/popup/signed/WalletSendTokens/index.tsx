@@ -146,7 +146,7 @@ const WalletSendTokens = ({
         setStep1(true);
       }
       else {
-        setError(`Please check entered amount. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+        setError(`Insufficient balance. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
         setStep1(true);
       }
     }
