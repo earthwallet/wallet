@@ -1576,7 +1576,7 @@
   resolved "https://registry.npmjs.org/@discoveryjs/json-ext/-/json-ext-0.5.5.tgz"
   integrity sha512-6nFkfkmSeV/rqSaS4oWHgmpnYw194f6hmWF5is6b0J1naJZoiD0NTc9AiUwPHvWsowkjuHErCZT1wa0jg+BLIA==
 
-"@earthwallet/assets@^0.3.26":
+"@earthwallet/assets@0.3.26":
   version "0.3.26"
   resolved "https://registry.yarnpkg.com/@earthwallet/assets/-/assets-0.3.26.tgz#b579123da9855a896465803e8f3500b3df4dfb1a"
   integrity sha512-uQjfupUSRYpF11ULiGzdHk8D5MHrHFj/bp/jW4vxeRIVL+x6K3nCcVcd/a9EAX0sbIx/BHGhNQ3e1342uPWIgg==
@@ -3506,7 +3506,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-lazy-load-image-component@^1.5.2":
+"@types/react-lazy-load-image-component@1.5.2":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@types/react-lazy-load-image-component/-/react-lazy-load-image-component-1.5.2.tgz#b87e814b6b91853b802f04465364ff1e913dce6a"
   integrity sha512-4NLJsMJVrMv18FuMIkUUBVj/PH9A+BvLKrZC75EWiEFn1IsMrZHgL1tVKw5QBfoa0Qjz6SkWIzEvwcyZ8PgnIg==
@@ -10565,7 +10565,7 @@ miller-rabin@^4.0.0:
     bn.js "^4.0.0"
     brorand "^1.0.1"
 
-millify@^4.0.0:
+millify@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/millify/-/millify-4.0.0.tgz#b4120a2af5761695d6a700bd61b741318635c0f8"
   integrity sha512-Rf+nt4jca468yAqTIFfMSWMGiSqcdwotj3h25XvXjSIuRf4YWykuGDMj/SAOHrvjwrSNoQd0GC9vJCOG8a+BHg==
@@ -12472,7 +12472,7 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-confetti@^6.0.1:
+react-confetti@6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/react-confetti/-/react-confetti-6.0.1.tgz#d4f57b5a021dd908a6243b8f63b6009b00818d10"
   integrity sha512-ZpOTBrqSNhWE4rRXCZ6E6U+wGd7iYHF5MGrqwikoiBpgBq9Akdu0DcLW+FdFnLjyZYC+VfAiV2KeFgYRMyMrkA==
@@ -12521,9 +12521,9 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-lazy-load-image-component@^1.5.1:
+react-lazy-load-image-component@1.5.1:
   version "1.5.1"
-  resolved "https://registry.npmjs.org/react-lazy-load-image-component/-/react-lazy-load-image-component-1.5.1.tgz"
+  resolved "https://registry.yarnpkg.com/react-lazy-load-image-component/-/react-lazy-load-image-component-1.5.1.tgz#59cc92326ba5604e9c4a86805a2cf1667fafbc71"
   integrity sha512-grTEZzURLHPkq7JoipcBBQU44ijdF4fH3Cb+eSD5eSAaMsjugbXqTaVWm5ruPUNLduoNR9KKQF6bOR9h2WphEg==
   dependencies:
     lodash.debounce "^4.0.8"
@@ -12536,7 +12536,7 @@ react-loading-skeleton@2.2.0:
   dependencies:
     "@emotion/core" "^10.0.22"
 
-react-palette@^1.0.2:
+react-palette@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-palette/-/react-palette-1.0.2.tgz#170edefa27eea73a8cea21bbd8758c3e56498ec0"
   integrity sha512-H9UXG4mywETORFlHpR2+RvDmHOTWFEfS4ZtG+N6GToMNFzYAa71c3sVEbbYxI0ARYi7n7ZoSZALBk3voDLwyYA==

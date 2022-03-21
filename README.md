@@ -1,9 +1,8 @@
-[![Telegram](https://img.shields.io/badge/Live_Support-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/earthwallet)
-[![Discord](https://img.shields.io/badge/Developers-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/aemgEpMye3)
-[![Twitter](https://img.shields.io/badge/Updates-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
+[![Telegram](https://img.shields.io/badge/Live_Support-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/earthdao)
+[![Discord](https://img.shields.io/badge/Discord_Server-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://earthdao.co/discord)
+[![Twitter](https://img.shields.io/badge/Announcements-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
 [![Docs](https://img.shields.io/badge/Documentation-2CA5E0?color=success)](https://docs.earthwallet.io)
-![License](https://img.shields.io/badge/Code-MIT%20Licence-blueviolet)
-
+![License](https://img.shields.io/badge/Licence-GNU-blueviolet)
 
 ![Earth Wallet](https://i.imgur.com/eIZaUbx.png)
 
@@ -17,17 +16,18 @@ Earth wallet is a self custody browser wallet where you can store all of your di
 
 ## 🎉 Now live with over 20,000 users!
 
-If you have any feedback or require real time support, or just want to chat with our developers please [join the Earth DAO Discord Server](http://earthda.org)!
+If you have any feedback or require real time support, or just want to chat with our developers please [join the Earth DAO Discord Server](https://earthdao.co/discord)!
 
-:white_check_mark: Self Custody (your keys, your crypto) <br/>
+:white_check_mark: Self Custody, your keys, your crypto. <br/>
 :white_check_mark: 100% Open Source <br/>
-:white_check_mark: Decentralized App Developer SDK <br/>
 :white_check_mark: Internet Computer Protocol Support <br/>
 :white_check_mark: Bitcoin and other multichain support <br/>
-:white_check_mark: Energy efficient NFT support and marketplace <br/>
 :white_check_mark: Earth Connect (Developer SDK) <br/>
-:black_square_button: Core Security Audits (Q4) <br/>
-:black_square_button: Core Code Freeze (Q4/Q1) <br/>
+:white_check_mark: NFT and Token support <br/>
+:black_square_button: Native Swaps and NFT Marketplace (Q2) <br/>
+:black_square_button: Carbon Neutral Bitcoin, Tokens, and NFTs (Q2) <br/>
+:black_square_button: Decentralized App Store(Q2) <br/>
+:black_square_button: Core Security Audits & Code Freeze (Q3) <br/>
 :black_square_button: Earth Protocol (🙊)
 
 ## 🌎 Earth Connect - Build Apps on the Internet Computer with Earth Wallet
@@ -36,9 +36,9 @@ Looking to build on the Internet Computer? Earth Wallet enables develoeprs to bu
 
 [Check out the documentation](docs.earthwallet.io)
 
-## 🚀 Auditors / Bug Hunters - $10k USD+ Available!!
+## 🚀 Bug Bounty Program Available!!
 
-We have an on going bug bounty campaign for $10,000 USD, as well as full time positions available. If you find a bug, or simply have an idea of how to make the code better/faster/more secure, please [join our Developer Server](http://earthda.org). Help create the most secure open source digital asset wallet and own a piece the future!
+We have an on going bug bounty campaign for $10,000 USD, token allocations, as well as full time positions available. If you find a bug, or simply have an idea of how to make the code better/faster/more secure, please [join our Developer Server](https://earthdao.co/discord). Help create the most secure open source digital asset wallet and own a piece the future!
 
 To get started, ensure you have:
 
@@ -95,11 +95,7 @@ Note: By default the `manifest.json` is set with version `0.0.0`. The webpack lo
 
 # ♾️ Contributors
 
-The best way to submit feedback and report bugs is to [open a GitHub issue](https://github.com/earth-association/wallet/issues/new).
-If you want to contribute code please join our [Developer Server](https://discord.gg/gmgPCBnvJd).
+The best way to submit feedback and report bugs is to [open a GitHub issue](https://github.com/earthdao/wallet/issues/new).
+If you want to contribute code please join our [Developer Server](https://earthdao.co/discord).
 
 Thanks to all the people who contribute!
-
-# 🈚 License
-
-Earth Wallet is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
