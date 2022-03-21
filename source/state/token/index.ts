@@ -62,7 +62,13 @@ export const selectActiveTokensByAddress =
 
 export const selectTokenByTokenPair =
   (tokenPair: string) => (state: AppState) => {
-    return state.entities.tokens?.byId[tokenPair];
+    const tokenId = tokenPair.split('_WITH_', 2)[1];
+    const tokenInfo = getTokenInfo(tokenId);
+    if (state.entities.tokens?.byId[tokenPair] != null) {
+      return { ...state.entities.tokens?.byId[tokenPair], ...tokenInfo };
+    } else {
+      return {};
+    }
   };
 
 export const selectActiveTokensByAddressWithInfo =

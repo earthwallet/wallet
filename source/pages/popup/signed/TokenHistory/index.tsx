@@ -23,11 +23,9 @@ const TokenHistory = ({
   },
 }: Props) => {
 
-  console.log(address);
   const history = useHistory();
   const tokenInfo = getTokenInfo(tokenId);
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
-  console.log(tokenPair, tokenInfo);
   return (
     <div className={styles.page}>
       <Header
