@@ -150,7 +150,7 @@ export const AssetsList = ({ address }) => {
                     src={ICON_FORWARD}
                 />
             </div>))}
-            {true && <div
+            {false && <div
                 onClick={() => history.push('/account/marketplace/' + address)}
                 className={styles.listitem}>
                 <div
