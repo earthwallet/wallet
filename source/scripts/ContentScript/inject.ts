@@ -77,7 +77,7 @@ async function handleRequest (req) {
 
 window.earth = {
   evtRegMap: {},
-  version: '4.2',
+  version: '6.0',
   isConnected: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.isConnected')()
@@ -85,6 +85,10 @@ window.earth = {
   getAddressMeta: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.getAddressMeta')()
+  },
+  createSession: async (params) => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.createSession')(params)
   },
   sign: async (params) => {
     const icp = window.providerManager.getProviderFor('ICP')
@@ -99,6 +103,10 @@ window.earth = {
     if (!accepted) throw new Error('User rejected')
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.getAddress')(params)
+  },
+  disconnect: async () => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.disconnect')()
   },
   request: async (req) => {
     const params = req.params || []
