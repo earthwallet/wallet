@@ -86,9 +86,10 @@ window.earth = {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.getAddressMeta')()
   },
-  createSession: async (params) => {
+  createSession: async ({sessionId, canisterIds, expiryTime}) => {
+    //check if already session is active
     const icp = window.providerManager.getProviderFor('ICP')
-    return icp.getMethod('wallet.createSession')(params)
+    return icp.getMethod('wallet.createSession')({sessionId, canisterIds, expiryTime})
   },
   sign: async (params) => {
     const icp = window.providerManager.getProviderFor('ICP')
@@ -97,6 +98,14 @@ window.earth = {
   signRaw: async (params) => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.signRaw')(params)
+  },
+  testSessionSign: async (params) => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.testSessionSign')(params)
+  },
+  generateSessionId: async () => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.generateSessionId')()
   },
   connect: async (params) => {
     const accepted = await window.providerManager.connect()

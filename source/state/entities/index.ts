@@ -14,6 +14,7 @@ const initialState: IEntityState = {
   assetsCount: { byId: {} },
   collectionStats: { byId: {} },
   dappRequests: { byId: {} },
+  dappSessions: { byId: {} },
   txnRequests: { byId: {} },
   tokens: { byId: {} },
   tokensInfo: { byId: {} },

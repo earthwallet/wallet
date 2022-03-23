@@ -35,6 +35,7 @@ const SignTransactionPage = () => {
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
 
+  console.log(request);
   const onPassChange = useCallback(
     (password: string) => {
       setPass(password);
@@ -86,7 +87,6 @@ const SignTransactionPage = () => {
 
   useEffect(() => {
     if (requestStatus?.complete) {
-      console.log('completed');
       const body = document.querySelector('#response');
 
       body?.scrollIntoView({
@@ -99,7 +99,7 @@ const SignTransactionPage = () => {
     className={clsx(styles.page, !(requestStatus?.loading || requestStatus?.complete) && styles.page_extra)}>
     <div
       id={'response'}
-      className={styles.title}>Signature Request</div>
+      className={styles.title}>{request?.type === 'createSession' ? 'Create Session' : 'Signature Request'}</div>
     {requestStatus?.response && <div className={clsx(styles.accountInfo, styles.response, safeParseJSON(requestStatus?.response)?.type == 'error' && styles.errorResponse)}>
       <div
         className={styles.label}>
@@ -126,7 +126,28 @@ const SignTransactionPage = () => {
       </div>
     </div>
 
-    {request?.type === 'signRaw'
+    {request?.type === 'createSession' ? 
+      <div className={styles.requestBody}>
+         <div className={styles.label}>
+          Session Id
+        </div>
+        <div className={styles.value}>
+          {request?.sessionId}
+        </div>
+        <div className={styles.label}>
+        CanisterIds
+        </div>
+        <div className={styles.value}>
+          {request?.canisterIds?.length > 0 && request?.canisterIds.map((canisterId: string) => <div className={styles.canisterid} key={canisterId}>{canisterId}</div>)}
+        </div>
+        <div className={styles.label}>
+          Expiry Time
+        </div>
+        <div className={styles.value}>
+          {request?.expiryTime}
+        </div>
+      </div>
+      : request?.type === 'signRaw'
       ? <div className={styles.requestBody}>
         <div className={styles.label}>
           Sign Raw Message
