@@ -12,7 +12,7 @@ import {
   stringifyWithBigInt,
 } from '~global/helpers';
 import { PREGENERATE_SYMBOLS } from '~global/constant';
-import { encryptString } from '~utils/vault';
+import { decryptString, encryptString } from '~utils/vault';
 import { v4 as uuid } from 'uuid';
 
 export class EarthProvider {
@@ -161,14 +161,38 @@ export class EarthProvider {
     return response;
   }
 
-  async testSessionSign(request: keyable, requestId?: string) {
-    console.log(request, requestId);
+  async testSessionSign(request: keyable, origin: string) {
+    console.log('testSessionSign', request, origin);
+    const state = store.getState();
+    const sessionState = Object.keys(state.entities.dappSessions?.byId)
+      ?.map((id) => state.entities.dappSessions.byId[id])
+      .filter(
+        (dappSession: keyable) =>
+          typeof dappSession == 'object' && dappSession.origin == origin
+      );
+
+    console.log(sessionState, 'sessionState');
+    let approvedIdentityJSON = '';
+    try {
+      approvedIdentityJSON = decryptString(
+        sessionState[0].vault.encryptedJson,
+        request.sessionId.toString()
+      );
+    } catch (error) {
+      console.log('Wrong sessionId! Please try again');
+      return {
+        error: 'Wrong sessionId! Please try again and request a new Session',
+      };
+    }
+    const fromIdentity = Secp256k1KeyIdentity.fromJSON(approvedIdentityJSON);
+
     const response = await canisterAgent({
       canisterId: '7igbu-3qaaa-aaaaa-qaapq-cai',
       method: 'cowsay',
       args: request.message,
+      fromIdentity: fromIdentity,
     });
-    return response;
+    return { response, principal: fromIdentity?.getPrincipal()?.toText() };
   }
 
   async createSession(
@@ -208,15 +232,18 @@ export class EarthProvider {
     store.dispatch(
       storeEntities({
         entity: 'dappSessions',
-        key: requestId,
-        data: {
-          vault: {
-            encryptedJson,
+        data: [
+          {
+            id: requestId,
+            vault: {
+              encryptedJson,
+            },
+            origin,
+            address,
+            canisterIds: request.canisterIds,
+            expiryAt: new Date().getTime() + request.expiryTime * 1000,
           },
-          origin,
-          address,
-          expiryAt: new Date().getTime() + request.expiryTime * 1000,
-        },
+        ],
       })
     );
     response = 'Session Created!';
