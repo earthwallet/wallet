@@ -105,8 +105,8 @@ export const messagesHandler = (
         result = mainController.provider.getBalance();
       } else if (method === 'wallet.getAddressMeta') {
         result = mainController.provider.getAddressMeta(origin);
-      } else if (method === 'wallet.testSessionSign') {
-        result = await mainController.provider.testSessionSign({
+      } else if (method === 'wallet.sessionSign') {
+        result = await mainController.provider.sessionSign({
           ...params,
         }, origin);
       } else if (method === 'wallet.generateSessionId') {

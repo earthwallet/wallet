@@ -99,9 +99,9 @@ window.earth = {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.signRaw')(params)
   },
-  testSessionSign: async (params) => {
+  sessionSign: async (params) => {
     const icp = window.providerManager.getProviderFor('ICP')
-    return icp.getMethod('wallet.testSessionSign')(params)
+    return icp.getMethod('wallet.sessionSign')(params)
   },
   generateSessionId: async () => {
     const icp = window.providerManager.getProviderFor('ICP')

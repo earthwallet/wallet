@@ -2,7 +2,7 @@ import { getBalance } from '@earthwallet/keyring';
 //import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import { IWalletState } from '~state/wallet/types';
 import store from '~state/store';
-import { canisterAgent, canisterAgentApi } from '@earthwallet/assets';
+import { canisterAgentApi } from '@earthwallet/assets';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
@@ -37,7 +37,6 @@ export class EarthProvider {
   }
 
   getAddressForDapp(origin: string, assets?: keyable) {
-    console.log(assets, PREGENERATE_SYMBOLS);
     const dapp = store.getState().dapp;
     const address = dapp[origin]?.address;
 
@@ -161,38 +160,41 @@ export class EarthProvider {
     return response;
   }
 
-  async testSessionSign(request: keyable, origin: string) {
-    console.log('testSessionSign', request, origin);
+  //8e82f9bc
+  async sessionSign(request: keyable, origin: string) {
+    console.log('sessionSign', request, origin);
+    //todo check expirytime
+    //check canisterIds array for approved canisters
+    //close expiredSessions
+    //todo create new txn request for array and single
     const state = store.getState();
     const sessionState = Object.keys(state.entities.dappSessions?.byId)
       ?.map((id) => state.entities.dappSessions.byId[id])
       .filter(
         (dappSession: keyable) =>
           typeof dappSession == 'object' && dappSession.origin == origin
-      );
-
-    console.log(sessionState, 'sessionState');
+      )[0];
     let approvedIdentityJSON = '';
-    try {
-      approvedIdentityJSON = decryptString(
-        sessionState[0].vault.encryptedJson,
-        request.sessionId.toString()
-      );
-    } catch (error) {
-      console.log('Wrong sessionId! Please try again');
-      return {
-        error: 'Wrong sessionId! Please try again and request a new Session',
-      };
-    }
-    const fromIdentity = Secp256k1KeyIdentity.fromJSON(approvedIdentityJSON);
 
-    const response = await canisterAgent({
-      canisterId: '7igbu-3qaaa-aaaaa-qaapq-cai',
-      method: 'cowsay',
-      args: request.message,
-      fromIdentity: fromIdentity,
-    });
-    return { response, principal: fromIdentity?.getPrincipal()?.toText() };
+    if (sessionState == undefined) {
+      return {
+        error: 'Wrong sessionId! Please try again or create a new Session',
+      };
+    } else {
+      try {
+        approvedIdentityJSON = decryptString(
+          sessionState?.vault?.encryptedJson,
+          request.sessionId.toString()
+        );
+      } catch (error) {
+        console.log('Wrong sessionId! Please try again');
+        return {
+          error: 'Wrong sessionId! Please try again or create a new Session',
+        };
+      }
+    }
+    //
+    return this.sign(request, approvedIdentityJSON);
   }
 
   async createSession(
