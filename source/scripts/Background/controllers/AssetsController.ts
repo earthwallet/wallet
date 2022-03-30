@@ -26,7 +26,7 @@ export default class AssetsController implements IAssetsController {
       );
       const data = await (
         await fetch(
-          `${CGECKO_PRICE_API}?ids=${activeAssetIds}&vs_currencies=${currency}&include_24hr_change=true`
+          `${CGECKO_PRICE_API}?ids=${activeAssetIds}&vs_currencies=${currency}&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`
         )
       ).json();
       store.dispatch(

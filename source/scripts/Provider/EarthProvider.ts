@@ -167,6 +167,7 @@ export class EarthProvider {
     //check canisterIds array for approved canisters
     //close expiredSessions
     //todo create new txn request for array and single
+    //limit txn log to 100 entries
     const state = store.getState();
     const sessionState = Object.keys(state.entities.dappSessions?.byId)
       ?.map((id) => state.entities.dappSessions.byId[id])
