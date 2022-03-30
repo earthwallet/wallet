@@ -1,4 +1,5 @@
-import icon_SDR from '~assets/images/icon_SDR.png';
+import ICON_SDR from '~assets/images/icon_SDR.png';
+
 const TOKENS_LIST = [
   {
     usesPrincipal: true,
@@ -11,7 +12,7 @@ const TOKENS_LIST = [
     wrappedSymbol: 'XDR',
     tokenCanisterId: 'cyiep-riaaa-aaaam-qadnq-cai',
     totalSupply: 'Infinite',
-    logo: icon_SDR,
+    icon: ICON_SDR,
     fees: 0.0002,
     mintMethod: 'mint_by_icp',
   },
@@ -26,7 +27,7 @@ const TOKENS_LIST = [
     wrappedSymbol: 'ICP',
     tokenCanisterId: 'utozz-siaaa-aaaam-qaaxq-cai',
     totalSupply: 'Infinite',
-    logo: undefined,
+    icon: undefined,
     fees: 0.0001,
     mintMethod: 'mint',
   },

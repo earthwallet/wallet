@@ -22,7 +22,7 @@ import ListNFT from '~pages/popup/signed/ListNFT';
 import WalletSettings from '~pages/popup/signed/WalletSettings';
 import DappDetails from '~pages/popup/signed/DappDetails';
 import TokenDetails from '~pages/popup/signed/TokenDetails';
-import TokenHistory from '~pages/popup/signed/TokenHistory';
+import TokenDetailsWithInfo from '~pages/popup/signed/TokenDetailsWithInfo';
 import Stake from '~pages/popup/signed/Stake';
 import Swap from '~pages/popup/signed/Swap';
 import SelectTokens from '~pages/popup/signed/SelectTokens';
@@ -168,7 +168,7 @@ const PopupRouter = () => {
               </Route>
 
               <Route path="/th/:address/:tokenId">
-                {wrapWithErrorBoundary(<TokenHistory />, 'TokenHistory')}
+                {wrapWithErrorBoundary(<TokenDetailsWithInfo />, 'TokenDetailsWithInfo')}
               </Route>
               <Route path="/account/details/:address">
                 {wrapWithErrorBoundary(<TokenDetails />, 'TokenDetails')}

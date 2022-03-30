@@ -269,7 +269,7 @@ const TokensList = ({ address }: { address: string }) => {
       <div className={styles.listitemscont}>
         {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
           <div
-            onClick={() => history.push('/account/send/' + address)}
+            onClick={() => history.push('/th/' + address + '/' + token.symbol)}
             key={i}
             className={styles.listitem}>
             <img
@@ -293,9 +293,9 @@ const TokensList = ({ address }: { address: string }) => {
           onClick={() => history.push('/th/' + address + '/' + token.id)}
           key={i}
           className={styles.listitem}>
-          {token?.logo ? <img
+          {token?.icon ? <img
             className={styles.listicon}
-            src={token?.logo} >
+            src={token?.icon} >
           </img> : <div
             className={styles.listicon}
           >{token?.name?.charAt(0)}
@@ -456,9 +456,9 @@ const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, se
         onClick={() => history.push('/th/' + address + '/' + token.id)}
         key={i}
         className={styles.imagecont}>
-        {token?.logo ? <img
+        {token?.icon ? <img
           className={styles.imageIcon}
-          src={token?.logo} >
+          src={token?.icon} >
         </img> : <div
           className={styles.imageIcon}
         >{token?.name?.charAt(0)}

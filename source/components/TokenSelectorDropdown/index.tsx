@@ -41,7 +41,7 @@ export const TokenSelectorDropdown = ({
     };
 
     useEffect(() => {
-        setSelectedToken({ logo: tokenInfo?.logo, symbol: tokenInfo?.symbol, id: tokenInfo?.id })
+        setSelectedToken({ icon: tokenInfo?.icon, symbol: tokenInfo?.symbol, id: tokenInfo?.id })
     }, [tokenInfo !== null]);
     return <div className={styles.dropdownCont}>
         {(selectedToken?.id == "" || selectedToken?.id == null)
@@ -58,7 +58,7 @@ export const TokenSelectorDropdown = ({
                 <div
                     onClick={() => setOpen(!open)}
                     className={styles.econt}>
-                    {selectedToken?.logo ? <img className={styles.eicon} src={selectedToken?.logo}></img> : <div className={styles.eicon}>{selectedToken?.symbol?.charAt(0)}</div>}
+                    {selectedToken?.icon ? <img className={styles.eicon} src={selectedToken?.icon}></img> : <div className={styles.eicon}>{selectedToken?.symbol?.charAt(0)}</div>}
                     <div>{selectedToken?.symbol}</div>
                     <img className={styles.careticon} src={ICON_CARET} />
                 </div>
@@ -98,13 +98,13 @@ export const TokenSelectorDropdown = ({
                     setSelectedToken({
                         symbol: token?.symbol,
                         id: token?.id,
-                        logo: token?.logo
+                        icon: token?.icon
                     });
                     setOpen(false);
                 }}
                 key={token?.id}
                 className={clsx(styles.sinput, styles.selectDropdown, styles.selectDropdownOption)}>
-                <div className={styles.noicon}>{token?.logo ? <img className={styles.eicon} src={token?.logo}></img> : <div></div>}</div>
+                <div className={styles.noicon}>{token?.icon ? <img className={styles.eicon} src={token?.icon}></img> : <div></div>}</div>
                 <div className={styles.label}>{token?.symbol}</div>
             </div>)}
         </div>}

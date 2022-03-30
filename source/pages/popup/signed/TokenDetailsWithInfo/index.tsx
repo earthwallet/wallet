@@ -17,7 +17,7 @@ interface Props extends RouteComponentProps<{ address: string, tokenId: string }
 }
 
 
-const TokenHistory = ({
+const TokenDetailsWithInfo = ({
   match: {
     params: { address, tokenId },
   },
@@ -37,8 +37,8 @@ const TokenHistory = ({
         </div>
 
         <div className={styles.section}>
-          {tokenInfo?.logo
-            ? <img className={styles.icon_earth} src={tokenInfo?.logo} />
+          {tokenInfo?.icon
+            ? <img className={styles.icon_earth} src={tokenInfo?.icon} />
             : <div className={styles.icon_earth}>{tokenInfo?.name?.charAt(0)}
             </div>}
           <div className={styles.sectitle}>{tokenPair?.balanceTxt} {tokenInfo?.symbol}</div>
@@ -100,4 +100,4 @@ const TokenHistory = ({
 };
 
 
-export default withRouter(TokenHistory);
+export default withRouter(TokenDetailsWithInfo);
