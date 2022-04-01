@@ -7,6 +7,7 @@ import { keyable } from '~scripts/Background/types/IMainController';
 //import groupBy from 'lodash/groupBy';
 import TOKENS, { getTokenInfo } from '~global/tokens';
 import { getInfoBySymbol } from '~global/constant';
+import millify from 'millify';
 
 const initialState: ITokenState = {
   loading: false,
@@ -86,7 +87,30 @@ export const selectInfoBySymbolOrToken =
         return {};
       }
     } else {
-      return info;
+      const currentBalance = state.entities.balances.byId[address];
+      const symbolStats = state.entities.prices.byId[info.coinGeckoId];
+      return {
+        ...info,
+        ...{
+          balanceTxt: (
+            (currentBalance?.value || 0) /
+            Math.pow(10, currentBalance?.currency?.decimals || 0)
+          ).toFixed(4),
+          price: currentBalance?.balanceInUSD?.toFixed(3),
+          usd_market_cap:
+            symbolStats?.usd_market_cap &&
+            millify(symbolStats?.usd_market_cap, {
+              precision: 2,
+              lowercase: true,
+            }),
+          usd_24h_vol:
+            symbolStats?.usd_24h_vol &&
+            millify(symbolStats?.usd_24h_vol, {
+              precision: 2,
+              lowercase: true,
+            }),
+        },
+      };
     }
   };
 

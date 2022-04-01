@@ -11,7 +11,8 @@ import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import { selectInfoBySymbolOrToken } from '~state/token';
 import { useSelector } from 'react-redux';
-
+import icon_rec from '~assets/images/icon_rec.svg';
+import icon_send from '~assets/images/icon_send.svg';
 interface Props extends RouteComponentProps<{ address: string, symbolOrTokenId: string }> {
 }
 
@@ -23,7 +24,7 @@ const TokenDetailsWithInfo = ({
 }: Props) => {
 
   const history = useHistory();
-  const symbolOrTokenInfo = useSelector(selectInfoBySymbolOrToken( symbolOrTokenId, address));
+  const symbolOrTokenInfo = useSelector(selectInfoBySymbolOrToken(symbolOrTokenId, address));
 
   console.log(symbolOrTokenInfo, symbolOrTokenId, 'TokenDetailsWithInfo');
 
@@ -33,31 +34,43 @@ const TokenDetailsWithInfo = ({
         type={'wallet'}
         text={symbolOrTokenInfo?.name}
       ><div className={styles.empty} /></Header>
-      <div>
-        <div className={styles.top}>
-        </div>
+      <div className={styles.body}>
+
 
         <div className={styles.section}>
           {symbolOrTokenInfo?.icon
             ? <img className={styles.icon_earth} src={symbolOrTokenInfo?.icon} />
             : <div className={styles.icon_earth}>{symbolOrTokenInfo?.name?.charAt(0)}
             </div>}
-          <div className={styles.sectitle}>{symbolOrTokenInfo?.balanceTxt} {symbolOrTokenInfo?.symbol}</div>
-          <div className={styles.secsubtitle}>${symbolOrTokenInfo?.price}</div>
+          <div className={styles.sectitle}>{symbolOrTokenInfo?.balanceTxt || 0} {symbolOrTokenInfo?.symbol}</div>
+          <div className={styles.secsubtitle}>${symbolOrTokenInfo?.price || 0}</div>
         </div>
         <div className={styles.cta}>
-          <div
+
+          {symbolOrTokenInfo.symbol == 'SDR' && (<div
             onClick={() => history.push('/swap/' + address + "/" + symbolOrTokenId + '?type=mint')}
             className={styles.btnprimary}>
             <img src={ICON_MINT} className={styles.btnicon} />
             <div className={styles.btntxt}>Mint</div>
-          </div>
+          </div>)}
           {false && <div
             onClick={() => history.push('/stake/' + address + "/" + symbolOrTokenId)}
             className={clsx(styles.btnprimary, styles.btnsecondary)}>
             <img src={ICON_STAKE} className={styles.btnicon} />
             <div className={styles.btntxt}>Stake</div>
           </div>}
+          <div
+            onClick={() => history.push("/account/receive/" + address)}
+            className={styles.btnprimary}>
+            <img className={styles.btnicon} src={icon_rec} />
+            <div className={styles.btntxt}>Receive</div>
+          </div>
+          <div
+            onClick={() => history.push("/account/send/" + address)}
+            className={styles.btnprimary}>
+            <img className={styles.btnicon} src={icon_send} />
+            <div className={styles.btntxt}>Send</div>
+          </div>
         </div>
         {/*  <div className={styles.graphcont}>
           <div className={styles.graph}></div>
@@ -72,28 +85,28 @@ const TokenDetailsWithInfo = ({
           </ div>)}
         </div> */}
         <div className={styles.stats}>
-          {/*       <div className={styles.row}>
+          {symbolOrTokenInfo.usd_market_cap && <div className={styles.row}>
             <div className={styles.col}>
               <div className={styles.key}>Market Cap</div>
-              <div className={styles.val}>$12B</div>
+              <div className={styles.val}>${symbolOrTokenInfo.usd_market_cap}</div>
             </div>
-            <div className={styles.col}>
-              <div className={styles.key}>Trading Volume</div>
-              <div className={styles.val}>$433M</div>
-            </div>
-          </div> */}
+            {symbolOrTokenInfo.usd_24h_vol && <div className={styles.col}>
+              <div className={styles.key}>24h Volume</div>
+              <div className={styles.val}>${symbolOrTokenInfo.usd_24h_vol}</div>
+            </div>}
+          </div>}
           {/*     <div className={styles.row}>
             <div className={styles.col}>
               <div className={styles.key}>Supply</div>
               <div className={styles.val}>∞ Unlimited</div>
             </div>
           </div> */}
-          <div className={styles.row}>
+          {symbolOrTokenInfo?.totalSupply && <div className={styles.row}>
             <div className={styles.col}>
               <div className={styles.key}>Max Supply</div>
-              <div className={styles.val}>∞ Unlimited</div>
+              <div className={styles.val}>{symbolOrTokenInfo?.totalSupply == 'Infinite' ? '∞ Unlimited' : symbolOrTokenInfo.totalSupply}</div>
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </div>
