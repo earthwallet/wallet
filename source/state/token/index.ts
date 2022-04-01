@@ -75,7 +75,7 @@ export const selectTokenByTokenPair =
 
 export const selectInfoBySymbolOrToken =
   (symbolOrTokenId: string, address: string) => (state: AppState) => {
-    const info = getInfoBySymbol(symbolOrTokenId)[0];
+    const info = getInfoBySymbol(symbolOrTokenId);
 
     if (info == undefined) {
       const tokenId = symbolOrTokenId;

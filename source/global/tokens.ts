@@ -15,6 +15,8 @@ const TOKENS_LIST = [
     icon: ICON_SDR,
     fees: 0.0002,
     mintMethod: 'mint_by_icp',
+    primaryType: 'principal',
+    addressTitle: 'Principal Id',
   },
   {
     usesPrincipal: true,
@@ -30,6 +32,8 @@ const TOKENS_LIST = [
     icon: undefined,
     fees: 0.0001,
     mintMethod: 'mint',
+    primaryType: 'principal',
+    addressTitle: 'Principal Id',
   },
 ];
 

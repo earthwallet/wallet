@@ -26,7 +26,6 @@ const TokenDetailsWithInfo = ({
   const history = useHistory();
   const symbolOrTokenInfo = useSelector(selectInfoBySymbolOrToken(symbolOrTokenId, address));
 
-  console.log(symbolOrTokenInfo, symbolOrTokenId, 'TokenDetailsWithInfo');
 
   return (
     <div className={styles.page}>
@@ -35,8 +34,6 @@ const TokenDetailsWithInfo = ({
         text={symbolOrTokenInfo?.name}
       ><div className={styles.empty} /></Header>
       <div className={styles.body}>
-
-
         <div className={styles.section}>
           {symbolOrTokenInfo?.icon
             ? <img className={styles.icon_earth} src={symbolOrTokenInfo?.icon} />
@@ -60,7 +57,7 @@ const TokenDetailsWithInfo = ({
             <div className={styles.btntxt}>Stake</div>
           </div>}
           <div
-            onClick={() => history.push("/account/receive/" + address)}
+            onClick={() => history.push("/account/receive/" + address+ "/" + symbolOrTokenId)}
             className={styles.btnprimary}>
             <img className={styles.btnicon} src={icon_rec} />
             <div className={styles.btntxt}>Receive</div>

@@ -43,6 +43,8 @@ export const DEFAULT_SYMBOLS = [
     isLive: true,
     preGenerate: true,
     order: 0,
+    addressTitle: 'Account Id',
+    primaryType: 'accountId',
   },
   {
     name: 'ICP Ed25519',
@@ -209,7 +211,7 @@ export const getInfoBySymbol = (symbol: string) =>
   DEFAULT_SYMBOLS.filter((symbolObj) => symbolObj.isLive)
     .sort((a, b) => a.order - b.order)
     .map((symbolObj) => symbolObj)
-    .filter((symbolObj) => symbolObj.symbol === symbol);
+    .filter((symbolObj) => symbolObj.symbol === symbol)[0];
 
 export const LIVE_SYMBOLS_GECKOIDs = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive

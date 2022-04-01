@@ -267,28 +267,23 @@ const TokensList = ({ address }: { address: string }) => {
         <div className={styles.listHeaderSubtitle}>${activeTokenAndAddressBalance?.toFixed(2) || 0}</div>
       </div>
       <div className={styles.listitemscont}>
-        {getInfoBySymbol('ICP')?.map((token, i: number) =>
-          <div
-            onClick={() => history.push('/th/' + address + '/' + token.symbol)}
-            key={i}
-            className={styles.listitem}>
-            <img
-              className={styles.listicon}
-              src={token?.icon} >
-            </img>
-            <div className={styles.listinfo}>
-              <div className={styles.listtitle}>{token?.name}</div>
-            </div>
-
-            <GroupSymbolBalance groupId={selectedAccount?.groupId}
-              symbol={token?.symbol} />
-
-            <img
-              className={styles.listforward}
-              src={ICON_FORWARD}
-            />
+        <div
+          onClick={() => history.push('/th/' + address + '/' + 'ICP')}
+          className={styles.listitem}>
+          <img
+            className={styles.listicon}
+            src={getInfoBySymbol('ICP')?.icon} >
+          </img>
+          <div className={styles.listinfo}>
+            <div className={styles.listtitle}>{getInfoBySymbol('ICP')?.name}</div>
           </div>
-        )}
+          <GroupSymbolBalance groupId={selectedAccount?.groupId}
+            symbol={getInfoBySymbol('ICP')?.symbol} />
+          <img
+            className={styles.listforward}
+            src={ICON_FORWARD}
+          />
+        </div>
         {tokens?.length > 0 && tokens?.map((token, i: number) => <div
           onClick={() => history.push('/th/' + address + '/' + token.id)}
           key={i}
@@ -440,18 +435,14 @@ const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, se
       effect={'coverflow'}
       slidesPerView={'auto'}
       {...params}>
-      {getInfoBySymbol('ICP')?.map((token, i: number) =>
-        <div
-          key={i}
-          onClick={() => history.push(`/account/send/${address}`)}
-          className={styles.imagecont}>
-          <img
-            key={i}
-            className={styles.imageIcon}
-            src={token?.icon} >
-          </img>
-        </div>
-      )}
+      <div
+        onClick={() => history.push(`/account/send/${address}`)}
+        className={styles.imagecont}>
+        <img
+          className={styles.imageIcon}
+          src={getInfoBySymbol('ICP')?.icon} >
+        </img>
+      </div>
       {tokens?.length > 0 && tokens?.map((token, i: number) => <div
         onClick={() => history.push('/th/' + address + '/' + token.id)}
         key={i}
@@ -472,18 +463,15 @@ const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, se
       effect={'coverflow'}
       slidesPerView={'auto'}
       {...params}>
-      {getInfoBySymbol('ICP')?.map((token, i: number) =>
-        <div
+      <div
+        onClick={() => history.push(`/account/send/${address}`)}
+        className={styles.imagecont}>
+        <img
           key={i}
-          onClick={() => history.push(`/account/send/${address}`)}
-          className={styles.imagecont}>
-          <img
-            key={i}
-            className={styles.imageIcon}
-            src={token?.icon} >
-          </img>
-        </div>
-      )}
+          className={styles.imageIcon}
+          src={getInfoBySymbol('ICP')?.icon} >
+        </img>
+      </div>
     </Swiper>
   )
 };

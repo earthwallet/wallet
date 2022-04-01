@@ -130,7 +130,7 @@ const PopupRouter = () => {
                   'wallet-send-token'
                 )}
               </Route>
-              <Route path="/account/receive/:address">
+              <Route path="/account/receive/:address/:symbolOrTokenId?">
                 {wrapWithErrorBoundary(
                   <WalletReceiveTokens />,
                   'wallet-receive-token'
