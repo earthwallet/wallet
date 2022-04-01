@@ -167,7 +167,7 @@ const PopupRouter = () => {
                 {wrapWithErrorBoundary(<Swap />, 'Swap')}
               </Route>
 
-              <Route path="/th/:address/:tokenId">
+              <Route path="/th/:address/:symbolOrTokenId">
                 {wrapWithErrorBoundary(<TokenDetailsWithInfo />, 'TokenDetailsWithInfo')}
               </Route>
               <Route path="/account/details/:address">

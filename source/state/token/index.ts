@@ -6,6 +6,7 @@ import { AppState } from '~state/store';
 import { keyable } from '~scripts/Background/types/IMainController';
 //import groupBy from 'lodash/groupBy';
 import TOKENS, { getTokenInfo } from '~global/tokens';
+import { getInfoBySymbol } from '~global/constant';
 
 const initialState: ITokenState = {
   loading: false,
@@ -68,6 +69,24 @@ export const selectTokenByTokenPair =
       return { ...state.entities.tokens?.byId[tokenPair], ...tokenInfo };
     } else {
       return {};
+    }
+  };
+
+export const selectInfoBySymbolOrToken =
+  (symbolOrTokenId: string, address: string) => (state: AppState) => {
+    const info = getInfoBySymbol(symbolOrTokenId)[0];
+
+    if (info == undefined) {
+      const tokenId = symbolOrTokenId;
+      const tokenPair = address + '_WITH_' + tokenId;
+      const tokenInfo = getTokenInfo(tokenId);
+      if (state.entities.tokens?.byId[tokenPair] != null) {
+        return { ...state.entities.tokens?.byId[tokenPair], ...tokenInfo };
+      } else {
+        return {};
+      }
+    } else {
+      return info;
     }
   };
 

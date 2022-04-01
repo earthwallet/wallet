@@ -9,50 +9,51 @@ import ICON_MINT from '~assets/images/icon_mint.svg';
 import ICON_STAKE from '~assets/images/th/stake.svg';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
-import { selectTokenByTokenPair } from '~state/token';
+import { selectInfoBySymbolOrToken } from '~state/token';
 import { useSelector } from 'react-redux';
-import { getTokenInfo } from '~global/tokens';
 
-interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
+interface Props extends RouteComponentProps<{ address: string, symbolOrTokenId: string }> {
 }
 
 
 const TokenDetailsWithInfo = ({
   match: {
-    params: { address, tokenId },
+    params: { address, symbolOrTokenId },
   },
 }: Props) => {
 
   const history = useHistory();
-  const tokenInfo = getTokenInfo(tokenId);
-  const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
+  const symbolOrTokenInfo = useSelector(selectInfoBySymbolOrToken( symbolOrTokenId, address));
+
+  console.log(symbolOrTokenInfo, symbolOrTokenId, 'TokenDetailsWithInfo');
+
   return (
     <div className={styles.page}>
       <Header
         type={'wallet'}
-        text={tokenInfo?.name}
+        text={symbolOrTokenInfo?.name}
       ><div className={styles.empty} /></Header>
       <div>
         <div className={styles.top}>
         </div>
 
         <div className={styles.section}>
-          {tokenInfo?.icon
-            ? <img className={styles.icon_earth} src={tokenInfo?.icon} />
-            : <div className={styles.icon_earth}>{tokenInfo?.name?.charAt(0)}
+          {symbolOrTokenInfo?.icon
+            ? <img className={styles.icon_earth} src={symbolOrTokenInfo?.icon} />
+            : <div className={styles.icon_earth}>{symbolOrTokenInfo?.name?.charAt(0)}
             </div>}
-          <div className={styles.sectitle}>{tokenPair?.balanceTxt} {tokenInfo?.symbol}</div>
-          <div className={styles.secsubtitle}>${tokenPair?.price}</div>
+          <div className={styles.sectitle}>{symbolOrTokenInfo?.balanceTxt} {symbolOrTokenInfo?.symbol}</div>
+          <div className={styles.secsubtitle}>${symbolOrTokenInfo?.price}</div>
         </div>
         <div className={styles.cta}>
           <div
-            onClick={() => history.push('/swap/' + address + "/" + tokenId + '?type=mint')}
+            onClick={() => history.push('/swap/' + address + "/" + symbolOrTokenId + '?type=mint')}
             className={styles.btnprimary}>
             <img src={ICON_MINT} className={styles.btnicon} />
             <div className={styles.btntxt}>Mint</div>
           </div>
           {false && <div
-            onClick={() => history.push('/stake/' + address + "/" + tokenId)}
+            onClick={() => history.push('/stake/' + address + "/" + symbolOrTokenId)}
             className={clsx(styles.btnprimary, styles.btnsecondary)}>
             <img src={ICON_STAKE} className={styles.btnicon} />
             <div className={styles.btntxt}>Stake</div>

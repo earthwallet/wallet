@@ -27,7 +27,7 @@ import ICON_LIST from '~assets/images/icon_list.svg';
 import { selectAssetsICPByAddress } from '~state/wallet';
 import Swiper from 'react-id-swiper';
 import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
-import { SELECT_SYMBOLS_OBJS } from '~global/constant';
+import { getInfoBySymbol } from '~global/constant';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
 //import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
@@ -267,7 +267,7 @@ const TokensList = ({ address }: { address: string }) => {
         <div className={styles.listHeaderSubtitle}>${activeTokenAndAddressBalance?.toFixed(2) || 0}</div>
       </div>
       <div className={styles.listitemscont}>
-        {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
+        {getInfoBySymbol('ICP')?.map((token, i: number) =>
           <div
             onClick={() => history.push('/th/' + address + '/' + token.symbol)}
             key={i}
@@ -440,7 +440,7 @@ const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, se
       effect={'coverflow'}
       slidesPerView={'auto'}
       {...params}>
-      {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
+      {getInfoBySymbol('ICP')?.map((token, i: number) =>
         <div
           key={i}
           onClick={() => history.push(`/account/send/${address}`)}
@@ -472,7 +472,7 @@ const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, se
       effect={'coverflow'}
       slidesPerView={'auto'}
       {...params}>
-      {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
+      {getInfoBySymbol('ICP')?.map((token, i: number) =>
         <div
           key={i}
           onClick={() => history.push(`/account/send/${address}`)}
