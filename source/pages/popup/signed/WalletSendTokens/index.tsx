@@ -23,7 +23,7 @@ import { selectAssetBySymbol } from '~state/assets';
 import { DEFAULT_ICP_FEES } from '~global/constant';
 import indexToHash from './indexToHash'
 import { useHistory } from 'react-router-dom';
-import { selectAssetsICPByAddress } from '~state/wallet';
+import { selectActiveTokensAndAssetsICPByAddress } from '~state/wallet';
 import ICON_CARET from '~assets/images/icon_caret.svg';
 import useQuery from '~hooks/useQuery';
 import { listNFTsExt, principalTextoAddress, transferNFTsExt } from '@earthwallet/assets';
@@ -52,8 +52,10 @@ const WalletSendTokens = ({
   const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
-  const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+  const assets: keyable = useSelector(selectActiveTokensAndAssetsICPByAddress(address));
 
+
+  console.log(assets, 'assets');
 
   const dropDownRef = useRef(null);
   const [selectedRecp, setSelectedRecp] = useState<string>('');
@@ -192,7 +194,7 @@ const WalletSendTokens = ({
 
   }
 
-  const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.tokenIdentifier === assetId)[0]
+  const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.id === assetId)[0]
 
   const transferAssetsForICP = async () => {
     setIsBusy(true);
@@ -373,20 +375,20 @@ const WalletSendTokens = ({
               {selectedAsset === selectedAccount?.symbol && <SelectedAsset
                 onSelectedAssetClick={toggle}
                 label={selectedAccount?.symbol}
-                logo={getSymbol(selectedAccount?.symbol)?.icon || ''}
+                icon={getSymbol(selectedAccount?.symbol)?.icon || ''}
                 loading={currentBalance?.loading}
                 showDropdown={assets?.length === 0 || assets?.length === undefined}
-                balanceText={currentBalance === null
+                balanceTxt={currentBalance === null
                   ? `Balance: `
                   : `Balance: ${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
                 }
               />}
               {getSelectedAsset(selectedAsset) && <SelectedAsset
                 onSelectedAssetClick={toggle}
-                label={selectedAssetObj?.tokenIndex}
+                label={selectedAssetObj?.label}
                 loading={false}
-                balanceText={'1 NFT'}
-                logo={getTokenImageURL(selectedAssetObj)}
+                balanceTxt={selectedAssetObj.balanceTxt}
+                icon={selectedAssetObj.icon}
               />
               }
               {toggleAssetDropdown &&
@@ -394,18 +396,18 @@ const WalletSendTokens = ({
                   <AssetOption
                     onAssetOptionClick={() => toggleAndSetAsset(selectedAccount?.symbol || '')}
                     label={selectedAccount?.symbol}
-                    logo={getSymbol(selectedAccount?.symbol)?.icon || ''}
-                    balanceText={currentBalance === null
+                    icon={getSymbol(selectedAccount?.symbol)?.icon || ''}
+                    balanceTxt={currentBalance === null
                       ? `Balance: `
                       : `Balance: ${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
                     }
                   />
                   {assets?.map((asset: keyable, index: number) => <AssetOption
                     key={index}
-                    onAssetOptionClick={() => toggleAndSetAsset(asset?.tokenIdentifier || index)}
-                    label={asset?.tokenIndex}
-                    logo={getTokenImageURL(asset)}
-                    balanceText={'1 NFT'}
+                    onAssetOptionClick={() => toggleAndSetAsset(asset?.id || index)}
+                    label={asset.label}
+                    icon={asset.icon}
+                    balanceTxt={asset.balanceTxt}
                   />
                   )}
                 </div>
@@ -473,7 +475,6 @@ const WalletSendTokens = ({
                 <div className={styles.tokenText}>{selectedAssetObj?.tokenIndex}</div>
                 <div className={styles.tokenAmount}>1 NFT</div>
               </div>
-
             </div>
           }
           {selectedAsset === selectedAccount?.symbol && <div className={styles.feeCont}>
@@ -558,27 +559,27 @@ const WalletSendTokens = ({
 
 
 interface SelectedAssetProps {
-  logo: string,
+  icon: string,
   label: string,
   loading: boolean,
-  balanceText: string,
+  balanceTxt: string,
   showDropdown?: boolean,
   onSelectedAssetClick: () => void
 }
 
 interface AssetOptionProps {
-  logo: string,
+  icon: string,
   label: string,
-  balanceText: string,
+  balanceTxt: string,
   onAssetOptionClick: () => void
 }
 
-const SelectedAsset = ({ logo, label, loading, balanceText, onSelectedAssetClick, showDropdown }: SelectedAssetProps) => <div
+const SelectedAsset = ({ icon, label, loading, balanceTxt, onSelectedAssetClick, showDropdown }: SelectedAssetProps) => <div
   onClick={showDropdown ? console.log : onSelectedAssetClick}
   className={clsx(styles.selectedNetworkDiv, showDropdown && styles.selectedNetworkDiv_noPointer)}>
   <img
     className={styles.tokenLogo}
-    src={logo}
+    src={icon}
   />
   <div className={styles.tokenSelectionLabelDiv}>
     <div className={styles.tokenLabel}>{label}</div>
@@ -588,24 +589,24 @@ const SelectedAsset = ({ logo, label, loading, balanceText, onSelectedAssetClick
           highlightColor="#000">
           <Skeleton width={150} />
         </SkeletonTheme>
-        : <span className={styles.tokenBalanceText}>{balanceText}</span>
+        : <span className={styles.tokenBalanceText}>{balanceTxt}</span>
       }
     </div>
   </div>
   {!showDropdown && <img className={styles.iconcaret} src={ICON_CARET} />}
 </div>
 
-const AssetOption = ({ logo, label, balanceText, onAssetOptionClick }: AssetOptionProps) => <div
+const AssetOption = ({ icon, label, balanceTxt, onAssetOptionClick }: AssetOptionProps) => <div
   onClick={onAssetOptionClick}
   className={clsx(styles.selectedNetworkDiv, styles.selectedNetworkDivOption)}>
   <img
     className={styles.tokenLogo}
-    src={logo}
+    src={icon}
   />
   <div className={styles.tokenSelectionLabelDiv}>
     <div className={styles.tokenLabel}>{label}</div>
     <div className={styles.tokenBalance}>
-      <span className={styles.tokenBalanceText}>{balanceText}</span>
+      <span className={styles.tokenBalanceText}>{balanceTxt}</span>
     </div>
   </div>
 </div>

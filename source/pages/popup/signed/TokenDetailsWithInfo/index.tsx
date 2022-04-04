@@ -57,13 +57,13 @@ const TokenDetailsWithInfo = ({
             <div className={styles.btntxt}>Stake</div>
           </div>}
           <div
-            onClick={() => history.push("/account/receive/" + address+ "/" + symbolOrTokenId)}
+            onClick={() => history.push("/account/receive/" + address + "/" + symbolOrTokenId)}
             className={styles.btnprimary}>
             <img className={styles.btnicon} src={icon_rec} />
             <div className={styles.btntxt}>Receive</div>
           </div>
           <div
-            onClick={() => history.push("/account/send/" + address)}
+            onClick={() => history.push("/account/send/" + address + "?tokenid=" + symbolOrTokenId)}
             className={styles.btnprimary}>
             <img className={styles.btnicon} src={icon_send} />
             <div className={styles.btntxt}>Send</div>

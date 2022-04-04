@@ -6,6 +6,8 @@ import type { IWalletState } from './types';
 //import type { StoreInterface } from '~state/IStore';
 import { AppState } from '~state/store';
 import groupBy from 'lodash/groupBy';
+import { getTokenInfo } from '~global/tokens';
+import { getTokenImageURL } from '~global/nfts';
 
 const initialState: IWalletState = {
   accounts: [],
@@ -144,5 +146,46 @@ export const selectAccountById = (address: string) => (state: AppState) =>
 
 export const selectDappActiveAccountAddress = (state: AppState) =>
   state.wallet?.activeAccount?.address;
+
+export const selectActiveTokensAndAssetsICPByAddress =
+  (address: string) => (state: AppState) => {
+    const assets =
+      (state.entities.assets?.byId &&
+        Object.keys(state.entities.assets?.byId)
+          ?.map((id) => ({
+            ...state.entities.assets.byId[id],
+            ...{
+              id: state.entities.assets.byId[id]?.tokenIdentifier,
+              balanceTxt: '1 NFT',
+              label: state.entities.assets.byId[id]?.tokenIndex,
+              icon: getTokenImageURL(state.entities.assets.byId[id]),
+            },
+          }))
+          .filter((assets) => assets.address === address)) ||
+      [];
+    const activeTokens =
+      (state.entities.tokens?.byId &&
+        Object.keys(state.entities.tokens?.byId)
+          ?.map((id) => {
+            const tokenInfo = getTokenInfo(
+              state.entities.tokens.byId[id]?.tokenId
+            );
+            return {
+              ...state.entities.tokens.byId[id],
+              ...{
+                label: tokenInfo.symbol,
+                id: state.entities.tokens.byId[id]?.tokenId,
+                balanceTxt:
+                  state.entities.tokens.byId[id]?.balanceTxt +
+                  ' ' +
+                  tokenInfo.symbol,
+                icon: tokenInfo.icon,
+              },
+            };
+          })
+          .filter((token) => token.address === address && token.active)) ||
+      [];
+    return [...activeTokens, ...assets];
+  };
 
 export default WalletState.reducer;
