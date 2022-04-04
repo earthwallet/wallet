@@ -99,7 +99,7 @@ const TransactionConfirm = ({
         text={txnStatusObj?.loading ? 'Minting..' : 'Confirm ' + txnStatusObj?.type}
       ><div className={styles.empty} /></Header>
       {txnStatusObj?.loading
-        ? <Settling {...txnStatusObj} logo={getTokenInfo(txnStatusObj?.params?.to)?.icon} />
+        ? <Settling {...txnStatusObj} icon={getTokenInfo(txnStatusObj?.params?.to)?.icon} />
         : <div className={styles.scrollCont}>
           {txnStatusObj?.error && <div className={styles.errorResponse}>{txnStatusObj?.error}</div>}
 
