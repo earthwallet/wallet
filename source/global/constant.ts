@@ -60,7 +60,7 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_ETH,
     symbol: 'ETH',
     coinGeckoId: 'ethereum',
-    isLive: false,
+    isLive: true,
     preGenerate: true,
     order: 2,
   },

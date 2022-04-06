@@ -134,7 +134,7 @@ export const selectActiveTokensByAddressWithInfo =
 export const selectActiveTokenAndAddressBalance =
   (address: string) => (state: AppState) => {
     const currentBalanceInUSD =
-      state.entities.balances.byId[address].balanceInUSD;
+      state.entities.balances.byId[address]?.balanceInUSD;
 
     const activeTokenPrices =
       state.entities.tokens?.byId &&
