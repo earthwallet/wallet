@@ -81,7 +81,8 @@ const PopupRouter = () => {
 
                 {/*                 <Redirect to="/account/send/0ba1b7b1643929210dc41a8afbe031bd1b5e81dbc8e3b3b64978f5f743f058c3" />
  */}
-              </Route>
+                {/*                 <Redirect to="/account/send/07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992?tokenId=cyiep-riaaa-aaaam-qadnq-cai" />
+ */}              </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
               </Route>
@@ -128,7 +129,7 @@ const PopupRouter = () => {
               <Route path="/transaction/confirm/:txnId">
                 {wrapWithErrorBoundary(<TransactionConfirm />, 'Swap')}
               </Route>
-              {/*  /account/send/:address ?tokenid or ?assetid */}
+              {/*  /account/send/:address ?tokenId or ?assetId */}
               <Route path="/account/send/:address">
                 {wrapWithErrorBoundary(
                   <WalletSendTokens />,
@@ -153,7 +154,7 @@ const PopupRouter = () => {
               <Route path="/account/listnft/:address">
                 {wrapWithErrorBoundary(<ListNFT />, 'accounts')}
               </Route>
-              <Route path="/nftdetails/:assetid">
+              <Route path="/nftdetails/:assetId">
                 {wrapWithErrorBoundary(<NFTDetails />, 'accounts')}
               </Route>
               <Route path="/createnft/:address">

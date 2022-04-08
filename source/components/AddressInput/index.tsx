@@ -67,7 +67,7 @@ export default function AddressInput({
 
     return <>
         <div className={styles.cont}>
-            <div className={styles.info}><ToolTipInfo title={"Account ID is required"} /></div>
+            <div className={styles.info}><ToolTipInfo title={inputType == 'ICP' ? "Account ID is required" : "Address is required"} /></div>
             <input
                 autoCapitalize='off'
                 autoCorrect='off'
@@ -80,7 +80,7 @@ export default function AddressInput({
                 required
                 value={selectedRecp}
             />
-            <div className={styles.type}>AID</div>
+            {inputType == 'ICP' && <div className={styles.type}>AID</div>}
         </div>
         {recpError !== '' && <Warning
             isBelowInput

@@ -92,14 +92,19 @@ const WalletSendTokens = ({
   const history = useHistory();
 
   useEffect(() => {
-    if (queryParams.get('assetid') === null) {
+    if (queryParams.get('assetId') === null && queryParams.get('tokenId') === null) {
       setSelectedAsset(selectedAccount?.symbol)
     }
-    else {
-      setSelectedAsset(queryParams.get('assetid') || '');
-      setSelectedAssetObj(getSelectedAsset(queryParams.get('assetid') || ''))
+    else if (queryParams.get('assetId') !== null) {
+      setSelectedAsset(queryParams.get('assetId') || '');
+      setSelectedAssetObj(getSelectedAsset(queryParams.get('assetId') || ''))
     }
-  }, [queryParams.get('assetid') !== null]);
+    else if (queryParams.get('tokenId') !== null) {
+      setSelectedAsset(queryParams.get('tokenId') || '');
+      setSelectedAssetObj(getSelectedAsset(queryParams.get('tokenId') || ''))
+    }
+  }, [queryParams.get('assetId') !== null, queryParams.get('tokenId') !== null]);
+
 
   useEffect(() => {
     controller.accounts

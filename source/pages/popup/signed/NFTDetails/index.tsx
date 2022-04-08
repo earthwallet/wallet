@@ -13,23 +13,23 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { decodeTokenId } from '@earthwallet/assets';
 
 
-interface Props extends RouteComponentProps<{ assetid: string }> {
+interface Props extends RouteComponentProps<{ assetId: string }> {
     className?: string;
 }
 
 const NFTDetails = ({
     match: {
         params: {
-            assetid,
+            assetId,
         },
     },
 }: Props) => {
     const history = useHistory();
-    const canisterId = decodeTokenId(assetid).canister;
-    const index = decodeTokenId(assetid).index;
-    const assetInfo: keyable = { canisterId, tokenIndex: index, id: assetid, tokenIdentifier: assetid };
+    const canisterId = decodeTokenId(assetId).canister;
+    const index = decodeTokenId(assetId).index;
+    const assetInfo: keyable = { canisterId, tokenIndex: index, id: assetId, tokenIdentifier: assetId };
 
-    const asset: keyable = useSelector(selectAssetById(assetid)) || assetInfo;
+    const asset: keyable = useSelector(selectAssetById(assetId)) || assetInfo;
     const [loading, setLoading] = useState(false);
     const controller = useController();
 
@@ -37,7 +37,7 @@ const NFTDetails = ({
         setLoading(true);
         controller.assets.
             updateTokenCollectionDetails(asset).then(() => setLoading(false))
-    }, [assetid === asset?.id]);
+    }, [assetId === asset?.id]);
 
     return (
         <div className={styles.page}>
@@ -51,13 +51,13 @@ const NFTDetails = ({
             <div className={styles.fullImage}
                 style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
                 <div className={styles.actions}>
-                    <div onClick={() => history.push(`/account/send/${asset?.address}?assetid=${asset.id}`)}
+                    <div onClick={() => history.push(`/account/send/${asset?.address}?assetId=${asset.id}`)}
                         className={styles.action}>Transfer</div>
                     <div
-                        onClick={() => history.push(`/account/listnft/${asset?.address}?assetid=${asset.id}`)}
+                        onClick={() => history.push(`/account/listnft/${asset?.address}?assetId=${asset.id}`)}
                         className={clsx(styles.action, styles.secAction)}>{asset?.forSale ? 'Update' : 'List for Sale'}</div>
                     {asset?.forSale && <div
-                        onClick={() => history.push(`/account/listnft/${asset?.address}?assetid=${asset.id}&cancel=true`)}
+                        onClick={() => history.push(`/account/listnft/${asset?.address}?assetId=${asset.id}&cancel=true`)}
                         className={clsx(styles.action, styles.secAction)}>Cancel</div>}
                 </div>
             </div>
