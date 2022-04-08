@@ -111,6 +111,7 @@ const WalletSendTokens = ({
       .getBalancesOfAccount(selectedAccount)
       .then(() => {
       });
+    queryParams.get('tokenId') !== null && controller.tokens.getTokenBalances(address);
 
     if (selectedAccount?.symbol !== 'ICP') {
       getFees(selectedAccount?.symbol).then(fees => {
@@ -124,16 +125,7 @@ const WalletSendTokens = ({
   }, [selectedAccount?.id === address]);
 
 
-  const loadMaxAmount = useCallback((): void => {
-    if (parseFloat(currentBalance?.value) === 0) {
-      setError(`Not enough balance. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
-    }
-    else {
-      let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
-      maxAmount = parseFloat(maxAmount.toFixed(8));
-      setSelectedAmount(parseFloat(maxAmount.toFixed(8)));
-    }
-  }, [currentBalance, fees]);
+
 
   const onConfirm = useCallback(() => {
     if (selectedAsset !== selectedAccount?.symbol) {
@@ -141,20 +133,8 @@ const WalletSendTokens = ({
       setStep1(false);
     }
     else {
-      let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
-      maxAmount = parseFloat(maxAmount.toFixed(8));
-      if (selectedAmount !== 0 && selectedAmount <= maxAmount) {
-        setError('');
-        setStep1(false);
-      }
-      else if (selectedAmount === 0) {
-        setError(`Amount cannot be zero. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
-        setStep1(true);
-      }
-      else {
-        setError(`Insufficient balance. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
-        setStep1(true);
-      }
+      setStep1(false);
+
     }
 
   }, [fees, selectedAmount, currentBalance, selectedAccount, selectedAsset]);
@@ -381,44 +361,19 @@ const WalletSendTokens = ({
               }
             </div>
           </div>
-          {selectedAsset === selectedAccount?.symbol && <div>
-            <div
-              className={styles.earthInputLabel}>
-              Amount  {selectedAccount?.symbol !== 'BTC' && <div
-                onClick={() => loadMaxAmount()}
-                className={styles.maxBtn}>Max</div>}
-            </div>
-            <input
-              autoCapitalize='off'
-              autoCorrect='off'
-              autoFocus={false}
-              className={clsx(styles.recipientAddress, styles.earthinput)}
-              key={'amount'}
-              max="1.00"
-              min="0.00"
-              onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
-              placeholder="amount up to 8 decimal places"
-              required
-              step="0.001"
-              type="number"
-              value={selectedAmount}
-            />
-            {!(isNaN(selectedAmount) || selectedAmount == 0) && <div
-              className={styles.priceInput}
-            >${((selectedAmount + fees) * currentUSDValue?.usd).toFixed(2)}</div>}
-            {(isNaN(selectedAmount) || selectedAmount == 0) && error && (
-              <div
-                className={styles.noBalanceError}
-              >
-                <Warning
-                  isBelowInput
-                  isDanger
-                >
-                  {error}
-                </Warning>
-              </div>
-            )}
-          </div>}
+          {selectedAsset === selectedAccount?.symbol && <AmountInput
+            address={address}
+            fees={fees}
+            amountCallback={setSelectedAmount}
+            errorCallback={setError}
+          />}
+          {getSelectedAsset(selectedAsset) && <AmountInput
+            address={address}
+            fees={fees}
+            amountCallback={setSelectedAmount}
+            errorCallback={setError}
+          />
+          }
         </div>
         : <div className={styles.confirmPage}>
           {selectedAsset === selectedAccount?.symbol ? <div className={styles.confirmAmountCont}>
@@ -508,7 +463,7 @@ const WalletSendTokens = ({
     }}>
       {step1
         ? <NextStepButton
-          disabled={loadingSend || !selectedRecp || recpError !== ''}
+          disabled={loadingSend || !selectedRecp || recpError !== '' || error !== ''}
           loading={isBusy}
           onClick={onConfirm}>
           {'Next'}
@@ -577,4 +532,98 @@ const AssetOption = ({ icon, label, balanceTxt, onAssetOptionClick }: AssetOptio
     </div>
   </div>
 </div>
+
+
+
+const AmountInput = ({ address, fees, amountCallback, errorCallback }: { address: string, fees: any, amountCallback: (amount: number) => void, errorCallback: (error: string) => void }) => {
+  const selectedAccount = useSelector(selectAccountById(address));
+
+  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
+  const [selectedAmount, setSelectedAmount] = useState<number>(0);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    amountCallback(selectedAmount);
+  }, [amountCallback, selectedAmount]);
+
+  useEffect(() => {
+    errorCallback(error);
+  }, [errorCallback, error]);
+
+  const loadMaxAmount = useCallback((): void => {
+    if (parseFloat(currentBalance?.value) === 0) {
+      setError(`Not enough balance. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+    }
+    else {
+      let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
+      maxAmount = parseFloat(maxAmount.toFixed(8));
+      setSelectedAmount(parseFloat(maxAmount.toFixed(8)));
+    }
+  }, [currentBalance, fees]);
+
+  const changeAmount = (amount: string) => {
+    console.log(amount, 'changeAmount', typeof amount, amount == undefined)
+    let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
+    maxAmount = parseFloat(maxAmount.toFixed(8));
+    const _amount = parseFloat(amount);
+
+    if (isNaN(_amount)) {
+      setSelectedAmount(_amount);
+      setError(`Amount cannot be empty.`);
+    }
+    else if (_amount !== 0 && _amount <= maxAmount) {
+      setSelectedAmount(_amount)
+      setError('');
+    }
+    else if (_amount == 0) {
+      setSelectedAmount(_amount)
+      setError(`Amount cannot be zero. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+    }
+    else if (_amount > maxAmount) {
+      setSelectedAmount(_amount);
+      setError(`Insufficient balance.`);
+    }
+
+  }
+  return <div>
+    <div
+      className={styles.earthInputLabel}>
+      Amount  {selectedAccount?.symbol !== 'BTC' && <div
+        onClick={() => loadMaxAmount()}
+        className={styles.maxBtn}>Max</div>}
+    </div>
+    <input
+      autoCapitalize='off'
+      autoCorrect='off'
+      autoFocus={false}
+      className={clsx(styles.recipientAddress, styles.earthinput)}
+      key={'amount'}
+      max="1.00"
+      min="0.00"
+      onChange={(e) => changeAmount(e.target.value)}
+      placeholder="amount up to 8 decimal places"
+      required
+      step="0.001"
+      type="number"
+      value={selectedAmount}
+    />
+    {!(error != '') && <div
+      className={styles.priceInput}
+    >${((selectedAmount + fees) * currentUSDValue?.usd).toFixed(2)}</div>}
+    {error != '' && (
+      <div
+        className={styles.amountError}
+      >
+        <Warning
+          isBelowInput
+          isDanger
+        >
+          {error}
+        </Warning>
+      </div>
+    )}
+  </div>
+
+}
 export default withRouter(WalletSendTokens);
