@@ -19,8 +19,6 @@ const AppsList = ({ address, hideAddress }: { address: string, hideAddress: bool
     const history = useHistory();
     const dapps = useSelector(selectConnectedDappsByAddress(address));
 
-    console.log(address);
-
     return (
         <div className={styles.container}>
             {dapps.length !== 0 ? dapps?.map((dapp: keyable, index: number) => <div

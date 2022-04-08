@@ -26,13 +26,12 @@ import { useHistory } from 'react-router-dom';
 import { selectActiveTokensAndAssetsICPByAddress } from '~state/wallet';
 import ICON_CARET from '~assets/images/icon_caret.svg';
 import useQuery from '~hooks/useQuery';
-import { listNFTsExt, principalTextoAddress, transferNFTsExt } from '@earthwallet/assets';
+import { listNFTsExt, transferNFTsExt } from '@earthwallet/assets';
 import { getShortAddress } from '~utils/common';
 import { getTokenImageURL } from '~global/nfts';
-import { validateAddress } from '@earthwallet/assets';
+import AddressInput from '~components/AddressInput';
 
 const MIN_LENGTH = 6;
-const PRINCIPAL_NOT_ACCEPTED = 'Principal id is not accepted!';
 interface keyable {
   [key: string]: any
 }
@@ -303,31 +302,7 @@ const WalletSendTokens = ({
     }
     , [selectedAccount]);
 
-  const parseRecipientAndSetAddress = (recipient: string) => {
-    if (selectedAccount?.symbol === 'ICP') {
-      setSelectedRecp(recipient);
-      if (validateAddress(recipient)) {
-        setRecpError('');
-      }
-      else {
-        const dashCount = (recipient.match(/-/g) || []).length;
-        if (dashCount === 5 || dashCount === 10) {
-          setRecpError(PRINCIPAL_NOT_ACCEPTED)
-        }
-        else {
-          setRecpError('Not a valid address');
-        }
-      }
-    }
-    else {
-      setSelectedRecp(recipient);
-    }
-  };
 
-  const togglePrincipal = () => {
-    setSelectedRecp(recipient => principalTextoAddress(recipient));
-    setRecpError('');
-  }
 
 
   return <div className={styles.page}><>
@@ -347,26 +322,13 @@ const WalletSendTokens = ({
       {step1
         ? <div style={{ width: '100vw' }}>
           <div className={styles.earthInputLabel}>Add recipient</div>
-          <input
-            autoCapitalize='off'
-            autoCorrect='off'
+          <AddressInput
+            recpErrorCallback={setRecpError}
+            recpCallback={setSelectedRecp}
+            inputType={selectedAccount?.symbol}
             autoFocus={true}
-            className={clsx(styles.earthinput, styles.recipientAddress)}
-            key={'recp'}
-            onChange={(e) => parseRecipientAndSetAddress(e.target.value)}
-            placeholder="Recipient address"
-            required
-            value={selectedRecp}
+            placeholder={selectedAccount?.symbol == 'ICP' ? 'Account ID' : undefined}
           />
-          {recpError !== '' && <Warning
-            isBelowInput
-            isDanger
-            className={styles.warningRecp}
-          >
-            {recpError} {recpError === PRINCIPAL_NOT_ACCEPTED && <div
-              onClick={() => togglePrincipal()}
-              className={styles.earthLink}>Click here to change principal id to address</div>}
-          </Warning>}
           <div className={styles.assetSelectionDivCont}>
             <div className={styles.earthInputLabel}>
               Asset
@@ -439,7 +401,7 @@ const WalletSendTokens = ({
             {!(isNaN(selectedAmount) || selectedAmount == 0) && <div
               className={styles.priceInput}
             >${((selectedAmount + fees) * currentUSDValue?.usd).toFixed(2)}</div>}
-            {error && (
+            {(isNaN(selectedAmount) || selectedAmount == 0) && error && (
               <div
                 className={styles.noBalanceError}
               >
