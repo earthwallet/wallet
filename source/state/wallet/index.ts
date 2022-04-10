@@ -155,6 +155,7 @@ export const selectActiveTokensAndAssetsICPByAddress =
           ?.map((id) => ({
             ...state.entities.assets.byId[id],
             ...{
+              type: 'nft',
               id: state.entities.assets.byId[id]?.tokenIdentifier,
               balanceTxt: '1 NFT',
               label: state.entities.assets.byId[id]?.tokenIndex,
@@ -173,6 +174,7 @@ export const selectActiveTokensAndAssetsICPByAddress =
             return {
               ...state.entities.tokens.byId[id],
               ...{
+                type: 'token',
                 label: tokenInfo.symbol,
                 id: state.entities.tokens.byId[id]?.tokenId,
                 balanceTxt:

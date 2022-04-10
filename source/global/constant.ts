@@ -44,7 +44,7 @@ export const DEFAULT_SYMBOLS = [
     preGenerate: true,
     order: 0,
     addressTitle: 'Account Id',
-    primaryType: 'accountId',
+    addressType: 'accountId',
   },
   {
     name: 'ICP Ed25519',

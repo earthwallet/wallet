@@ -30,6 +30,8 @@ import { listNFTsExt, transferNFTsExt } from '@earthwallet/assets';
 import { getShortAddress } from '~utils/common';
 import { getTokenImageURL } from '~global/nfts';
 import AddressInput from '~components/AddressInput';
+import { getTokenInfo } from '~global/tokens';
+import { selectInfoBySymbolOrToken } from '~state/token';
 
 const MIN_LENGTH = 6;
 interface keyable {
@@ -53,8 +55,6 @@ const WalletSendTokens = ({
 
   const assets: keyable = useSelector(selectActiveTokensAndAssetsICPByAddress(address));
 
-
-  console.log(assets, 'assets');
 
   const dropDownRef = useRef(null);
   const [selectedRecp, setSelectedRecp] = useState<string>('');
@@ -90,20 +90,22 @@ const WalletSendTokens = ({
   const [isBusy, setIsBusy] = useState(false);
   const [txCompleteTxt, setTxCompleteTxt] = useState<string>('');
   const history = useHistory();
+  const tokenId = queryParams.get('tokenId');
+  const assetId = queryParams.get('assetId');
 
   useEffect(() => {
-    if (queryParams.get('assetId') === null && queryParams.get('tokenId') === null) {
+    if (assetId === null && tokenId === null) {
       setSelectedAsset(selectedAccount?.symbol)
     }
-    else if (queryParams.get('assetId') !== null) {
-      setSelectedAsset(queryParams.get('assetId') || '');
-      setSelectedAssetObj(getSelectedAsset(queryParams.get('assetId') || ''))
+    else if (assetId !== null) {
+      setSelectedAsset(assetId || '');
+      setSelectedAssetObj(getSelectedAsset(assetId || ''))
     }
-    else if (queryParams.get('tokenId') !== null) {
-      setSelectedAsset(queryParams.get('tokenId') || '');
-      setSelectedAssetObj(getSelectedAsset(queryParams.get('tokenId') || ''))
+    else if (tokenId !== null) {
+      setSelectedAsset(tokenId || '');
+      setSelectedAssetObj(getSelectedAsset(tokenId || ''))
     }
-  }, [queryParams.get('assetId') !== null, queryParams.get('tokenId') !== null]);
+  }, [assetId !== null, tokenId !== null]);
 
 
   useEffect(() => {
@@ -111,16 +113,24 @@ const WalletSendTokens = ({
       .getBalancesOfAccount(selectedAccount)
       .then(() => {
       });
-    queryParams.get('tokenId') !== null && controller.tokens.getTokenBalances(address);
+    tokenId !== null && controller.tokens.getTokenBalances(address);
 
-    if (selectedAccount?.symbol !== 'ICP') {
+    if (selectedAccount?.symbol === 'BTC') {
+      setIsBusy(true);
+
       getFees(selectedAccount?.symbol).then(fees => {
+        setIsBusy(false);
         const BTC_DECIMAL = 8;
         setFees(fees.fast.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber());
       })
     }
-    else {
-      setFees(DEFAULT_ICP_FEES);
+    else if (selectedAccount?.symbol === 'ICP') {
+      if (tokenId == null) {
+        setFees(DEFAULT_ICP_FEES);
+      }
+      else {
+        setFees(getTokenInfo(tokenId)?.sendFees);
+      }
     }
   }, [selectedAccount?.id === address]);
 
@@ -308,11 +318,12 @@ const WalletSendTokens = ({
         ? <div style={{ width: '100vw' }}>
           <div className={styles.earthInputLabel}>Add recipient</div>
           <AddressInput
+            initialValue={selectedRecp}
             recpErrorCallback={setRecpError}
             recpCallback={setSelectedRecp}
             inputType={selectedAccount?.symbol}
             autoFocus={true}
-            placeholder={selectedAccount?.symbol == 'ICP' ? 'Account ID' : undefined}
+            tokenId={getSelectedAsset(selectedAsset)?.tokenId}
           />
           <div className={styles.assetSelectionDivCont}>
             <div className={styles.earthInputLabel}>
@@ -362,14 +373,17 @@ const WalletSendTokens = ({
             </div>
           </div>
           {selectedAsset === selectedAccount?.symbol && <AmountInput
+            initialValue={selectedAmount}
             address={address}
             fees={fees}
             amountCallback={setSelectedAmount}
             errorCallback={setError}
           />}
-          {getSelectedAsset(selectedAsset) && <AmountInput
+          {getSelectedAsset(selectedAsset) && getSelectedAsset(selectedAsset).type != 'nft' && <AmountInput
+            initialValue={selectedAmount}
             address={address}
             fees={fees}
+            tokenId={getSelectedAsset(selectedAsset)?.tokenId}
             amountCallback={setSelectedAmount}
             errorCallback={setError}
           />
@@ -443,7 +457,6 @@ const WalletSendTokens = ({
             </Warning>
           )}
         </div>}
-
       {txError && (
         <div
           className={styles.noBalanceError}
@@ -486,7 +499,7 @@ interface SelectedAssetProps {
   loading: boolean,
   balanceTxt: string,
   showDropdown?: boolean,
-  onSelectedAssetClick: () => void
+  onSelectedAssetClick: () => void,
 }
 
 interface AssetOptionProps {
@@ -535,13 +548,22 @@ const AssetOption = ({ icon, label, balanceTxt, onAssetOptionClick }: AssetOptio
 
 
 
-const AmountInput = ({ address, fees, amountCallback, errorCallback }: { address: string, fees: any, amountCallback: (amount: number) => void, errorCallback: (error: string) => void }) => {
+const AmountInput = ({ address, fees, initialValue = 0, amountCallback, errorCallback, tokenId }: {
+  address: string,
+  fees: any,
+  initialValue?: number,
+  amountCallback: (amount: number) => void,
+  errorCallback: (error: string) => void,
+  tokenId?: string
+}) => {
   const selectedAccount = useSelector(selectAccountById(address));
 
   const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
-  const [selectedAmount, setSelectedAmount] = useState<number>(0);
+  const [selectedAmount, setSelectedAmount] = useState<number>(initialValue);
   const [error, setError] = useState('');
+  const [initialized, setInitialized] = useState(false);
+  const tokenInfo = useSelector(selectInfoBySymbolOrToken(tokenId || '', address));
 
   useEffect(() => {
     amountCallback(selectedAmount);
@@ -553,19 +575,39 @@ const AmountInput = ({ address, fees, amountCallback, errorCallback }: { address
 
   const loadMaxAmount = useCallback((): void => {
     if (parseFloat(currentBalance?.value) === 0) {
-      setError(`Not enough balance. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+      if (fees == 0) {
+        setError(`Not enough balance.`);
+      } else
+        setError(`Not enough balance. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
     }
     else {
-      let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
-      maxAmount = parseFloat(maxAmount.toFixed(8));
-      setSelectedAmount(parseFloat(maxAmount.toFixed(8)));
+      let maxAmount
+      if (tokenInfo?.type == "DIP20") {
+        maxAmount = tokenInfo.balance / Math.pow(10, tokenInfo.decimals) - fees;
+        maxAmount = parseFloat(maxAmount.toFixed(8));
+
+      } else {
+        maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
+        maxAmount = parseFloat(maxAmount.toFixed(8));
+      }
+      setSelectedAmount(maxAmount);
     }
   }, [currentBalance, fees]);
 
   const changeAmount = (amount: string) => {
-    console.log(amount, 'changeAmount', typeof amount, amount == undefined)
-    let maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
-    maxAmount = parseFloat(maxAmount.toFixed(8));
+
+    setInitialized(true);
+
+    let maxAmount
+    if (tokenInfo?.type == "DIP20") {
+      maxAmount = tokenInfo.balance / Math.pow(10, tokenInfo.decimals) - fees;
+      maxAmount = parseFloat(maxAmount.toFixed(8));
+
+    } else {
+      maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
+      maxAmount = parseFloat(maxAmount.toFixed(8));
+    }
+
     const _amount = parseFloat(amount);
 
     if (isNaN(_amount)) {
@@ -577,8 +619,13 @@ const AmountInput = ({ address, fees, amountCallback, errorCallback }: { address
       setError('');
     }
     else if (_amount == 0) {
-      setSelectedAmount(_amount)
-      setError(`Amount cannot be zero. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+      if (fees == 0) {
+        setSelectedAmount(_amount)
+        setError(`Amount cannot be zero.`);
+      } else {
+        setSelectedAmount(_amount)
+        setError(`Amount cannot be zero. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+      }
     }
     else if (_amount > maxAmount) {
       setSelectedAmount(_amount);
@@ -608,7 +655,7 @@ const AmountInput = ({ address, fees, amountCallback, errorCallback }: { address
       type="number"
       value={selectedAmount}
     />
-    {!(error != '') && <div
+    {!(error != '') && initialized && <div
       className={styles.priceInput}
     >${((selectedAmount + fees) * currentUSDValue?.usd).toFixed(2)}</div>}
     {error != '' && (

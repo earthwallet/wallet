@@ -34,14 +34,14 @@ const WalletReceiveTokens = ({
         text={`Receive`}
         showAccountsDropdown showMenu type="wallet" > <div className={styles.empty} /></Header>
       <div className={styles.container}>
-        {symbolOrTokenInfo?.primaryType == 'principal'
+        {symbolOrTokenInfo?.addressType == 'principal'
           ? <IdCard id={selectedAccount?.meta?.principalId}
             symbol={symbolOrTokenInfo?.symbol}
             _onCopy={_onCopy} />
           : <IdCard id={selectedAccount?.id}
             symbol={selectedAccount?.symbol}
             _onCopy={_onCopy} />}
-        {symbolOrTokenInfo?.primaryType != 'principal' && selectedAccount?.meta?.principalId && <div className={styles.principalCont}>
+        {symbolOrTokenInfo?.addressType != 'principal' && selectedAccount?.meta?.principalId && <div className={styles.principalCont}>
           <div className={styles.accountShareCont}>
             <div className={styles.accountShare}>Your Principal Id</div>
             <ToolTipInfo 
