@@ -42,7 +42,7 @@ export default function AddressInput({
     const tokenInfo = getTokenInfo(tokenId || '');
     const history = useHistory();
     const location = useLocation();
-    const [valid, setInvalid] = useState<boolean>(false);
+    // const [valid, setInvalid] = useState<boolean>(false);
 
     const replaceQuery = (
         key: string,
@@ -51,7 +51,7 @@ export default function AddressInput({
         let searchParams = new URLSearchParams(location.search);
         searchParams.set(key, value);
         history.push({
-            pathname: location.pathname.replace('addressbook', 'send'),
+            pathname: location.pathname.replace('send', 'confirmsend'),
             search: searchParams.toString(),
         });
     };

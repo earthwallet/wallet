@@ -529,3 +529,103 @@
   display: flex;
   margin: 12px 24px;
 }
+
+.listitem {
+  display: flex;
+  height: 68px;
+  align-items: center;
+  border-bottom: 1px solid #ffffff0d;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+  &:last-child {
+    border-bottom: 0px !important;
+  }
+}
+
+.listitemscont {
+  background: rgba(90, 89, 126, 0.39);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  border-radius: 14px;
+  margin: 0 24px;
+}
+
+.listtitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 15px;
+  /* identical to box height, or 107% */
+
+  color: #fafbfb;
+  margin-bottom: 2.5px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.listsubtitle {
+  margin-top: 2.5px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  color: #fafbfb;
+
+  opacity: 0.54;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.listforward {
+  margin-right: 12px;
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  flex-shrink: 0;
+}
+
+.listinfo {
+  width: 210px;
+  margin-left: 8px;
+  flex-basis: 244px;
+  flex-shrink: 0;
+}
+
+.liststats {
+  width: 90px;
+  flex-basis: 90px;
+  flex-shrink: 0;
+  margin-right: 8px;
+  text-align: right;
+}
+
+.listicon {
+  margin-left: 12px;
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  flex-shrink: 0;
+  background: #ffffff0d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  overflow: hidden;
+}

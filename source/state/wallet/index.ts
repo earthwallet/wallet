@@ -144,6 +144,23 @@ export const selectAssetById = (id: string) => (state: AppState) =>
 export const selectAccountById = (address: string) => (state: AppState) =>
   state.entities.accounts.byId[address];
 
+export const selectOtherAccountsOf = (address: string) => (state: AppState) => {
+  const selectedAccount = state.entities.accounts.byId[address];
+
+  const selectedSymbol = selectedAccount.symbol;
+  const otherAccounts =
+    state.entities.accounts?.byId &&
+    Object.keys(state.entities.accounts?.byId)
+      ?.map((id) => state.entities.accounts.byId[id])
+      .filter(
+        (account) =>
+          account.symbol == selectedSymbol &&
+          account.address != address &&
+          account.active
+      );
+  return otherAccounts;
+};
+
 export const selectDappActiveAccountAddress = (state: AppState) =>
   state.wallet?.activeAccount?.address;
 

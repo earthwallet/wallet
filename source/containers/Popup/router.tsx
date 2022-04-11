@@ -81,8 +81,8 @@ const PopupRouter = () => {
 
                 {/*                 <Redirect to="/account/send/0ba1b7b1643929210dc41a8afbe031bd1b5e81dbc8e3b3b64978f5f743f058c3" />
  */}
-                <Redirect to="/account/addressbook/07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992?tokenId=cyiep-riaaa-aaaam-qadnq-cai" />
-              </Route>
+                {/*                 <Redirect to="/account/addressbook/07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992" />
+ */}              </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
               </Route>
@@ -129,14 +129,14 @@ const PopupRouter = () => {
               <Route path="/transaction/confirm/:txnId">
                 {wrapWithErrorBoundary(<TransactionConfirm />, 'Swap')}
               </Route>
-              <Route path="/account/addressbook/:address">
+              <Route path="/account/send/:address">
                 {wrapWithErrorBoundary(
                   <WalletAddressBook />,
                   'wallet-send-token'
                 )}
               </Route>
               {/*  /account/send/:address ?tokenId or ?assetId */}
-              <Route path="/account/send/:address">
+              <Route path="/account/confirmsend/:address">
                 {wrapWithErrorBoundary(
                   <WalletSendTokens />,
                   'wallet-send-token'
