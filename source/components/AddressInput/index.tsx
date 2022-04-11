@@ -5,6 +5,9 @@ import ToolTipInfo from "~components/ToolTipInfo";
 import Warning from "~components/Warning";
 import { getTokenInfo } from "~global/tokens";
 import styles from './index.scss';
+import ICON_SEARCH from '~assets/images/icon_search.svg';
+import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const PRINCIPAL_NOT_ACCEPTED = 'Principal id is not accepted!';
 
@@ -17,7 +20,8 @@ interface Props {
     recpCallback: (recipient: string) => void,
     recpErrorCallback: (recipientError: string) => void,
     initialValue?: string,
-    tokenId?: string | null
+    tokenId?: string | null,
+    search?: boolean
 }
 
 
@@ -28,13 +32,29 @@ export default function AddressInput({
     recpCallback,
     recpErrorCallback,
     initialValue = '',
-    tokenId
+    tokenId,
+    search = false
 }: Props) {
 
 
     const [selectedRecp, setSelectedRecp] = useState<string>(initialValue);
     const [recpError, setRecpError] = useState('');
     const tokenInfo = getTokenInfo(tokenId || '');
+    const history = useHistory();
+    const location = useLocation();
+    const [valid, setInvalid] = useState<boolean>(false);
+
+    const replaceQuery = (
+        key: string,
+        value: string,
+    ) => {
+        let searchParams = new URLSearchParams(location.search);
+        searchParams.set(key, value);
+        history.push({
+            pathname: location.pathname.replace('addressbook', 'send'),
+            search: searchParams.toString(),
+        });
+    };
 
     useEffect(() => {
         recpCallback(selectedRecp);
@@ -50,7 +70,7 @@ export default function AddressInput({
             if (tokenInfo?.addressType == 'principal') {
                 if (validatePrincipal(recipient)) {
                     setRecpError('');
-
+                    search && replaceQuery('recipient', recipient);
                 }
                 else {
                     setRecpError('Not a valid principal id');
@@ -59,6 +79,7 @@ export default function AddressInput({
             else {
                 if (validateAddress(recipient)) {
                     setRecpError('');
+                    search && replaceQuery('recipient', recipient);
                 }
                 else {
                     const dashCount = (recipient.match(/-/g) || []).length;
@@ -84,18 +105,30 @@ export default function AddressInput({
 
     return <>
         <div className={styles.cont}>
-            <div className={styles.info}><ToolTipInfo title={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Principal Id is required' : "Account ID is required" : "Address is required"} /></div>
-            <input
-                autoCapitalize='off'
-                autoCorrect='off'
-                autoFocus={autoFocus}
-                key={key}
-                className={clsx(styles.earthinput, tokenInfo?.addressType == 'principal' && styles.earthinput_princ)}
-                placeholder={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Principal Id' : 'Account ID' : "Recipient address"}
-                onChange={(e) => parseRecipientAndSetAddress(e.target.value)}
-                required
-                value={selectedRecp}
-            />
+            {search ? <img className={styles.info_search} src={ICON_SEARCH} /> : <div className={styles.info}><ToolTipInfo title={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Principal Id is required' : "Account ID is required" : "Address is required"} /></div>}
+            {search ?
+                <input
+                    autoCapitalize='off'
+                    autoCorrect='off'
+                    autoFocus={autoFocus}
+                    key={key}
+                    className={clsx(styles.earthinput, tokenInfo?.addressType == 'principal' && styles.earthinput_princ)}
+                    placeholder={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Search Principal Id' : 'Search Account ID' : "Search Recipient address"}
+                    onChange={(e) => parseRecipientAndSetAddress(e.target.value)}
+                    required
+                    value={selectedRecp}
+                />
+                : <input
+                    autoCapitalize='off'
+                    autoCorrect='off'
+                    autoFocus={autoFocus}
+                    key={key}
+                    className={clsx(styles.earthinput, tokenInfo?.addressType == 'principal' && styles.earthinput_princ)}
+                    placeholder={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Principal Id' : 'Account ID' : "Recipient address"}
+                    onChange={(e) => parseRecipientAndSetAddress(e.target.value)}
+                    required
+                    value={selectedRecp}
+                />}
             {inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : <div className={styles.type}>AID</div>}
         </div>
         {recpError !== '' && <Warning

@@ -76,6 +76,7 @@ const WalletSendTokens = ({
 
 
 
+
   const toggle = React.useCallback(() => {
     setToggleAssetDropdown((v) => !v);
   }, []);
@@ -92,6 +93,14 @@ const WalletSendTokens = ({
   const history = useHistory();
   const tokenId = queryParams.get('tokenId');
   const assetId = queryParams.get('assetId');
+  const queryRecipient = queryParams.get('recipient');
+
+  useEffect(() => {
+    if (queryRecipient !== null) {
+      setSelectedRecp(queryRecipient)
+    }
+
+  }, [queryRecipient !== null]);
 
   useEffect(() => {
     if (assetId === null && tokenId === null) {
@@ -330,7 +339,7 @@ const WalletSendTokens = ({
         ? <div style={{ width: '100vw' }}>
           <div className={styles.earthInputLabel}>Add recipient</div>
           <AddressInput
-            initialValue={selectedRecp}
+            initialValue={queryRecipient || selectedRecp}
             recpErrorCallback={setRecpError}
             recpCallback={setSelectedRecp}
             inputType={selectedAccount?.symbol}

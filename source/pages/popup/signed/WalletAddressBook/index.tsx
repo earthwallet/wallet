@@ -10,6 +10,7 @@ import { selectActiveTokensAndAssetsICPByAddress } from '~state/wallet';
 import useQuery from '~hooks/useQuery';
 import AddressInput from '~components/AddressInput';
 import Header from '~components/Header';
+import clsx from 'clsx';
 
 interface keyable {
   [key: string]: any
@@ -23,23 +24,25 @@ const WalletAddressBook = ({
     params: { address },
   },
 }: Props) => {
+  const queryParams = useQuery();
+
+  const tokenId = queryParams.get('tokenId');
+  const assetId = queryParams.get('assetId');
+
 
   const [step1, setStep1] = useState(true);
   const selectedAccount = useSelector(selectAccountById(address));
 
   const assets: keyable = useSelector(selectActiveTokensAndAssetsICPByAddress(address));
 
-
   const dropDownRef = useRef(null);
   const [selectedRecp, setSelectedRecp] = useState<string>('');
   const [recpError, setRecpError] = useState('');
   const [selectedAsset, setSelectedAsset] = useState<string>('');
-  const queryParams = useQuery();
 
 
 
-  const tokenId = queryParams.get('tokenId');
-  const assetId = queryParams.get('assetId');
+
 
   useEffect(() => {
     if (assetId === null && tokenId === null) {
@@ -53,11 +56,6 @@ const WalletAddressBook = ({
     }
   }, [assetId !== null, tokenId !== null]);
 
-
-
-
-
-
   const onConfirm = useCallback(() => {
     if (selectedAsset !== selectedAccount?.symbol) {
       setStep1(false);
@@ -69,15 +67,8 @@ const WalletAddressBook = ({
   }, [selectedAccount, selectedAsset]);
 
   const onBackClick = useCallback(() => { setStep1(true); }, []);
-
-
   const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.id === assetId)[0]
-
-
-
-
-
-
+  const [tab, setTab] = useState(0);
 
   return <div className={styles.page}><>
     <Header
@@ -100,10 +91,22 @@ const WalletAddressBook = ({
             inputType={selectedAccount?.symbol}
             autoFocus={true}
             tokenId={getSelectedAsset(selectedAsset)?.tokenId}
+            search={true}
           />
         </div>
         : <div />}
-
+      <div className={styles.tabs}>
+        <div
+          onClick={() => setTab(0)}
+          className={clsx(styles.tab, tab === 0 && styles.tab_active)}>
+          My Account
+        </div>
+        <div
+          onClick={() => setTab(1)}
+          className={clsx(styles.tab, tab === 1 && styles.tab_active)}>
+          Recents
+        </div>
+      </div>
     </div>
     {false && <div style={{
       margin: '0 30px 30px 30px',

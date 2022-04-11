@@ -492,3 +492,40 @@
   padding: 5px 12px;
   opacity: 0.9;
 }
+
+.tab {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 28px;
+  /* identical to box height, or 175% */
+
+  display: flex;
+  align-items: flex-end;
+
+  /* Primary/White */
+
+  color: #ffffff;
+
+  opacity: 0.6;
+  display: flex;
+  user-select: none;
+  cursor: pointer;
+  opacity: 0.6;
+  border-bottom: 2px solid transparent;
+  justify-content: center;
+  padding: 12px 12px;
+  &:active {
+    opacity: 0.7;
+  }
+}
+.tab_active {
+  opacity: 1;
+  border-bottom: 2px solid #2496ff;
+}
+
+.tabs {
+  display: flex;
+  margin: 12px 24px;
+}
