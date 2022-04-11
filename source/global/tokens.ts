@@ -17,7 +17,7 @@ const TOKENS_LIST = [
     mintMethod: 'mint_by_icp',
     addressType: 'principal',
     addressTitle: 'Principal Id',
-    sendFees: 0,
+    sendFees: 0.002,
   },
   {
     usesPrincipal: true,

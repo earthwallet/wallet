@@ -37,4 +37,12 @@ export interface ITokensController {
     identityJSON: string,
     callback?: (path: string) => void
   ) => Promise<void>;
+  transferToken: (
+    identityJSON: string,
+    tokenId: string,
+    recipient: string,
+    amount: number,
+    address: string,
+    callback?: (path: string) => void
+  ) => Promise<keyable>;
 }

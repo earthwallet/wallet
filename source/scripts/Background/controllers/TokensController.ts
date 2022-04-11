@@ -28,6 +28,7 @@ import { Principal } from '@dfinity/principal';
 import { v4 as uuid } from 'uuid';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
+import { keyable } from '../types/IAssetsController';
 
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
@@ -54,12 +55,12 @@ export default class TokensController implements ITokensController {
           method: 'balanceOf',
           args: Principal.fromText(accountInfo?.meta?.principalId),
         });
-        usd = await canisterAgent({
+        const conv_res = await canisterAgent({
           canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
           method: 'get_icp_xdr_conversion_rate',
         });
         const TRILLION_SDR_PER_ICP =
-          usd?.data?.xdr_permyriad_per_icp.toString() / 10000;
+          conv_res?.data?.xdr_permyriad_per_icp.toString() / 10000;
         ratio_per_icp = TRILLION_SDR_PER_ICP;
         balanceTxt =
           (response?.toString() &&
@@ -71,6 +72,7 @@ export default class TokensController implements ITokensController {
         const ICP_PRICE_IN_USD = currentUSDValue?.usd;
         const SDR_PRICE_IN_USD = ICP_PRICE_IN_USD / TRILLION_SDR_PER_ICP;
         price = (balanceTxt * SDR_PRICE_IN_USD)?.toFixed(2);
+        usd = SDR_PRICE_IN_USD;
       } else if (
         tokenInfo.wrappedSymbol != null &&
         tokenInfo.wrappedSymbol == 'ICP'
@@ -97,6 +99,7 @@ export default class TokensController implements ITokensController {
         price,
         balanceTxt,
         ratio_per_icp,
+        usd,
       };
       store.dispatch(
         storeEntities({
@@ -282,6 +285,30 @@ export default class TokensController implements ITokensController {
       })
     );
     return txnId;
+  };
+
+  transferToken = async (
+    identityJSON: string,
+    tokenId: string,
+    recipient: string,
+    amount: number,
+    address: string,
+    callback?: (path: string) => void
+  ) => {
+    const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
+
+    const response: keyable = await canisterAgent({
+      canisterId: tokenId,
+      method: 'transfer',
+      args: [
+        Principal.fromText(recipient),
+        amount * Math.pow(10, getTokenInfo(tokenId).decimals),
+      ],
+      fromIdentity: currentIdentity,
+    });
+    callback && callback('s');
+    await this.getTokenBalances(address);
+    return response;
   };
 
   mintToken = async (

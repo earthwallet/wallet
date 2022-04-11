@@ -174,14 +174,13 @@ export const selectActiveTokensAndAssetsICPByAddress =
             return {
               ...state.entities.tokens.byId[id],
               ...{
-                type: 'token',
+                type: tokenInfo.type,
                 label: tokenInfo.symbol,
                 id: state.entities.tokens.byId[id]?.tokenId,
                 balanceTxt:
                   state.entities.tokens.byId[id]?.balanceTxt +
                   ' ' +
                   tokenInfo.symbol,
-                icon: tokenInfo.icon,
               },
             };
           })

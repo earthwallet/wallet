@@ -244,31 +244,43 @@ const WalletSendTokens = ({
           setIsBusy(false);
         }
       } else {
-        try {
-          if (selectedAssetObj?.forSale === true) {
-            await listNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedAssetObj?.tokenIndex, 0, true);
-            await transferNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedRecp, selectedAssetObj?.tokenIndex);
-          }
-          else {
-            await transferNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedRecp, selectedAssetObj?.tokenIndex);
-          }
+        if (getSelectedAsset(selectedAsset).type == 'DIP20') {
+          const callback = (path: string) => console.log(path);
+          controller.tokens.transferToken(secret, selectedAsset, selectedRecp, selectedAmount, address, callback).then(() => {
 
-          setTxCompleteTxt('Successfully transferred NFT to ' + getShortAddress(selectedRecp, 3));
-          setLoadingSend(false);
-          setIsBusy(false);
-          //update asset balances after tx
-          controller.assets.updateTokenDetails({ id: selectedAsset, address: selectedRecp });
-          controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' });
-          controller.assets.getICPAssetsOfAccount({ address: selectedRecp, symbol: 'ICP' });
-
-        } catch (error) {
-          console.log(error);
-          setTxError("Please try again! Error: " + JSON.stringify(error));
-          setLoadingSend(false);
-          setIsBusy(false);
+            setTxCompleteTxt('Successfully transferred to ' + getShortAddress(selectedRecp, 3));
+            setLoadingSend(false);
+            setIsBusy(false);
+          });
         }
+        else {
+          try {
+            if (selectedAssetObj?.forSale === true) {
+              await listNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedAssetObj?.tokenIndex, 0, true);
+              await transferNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedRecp, selectedAssetObj?.tokenIndex);
+            }
+            else {
+              await transferNFTsExt(selectedAssetObj?.canisterId, currentIdentity, selectedRecp, selectedAssetObj?.tokenIndex);
+            }
 
+            setTxCompleteTxt('Successfully transferred NFT to ' + getShortAddress(selectedRecp, 3));
+            setLoadingSend(false);
+            setIsBusy(false);
+            //update asset balances after tx
+            controller.assets.updateTokenDetails({ id: selectedAsset, address: selectedRecp });
+            controller.assets.getICPAssetsOfAccount({ address, symbol: 'ICP' });
+            controller.assets.getICPAssetsOfAccount({ address: selectedRecp, symbol: 'ICP' });
+
+          } catch (error) {
+            console.log(error);
+            setTxError("Please try again! Error: " + JSON.stringify(error));
+            setLoadingSend(false);
+            setIsBusy(false);
+          }
+
+        }
       }
+
     } else {
       setError('Wrong password! Please try again');
       setIsBusy(false);
@@ -346,7 +358,7 @@ const WalletSendTokens = ({
                 label={selectedAssetObj?.label}
                 loading={false}
                 balanceTxt={selectedAssetObj.balanceTxt}
-                icon={selectedAssetObj.icon}
+                icon={selectedAssetObj.icon || getTokenInfo(selectedAsset).icon}
               />
               }
               {toggleAssetDropdown &&
@@ -364,7 +376,7 @@ const WalletSendTokens = ({
                     key={index}
                     onAssetOptionClick={() => toggleAndSetAsset(asset?.id || index)}
                     label={asset.label}
-                    icon={asset.icon}
+                    icon={asset.icon || getTokenInfo(asset?.id).icon}
                     balanceTxt={asset.balanceTxt}
                   />
                   )}
@@ -402,17 +414,46 @@ const WalletSendTokens = ({
             </div>
 
           </div>
-            : <div className={styles.confirmAmountCont}>
+            : getSelectedAsset(selectedAsset)?.type == 'DIP20' ? <div className={styles.confirmAmountCont}>
               <img
                 className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
-                src={getTokenImageURL(selectedAssetObj)}
+                src={getTokenInfo(selectedAsset)?.icon}
               />
               <div>
-                <div className={styles.tokenText}>{selectedAssetObj?.tokenIndex}</div>
-                <div className={styles.tokenAmount}>1 NFT</div>
+                <div className={styles.tokenText}>{getTokenInfo(selectedAsset)?.name}</div>
+                <div className={styles.tokenAmount}>{selectedAmount.toFixed(5)} {getTokenInfo(selectedAsset)?.symbol}</div>
+                <div className={styles.tokenValue}>${(selectedAmount * getSelectedAsset(selectedAsset)?.usd).toFixed(3)}</div>
+              </div>
+            </div> :
+              <div className={styles.confirmAmountCont}>
+                <img
+                  className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
+                  src={getTokenImageURL(selectedAssetObj)}
+                />
+                <div>
+                  <div className={styles.tokenText}>{selectedAssetObj?.tokenIndex}</div>
+                  <div className={styles.tokenAmount}>1 NFT</div>
+                </div>
+              </div>
+          }
+          {getSelectedAsset(selectedAsset)?.type == 'DIP20' && <div className={styles.feeCont}>
+            <div className={styles.feeRow}>
+              <div className={styles.feeTitle}>Transaction Fee</div>
+              <div>
+                <div className={styles.feeAmount}>{fees} {getTokenInfo(selectedAsset)?.symbol}</div>
+                <div className={styles.feeValue}>${(fees * getSelectedAsset(selectedAsset)?.usd).toFixed(3)}</div>
               </div>
             </div>
-          }
+
+            <div className={styles.feeRow}>
+              <div className={styles.feeTotal}>Total</div>
+              <div>
+                <div className={styles.feeAmount}>{(selectedAmount + fees).toFixed(getTokenInfo(selectedAsset)?.decimals)}</div>
+                <div className={styles.feeValue}>${((selectedAmount + fees) * getSelectedAsset(selectedAsset)?.usd).toFixed(3)}</div>
+              </div>
+            </div>
+
+          </div>}
           {selectedAsset === selectedAccount?.symbol && <div className={styles.feeCont}>
             <div className={styles.feeRow}>
               <div className={styles.feeTitle}>Transaction Fee</div>
@@ -565,6 +606,8 @@ const AmountInput = ({ address, fees, initialValue = 0, amountCallback, errorCal
   const [initialized, setInitialized] = useState(false);
   const tokenInfo = useSelector(selectInfoBySymbolOrToken(tokenId || '', address));
 
+  const price = tokenInfo?.type == "DIP20" ? tokenInfo?.usd : currentUSDValue?.usd;
+
   useEffect(() => {
     amountCallback(selectedAmount);
   }, [amountCallback, selectedAmount]);
@@ -574,6 +617,8 @@ const AmountInput = ({ address, fees, initialValue = 0, amountCallback, errorCal
   }, [errorCallback, error]);
 
   const loadMaxAmount = useCallback((): void => {
+    setInitialized(true);
+
     if (parseFloat(currentBalance?.value) === 0) {
       if (fees == 0) {
         setError(`Not enough balance.`);
@@ -657,7 +702,7 @@ const AmountInput = ({ address, fees, initialValue = 0, amountCallback, errorCal
     />
     {!(error != '') && initialized && <div
       className={styles.priceInput}
-    >${((selectedAmount + fees) * currentUSDValue?.usd).toFixed(2)}</div>}
+    >${((selectedAmount + fees) * price).toFixed(2)}</div>}
     {error != '' && (
       <div
         className={styles.amountError}
