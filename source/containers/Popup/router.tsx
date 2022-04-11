@@ -32,6 +32,7 @@ import NFTBuyDetails from '~pages/popup/signed/NFTBuyDetails';
 import NFTSettle from '~pages/popup/signed/NFTSettle';
 import NFTPurchaseDetails from '~pages/popup/signed/NFTPurchaseDetails';
 import TransactionConfirm from '~pages/popup/signed/TransactionConfirm';
+import WalletAddressBook from '~pages/popup/signed/WalletAddressBook';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -80,8 +81,8 @@ const PopupRouter = () => {
 
                 {/*                 <Redirect to="/account/send/0ba1b7b1643929210dc41a8afbe031bd1b5e81dbc8e3b3b64978f5f743f058c3" />
  */}
-{/*                 <Redirect to="/account/send/07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992?tokenId=cyiep-riaaa-aaaam-qadnq-cai" />
- */}              </Route>
+                <Redirect to="/account/addressbook/07b1b5f1f023eaa457a6d63fe00cea8cae5c943461350de455cb2d1f3dec8992?tokenId=cyiep-riaaa-aaaam-qadnq-cai" />
+              </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
               </Route>
@@ -127,6 +128,12 @@ const PopupRouter = () => {
               </Route>
               <Route path="/transaction/confirm/:txnId">
                 {wrapWithErrorBoundary(<TransactionConfirm />, 'Swap')}
+              </Route>
+              <Route path="/account/addressbook/:address">
+                {wrapWithErrorBoundary(
+                  <WalletAddressBook />,
+                  'wallet-send-token'
+                )}
               </Route>
               {/*  /account/send/:address ?tokenId or ?assetId */}
               <Route path="/account/send/:address">
