@@ -15,7 +15,7 @@ import {
 } from '@earthwallet/keyring';
 import { encryptString } from '~utils/vault';
 import { getSymbol } from '~utils/common';
-import { GROUP_ID_SYMBOL } from '~global/constant';
+import { getInfoBySymbol, GROUP_ID_SYMBOL } from '~global/constant';
 
 interface keyable {
   [key: string]: any;
@@ -296,20 +296,45 @@ export default class AccountsController implements IAccountsController {
 
     let forwardAddress = '';
     for (const symbol of symbols) {
-      if (symbol !== 'ICP') {
-        const selectedAccount = existingAllAccounts.filter(
-          (a) => a.symbol === symbol
+      if (getInfoBySymbol(symbol).evmChain) {
+        const selectedETHAccount = existingAllAccounts.filter(
+          (a) => a.symbol === 'ETH'
         )[0];
-        forwardAddress = selectedAccount.id;
+        // BIP_0021 uri format example MATIC:xyzzyxxxxxx
+        const address_uri = symbol + ':' + selectedETHAccount.id;
         store.dispatch(
           updateEntities({
             entity: 'accounts',
-            key: selectedAccount.id,
+            key: address_uri,
             data: {
-              active: status,
+              ...selectedETHAccount,
+              ...{
+                id: address_uri,
+                active: status,
+                symbol,
+                evmChain: true,
+                order: getInfoBySymbol(symbol).order,
+              },
             },
           })
         );
+        forwardAddress = address_uri;
+      } else {
+        if (symbol !== 'ICP') {
+          const selectedAccount = existingAllAccounts.filter(
+            (a) => a.symbol === symbol
+          )[0];
+          forwardAddress = selectedAccount.id;
+          store.dispatch(
+            updateEntities({
+              entity: 'accounts',
+              key: selectedAccount.id,
+              data: {
+                active: status,
+              },
+            })
+          );
+        }
       }
     }
 

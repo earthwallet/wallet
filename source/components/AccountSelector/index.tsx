@@ -20,12 +20,14 @@ const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> 
   const accounts = useSelector(selectActiveAccountsByGroupId(selectedAccount?.groupId));
   const history = useHistory();
 
+  console.log(accounts, 'AccountSelector');
+
   const [selectedAccountText, setSelectedAccountText] = useState<string>();
   const _onChangePrefix = (account: keyable) => {
-    setSelectedAccountText(account.address);
+    setSelectedAccountText(account.id);
     //setSelectedAccount(account);
     setShowDropDown(false);
-    history.push('/account/details/' + account.address);
+    history.push('/account/details/' + account.id);
   };
 
   useOutsideClick(dropDownRef, (): void => {
@@ -56,7 +58,7 @@ const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> 
         accounts.map((account: keyable) => {
           return (<div
             className={clsx(styles.addressItem, account.id === selectedAccount.id && styles.addressItem_selected)}
-            key={account.address}
+            key={account.id}
             onClick={() => _onChangePrefix(account)}>
             <img src={getSymbol(account.symbol)?.icon} className={styles.networkIcon} />
             <div className={styles.networkName}>{getSymbol(account.symbol)?.name}</div>
