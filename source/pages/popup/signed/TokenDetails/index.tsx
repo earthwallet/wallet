@@ -68,7 +68,7 @@ const Wallet = ({
   const [selectedGridToken, setSelectedGridToken] = useState<string>('ICP');
 
   useEffect(() => {
-    if (selectedAccount?.symbol !== 'ICP') {
+    if (!(selectedAccount?.symbol === 'ICP' || selectedAccount?.symbol === 'ETH')) {
       history.replace('/account/minidetails/' + address)
     }
   }, [selectedAccount]);
@@ -268,17 +268,17 @@ const TokensList = ({ address }: { address: string }) => {
       </div>
       <div className={styles.listitemscont}>
         <div
-          onClick={() => history.push('/th/' + address + '/' + 'ICP')}
+          onClick={() => history.push('/th/' + address + '/' + selectedAccount.symbol)}
           className={styles.listitem}>
           <img
             className={styles.listicon}
-            src={getInfoBySymbol('ICP')?.icon} >
+            src={getInfoBySymbol(selectedAccount.symbol)?.icon} >
           </img>
           <div className={styles.listinfo}>
-            <div className={styles.listtitle}>{getInfoBySymbol('ICP')?.name}</div>
+            <div className={styles.listtitle}>{getInfoBySymbol(selectedAccount.symbol)?.name}</div>
           </div>
           <GroupSymbolBalance groupId={selectedAccount?.groupId}
-            symbol={getInfoBySymbol('ICP')?.symbol} />
+            symbol={getInfoBySymbol(selectedAccount.symbol)?.symbol} />
           <img
             className={styles.listforward}
             src={ICON_FORWARD}

@@ -38,7 +38,7 @@ const WalletReceiveTokens = ({
           ? <IdCard id={selectedAccount?.meta?.principalId}
             symbol={symbolOrTokenInfo?.symbol}
             _onCopy={_onCopy} />
-          : <IdCard id={selectedAccount?.id}
+          : <IdCard id={selectedAccount?.address}
             symbol={selectedAccount?.symbol}
             _onCopy={_onCopy} />}
         {symbolOrTokenInfo?.addressType != 'principal' && selectedAccount?.meta?.principalId && <div className={styles.principalCont}>
