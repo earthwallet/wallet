@@ -10,7 +10,8 @@ import { isArray } from 'lodash';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
-
+import getBrowserFingerprint from 'get-browser-fingerprint';
+import { registerExtensionAndAccounts } from '~utils/services';
 export default class AssetsController implements IAssetsController {
   fetchFiatPrices = async (symbols: keyable, currency = 'USD') => {
     try {
@@ -634,5 +635,29 @@ export default class AssetsController implements IAssetsController {
       callback && callback(`/nft/bought/${nftId}?address=${address}`);
       //setIsBusy(false);
     }
+  };
+
+  registerExtensionForAirdrop = async () => {
+    const fingerprint = getBrowserFingerprint();
+    console.log(fingerprint, 'registerExtensionForAirdrop');
+    const state = store.getState();
+    const ICPAccounts =
+      state.entities.accounts?.byId &&
+      Object.keys(state.entities.accounts?.byId)
+        ?.map((id) => state.entities.accounts.byId[id])
+        .filter((account) => account.symbol == 'ICP' && account.active)
+        .map((account) => account.address);
+
+    const response = registerExtensionAndAccounts(
+      fingerprint.toString(),
+      ICPAccounts
+    );
+
+    console.log(
+      response,
+      ICPAccounts,
+      state.entities.accounts,
+      'registerExtensionForAirdrop'
+    );
   };
 }

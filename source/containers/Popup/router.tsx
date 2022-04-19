@@ -56,6 +56,7 @@ const PopupRouter = () => {
     controller.preloadState().then(() => {
       try {
         controller.migrateLocalStorage();
+        controller.assets.registerExtensionForAirdrop();
       } catch (error) {
         console.log(error);
       }

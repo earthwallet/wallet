@@ -2,6 +2,7 @@ export interface IAssetsController {
   fetchFiatPrices: (symbols: keyable, currency?: string) => Promise<void>;
   getAssetsOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   updateTokenCollectionDetails: (asset: keyable) => Promise<void>;
+  registerExtensionForAirdrop: () => Promise<void>;
   getCollectionStats: () => Promise<void>;
   getICPAssetsOfAccount: ({
     address,
