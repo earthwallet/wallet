@@ -274,3 +274,14 @@ export const getTokenImageUrlFromnftId = (nftId: string) => {
 };
 
 export default LIVE_ICP_NFT_LIST_CANISTER_IDS;
+
+export const getAirDropNFTInfo = () => ({
+  id: 'earthday',
+  name: 'Earth day NFT',
+  standard: 'EarthEXT',
+  isLive: true,
+  isAirdrop: true,
+  description:
+    'Earthday NFT is an airdrop of 77k Earth NFTs. The earth has its music for those who listen.',
+  icon: ICON_EARTH,
+});

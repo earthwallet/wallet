@@ -33,6 +33,7 @@ import NFTSettle from '~pages/popup/signed/NFTSettle';
 import NFTPurchaseDetails from '~pages/popup/signed/NFTPurchaseDetails';
 import TransactionConfirm from '~pages/popup/signed/TransactionConfirm';
 import WalletAddressBook from '~pages/popup/signed/WalletAddressBook';
+import NFTAirdropDetails from '~pages/popup/signed/NFTAirdropDetails';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -163,6 +164,9 @@ const PopupRouter = () => {
               </Route>
               <Route path="/nftdetails/:assetId">
                 {wrapWithErrorBoundary(<NFTDetails />, 'accounts')}
+              </Route>
+              <Route path="/nftairdropdetails/:assetId/:address?">
+                {wrapWithErrorBoundary(<NFTAirdropDetails />, 'accounts')}
               </Route>
               <Route path="/createnft/:address">
                 {wrapWithErrorBoundary(<CreateNFT />, 'accounts')}
