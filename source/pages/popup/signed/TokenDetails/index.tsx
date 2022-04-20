@@ -436,7 +436,7 @@ const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, se
       slidesPerView={'auto'}
       {...params}>
       <div
-        onClick={() => history.push(`/account/send/${address}`)}
+        onClick={() => history.push(`/th/${address}`)}
         className={styles.imagecont}>
         <img
           className={styles.imageIcon}

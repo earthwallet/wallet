@@ -20,7 +20,6 @@ const AccountSelector = ({ selectedAccount }: Props): React.ReactElement<Props> 
   const accounts = useSelector(selectActiveAccountsByGroupId(selectedAccount?.groupId));
   const history = useHistory();
 
-  console.log(accounts, 'AccountSelector');
 
   const [selectedAccountText, setSelectedAccountText] = useState<string>();
   const _onChangePrefix = (account: keyable) => {

@@ -92,6 +92,7 @@ export const selectInfoBySymbolOrToken =
       return {
         ...info,
         ...{
+          type: 'symbol',
           balanceTxt: (
             (currentBalance?.value || 0) /
             Math.pow(10, currentBalance?.currency?.decimals || 0)

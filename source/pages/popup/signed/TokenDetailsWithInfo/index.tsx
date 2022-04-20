@@ -63,7 +63,7 @@ const TokenDetailsWithInfo = ({
             <div className={styles.btntxt}>Receive</div>
           </div>
           <div
-            onClick={() => history.push("/account/send/" + address + "?tokenId=" + symbolOrTokenId)}
+            onClick={() => history.push(symbolOrTokenInfo?.type == 'symbol' ? "/account/send/" + address : "/account/send/" + address + "?tokenId=" + symbolOrTokenId)}
             className={styles.btnprimary}>
             <img className={styles.btnicon} src={icon_send} />
             <div className={styles.btntxt}>Send</div>
