@@ -85,6 +85,7 @@ const WalletSendTokens = ({
     toggle();
     setSelectedAsset(asset);
     setSelectedAssetObj(getSelectedAsset(asset));
+    setSelectedAmount(0);
   }, []);
 
 
@@ -339,7 +340,7 @@ const WalletSendTokens = ({
         ? <div style={{ width: '100vw' }}>
           <div className={styles.earthInputLabel}>Add recipient</div>
           <AddressInput
-            initialValue={queryRecipient || selectedRecp}
+            initialValue={selectedRecp}
             recpErrorCallback={setRecpError}
             recpCallback={setSelectedRecp}
             inputType={selectedAccount?.symbol}
@@ -394,14 +395,14 @@ const WalletSendTokens = ({
             </div>
           </div>
           {selectedAsset === selectedAccount?.symbol && <AmountInput
-            initialValue={selectedAmount}
+            initialValue={selectedAmount.toString()}
             address={address}
             fees={fees}
             amountCallback={setSelectedAmount}
             errorCallback={setError}
           />}
           {getSelectedAsset(selectedAsset) && getSelectedAsset(selectedAsset).type != 'nft' && <AmountInput
-            initialValue={selectedAmount}
+            initialValue={selectedAmount.toString()}
             address={address}
             fees={fees}
             tokenId={getSelectedAsset(selectedAsset)?.tokenId}
@@ -598,10 +599,10 @@ const AssetOption = ({ icon, label, balanceTxt, onAssetOptionClick }: AssetOptio
 
 
 
-const AmountInput = ({ address, fees, initialValue = 0, amountCallback, errorCallback, tokenId }: {
+const AmountInput = ({ address, fees, initialValue, amountCallback, errorCallback, tokenId }: {
   address: string,
   fees: any,
-  initialValue?: number,
+  initialValue?: string,
   amountCallback: (amount: number) => void,
   errorCallback: (error: string) => void,
   tokenId?: string
@@ -610,12 +611,18 @@ const AmountInput = ({ address, fees, initialValue = 0, amountCallback, errorCal
 
   const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
-  const [selectedAmount, setSelectedAmount] = useState<number>(initialValue);
+  const [selectedAmount, setSelectedAmount] = useState<number>(0);
   const [error, setError] = useState('');
   const [initialized, setInitialized] = useState(false);
   const tokenInfo = useSelector(selectInfoBySymbolOrToken(tokenId || '', address));
 
   const price = tokenInfo?.type == "DIP20" ? tokenInfo?.usd : currentUSDValue?.usd;
+
+  useEffect(() => {
+    if (initialValue != undefined && initialValue != '0')
+      changeAmount(initialValue);
+  }, [(initialValue != '0' && initialValue != undefined), fees, tokenId]);
+
 
   useEffect(() => {
     amountCallback(selectedAmount);
@@ -626,26 +633,16 @@ const AmountInput = ({ address, fees, initialValue = 0, amountCallback, errorCal
   }, [errorCallback, error]);
 
   const loadMaxAmount = useCallback((): void => {
-    setInitialized(true);
+    let maxAmount
+    if (tokenInfo?.type == "DIP20") {
+      maxAmount = tokenInfo.balance / Math.pow(10, tokenInfo.decimals) - fees;
+      maxAmount = parseFloat(maxAmount.toFixed(8));
 
-    if (parseFloat(currentBalance?.value) === 0) {
-      if (fees == 0) {
-        setError(`Not enough balance.`);
-      } else
-        setError(`Not enough balance. Transaction fees is ${fees} ${selectedAccount?.symbol}`);
+    } else {
+      maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
+      maxAmount = parseFloat(maxAmount.toFixed(8));
     }
-    else {
-      let maxAmount
-      if (tokenInfo?.type == "DIP20") {
-        maxAmount = tokenInfo.balance / Math.pow(10, tokenInfo.decimals) - fees;
-        maxAmount = parseFloat(maxAmount.toFixed(8));
-
-      } else {
-        maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - fees;
-        maxAmount = parseFloat(maxAmount.toFixed(8));
-      }
-      setSelectedAmount(maxAmount);
-    }
+    changeAmount(maxAmount.toString());
   }, [currentBalance, fees]);
 
   const changeAmount = (amount: string) => {

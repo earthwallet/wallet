@@ -6,8 +6,11 @@ import Warning from "~components/Warning";
 import { getTokenInfo } from "~global/tokens";
 import styles from './index.scss';
 import ICON_SEARCH from '~assets/images/icon_search.svg';
+import ICON_VALID_ADDRESS from '~assets/images/icon_valid_address.svg';
+
 import { useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { validate } from 'bitcoin-address-validation';
 
 const PRINCIPAL_NOT_ACCEPTED = 'Principal id is not accepted!';
 
@@ -31,18 +34,26 @@ export default function AddressInput({
     key = 'recp',
     recpCallback,
     recpErrorCallback,
-    initialValue = '',
+    initialValue,
     tokenId,
     search = false
 }: Props) {
 
 
-    const [selectedRecp, setSelectedRecp] = useState<string>(initialValue);
+    const [selectedRecp, setSelectedRecp] = useState<string>('');
+    const [valid, setValid] = useState<boolean>(false);
+
     const [recpError, setRecpError] = useState('');
     const tokenInfo = getTokenInfo(tokenId || '');
     const history = useHistory();
     const location = useLocation();
-    // const [valid, setInvalid] = useState<boolean>(false);
+
+
+    useEffect(() => {
+        if (initialValue != '' && initialValue != undefined) {
+            parseRecipientAndSetAddress(initialValue);
+        }
+    }, [(initialValue != '' && initialValue != undefined), inputType, tokenInfo?.addressType]);
 
     const replaceQuery = (
         key: string,
@@ -70,15 +81,20 @@ export default function AddressInput({
             if (tokenInfo?.addressType == 'principal') {
                 if (validatePrincipal(recipient)) {
                     setRecpError('');
+                    setValid(true);
+
                     search && replaceQuery('recipient', recipient);
                 }
                 else {
+                    setValid(false);
                     setRecpError('Not a valid principal id');
                 }
             }
             else {
                 if (validateAddress(recipient)) {
                     setRecpError('');
+                    setValid(true);
+
                     search && replaceQuery('recipient', recipient);
                 }
                 else {
@@ -89,23 +105,33 @@ export default function AddressInput({
                     else {
                         setRecpError('Not a valid address');
                     }
+                    setValid(false);
+
                 }
             }
 
         }
-        else {
+        else if (inputType === 'BTC') {
             setSelectedRecp(recipient);
+            if (validate(recipient)) {
+                setRecpError('');
+                setValid(true);
+                search && replaceQuery('recipient', recipient);
+            }
+            else {
+                setValid(false);
+                setRecpError('Not a valid btc address');
+            }
         }
     };
 
     const togglePrincipal = () => {
-        setSelectedRecp(recipient => principalTextoAddress(recipient));
-        setRecpError('');
+        parseRecipientAndSetAddress(principalTextoAddress(selectedRecp));
     }
 
     return <>
         <div className={styles.cont}>
-            {search ? <img className={styles.info_search} src={ICON_SEARCH} /> : <div className={styles.info}><ToolTipInfo title={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Principal Id is required' : "Account ID is required" : "Address is required"} /></div>}
+            {search ? <img className={styles.info_search} src={ICON_SEARCH} /> : valid ? <img src={ICON_VALID_ADDRESS} className={styles.info_search} /> : <div className={styles.info}><ToolTipInfo title={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Principal Id is required' : "Account ID is required" : "Address is required"} /></div>}
             {search ?
                 <input
                     autoCapitalize='off'
@@ -129,7 +155,7 @@ export default function AddressInput({
                     required
                     value={selectedRecp}
                 />}
-            {inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : <div className={styles.type}>AID</div>}
+            {inputType == 'BTC' ? <div className={styles.type}>BTC</div> : inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : <div className={styles.type}>AID</div>}
         </div>
         {recpError !== '' && <Warning
             isBelowInput
