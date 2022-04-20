@@ -336,7 +336,7 @@ export default class TokensController implements ITokensController {
               loading: true,
               status: 'Transferring ICP',
               current: 1,
-              total: 2,
+              total: 3,
               type: 'mint',
             },
           ],
@@ -361,7 +361,7 @@ export default class TokensController implements ITokensController {
               status: '',
               error: error?.message,
               current: 1,
-              total: 2,
+              total: 3,
               type: 'mint',
             },
           ],
@@ -378,8 +378,8 @@ export default class TokensController implements ITokensController {
               id: txnId,
               loading: true,
               status: 'Minting',
-              current: 1,
-              total: 2,
+              current: 2,
+              total: 3,
               type: 'mint',
               sendIndex: index?.toString(),
             },
@@ -402,7 +402,7 @@ export default class TokensController implements ITokensController {
                 loading: false,
                 status: '',
                 current: 2,
-                total: 2,
+                total: 3,
                 type: 'mint',
                 sendIndex: index?.toString(),
               },
@@ -419,8 +419,8 @@ export default class TokensController implements ITokensController {
                 loading: false,
                 status: '',
                 error: JSON.stringify(response['Err']),
-                current: 1,
-                total: 2,
+                current: 2,
+                total: 3,
                 type: 'mint',
                 sendIndex: index?.toString(),
               },
@@ -438,8 +438,8 @@ export default class TokensController implements ITokensController {
               loading: false,
               status: '',
               error: error?.message,
-              current: 1,
-              total: 2,
+              current: 2,
+              total: 3,
               type: 'mint',
               sendIndex: index?.toString(),
             },
@@ -448,7 +448,37 @@ export default class TokensController implements ITokensController {
       );
       return;
     }
+    store.dispatch(
+      storeEntities({
+        entity: 'txnRequests',
+        data: [
+          {
+            id: txnId,
+            loading: true,
+            status: 'Updating balances',
+            current: 3,
+            total: 3,
+            type: 'mint',
+          },
+        ],
+      })
+    );
     await this.getTokenBalances(txnObj.address);
+    store.dispatch(
+      storeEntities({
+        entity: 'txnRequests',
+        data: [
+          {
+            id: txnId,
+            loading: false,
+            status: 'Updating balances',
+            current: 3,
+            total: 3,
+            type: 'mint',
+          },
+        ],
+      })
+    );
     callback && callback('/account/details/' + txnObj.address);
   };
 

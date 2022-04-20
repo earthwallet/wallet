@@ -208,7 +208,7 @@ const Transactions = ({
               {transaction.loading
                 ? transaction.status
                 : (transaction.error != '' && transaction.error != null)
-                  ? <div>{'Error at ' + ['Transferring ICP', 'Minting'][transaction.current - 1]}</div>
+                  ? <div>{'Error at ' + ['Transferring ICP', 'Minting', 'Updating balances'][transaction.current - 1]}</div>
                   : transaction.current == transaction.total ? 'Complete' : `At ${transaction.current} of ${transaction.total}`
               }
             </div>
