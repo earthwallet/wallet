@@ -68,7 +68,7 @@ export const parsePrincipalObj = (data: keyable): keyable =>
 
 const treat = (str: any, { replace = '' } = {}) => str.split(' ').join(replace);
 
-//https://github.com/bukinoshita/share-twitter#readme
+//credit - https://github.com/bukinoshita/share-twitter#readme
 export const shareTweetURL = ({
   text,
   url,

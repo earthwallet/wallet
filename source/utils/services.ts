@@ -4,7 +4,7 @@ import { keyable } from '~scripts/Background/types/IAssetsController';
 const AIRDROP_FIREBASE_URL =
   'https://us-central1-test-earth-art.cloudfunctions.net';
 
-export const registerExtensionAndAccounts = (
+export const registerExtensionAndAccounts = async (
   extensionId: string,
   accounts: keyable
 ) => {
@@ -22,59 +22,50 @@ export const registerExtensionAndAccounts = (
   };
 
   let serverRes;
-  axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-      serverRes = response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      serverRes = error;
-    });
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    serverRes = error;
+  }
+
   return serverRes;
 };
 
-export const verifyExtension = (extensionId: string) => {
+export const verifyExtension = async (extensionId: string) => {
   const config: AxiosRequestConfig = {
     method: 'get',
     url: `${AIRDROP_FIREBASE_URL}/verify?extensionId=${extensionId}`,
     headers: {},
   };
   let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    serverRes = error;
+  }
 
-  axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data), 'registerExtensionForAirdrop');
-      serverRes = response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      serverRes = error;
-    });
   return serverRes;
 };
 
-export const isAirDropEnabled = () => {
+export const isAirDropEnabled = async () => {
   const config: AxiosRequestConfig = {
     method: 'get',
     url: `${AIRDROP_FIREBASE_URL}/airdropEnabled`,
     headers: {},
   };
   let serverRes;
-
-  axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-      serverRes = response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      serverRes = error;
-    });
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    serverRes = error;
+  }
   return serverRes;
 };
 
-export const getCTA = (address: string) => {
+export const getCTA = async (address: string) => {
   const config: AxiosRequestConfig = {
     method: 'get',
     url: `${AIRDROP_FIREBASE_URL}/getCTA?address=${address}`,
@@ -82,15 +73,11 @@ export const getCTA = (address: string) => {
   };
 
   let serverRes;
-
-  axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-      serverRes = response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      serverRes = error;
-    });
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    serverRes = error;
+  }
   return serverRes;
 };

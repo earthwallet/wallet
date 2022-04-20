@@ -4,14 +4,21 @@ import type { IAssetsController, keyable } from '../types/IAssetsController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
 import { decodeTokenId, getNFTsFromCanisterExt } from '@earthwallet/assets';
 import { parseBigIntToString } from '~utils/common';
-import LIVE_ICP_NFT_LIST_CANISTER_IDS from '~global/nfts';
+import LIVE_ICP_NFT_LIST_CANISTER_IDS, {
+  getAirDropNFTInfo,
+} from '~global/nfts';
 import { canisterAgentApi, getTokenIdentifier } from '@earthwallet/assets';
 import { isArray } from 'lodash';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import getBrowserFingerprint from 'get-browser-fingerprint';
-import { registerExtensionAndAccounts } from '~utils/services';
+import {
+  getCTA,
+  isAirDropEnabled,
+  registerExtensionAndAccounts,
+  verifyExtension,
+} from '~utils/services';
 export default class AssetsController implements IAssetsController {
   fetchFiatPrices = async (symbols: keyable, currency = 'USD') => {
     try {
@@ -638,9 +645,15 @@ export default class AssetsController implements IAssetsController {
   };
 
   registerExtensionForAirdrop = async () => {
+    const state = store.getState();
+
+    const earthdayAirdrop = getAirDropNFTInfo();
+    if (state.entities.airdrops == null) {
+      store.dispatch(createEntity({ entity: 'airdrops' }));
+    }
+
     const fingerprint = getBrowserFingerprint();
     console.log(fingerprint, 'registerExtensionForAirdrop');
-    const state = store.getState();
     const ICPAccounts =
       state.entities.accounts?.byId &&
       Object.keys(state.entities.accounts?.byId)
@@ -648,15 +661,83 @@ export default class AssetsController implements IAssetsController {
         .filter((account) => account.symbol == 'ICP' && account.active)
         .map((account) => account.address);
 
-    const response = registerExtensionAndAccounts(
+    const airDropStatus = await isAirDropEnabled();
+    if (!airDropStatus?.enabled) {
+      store.dispatch(
+        updateEntities({
+          entity: 'airdrops',
+          key: getAirDropNFTInfo().id,
+          data: {
+            enabled: false,
+          },
+        })
+      );
+      return;
+    } else {
+      store.dispatch(
+        updateEntities({
+          entity: 'airdrops',
+          key: earthdayAirdrop?.id,
+          data: {
+            enabled: false,
+          },
+        })
+      );
+    }
+    const response = await registerExtensionAndAccounts(
       fingerprint.toString(),
       ICPAccounts
     );
+    if (response.status == 'success') {
+      store.dispatch(
+        updateEntities({
+          entity: 'airdrops',
+          key: earthdayAirdrop?.id,
+          data: {
+            registered: true,
+          },
+        })
+      );
+    }
 
+    const getCTARes = await getCTA('xyz');
+    if (getCTARes.cta != undefined) {
+      store.dispatch(
+        updateEntities({
+          entity: 'airdrops',
+          key: earthdayAirdrop?.id,
+          data: {
+            cta: getCTARes.cta,
+          },
+        })
+      );
+    }
+    store.dispatch(
+      updateEntities({
+        entity: 'airdrops',
+        key: earthdayAirdrop?.id,
+        data: {
+          loading: true,
+        },
+      })
+    );
+    const verifyResponse = await verifyExtension(fingerprint.toString());
+
+    store.dispatch(
+      updateEntities({
+        entity: 'airdrops',
+        key: earthdayAirdrop?.id,
+        data: {
+          loading: false,
+        },
+      })
+    );
     console.log(
       response,
+      airDropStatus,
+      getCTARes,
       ICPAccounts,
-      state.entities.accounts,
+      verifyResponse,
       'registerExtensionForAirdrop'
     );
   };
