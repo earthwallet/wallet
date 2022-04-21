@@ -1,4 +1,4 @@
-import { createWallet, newMnemonic } from '@earthwallet/keyring';
+import { createWallet, newMnemonic, send } from '@earthwallet/keyring';
 import store from '~state/store';
 import {
   updateActiveAccount,
@@ -7,7 +7,7 @@ import {
   updateLoading,
 } from '~state/wallet';
 import type { IAccountsController } from '../types/IAccountsController';
-import { storeEntities, updateEntities } from '~state/entities';
+import { createEntity, storeEntities, updateEntities } from '~state/entities';
 import {
   getBalance as _getBalance,
   getTransactions as _getTransactions,
@@ -16,6 +16,8 @@ import {
 import { encryptString } from '~utils/vault';
 import { getSymbol } from '~utils/common';
 import { getInfoBySymbol, GROUP_ID_SYMBOL } from '~global/constant';
+import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
+import { principal_to_address } from '@earthwallet/assets';
 
 interface keyable {
   [key: string]: any;
@@ -101,6 +103,42 @@ export default class AccountsController implements IAccountsController {
     const keypairNew = await createWallet(mnemonic.trim(), 'ICP');
     const balance = await this.getBalance(keypair.address);
     return { keypair, balance, keypairNew };
+  };
+
+  sendICP = async (
+    identityJSON: string,
+    selectedRecp: string,
+    selectedAmount: number
+  ) => {
+    const state = store.getState();
+    const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
+    const address = principal_to_address(currentIdentity.getPrincipal());
+
+    if (state.entities.recents == null) {
+      store.dispatch(createEntity({ entity: 'recents' }));
+    }
+    store.dispatch(
+      updateEntities({
+        entity: 'recents',
+        key: selectedRecp,
+        data: {
+          symbol: 'ICP',
+          addressType: 'accountId',
+          lastSentAt: new Date().getTime(),
+          sentBy: address,
+        },
+      })
+    );
+
+    const index: BigInt = await send(
+      currentIdentity,
+      selectedRecp,
+      address,
+      selectedAmount,
+      'ICP'
+    );
+
+    return index;
   };
 
   getBalancesOfAccount = async (account: keyable) => {

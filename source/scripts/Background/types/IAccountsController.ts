@@ -20,6 +20,11 @@ export interface IAccountsController {
     callback?: (address: string) => void
   ) => Promise<void>;
   createNewMnemonic: () => Promise<void>;
+  sendICP: (
+    identityJSON: string,
+    selectedRecp: string,
+    selectedAmount: number
+  ) => Promise<BigInt>;
   getBalancesOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   getBalancesOfAccount: (account: keyable) => Promise<void>;
   getTotalBalanceOfAccountGroup: (accounts: keyable[][]) => void;

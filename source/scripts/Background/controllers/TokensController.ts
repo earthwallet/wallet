@@ -317,7 +317,6 @@ export default class TokensController implements ITokensController {
 
     callback?: (path: string) => void
   ) => {
-    console.log(txnId);
     const state = store.getState();
     const txnObj = state.entities.txnRequests.byId[txnId];
     const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);

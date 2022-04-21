@@ -9,7 +9,6 @@ import clsx from 'clsx';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
-import { send } from '@earthwallet/keyring';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { isJsonString } from '~utils/common';
 import { principal_to_address } from '@earthwallet/keyring/build/main/util/icp';
@@ -223,12 +222,10 @@ const WalletSendTokens = ({
           if (selectedAmount === 0) {
             alert('Amount cannot be 0');
           }
-          const index: BigInt = await send(
-            currentIdentity,
+          const index: BigInt = await controller.accounts.sendICP(
+            secret,
             selectedRecp,
-            address,
             selectedAmount,
-            'ICP'
           );
 
           const hash: string = await indexToHash(index);
