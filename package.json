@@ -5,7 +5,7 @@
   "private": false,
   "type": "module",
   "repository": "https://github.com/earthdao/wallet",
-  "license": "MIT",
+  "license": "GNU",
   "engines": {
     "node": ">=15.0.0",
     "yarn": ">= 1.0.0"
