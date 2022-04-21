@@ -1,4 +1,9 @@
-import { createWallet, newMnemonic, send } from '@earthwallet/keyring';
+import {
+  createWallet,
+  newMnemonic,
+  send,
+  transfer,
+} from '@earthwallet/keyring';
 import store from '~state/store';
 import {
   updateActiveAccount,
@@ -141,6 +146,39 @@ export default class AccountsController implements IAccountsController {
     return index;
   };
 
+  sendBTC = async (
+    selectedRecp: string,
+    selectedAmount: number,
+    mnemonic: string,
+    address: string
+  ) => {
+    const state = store.getState();
+
+    if (state.entities.recents == null) {
+      store.dispatch(createEntity({ entity: 'recents' }));
+    }
+
+    store.dispatch(
+      updateEntities({
+        entity: 'recents',
+        key: selectedRecp,
+        data: {
+          symbol: 'BTC',
+          lastSentAt: new Date().getTime(),
+          sentBy: address,
+        },
+      })
+    );
+
+    const hash: any = await transfer(
+      selectedRecp,
+      selectedAmount.toString(),
+      mnemonic,
+      'BTC',
+      { network: 'mainnet' }
+    );
+    return hash;
+  };
   getBalancesOfAccount = async (account: keyable) => {
     const fetchBalance = async (account: keyable) => {
       store.dispatch(

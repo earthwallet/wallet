@@ -25,6 +25,12 @@ export interface IAccountsController {
     selectedRecp: string,
     selectedAmount: number
   ) => Promise<BigInt>;
+  sendBTC: (
+    selectedRecp: string,
+    selectedAmount: number,
+    mnemonic: string,
+    address: string
+  ) => Promise<any>;
   getBalancesOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   getBalancesOfAccount: (account: keyable) => Promise<void>;
   getTotalBalanceOfAccountGroup: (accounts: keyable[][]) => void;

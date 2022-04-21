@@ -2,6 +2,7 @@ import { keyable } from '~scripts/Background/types/IAssetsController';
 import NFT_PLACEHOLDER from '~assets/images/nft_placeholder.png';
 import ICON_EARTH from '~assets/images/icon-512.png';
 import { decodeTokenId } from '@earthwallet/assets';
+import NFT_EARTH_DAY from '~assets/images/earthday_nft.png';
 
 export const ICP_NFT_LIST = [
   {
@@ -284,7 +285,7 @@ export const getAirDropNFTInfo = () => ({
   //can be changed
   description:
     'Earthday NFT is an airdrop of 77k Earth NFTs. The earth has its music for those who listen.',
-  icon: ICON_EARTH, //can be changed
+  icon: NFT_EARTH_DAY, //can be changed
   claimedTxt: 'Claimed! You will shortly receive Earth day NFT to ',
   //can be changed
   twitterButtonCTA: 'Tweet to claim NFT',

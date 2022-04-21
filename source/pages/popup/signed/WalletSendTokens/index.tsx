@@ -15,7 +15,7 @@ import { principal_to_address } from '@earthwallet/keyring/build/main/util/icp';
 import { getSymbol } from '~utils/common';
 
 import { decryptString } from '~utils/vault';
-import { validateMnemonic, transfer, getFees } from '@earthwallet/keyring';
+import { validateMnemonic, getFees } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
 import { selectBalanceByAddress } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
@@ -173,12 +173,14 @@ const WalletSendTokens = ({
       if (selectedAmount === 0) {
         alert('Amount cannot be 0');
       }
-      const hash: any = await transfer(
+      if (selectedAccount?.symbol != 'BTC') {
+        return;
+      }
+      const hash: any = await controller.accounts.sendBTC(
         selectedRecp,
-        selectedAmount.toString(),
+        selectedAmount,
         mnemonic,
-        selectedAccount?.symbol,
-        { network: 'mainnet' }
+        address
       );
 
       await controller.accounts
