@@ -527,7 +527,7 @@
 
 .tabs {
   display: flex;
-  margin: 12px 24px;
+  margin: 12px 24px 0;
 }
 
 .listitem {
@@ -628,4 +628,21 @@
   text-transform: uppercase;
   font-weight: 700;
   overflow: hidden;
+}
+
+.listscrollcont {
+  height: 340px;
+  width: 100vw;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding-top: 12px;
+}
+
+.centerDiv {
+  display: flex;
+  flex: 1;
+  height: 350px;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
 }

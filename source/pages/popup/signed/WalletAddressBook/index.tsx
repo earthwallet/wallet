@@ -125,28 +125,34 @@ const WalletAddressBook = ({
           Recents
         </div>
       </div>
-      {tab == 0 && <div className={styles.listitemscont}>
-        {myAccounts.map((account: keyable, index: number) => <div
-          key={index}
-          onClick={() => replaceQuery('recipient', getTokenInfo(selectedAsset).type == 'DIP20' ? account?.meta?.principalId : account?.address)}
-          className={styles.listitem}>
-          <img className={styles.listicon}
-            onError={({ currentTarget }) => {
-              currentTarget.onerror = null;
-              currentTarget.src = ICON_PLACEHOLDER;
-            }}
-            src={getSelectedAsset(selectedAsset)?.icon || getTokenInfo(selectedAsset)?.icon || getInfoBySymbol(selectedAccount.symbol).icon} />
-          <div className={styles.listinfo}>
-            <div className={styles.listtitle}>{account?.meta?.name}</div>
-            <div className={styles.listsubtitle}>{getTokenInfo(selectedAsset).type == 'DIP20' ? account?.meta?.principalId : account?.address}</div>
-          </div>
+      {tab == 0 &&
+        <div className={styles.listscrollcont}>
+          {myAccounts?.length == 0 ?
+            <div className={styles.centerDiv}>No other personal accounts to send</div>
+            : <div className={styles.listitemscont}>
+              {myAccounts.map((account: keyable, index: number) => <div
+                key={index}
+                onClick={() => replaceQuery('recipient', getTokenInfo(selectedAsset).type == 'DIP20' ? account?.meta?.principalId : account?.address)}
+                className={styles.listitem}>
+                <img className={styles.listicon}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null;
+                    currentTarget.src = ICON_PLACEHOLDER;
+                  }}
+                  src={getSelectedAsset(selectedAsset)?.icon || getTokenInfo(selectedAsset)?.icon || getInfoBySymbol(selectedAccount.symbol).icon} />
+                <div className={styles.listinfo}>
+                  <div className={styles.listtitle}>{account?.meta?.name}</div>
+                  <div className={styles.listsubtitle}>{getTokenInfo(selectedAsset).type == 'DIP20' ? account?.meta?.principalId : account?.address}</div>
+                </div>
 
-          <img
-            className={styles.listforward}
-            src={ICON_FORWARD}
-          />
-        </div>)}
-      </div>}
+                <img
+                  className={styles.listforward}
+                  src={ICON_FORWARD}
+                />
+              </div>)}
+            </div>}
+        </div>
+      }
     </div>
     {false && <div style={{
       margin: '0 30px 30px 30px',
