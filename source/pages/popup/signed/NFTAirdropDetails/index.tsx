@@ -5,13 +5,14 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import Header from '~components/Header';
 import { useSelector } from 'react-redux';
 import { keyable } from '~scripts/Background/types/IMainController';
-import { selectAssetById } from '~state/wallet';
 import { getAirDropNFTInfo, } from '~global/nfts';
 //import clsx from 'clsx';
 import { useController } from '~hooks/useController';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import { shareTweetURL } from '~global/helpers';
+import { shareTweetURL, shortenAddress } from '~global/helpers';
 import ICON_TWITTER from '~assets/images/icon_twitter.svg';
+import { selectAirdropStatus } from '~state/assets';
+import Confetti from 'react-confetti'
 
 interface Props extends RouteComponentProps<{ assetId: string, address: string }> {
     className?: string;
@@ -26,16 +27,17 @@ const NFTAirdropDetails = ({
     },
 }: Props) => {
     // const history = useHistory();
-    const assetInfo: keyable = getAirDropNFTInfo();
 
-    const asset: keyable = useSelector(selectAssetById(assetId)) || assetInfo;
+    const asset: keyable = getAirDropNFTInfo();
+    const airdropAssetStatus = useSelector(selectAirdropStatus(asset.id));
+
     const [loading, setLoading] = useState(false);
     const controller = useController();
 
     useEffect((): void => {
-        setLoading(false);
-        false && controller.assets.
-            updateTokenCollectionDetails(asset).then(() => setLoading(false))
+        setLoading(true);
+        controller.assets.
+            registerExtensionForAirdrop().then(() => setLoading(false))
     }, [assetId === asset?.id]);
 
     return (
@@ -49,16 +51,24 @@ const NFTAirdropDetails = ({
             </div>
             <div className={styles.fullImage}
                 style={{ backgroundImage: `url(${asset.icon})` }} >
-                <div className={styles.actions}>
-                    <a
+                {airdropAssetStatus?.accountIdVerified
+                    ? <>
+                        <div className={styles.congrats}>{asset.claimedTxt} {shortenAddress(airdropAssetStatus?.accountIdVerified)} 🎉</div>
+                        <Confetti
+                            width={375}
+                            height={600}
+                        />
+                    </>
+                    : <div className={styles.actions}>
+                        <a
+                            target="_blank"
+                            href={shareTweetURL({
+                                ...airdropAssetStatus?.ctaObj,
+                                text: airdropAssetStatus?.ctaObj?.text.replace('PLACEHOLDER', address),
+                            })}
+                            className={styles.action}><img src={ICON_TWITTER} className={styles.twitterIcon} ></img>{asset?.twitterButtonCTA}</a>
+                    </div>}
 
-                        target="_blank"
-                        href={shareTweetURL({
-                            text: `Hey there is the new earth wallet with ICP and BTC support. They are giving away an airdrop on earth day 🌍 Here is my ${address}`,
-                            hashtags: 'EarthArt'
-                        })}
-                        className={styles.action}><img src={ICON_TWITTER} className={styles.twitterIcon} ></img>Tweet to claim NFT</a>
-                </div>
             </div>
             <div className={styles.mainCont}>
                 <div className={styles.transCont}>
@@ -72,7 +82,7 @@ const NFTAirdropDetails = ({
                                 ? 'Listed for sale'
                                 : 'Airdrop'}
                         </div>
-                        {asset?.isAirdrop && <div className={styles.price}>Free</div>}
+                        {airdropAssetStatus?.accountIdVerified == undefined ? <div className={styles.price}>Free</div> : <div className={styles.price}>Claimed</div>}
                     </div>
                     <div className={styles.sep}></div>
                     <div className={styles.creatorCont}>
@@ -80,6 +90,7 @@ const NFTAirdropDetails = ({
                         <div className={styles.creatorInfo}>
                             <div className={styles.creatorTitle}>{asset?.name}</div>
                             <div className={styles.creatorSubtitle}>{asset?.description}</div>
+                            <div className={styles.disclaimer}>{asset?.disclaimer}</div>
                         </div>
                     </div>
                 </div>

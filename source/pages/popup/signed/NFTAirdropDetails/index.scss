@@ -161,3 +161,31 @@
   height: 16px;
   margin-right: 9px;
 }
+
+.congrats {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.17);
+  border-radius: 9px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 15px;
+  top: 393px;
+  padding: 6px 10px;
+  left: 24px;
+  right: 24px;
+}
+
+.disclaimer {
+  margin-top: 12px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 8px;
+  line-height: 150%;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  opacity: 0.55;
+  font-style: italic;
+}

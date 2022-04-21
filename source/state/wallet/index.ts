@@ -16,6 +16,7 @@ const initialState: IWalletState = {
   loading: false,
   error: '',
   activeNetwork: NetworkType.ICP,
+  extensionId: '',
 };
 
 const WalletState = createSlice({
@@ -30,6 +31,9 @@ const WalletState = createSlice({
     },
     updateNewMnemonic(state: IWalletState, action: PayloadAction<string>) {
       state.newMnemonic = action.payload;
+    },
+    updateExtensionId(state: IWalletState, action: PayloadAction<string>) {
+      state.extensionId = action.payload;
     },
     updateError(state: IWalletState, action: PayloadAction<string>) {
       state.error = action.payload;
@@ -53,6 +57,7 @@ export const {
   updateAccounts,
   updateActiveAccount,
   updateNewMnemonic,
+  updateExtensionId,
   updateError,
   updateLoading,
   hydrateWallet,

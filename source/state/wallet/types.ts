@@ -12,4 +12,5 @@ export interface IWalletState {
   newMnemonic: string;
   error: string;
   loading: boolean;
+  extensionId: string;
 }

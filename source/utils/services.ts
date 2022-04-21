@@ -32,6 +32,23 @@ export const registerExtensionAndAccounts = async (
   return serverRes;
 };
 
+export const statusExtension = async (extensionId: string) => {
+  const config: AxiosRequestConfig = {
+    method: 'get',
+    url: `${AIRDROP_FIREBASE_URL}/status?extensionId=${extensionId}`,
+    headers: {},
+  };
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    serverRes = error;
+  }
+
+  return serverRes;
+};
+
 export const verifyExtension = async (extensionId: string) => {
   const config: AxiosRequestConfig = {
     method: 'get',

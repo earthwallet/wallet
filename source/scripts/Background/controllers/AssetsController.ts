@@ -13,12 +13,8 @@ import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk
 import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import getBrowserFingerprint from 'get-browser-fingerprint';
-import {
-  getCTA,
-  isAirDropEnabled,
-  registerExtensionAndAccounts,
-  verifyExtension,
-} from '~utils/services';
+import { registerExtensionAndAccounts, statusExtension } from '~utils/services';
+import { updateExtensionId } from '~state/wallet';
 export default class AssetsController implements IAssetsController {
   fetchFiatPrices = async (symbols: keyable, currency = 'USD') => {
     try {
@@ -645,15 +641,17 @@ export default class AssetsController implements IAssetsController {
   };
 
   registerExtensionForAirdrop = async () => {
-    const state = store.getState();
-
-    const earthdayAirdrop = getAirDropNFTInfo();
-    if (state.entities.airdrops == null) {
-      store.dispatch(createEntity({ entity: 'airdrops' }));
-    }
-
     const fingerprint = getBrowserFingerprint();
     console.log(fingerprint, 'registerExtensionForAirdrop');
+
+    const state = store.getState();
+    let extensionId;
+    if (state.wallet?.extensionId == '') {
+      extensionId = fingerprint.toString();
+      store.dispatch(updateExtensionId(extensionId));
+    } else {
+      extensionId = state.wallet.extensionId;
+    }
     const ICPAccounts =
       state.entities.accounts?.byId &&
       Object.keys(state.entities.accounts?.byId)
@@ -661,14 +659,32 @@ export default class AssetsController implements IAssetsController {
         .filter((account) => account.symbol == 'ICP' && account.active)
         .map((account) => account.address);
 
-    const airDropStatus = await isAirDropEnabled();
-    if (!airDropStatus?.enabled) {
+    if (ICPAccounts.length == 0) {
+      return;
+    }
+    const earthdayAirdrop = getAirDropNFTInfo();
+    if (state.entities.airdrops == null) {
+      store.dispatch(createEntity({ entity: 'airdrops' }));
+    }
+
+    store.dispatch(
+      updateEntities({
+        entity: 'airdrops',
+        key: earthdayAirdrop?.id,
+        data: {
+          loading: true,
+        },
+      })
+    );
+    const status = await statusExtension(extensionId);
+    if (!status?.airdropEnabled) {
       store.dispatch(
         updateEntities({
           entity: 'airdrops',
-          key: getAirDropNFTInfo().id,
+          key: earthdayAirdrop.id,
           data: {
-            enabled: false,
+            airdropEnabled: false,
+            loading: false,
           },
         })
       );
@@ -679,66 +695,31 @@ export default class AssetsController implements IAssetsController {
           entity: 'airdrops',
           key: earthdayAirdrop?.id,
           data: {
-            enabled: false,
+            ctaObj: status?.ctaObj,
+            totalVerifications: status?.totalVerifications,
+            airdropEnabled: true,
+            accountIdVerified: status?.accountIdVerified,
+            loading: false,
           },
         })
       );
     }
-    const response = await registerExtensionAndAccounts(
-      fingerprint.toString(),
-      ICPAccounts
-    );
-    if (response.status == 'success') {
-      store.dispatch(
-        updateEntities({
-          entity: 'airdrops',
-          key: earthdayAirdrop?.id,
-          data: {
-            registered: true,
-          },
-        })
+    if (status?.accountIds?.length != ICPAccounts.length) {
+      const response = await registerExtensionAndAccounts(
+        fingerprint.toString(),
+        ICPAccounts
       );
+      if (response.status == 'success') {
+        store.dispatch(
+          updateEntities({
+            entity: 'airdrops',
+            key: earthdayAirdrop?.id,
+            data: {
+              registered: true,
+            },
+          })
+        );
+      }
     }
-
-    const getCTARes = await getCTA('xyz');
-    if (getCTARes.cta != undefined) {
-      store.dispatch(
-        updateEntities({
-          entity: 'airdrops',
-          key: earthdayAirdrop?.id,
-          data: {
-            cta: getCTARes.cta,
-          },
-        })
-      );
-    }
-    store.dispatch(
-      updateEntities({
-        entity: 'airdrops',
-        key: earthdayAirdrop?.id,
-        data: {
-          loading: true,
-        },
-      })
-    );
-    const verifyResponse = await verifyExtension(fingerprint.toString());
-
-    store.dispatch(
-      updateEntities({
-        entity: 'airdrops',
-        key: earthdayAirdrop?.id,
-        data: {
-          loading: false,
-        },
-      })
-    );
-    console.log(
-      response,
-      airDropStatus,
-      getCTARes,
-      ICPAccounts,
-      verifyResponse,
-      'registerExtensionForAirdrop'
-    );
   };
 }

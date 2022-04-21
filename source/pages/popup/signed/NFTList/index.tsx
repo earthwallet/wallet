@@ -15,6 +15,7 @@ import { getAirDropNFTInfo, getTokenCollectionInfo, getTokenImageURL } from '~gl
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { keyable } from '~scripts/Background/types/IMainController';
+import { selectAirdropStatus } from '~state/assets';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -95,6 +96,7 @@ export const AssetsList = ({ address }: { address: string }) => {
     const assets: keyable = useSelector(selectAssetsICPByAddress(address));
     const loading: boolean = useSelector(selectAssetsICPCountLoadingByAddress(address));
     const airdropAsset = getAirDropNFTInfo();
+    const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
 
     const AirDropCampaign = () => {
         return <div
@@ -115,7 +117,10 @@ export const AssetsList = ({ address }: { address: string }) => {
             ><div className={styles.listprice}>{airdropAsset?.isAirdrop
                 ? 'Airdrop'
                 : 'Unlisted'}</div>
-                <div className={clsx(styles.listsubtitle, styles.freetxt)}>Free</div>
+                {airdropAssetStatus.accountIdVerified == undefined
+                    ? <div className={clsx(styles.listsubtitle, styles.freetxt)}>Free</div>
+                    : <div className={clsx(styles.listsubtitle)}>Claimed</div>
+                }
             </div>
             <img
                 className={styles.listforward}
@@ -126,7 +131,7 @@ export const AssetsList = ({ address }: { address: string }) => {
 
     const history = useHistory();
     if (!loading && assets?.length == 0) {
-        if (airdropAsset.isLive) {
+        if (airdropAssetStatus?.airdropEnabled) {
             return <div className={styles.listitemscont}><AirDropCampaign /></div>
         }
         return <div className={styles.centerDiv}>No NFTs Found</div>
@@ -153,7 +158,7 @@ export const AssetsList = ({ address }: { address: string }) => {
                 </SkeletonTheme>
 
             </div>}
-            {airdropAsset.isLive && <AirDropCampaign />}
+            {airdropAssetStatus?.airdropEnabled && <AirDropCampaign />}
             {assets?.map((asset: keyable, i: number) => (<div
                 key={i}
                 onClick={() => history.push(`/nftdetails/${asset.id}`)}
@@ -203,6 +208,7 @@ export const AssetsList = ({ address }: { address: string }) => {
 export const AssetsCoverflow = ({ address }: { address: string }) => {
     const assets: keyable = useSelector(selectAssetsICPByAddress(address));
     const airdropAsset = getAirDropNFTInfo();
+    const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
 
     const history = useHistory();
 
@@ -221,7 +227,7 @@ export const AssetsCoverflow = ({ address }: { address: string }) => {
             el: '.swiper-pagination'
         }
     }
-    if (assets?.length == 0 && !(airdropAsset.isLive)) {
+    if (assets?.length == 0 && !(airdropAssetStatus?.airdropEnabled)) {
         return <div className={styles.centerDivGrid}>No NFTs Found</div>
     } else {
         return (
@@ -230,7 +236,7 @@ export const AssetsCoverflow = ({ address }: { address: string }) => {
                 effect={'coverflow'}
                 slidesPerView={'auto'}
                 {...params}>
-                {airdropAsset.isLive && <div
+                {airdropAssetStatus?.airdropEnabled && <div
                     onClick={() => history.push(`/nftairdropdetails/${airdropAsset.id}/${address}`)}
                     className={styles.imagecont}
                     style={{ backgroundImage: `url(${airdropAsset.icon})` }} >
@@ -238,7 +244,14 @@ export const AssetsCoverflow = ({ address }: { address: string }) => {
                         <div
                             onClick={() => history.push(`/nftdetails/${airdropAsset.id}`)}
                             className={styles.imagetitle}>{airdropAsset?.name}</div>
-                        <div className={styles.imagepagin}>Free</div>
+                        {airdropAssetStatus.accountIdVerified == undefined
+                            ? <div className={styles.imagepagin}>
+                                <span className={styles.freetxt}>Free</span>
+                            </div>
+                            : <div className={styles.imagepagin}>
+                                Claimed
+                            </div>
+                        }
                     </div>
                 </div>}
                 {assets?.map((asset: keyable, i: number) => {
