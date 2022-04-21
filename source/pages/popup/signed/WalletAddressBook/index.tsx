@@ -3,7 +3,7 @@ import styles from './index.scss';
 import NextStepButton from '~components/NextStepButton';
 
 import { RouteComponentProps, withRouter } from 'react-router';
-import { selectAccountById, selectOtherAccountsOf } from '~state/wallet';
+import { selectAccountById, selectOtherAccountsOf, selectRecentsOf } from '~state/wallet';
 import { useSelector } from 'react-redux';
 
 import { selectActiveTokensAndAssetsICPByAddress } from '~state/wallet';
@@ -16,6 +16,8 @@ import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import { getTokenInfo } from '~global/tokens';
 import { getInfoBySymbol } from '~global/constant';
+import { shortenAddress } from '~global/helpers';
+import moment from 'moment-mini';
 
 interface keyable {
   [key: string]: any
@@ -46,6 +48,7 @@ const WalletAddressBook = ({
   const [selectedAsset, setSelectedAsset] = useState<string>('');
 
   const myAccounts: keyable = useSelector(selectOtherAccountsOf(address));
+  const recents: keyable = useSelector(selectRecentsOf(address, tokenId));
 
 
 
@@ -145,6 +148,33 @@ const WalletAddressBook = ({
                   <div className={styles.listsubtitle}>{getTokenInfo(selectedAsset).type == 'DIP20' ? account?.meta?.principalId : account?.address}</div>
                 </div>
 
+                <img
+                  className={styles.listforward}
+                  src={ICON_FORWARD}
+                />
+              </div>)}
+            </div>}
+        </div>
+      }
+      {tab == 1 &&
+        <div className={styles.listscrollcont}>
+          {recents?.length == 0 ?
+            <div className={styles.centerDiv}>No recent sent addresses</div>
+            : <div className={styles.listitemscont}>
+              {recents.map((recent: keyable, index: number) => <div
+                key={index}
+                onClick={() => replaceQuery('recipient', getTokenInfo(selectedAsset).type == 'DIP20' ? recent?.principalId : recent?.address)}
+                className={styles.listitem}>
+                <img className={styles.listicon}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null;
+                    currentTarget.src = ICON_PLACEHOLDER;
+                  }}
+                  src={getSelectedAsset(selectedAsset)?.icon || getTokenInfo(selectedAsset)?.icon || getInfoBySymbol(selectedAccount.symbol).icon} />
+                <div className={styles.listinfo}>
+                  <div className={styles.listtitle}>{shortenAddress(recent?.address)}</div>
+                  <div className={styles.listsubtitle}>Last sent on {recent.lastSentAt && moment(recent?.lastSentAt).format('Do MMMM YYYY')}</div>
+                </div>
                 <img
                   className={styles.listforward}
                   src={ICON_FORWARD}

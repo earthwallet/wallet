@@ -166,6 +166,19 @@ export const selectOtherAccountsOf = (address: string) => (state: AppState) => {
   return otherAccounts;
 };
 
+export const selectRecentsOf =
+  (address: string, tokenId: string | null) => (state: AppState) => {
+    const selectedAccount = state.entities.accounts.byId[address];
+    const selectedSymbol = selectedAccount.symbol;
+    let recents;
+    if (tokenId == undefined) {
+      recents = Object.keys(state.entities.recents?.byId)
+        ?.map((id) => ({ ...state.entities.recents.byId[id], address: id }))
+        .filter((recent) => recent.symbol == selectedSymbol);
+    }
+    return recents || {};
+  };
+
 export const selectDappActiveAccountAddress = (state: AppState) =>
   state.wallet?.activeAccount?.address;
 
