@@ -295,6 +295,25 @@ export default class TokensController implements ITokensController {
     address: string,
     callback?: (path: string) => void
   ) => {
+    const state = store.getState();
+
+    if (state.entities.recents == null) {
+      store.dispatch(createEntity({ entity: 'recents' }));
+    }
+
+    store.dispatch(
+      updateEntities({
+        entity: 'recents',
+        key: recipient,
+        data: {
+          symbol: 'ICP',
+          addressType: 'principal',
+          lastSentAt: new Date().getTime(),
+          sentBy: address,
+        },
+      })
+    );
+
     const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
 
     const response: keyable = await canisterAgent({

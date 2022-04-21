@@ -161,9 +161,9 @@ const WalletAddressBook = ({
           {recents?.length == 0 ?
             <div className={styles.centerDiv}>No recent sent addresses</div>
             : <div className={styles.listitemscont}>
-              {recents.map((recent: keyable, index: number) => <div
+              {recents?.map((recent: keyable, index: number) => <div
                 key={index}
-                onClick={() => replaceQuery('recipient', getTokenInfo(selectedAsset).type == 'DIP20' ? recent?.principalId : recent?.address)}
+                onClick={() => replaceQuery('recipient', recent?.address)}
                 className={styles.listitem}>
                 <img className={styles.listicon}
                   onError={({ currentTarget }) => {

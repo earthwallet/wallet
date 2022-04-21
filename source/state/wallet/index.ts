@@ -175,6 +175,13 @@ export const selectRecentsOf =
       recents = Object.keys(state.entities.recents?.byId)
         ?.map((id) => ({ ...state.entities.recents.byId[id], address: id }))
         .filter((recent) => recent.symbol == selectedSymbol);
+    } else if (getTokenInfo(tokenId).addressType == 'principal') {
+      recents = Object.keys(state.entities.recents?.byId)
+        ?.map((id) => ({ ...state.entities.recents.byId[id], address: id }))
+        .filter(
+          (recent) =>
+            recent.symbol == selectedSymbol && recent.addressType == 'principal'
+        );
     }
     return recents || {};
   };
