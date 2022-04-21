@@ -137,6 +137,7 @@ export const AssetsList = ({ address }: { address: string }) => {
         return <div className={styles.centerDiv}>No NFTs Found</div>
     } else {
         return <div className={styles.listitemscont}>
+            {airdropAssetStatus?.airdropEnabled && <AirDropCampaign />}
             {loading && <div
                 className={clsx(styles.listitem, styles.listitemloading)}>
                 <div
@@ -158,7 +159,6 @@ export const AssetsList = ({ address }: { address: string }) => {
                 </SkeletonTheme>
 
             </div>}
-            {airdropAssetStatus?.airdropEnabled && <AirDropCampaign />}
             {assets?.map((asset: keyable, i: number) => (<div
                 key={i}
                 onClick={() => history.push(`/nftdetails/${asset.id}`)}
