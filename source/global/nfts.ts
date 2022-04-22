@@ -223,13 +223,13 @@ export const ICP_NFT_LIST = [
     icon: 'https://jmuqr-yqaaa-aaaaj-qaicq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=ewpzr-jqkor-uwiaa-aaaaa-cmaca-uaqca-aabwo-a',
   },
   {
-    name: 'Earth DAO',
+    name: 'Earth Art Beta',
     id: 'ntwio-byaaa-aaaak-qaama-cai',
-    standard: 'EarthEXT',
+    standard: 'EarthArt',
     isLive: false,
     isAirdrop: false,
     description:
-      'Earth DAO - Guardians NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
+      'Earth Art - Earth NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
     icon: ICON_EARTH,
   },
 ];
@@ -278,17 +278,17 @@ export default LIVE_ICP_NFT_LIST_CANISTER_IDS;
 
 export const getAirDropNFTInfo = () => ({
   id: 'earth-day', //slug
-  standard: 'EarthEXT',
+  standard: 'EarthArt',
   isLive: true,
   isAirdrop: true,
-  name: 'Earth day NFT', //can be changed
+  name: 'Earth Day 2022', //can be changed
   //can be changed
   description:
-    'Earthday NFT is an airdrop of 77k Earth NFTs. The earth has its music for those who listen.',
+    'Something new is coming to Earth, and this NFT gets you early access.',
   icon: NFT_EARTH_DAY, //can be changed
-  claimedTxt: 'Claimed! You will shortly receive Earth day NFT to ',
+  claimedTxt: 'Congratulations! Your Earth Day NFT is registered and will be sent to account ',
   //can be changed
   twitterButtonCTA: 'Tweet to claim NFT',
   disclaimer:
-    'disclaimer: 🛎️ Only one earth nft can be claimed per extension. Please allow 5 minutes for us to verify your tweet.',
+    'disclaimer: Only one NFT can be claimed per extension. Please wait 5 minutes for tweet verification.',
 });
