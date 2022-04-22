@@ -56,16 +56,16 @@ const ListNFT = ({
     const controller = useController();
 
     useEffect(() => {
-        if (queryParams.get('assetid') === null) {
+        if (queryParams.get('assetId') === null) {
             setSelectedAsset(selectedAccount?.symbol)
         }
         else {
-            setSelectedAsset(queryParams.get('assetid') || '');
-            setSelectedAssetObj(getSelectedAsset(queryParams.get('assetid') || ''));
-            const existingAmount: number = getSelectedAsset(queryParams.get('assetid') || '')?.forSale ? getSelectedAsset(queryParams.get('assetid') || '').info.price : 0;
+            setSelectedAsset(queryParams.get('assetId') || '');
+            setSelectedAssetObj(getSelectedAsset(queryParams.get('assetId') || ''));
+            const existingAmount: number = getSelectedAsset(queryParams.get('assetId') || '')?.forSale ? getSelectedAsset(queryParams.get('assetId') || '').info.price : 0;
             setSelectedAmount(parseFloat((existingAmount / 100000000).toFixed(8)) || 0)
         }
-    }, [queryParams.get('assetid') !== null]);
+    }, [queryParams.get('assetId') !== null]);
 
     useEffect(() => {
         if (queryParams.get('cancel') === 'true') {

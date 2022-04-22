@@ -1,4 +1,5 @@
-import icon_SDR from '~assets/images/icon_SDR.png';
+import ICON_SDR from '~assets/images/icon_SDR.png';
+
 const TOKENS_LIST = [
   {
     usesPrincipal: true,
@@ -6,14 +7,17 @@ const TOKENS_LIST = [
     isLive: true,
     decimals: 12,
     id: 'cyiep-riaaa-aaaam-qadnq-cai',
-    name: 'Earth SDR',
+    name: 'SDR',
     symbol: 'SDR',
     wrappedSymbol: 'XDR',
     tokenCanisterId: 'cyiep-riaaa-aaaam-qadnq-cai',
     totalSupply: 'Infinite',
-    logo: icon_SDR,
+    icon: ICON_SDR,
     fees: 0.0002,
     mintMethod: 'mint_by_icp',
+    addressType: 'principal',
+    addressTitle: 'Principal Id',
+    sendFees: 0.002,
   },
   {
     usesPrincipal: true,
@@ -26,9 +30,12 @@ const TOKENS_LIST = [
     wrappedSymbol: 'ICP',
     tokenCanisterId: 'utozz-siaaa-aaaam-qaaxq-cai',
     totalSupply: 'Infinite',
-    logo: undefined,
+    icon: undefined,
     fees: 0.0001,
     mintMethod: 'mint',
+    addressType: 'principal',
+    addressTitle: 'Principal Id',
+    sendFees: 0,
   },
 ];
 

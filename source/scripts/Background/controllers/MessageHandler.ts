@@ -92,27 +92,37 @@ export const messagesHandler = (
       return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
+      const params = args[0];
       //console.log('CAL_REQUEST.method', method, args);
       let result: any = undefined;
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed };
       } else if (method === 'wallet.getAddress') {
-        result = mainController.provider.getAddressForDapp(origin, args[0]);
+        result = mainController.provider.getAddressForDapp(origin, params);
       } else if (method === 'wallet.getNetwork') {
         result = mainController.provider.getNetwork();
       } else if (method === 'wallet.getBalance') {
         result = mainController.provider.getBalance();
       } else if (method === 'wallet.getAddressMeta') {
         result = mainController.provider.getAddressMeta(origin);
-      } else if (method === 'wallet.sign' || method === 'wallet.signRaw') {
+      } else if (method === 'wallet.sessionSign') {
+        result = await mainController.provider.sessionSign({
+          ...params,
+        }, origin);
+      } else if (method === 'wallet.generateSessionId') {
+        result = mainController.provider.generateSessionId();
+      }
+      else if (method === 'wallet.sign' || method === 'wallet.signRaw' || method === 'wallet.createSession') {
         if (pendingWindow) {
           return Promise.resolve(null);
         }
-
+        console.log(params, 'wallet.createSession');
         const signatureRequest =
-          method === 'wallet.signRaw'
-            ? { message: args[0], type: 'signRaw' }
-            : args[0];
+          method === 'wallet.createSession'
+            ? { ...params, type: 'createSession' }
+            : method === 'wallet.signRaw'
+            ? { message: params, type: 'signRaw' }
+            : params;
         const windowId = uuid();
         mainController.dapp.setSignatureRequest(signatureRequest, windowId);
         const popup = await mainController.createPopup(windowId, 'sign');
@@ -124,7 +134,14 @@ export const messagesHandler = (
               //https://forum.dfinity.org/t/mismatching-dfinity-agent-versions-can-cause-hashing-issues/7359/5
               const approvedIdentityJSON =
                 mainController.dapp.getApprovedIdentityJSON();
-              if (method === 'wallet.signRaw') {
+                if (method === 'wallet.createSession') {
+                  result = await mainController.provider.createSession(
+                    signatureRequest,
+                    approvedIdentityJSON,
+                    windowId
+                  );
+                }
+               else if (method === 'wallet.signRaw') {
                 result = await mainController.provider.signRaw(
                   signatureRequest,
                   approvedIdentityJSON,

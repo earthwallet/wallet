@@ -1,4 +1,9 @@
-import { createWallet, newMnemonic } from '@earthwallet/keyring';
+import {
+  createWallet,
+  newMnemonic,
+  send,
+  transfer,
+} from '@earthwallet/keyring';
 import store from '~state/store';
 import {
   updateActiveAccount,
@@ -7,7 +12,7 @@ import {
   updateLoading,
 } from '~state/wallet';
 import type { IAccountsController } from '../types/IAccountsController';
-import { storeEntities, updateEntities } from '~state/entities';
+import { createEntity, storeEntities, updateEntities } from '~state/entities';
 import {
   getBalance as _getBalance,
   getTransactions as _getTransactions,
@@ -15,7 +20,9 @@ import {
 } from '@earthwallet/keyring';
 import { encryptString } from '~utils/vault';
 import { getSymbol } from '~utils/common';
-import { GROUP_ID_SYMBOL } from '~global/constant';
+import { getInfoBySymbol, GROUP_ID_SYMBOL } from '~global/constant';
+import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
+import { principal_to_address } from '@earthwallet/assets';
 
 interface keyable {
   [key: string]: any;
@@ -103,6 +110,75 @@ export default class AccountsController implements IAccountsController {
     return { keypair, balance, keypairNew };
   };
 
+  sendICP = async (
+    identityJSON: string,
+    selectedRecp: string,
+    selectedAmount: number
+  ) => {
+    const state = store.getState();
+    const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
+    const address = principal_to_address(currentIdentity.getPrincipal());
+
+    if (state.entities.recents == null) {
+      store.dispatch(createEntity({ entity: 'recents' }));
+    }
+    store.dispatch(
+      updateEntities({
+        entity: 'recents',
+        key: selectedRecp,
+        data: {
+          symbol: 'ICP',
+          addressType: 'accountId',
+          lastSentAt: new Date().getTime(),
+          sentBy: address,
+        },
+      })
+    );
+
+    const index: BigInt = await send(
+      currentIdentity,
+      selectedRecp,
+      address,
+      selectedAmount,
+      'ICP'
+    );
+
+    return index;
+  };
+
+  sendBTC = async (
+    selectedRecp: string,
+    selectedAmount: number,
+    mnemonic: string,
+    address: string
+  ) => {
+    const state = store.getState();
+
+    if (state.entities.recents == null) {
+      store.dispatch(createEntity({ entity: 'recents' }));
+    }
+
+    store.dispatch(
+      updateEntities({
+        entity: 'recents',
+        key: selectedRecp,
+        data: {
+          symbol: 'BTC',
+          lastSentAt: new Date().getTime(),
+          sentBy: address,
+        },
+      })
+    );
+
+    const hash: any = await transfer(
+      selectedRecp,
+      selectedAmount.toString(),
+      mnemonic,
+      'BTC',
+      { network: 'mainnet' }
+    );
+    return hash;
+  };
   getBalancesOfAccount = async (account: keyable) => {
     const fetchBalance = async (account: keyable) => {
       store.dispatch(
@@ -296,20 +372,45 @@ export default class AccountsController implements IAccountsController {
 
     let forwardAddress = '';
     for (const symbol of symbols) {
-      if (symbol !== 'ICP') {
-        const selectedAccount = existingAllAccounts.filter(
-          (a) => a.symbol === symbol
+      if (getInfoBySymbol(symbol).evmChain) {
+        const selectedETHAccount = existingAllAccounts.filter(
+          (a) => a.symbol === 'ETH'
         )[0];
-        forwardAddress = selectedAccount.id;
+        // BIP_0021 uri format example MATIC:xyzzyxxxxxx
+        const address_uri = symbol + ':' + selectedETHAccount.id;
         store.dispatch(
           updateEntities({
             entity: 'accounts',
-            key: selectedAccount.id,
+            key: address_uri,
             data: {
-              active: status,
+              ...selectedETHAccount,
+              ...{
+                id: address_uri,
+                active: status,
+                symbol,
+                evmChain: true,
+                order: getInfoBySymbol(symbol).order,
+              },
             },
           })
         );
+        forwardAddress = address_uri;
+      } else {
+        if (symbol !== 'ICP') {
+          const selectedAccount = existingAllAccounts.filter(
+            (a) => a.symbol === symbol
+          )[0];
+          forwardAddress = selectedAccount.id;
+          store.dispatch(
+            updateEntities({
+              entity: 'accounts',
+              key: selectedAccount.id,
+              data: {
+                active: status,
+              },
+            })
+          );
+        }
       }
     }
 

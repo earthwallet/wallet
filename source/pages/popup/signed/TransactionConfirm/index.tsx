@@ -99,7 +99,7 @@ const TransactionConfirm = ({
         text={txnStatusObj?.loading ? 'Minting..' : 'Confirm ' + txnStatusObj?.type}
       ><div className={styles.empty} /></Header>
       {txnStatusObj?.loading
-        ? <Settling {...txnStatusObj} logo={getTokenInfo(txnStatusObj?.params?.to)?.logo} />
+        ? <Settling {...txnStatusObj} icon={getTokenInfo(txnStatusObj?.params?.to)?.icon} />
         : <div className={styles.scrollCont}>
           {txnStatusObj?.error && <div className={styles.errorResponse}>{txnStatusObj?.error}</div>}
 
@@ -112,7 +112,7 @@ const TransactionConfirm = ({
             <div className={styles.swapArrow} >
               <img src={ICON_DOWN} className={styles.swapArrowIcon} /></div>
             <div className={styles.swapBelow}>
-              <div className={styles.swapBelowIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.logo ? <img className={styles.swapToIcon} src={getTokenInfo(txnStatusObj?.params?.to)?.logo}></img> : <div className={styles.swapToIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.symbol?.charAt(0)}</div>}</div>
+              <div className={styles.swapBelowIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.icon ? <img className={styles.swapToIcon} src={getTokenInfo(txnStatusObj?.params?.to)?.icon}></img> : <div className={styles.swapToIcon}>{getTokenInfo(txnStatusObj?.params?.to)?.symbol?.charAt(0)}</div>}</div>
               <div className={styles.swapBelowTxt}>{getTokenInfo(txnStatusObj?.params?.to).name}</div>
               <div className={styles.swapBelowVal}>{(txnStatusObj?.params?.pairRatio * (txnStatusObj?.params?.fromAmount - getTokenInfo(txnStatusObj?.params?.to).fees))?.toFixed(3) || '-'} {getTokenInfo(txnStatusObj?.params?.to)?.symbol}</div>
               <div className={styles.swapBelowUsd}>${(usdValue * txnStatusObj?.params?.fromAmount)?.toFixed(2)}</div>
@@ -193,7 +193,7 @@ const Settling = (props: keyable) => {
   return (
     <div className={styles.settleContainer}>
       <img src={swapCircle} className={styles.swapCircleImg} />
-      <img src={props.logo} className={styles.nftLoadingImg}></img>
+      <img src={props.icon} className={styles.nftLoadingImg}></img>
       <span className={styles.quoteText}>Step {props.current} of {props.total}</span>
       <span className={styles.submittingText}>{props.status}</span>
       <div className={styles.progressBar}>

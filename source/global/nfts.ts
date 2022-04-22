@@ -2,6 +2,7 @@ import { keyable } from '~scripts/Background/types/IAssetsController';
 import NFT_PLACEHOLDER from '~assets/images/nft_placeholder.png';
 import ICON_EARTH from '~assets/images/icon-512.png';
 import { decodeTokenId } from '@earthwallet/assets';
+import NFT_EARTH_DAY from '~assets/images/earthday_nft.png';
 
 export const ICP_NFT_LIST = [
   {
@@ -144,8 +145,8 @@ export const ICP_NFT_LIST = [
     isLive: true,
     standard: 'EXT',
     order: 6,
-    description: `Internet Astronauts is a collection of 10,000 unique digital NFT collectibles only found on the Internet Computer! Internet Astronauts can have 
-    advantages for various dapps on the Internet Computer Protocol(ICP) since all dapps on-chain. 
+    description: `Internet Astronauts is a collection of 10,000 unique digital NFT collectibles only found on the Internet Computer! Internet Astronauts can have
+    advantages for various dapps on the Internet Computer Protocol(ICP) since all dapps on-chain.
     Holders will receive the Space Center membership where they can have fun.`,
     icon: 'https://sr4qi-vaaaa-aaaah-qcaaq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=6roeh-nykor-uwiaa-aaaaa-b4aqa-eaqca-aaaaa-a',
   },
@@ -222,13 +223,13 @@ export const ICP_NFT_LIST = [
     icon: 'https://jmuqr-yqaaa-aaaaj-qaicq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=ewpzr-jqkor-uwiaa-aaaaa-cmaca-uaqca-aabwo-a',
   },
   {
-    name: 'Earth DAO',
+    name: 'Earth Art Beta',
     id: 'ntwio-byaaa-aaaak-qaama-cai',
-    standard: 'EarthEXT',
+    standard: 'EarthArt',
     isLive: false,
     isAirdrop: false,
     description:
-      'Earth DAO - Guardians NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
+      'Earth Art - Earth NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
     icon: ICON_EARTH,
   },
 ];
@@ -274,3 +275,20 @@ export const getTokenImageUrlFromnftId = (nftId: string) => {
 };
 
 export default LIVE_ICP_NFT_LIST_CANISTER_IDS;
+
+export const getAirDropNFTInfo = () => ({
+  id: 'earth-day', //slug
+  standard: 'EarthArt',
+  isLive: true,
+  isAirdrop: true,
+  name: 'Earth Day 2022', //can be changed
+  //can be changed
+  description:
+    'Happy Earth Day! Something new is coming to Earth and this NFT gets you early access...',
+  icon: NFT_EARTH_DAY, //can be changed
+  claimedTxt: 'Congratulations! Your Earth Day NFT is registered and will be sent to account ',
+  //can be changed
+  twitterButtonCTA: 'Tweet to claim NFT',
+  disclaimer:
+    'disclaimer: Only one NFT can be claimed per extension. Please wait 5 minutes for tweet verification.',
+});

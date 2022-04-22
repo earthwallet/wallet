@@ -23,10 +23,15 @@ declare namespace qrcode {
     className?: string;
     style?: string;
   }
-    type QRCode = React.ComponentClass<QRCodeProps>;
+  type QRCode = React.ComponentClass<QRCodeProps>;
 }
 
 declare module 'qrcode.react' {
   const qrcode: qrcode.QRCode;
   export = qrcode;
+}
+
+declare module 'get-browser-fingerprint' {
+  const fingerprint: fingerprint.getBrowserFingerprint;
+  export = fingerprint;
 }

@@ -77,7 +77,7 @@ async function handleRequest (req) {
 
 window.earth = {
   evtRegMap: {},
-  version: '4.2',
+  version: '6.0',
   isConnected: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.isConnected')()
@@ -85,6 +85,11 @@ window.earth = {
   getAddressMeta: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.getAddressMeta')()
+  },
+  createSession: async ({sessionId, canisterIds, expiryTime}) => {
+    //check if already session is active
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.createSession')({sessionId, canisterIds, expiryTime})
   },
   sign: async (params) => {
     const icp = window.providerManager.getProviderFor('ICP')
@@ -94,11 +99,23 @@ window.earth = {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.signRaw')(params)
   },
+  sessionSign: async (params) => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.sessionSign')(params)
+  },
+  generateSessionId: async () => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.generateSessionId')()
+  },
   connect: async (params) => {
     const accepted = await window.providerManager.connect()
     if (!accepted) throw new Error('User rejected')
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.getAddress')(params)
+  },
+  disconnect: async () => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.disconnect')()
   },
   request: async (req) => {
     const params = req.params || []

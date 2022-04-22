@@ -370,6 +370,8 @@
   width: 74px;
   background: #2496ff;
   border-radius: 10px 0px 0px 10px;
+  transition: width 0.5s;
+  transition-timing-function: ease-out;
 }
 .rightSide {
   width: 196px;

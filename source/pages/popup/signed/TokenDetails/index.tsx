@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import styles from './index.scss';
 import { Link } from 'react-router-dom';
 import Header from '~components/Header';
@@ -27,12 +27,12 @@ import ICON_LIST from '~assets/images/icon_list.svg';
 import { selectAssetsICPByAddress } from '~state/wallet';
 import Swiper from 'react-id-swiper';
 import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
-import { SELECT_SYMBOLS_OBJS } from '~global/constant';
+import { getInfoBySymbol } from '~global/constant';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
 //import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
 import { selectGroupBalanceByAddress, selectGroupBalanceByGroupIdAndSymbol, selectBalanceInUSDByAddress } from '~state/wallet';
-import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance } from '~state/token';
+import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance, selectTokenByTokenPair } from '~state/token';
 import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
 
@@ -60,16 +60,15 @@ const Wallet = ({
 
 
   const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
-  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [nav, setNav] = useState('list');
   const [mainNav, setMainNav] = useState('tokens');
   const [tokenBalanceLoading, setTokenBalanceLoading] = useState(false);
-
+  const [selectedGridToken, setSelectedGridToken] = useState<string>('ICP');
 
   useEffect(() => {
-    if (selectedAccount?.symbol !== 'ICP') {
+    if (!(selectedAccount?.symbol === 'ICP' || selectedAccount?.symbol === 'ETH')) {
       history.replace('/account/minidetails/' + address)
     }
   }, [selectedAccount]);
@@ -119,14 +118,14 @@ const Wallet = ({
             onClick={() => setMainNav('tokens')}
             className={clsx(styles.tabnav,
               mainNav === 'tokens' && styles.tabnav_active)}>
-            Tokens
+            Wallet
           </div>
           <div
             onClick={() => setMainNav('nfts')}
             className={clsx(styles.tabnav,
               mainNav === 'nfts' && styles.tabnav_active)}
           >
-            NFTs
+            Art
           </div>
           <div onClick={() => setMainNav('apps')}
             className={clsx(styles.tabnav,
@@ -169,32 +168,13 @@ const Wallet = ({
 
       {mainNav === 'tokens' && <>
         <div>
-          {nav === 'grid' && <TokensGridflow address={address} />}
+          {nav === 'grid' && <TokensGridflow
+            setSelectedGridToken={setSelectedGridToken}
+            address={address} />}
           {nav === 'list' && <TokensList address={address} />}
         </div>
         <div className={clsx(styles.tokenGrid, nav === 'list' && styles.tokenGridList)}>
-          <div className={clsx(styles.balanceInfo, nav === 'list' && styles.noop)}>
-            <div className={styles.primaryBalanceLabel}>
-              {currentBalance?.loading ? (
-                <SkeletonTheme color="#222" highlightColor="#000">
-                  <Skeleton width={150} />
-                </SkeletonTheme>
-              ) : (
-                <div className={styles.primaryBalanceLabel}>{currentBalance &&
-                  `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
-                }</div>
-              )}
-            </div>
-            <div className={styles.secondaryBalanceLabel}>
-              {currentBalance?.loading ? (
-                <SkeletonTheme color="#222" highlightColor="#000">
-                  <Skeleton width={100} />
-                </SkeletonTheme>
-              ) : (
-                <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))?.toFixed(3)}</span>
-              )}
-            </div>
-          </div>
+          {(nav === 'grid') && <TokenOrICPBalance address={address} tokenId={selectedGridToken} />}
           {selectedAccount?.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
             <div
               className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
@@ -284,38 +264,33 @@ const TokensList = ({ address }: { address: string }) => {
     <div className={styles.tokensList}>
       <div className={styles.listHeader}>
         <div className={styles.listHeaderTitle}>Total Balance</div>
-        <div className={styles.listHeaderSubtitle}>${activeTokenAndAddressBalance?.toFixed(3) || 0}</div>
+        <div className={styles.listHeaderSubtitle}>${activeTokenAndAddressBalance?.toFixed(2) || 0}</div>
       </div>
       <div className={styles.listitemscont}>
-        {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
-          <div
-            onClick={() => history.push('/account/send/' + address)}
-            key={i}
-            className={styles.listitem}>
-            <img
-              className={styles.listicon}
-              src={token?.icon} >
-            </img>
-            <div className={styles.listinfo}>
-              <div className={styles.listtitle}>{token?.name}</div>
-            </div>
-
-            <GroupSymbolBalance groupId={selectedAccount?.groupId}
-              symbol={token?.symbol} />
-
-            <img
-              className={styles.listforward}
-              src={ICON_FORWARD}
-            />
+        <div
+          onClick={() => history.push('/th/' + address + '/' + selectedAccount.symbol)}
+          className={styles.listitem}>
+          <img
+            className={styles.listicon}
+            src={getInfoBySymbol(selectedAccount.symbol)?.icon} >
+          </img>
+          <div className={styles.listinfo}>
+            <div className={styles.listtitle}>{getInfoBySymbol(selectedAccount.symbol)?.name}</div>
           </div>
-        )}
+          <GroupSymbolBalance groupId={selectedAccount?.groupId}
+            symbol={getInfoBySymbol(selectedAccount.symbol)?.symbol} />
+          <img
+            className={styles.listforward}
+            src={ICON_FORWARD}
+          />
+        </div>
         {tokens?.length > 0 && tokens?.map((token, i: number) => <div
           onClick={() => history.push('/th/' + address + '/' + token.id)}
           key={i}
           className={styles.listitem}>
-          {token?.logo ? <img
+          {token?.icon ? <img
             className={styles.listicon}
-            src={token?.logo} >
+            src={token?.icon} >
           </img> : <div
             className={styles.listicon}
           >{token?.name?.charAt(0)}
@@ -366,24 +341,83 @@ const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: stri
 }
 
 
+const TokenOrICPBalance = ({ address, tokenId }) => {
+  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol('ICP')?.coinGeckoId || ''));
+  const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
+
+  if (tokenId == 'ICP') {
+    return <div className={clsx(styles.balanceInfo)}>
+      <div className={styles.primaryBalanceLabel}>
+        {currentBalance?.loading ? (
+          <SkeletonTheme color="#222" highlightColor="#000">
+            <Skeleton width={150} />
+          </SkeletonTheme>
+        ) : (
+          <div className={styles.primaryBalanceLabel}>{currentBalance &&
+            `${(currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) || 0).toFixed(4)} ${currentBalance?.currency?.symbol}`
+          }</div>
+        )}
+      </div>
+      <div className={styles.secondaryBalanceLabel}>
+        {currentBalance?.loading ? (
+          <SkeletonTheme color="#222" highlightColor="#000">
+            <Skeleton width={100} />
+          </SkeletonTheme>
+        ) : (
+          <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))?.toFixed(2)}</span>
+        )}
+      </div>
+    </div>
+  }
+
+  return <div className={clsx(styles.balanceInfo)}>
+    <div className={styles.primaryBalanceLabel}>
+      <div className={styles.primaryBalanceLabel}>{tokenPair?.balanceTxt || 0} {tokenPair?.symbol}</div>
+    </div>
+    <div className={styles.secondaryBalanceLabel}>
+      <span className={styles.secondaryBalanceLabel}>${tokenPair?.price || 0}</span>
+    </div>
+  </div>
+}
 
 
-const TokensGridflow = ({ address }: { address: string }) => {
+
+const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, setSelectedGridToken: () => void }) => {
   const assets: keyable = useSelector(selectAssetsICPByAddress(address));
-
+  const tokens = useSelector(selectActiveTokensByAddressWithInfo(address));
   const history = useHistory();
-  const ref = useRef(null);
+  const [swiper, setSwiper] = useState(null);
+
+
+  const updateCurrentIndex = (_index) => {
+    if (_index == 0) {
+      setSelectedGridToken('ICP')
+    }
+    else {
+      setSelectedGridToken(tokens[_index - 1].id)
+    }
+  };
+
+  useEffect(() => {
+    if (swiper !== null) {
+      swiper.on("slideChange", () => updateCurrentIndex(swiper.realIndex));
+    }
+
+    return () => {
+      if (swiper !== null) {
+        swiper.off("slideChange", () => updateCurrentIndex(swiper.realIndex));
+      }
+    };
+  }, [swiper]);
+
+
 
   const params = {
     grabCursor: true,
     centeredSlides: true,
     containerClass: "tokensswipercontainer",
     slidesPerView: 'auto',
-    pagination: {
-      el: '.swiper-pagination',
-      type: 'bullets',
-      clickable: true
-    },
     coverflowEffect: {
       rotate: 50,
       stretch: 0,
@@ -395,24 +429,49 @@ const TokensGridflow = ({ address }: { address: string }) => {
       el: '.swiper-pagination'
     }
   }
-  return (
-    <Swiper
-      ref={ref}
+  if (tokens?.length > 0) {
+    return <Swiper
+      getSwiper={setSwiper}
       effect={'coverflow'}
       slidesPerView={'auto'}
       {...params}>
-      {SELECT_SYMBOLS_OBJS('ICP')?.map((token, i: number) =>
-        <div
+      <div
+        onClick={() => history.push(`/th/${address}`)}
+        className={styles.imagecont}>
+        <img
+          className={styles.imageIcon}
+          src={getInfoBySymbol('ICP')?.icon} >
+        </img>
+      </div>
+      {tokens?.length > 0 && tokens?.map((token, i: number) => <div
+        onClick={() => history.push('/th/' + address + '/' + token.id)}
+        key={i}
+        className={styles.imagecont}>
+        {token?.icon ? <img
+          className={styles.imageIcon}
+          src={token?.icon} >
+        </img> : <div
+          className={styles.imageIcon}
+        >{token?.name?.charAt(0)}
+        </div>}
+      </div>)}
+    </Swiper>
+  }
+  return (
+    <Swiper
+      getSwiper={setSwiper}
+      effect={'coverflow'}
+      slidesPerView={'auto'}
+      {...params}>
+      <div
+        onClick={() => history.push(`/account/send/${address}`)}
+        className={styles.imagecont}>
+        <img
           key={i}
-          onClick={() => history.push(`/account/send/${address}`)}
-          className={styles.imagecont}>
-          <img
-            key={i}
-            className={styles.imageIcon}
-            src={token?.icon} >
-          </img>
-        </div>
-      )}
+          className={styles.imageIcon}
+          src={getInfoBySymbol('ICP')?.icon} >
+        </img>
+      </div>
     </Swiper>
   )
 };
@@ -420,13 +479,13 @@ const TokensGridflow = ({ address }: { address: string }) => {
 
 const Balance = ({ account }: { account: keyable }) => {
   const currentBalance: keyable = useSelector(selectBalanceByAddress(account?.address));
-  return <div className={styles.listprice}>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)} {account?.symbol}</div>
+  return <div className={styles.listprice}>{((currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)).toFixed(4)} {account?.symbol}</div>
 }
 
 const BalanceWithUSD = ({ address }: { address: string }) => {
   const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
   return <div className={styles.netlast}>
-    <div className={styles.netstats}>${currentBalance?.balanceInUSD?.toFixed(3)}
+    <div className={styles.netstats}>${currentBalance?.balanceInUSD?.toFixed(2)}
       {
         currentBalance?.usd_24h_change && currentBalance?.balanceInUSD !== 0
         && <span className={currentBalance?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentBalance?.usd_24h_change?.toFixed(2)}%</span>

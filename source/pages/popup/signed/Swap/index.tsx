@@ -159,7 +159,7 @@ const Swap = ({
           <div className={styles.firstInputCont}>
             <TokenSelectorDropdown
               loading={priceFetch}
-              tokenInfo={{ symbol: 'ICP', logo: ICON_ICP, id: 'ICP', type: 'network' }}
+              tokenInfo={{ symbol: 'ICP', icon: ICON_ICP, id: 'ICP', type: 'network' }}
               tokenInfos={tokenInfos}
               filterTokenId={tokenId}
               setSelectedAmount={updateAmount}
@@ -174,7 +174,7 @@ const Swap = ({
           </div>
           <TokenSelectorDropdown
             loading={priceFetch}
-            tokenInfo={{ logo: tokenInfo.logo, symbol: tokenInfo.symbol, id: tokenId }}
+            tokenInfo={{ icon: tokenInfo.icon, symbol: tokenInfo.symbol, id: tokenId }}
             tokenInfos={tokenInfos}
             setSelectedAmount={updateSecondAmount}
             selectedAmount={selectedSecondAmount}

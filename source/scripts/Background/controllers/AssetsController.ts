@@ -4,13 +4,17 @@ import type { IAssetsController, keyable } from '../types/IAssetsController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
 import { decodeTokenId, getNFTsFromCanisterExt } from '@earthwallet/assets';
 import { parseBigIntToString } from '~utils/common';
-import LIVE_ICP_NFT_LIST_CANISTER_IDS from '~global/nfts';
+import LIVE_ICP_NFT_LIST_CANISTER_IDS, {
+  getAirDropNFTInfo,
+} from '~global/nfts';
 import { canisterAgentApi, getTokenIdentifier } from '@earthwallet/assets';
 import { isArray } from 'lodash';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
-
+import getBrowserFingerprint from 'get-browser-fingerprint';
+import { registerExtensionAndAccounts, statusExtension } from '~utils/services';
+import { updateExtensionId } from '~state/wallet';
 export default class AssetsController implements IAssetsController {
   fetchFiatPrices = async (symbols: keyable, currency = 'USD') => {
     try {
@@ -26,7 +30,7 @@ export default class AssetsController implements IAssetsController {
       );
       const data = await (
         await fetch(
-          `${CGECKO_PRICE_API}?ids=${activeAssetIds}&vs_currencies=${currency}&include_24hr_change=true`
+          `${CGECKO_PRICE_API}?ids=${activeAssetIds}&vs_currencies=${currency}&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`
         )
       ).json();
       store.dispatch(
@@ -633,6 +637,89 @@ export default class AssetsController implements IAssetsController {
       );
       callback && callback(`/nft/bought/${nftId}?address=${address}`);
       //setIsBusy(false);
+    }
+  };
+
+  registerExtensionForAirdrop = async () => {
+    const fingerprint = getBrowserFingerprint();
+    console.log(fingerprint, 'registerExtensionForAirdrop');
+
+    const state = store.getState();
+    let extensionId;
+    if (state.wallet?.extensionId == '') {
+      extensionId = fingerprint.toString();
+      store.dispatch(updateExtensionId(extensionId));
+    } else {
+      extensionId = state.wallet.extensionId;
+    }
+    const ICPAccounts =
+      state.entities.accounts?.byId &&
+      Object.keys(state.entities.accounts?.byId)
+        ?.map((id) => state.entities.accounts.byId[id])
+        .filter((account) => account.symbol == 'ICP' && account.active)
+        .map((account) => account.address);
+
+    if (ICPAccounts.length == 0) {
+      return;
+    }
+    const earthdayAirdrop = getAirDropNFTInfo();
+    if (state.entities.airdrops == null) {
+      store.dispatch(createEntity({ entity: 'airdrops' }));
+    }
+
+    store.dispatch(
+      updateEntities({
+        entity: 'airdrops',
+        key: earthdayAirdrop?.id,
+        data: {
+          loading: true,
+        },
+      })
+    );
+    const status = await statusExtension(extensionId);
+    if (!status?.airdropEnabled) {
+      store.dispatch(
+        updateEntities({
+          entity: 'airdrops',
+          key: earthdayAirdrop.id,
+          data: {
+            airdropEnabled: false,
+            loading: false,
+          },
+        })
+      );
+      return;
+    } else {
+      store.dispatch(
+        updateEntities({
+          entity: 'airdrops',
+          key: earthdayAirdrop?.id,
+          data: {
+            ctaObj: status?.ctaObj,
+            totalVerifications: status?.totalVerifications,
+            airdropEnabled: true,
+            accountIdVerified: status?.accountIdVerified,
+            loading: false,
+          },
+        })
+      );
+    }
+    if (status?.accountIds?.length != ICPAccounts.length) {
+      const response = await registerExtensionAndAccounts(
+        fingerprint.toString(),
+        ICPAccounts
+      );
+      if (response.status == 'success') {
+        store.dispatch(
+          updateEntities({
+            entity: 'airdrops',
+            key: earthdayAirdrop?.id,
+            data: {
+              registered: true,
+            },
+          })
+        );
+      }
     }
   };
 }

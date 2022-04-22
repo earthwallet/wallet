@@ -33,7 +33,25 @@ class DAppController implements IDAppController {
   }
 
   addSignRequest(request: any, id: string) {
-    if (request.type === 'signRaw') {
+     if (request.type === 'createSession') {
+      const { sessionId, ...requestData } = request;
+
+      store.dispatch(
+        storeEntities({
+          entity: 'dappRequests',
+          data: [
+            {
+              id,
+              origin: this.#current.origin,
+              type: 'createSession',
+              request: requestData,
+              address: this.getCurrentDappAddress(),
+            },
+          ],
+        })
+      );
+    }
+   else if (request.type === 'signRaw') {
       store.dispatch(
         storeEntities({
           entity: 'dappRequests',

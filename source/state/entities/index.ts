@@ -2,7 +2,7 @@ import merge from 'lodash/merge';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { IEntityState } from './types';
 
-//Dont remove entities
+//Do not remove any entities once added
 const initialState: IEntityState = {
   accounts: { byId: {} },
   transactions: { byId: {} },
@@ -14,10 +14,13 @@ const initialState: IEntityState = {
   assetsCount: { byId: {} },
   collectionStats: { byId: {} },
   dappRequests: { byId: {} },
+  dappSessions: { byId: {} },
   txnRequests: { byId: {} },
   tokens: { byId: {} },
   tokensInfo: { byId: {} },
   pairs: { byId: {} },
+  recents: { byId: {} },
+  airdrops: { byId: {} },
 };
 
 export const entitiesState = createSlice({

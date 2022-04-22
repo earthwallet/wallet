@@ -6,6 +6,8 @@ import type { IWalletState } from './types';
 //import type { StoreInterface } from '~state/IStore';
 import { AppState } from '~state/store';
 import groupBy from 'lodash/groupBy';
+import { getTokenInfo } from '~global/tokens';
+import { getTokenImageURL } from '~global/nfts';
 
 const initialState: IWalletState = {
   accounts: [],
@@ -14,6 +16,7 @@ const initialState: IWalletState = {
   loading: false,
   error: '',
   activeNetwork: NetworkType.ICP,
+  extensionId: '',
 };
 
 const WalletState = createSlice({
@@ -28,6 +31,9 @@ const WalletState = createSlice({
     },
     updateNewMnemonic(state: IWalletState, action: PayloadAction<string>) {
       state.newMnemonic = action.payload;
+    },
+    updateExtensionId(state: IWalletState, action: PayloadAction<string>) {
+      state.extensionId = action.payload;
     },
     updateError(state: IWalletState, action: PayloadAction<string>) {
       state.error = action.payload;
@@ -51,6 +57,7 @@ export const {
   updateAccounts,
   updateActiveAccount,
   updateNewMnemonic,
+  updateExtensionId,
   updateError,
   updateLoading,
   hydrateWallet,
@@ -142,7 +149,86 @@ export const selectAssetById = (id: string) => (state: AppState) =>
 export const selectAccountById = (address: string) => (state: AppState) =>
   state.entities.accounts.byId[address];
 
+export const selectOtherAccountsOf = (address: string) => (state: AppState) => {
+  const selectedAccount = state.entities.accounts.byId[address];
+
+  const selectedSymbol = selectedAccount.symbol;
+  const otherAccounts =
+    state.entities.accounts?.byId &&
+    Object.keys(state.entities.accounts?.byId)
+      ?.map((id) => state.entities.accounts.byId[id])
+      .filter(
+        (account) =>
+          account.symbol == selectedSymbol &&
+          account.address != address &&
+          account.active
+      );
+  return otherAccounts;
+};
+
+export const selectRecentsOf =
+  (address: string, tokenId: string | null) => (state: AppState) => {
+    const selectedAccount = state.entities.accounts.byId[address];
+    const selectedSymbol = selectedAccount.symbol;
+    let recents;
+    if (tokenId == undefined) {
+      recents = Object.keys(state.entities.recents?.byId)
+        ?.map((id) => ({ ...state.entities.recents.byId[id], address: id }))
+        .filter((recent) => recent.symbol == selectedSymbol);
+    } else if (getTokenInfo(tokenId).addressType == 'principal') {
+      recents = Object.keys(state.entities.recents?.byId)
+        ?.map((id) => ({ ...state.entities.recents.byId[id], address: id }))
+        .filter(
+          (recent) =>
+            recent.symbol == selectedSymbol && recent.addressType == 'principal'
+        );
+    }
+    return recents || {};
+  };
+
 export const selectDappActiveAccountAddress = (state: AppState) =>
   state.wallet?.activeAccount?.address;
+
+export const selectActiveTokensAndAssetsICPByAddress =
+  (address: string) => (state: AppState) => {
+    const assets =
+      (state.entities.assets?.byId &&
+        Object.keys(state.entities.assets?.byId)
+          ?.map((id) => ({
+            ...state.entities.assets.byId[id],
+            ...{
+              type: 'nft',
+              id: state.entities.assets.byId[id]?.tokenIdentifier,
+              balanceTxt: '1 NFT',
+              label: state.entities.assets.byId[id]?.tokenIndex,
+              icon: getTokenImageURL(state.entities.assets.byId[id]),
+            },
+          }))
+          .filter((assets) => assets.address === address)) ||
+      [];
+    const activeTokens =
+      (state.entities.tokens?.byId &&
+        Object.keys(state.entities.tokens?.byId)
+          ?.map((id) => {
+            const tokenInfo = getTokenInfo(
+              state.entities.tokens.byId[id]?.tokenId
+            );
+            return {
+              ...state.entities.tokens.byId[id],
+              ...{
+                type: tokenInfo.type,
+                label: tokenInfo.symbol,
+                id: state.entities.tokens.byId[id]?.tokenId,
+                balanceTxt:
+                  state.entities.tokens.byId[id]?.balanceTxt +
+                  ' ' +
+                  tokenInfo.symbol,
+              },
+            };
+          })
+          .filter((token) => token.address === address && token.active)) ||
+      [];
+    return [...activeTokens, ...assets];
+  };
 
 export default WalletState.reducer;

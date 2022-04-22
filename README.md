@@ -6,7 +6,7 @@
 
 ![Earth Wallet](https://i.imgur.com/eIZaUbx.png)
 
-Earth wallet is a self custody browser wallet where you can store all of your digital assets, and access the new internet, all in one place. Designed and developed from the ground up to make the transition to new blockchain protocols like the internet computer and reduce the environmental impacts of Proof-of-Work blockchains.
+Earth wallet is a self custody browser wallet for regenerative digital assets. Designed and developed from the ground up to make the transition to new blockchain protocols that reduce the environmental impacts of Proof-of-Work blockchains.
 
 # Download it Here:
 
@@ -14,7 +14,7 @@ Earth wallet is a self custody browser wallet where you can store all of your di
 | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
 | 49 & later ✔                                                                                  | 52 & later ✔                                                                                     | 36 & later ✔                                                                               | 79 & later ✔                                                                            | Latest ✔                                                                                      | Latest ✔                                                                                   | Latest ✔                                                                                         |
 
-## 🎉 Now live with over 20,000 users!
+## Now in Beta!
 
 If you have any feedback or require real time support, or just want to chat with our developers please [join the Earth DAO Discord Server](https://earthdao.co/discord)!
 
@@ -24,11 +24,9 @@ If you have any feedback or require real time support, or just want to chat with
 :white_check_mark: Bitcoin and other multichain support <br/>
 :white_check_mark: Earth Connect (Developer SDK) <br/>
 :white_check_mark: NFT and Token support <br/>
-:black_square_button: Native Swaps and NFT Marketplace (Q2) <br/>
-:black_square_button: Carbon Neutral Bitcoin, Tokens, and NFTs (Q2) <br/>
-:black_square_button: Decentralized App Store(Q2) <br/>
+:white_check_mark: Earth Art Marketplace <br/>
 :black_square_button: Core Security Audits & Code Freeze (Q3) <br/>
-:black_square_button: Earth Protocol (🙊)
+:black_square_button: Earth DAO (🙊)
 
 ## 🌎 Earth Connect - Build Apps on the Internet Computer with Earth Wallet
 

@@ -37,6 +37,9 @@ export const { updateAssets, updateFiatPrice } = AssetState.actions;
 export const selectAssetBySymbol = (symbol: string) => (state: AppState) =>
   state.entities.prices.byId[symbol];
 
+export const selectAirdropStatus = (id: string) => (state: AppState) =>
+  state.entities.airdrops?.byId[id];
+
 export const selectAssetByCoinGeckoId = (symbol: string) =>
   selectAssetBySymbol(getSymbol(symbol)?.coinGeckoId || '');
 

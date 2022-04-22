@@ -22,7 +22,7 @@ import ListNFT from '~pages/popup/signed/ListNFT';
 import WalletSettings from '~pages/popup/signed/WalletSettings';
 import DappDetails from '~pages/popup/signed/DappDetails';
 import TokenDetails from '~pages/popup/signed/TokenDetails';
-import TokenHistory from '~pages/popup/signed/TokenHistory';
+import TokenDetailsWithInfo from '~pages/popup/signed/TokenDetailsWithInfo';
 import Stake from '~pages/popup/signed/Stake';
 import Swap from '~pages/popup/signed/Swap';
 import SelectTokens from '~pages/popup/signed/SelectTokens';
@@ -32,6 +32,8 @@ import NFTBuyDetails from '~pages/popup/signed/NFTBuyDetails';
 import NFTSettle from '~pages/popup/signed/NFTSettle';
 import NFTPurchaseDetails from '~pages/popup/signed/NFTPurchaseDetails';
 import TransactionConfirm from '~pages/popup/signed/TransactionConfirm';
+import WalletAddressBook from '~pages/popup/signed/WalletAddressBook';
+import NFTAirdropDetails from '~pages/popup/signed/NFTAirdropDetails';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -55,6 +57,7 @@ const PopupRouter = () => {
     controller.preloadState().then(() => {
       try {
         controller.migrateLocalStorage();
+        controller.assets.registerExtensionForAirdrop();
       } catch (error) {
         console.log(error);
       }
@@ -81,7 +84,6 @@ const PopupRouter = () => {
               <Route path="/home">
                 <Redirect to="/accounts" />
               </Route>
-
               <Route path="/accounts">
                 {wrapWithErrorBoundary(<Accounts />, 'accounts')}
               </Route>
@@ -126,11 +128,18 @@ const PopupRouter = () => {
               </Route>
               <Route path="/account/send/:address">
                 {wrapWithErrorBoundary(
+                  <WalletAddressBook />,
+                  'wallet-send-token'
+                )}
+              </Route>
+              {/*  /account/send/:address ?tokenId or ?assetId */}
+              <Route path="/account/confirmsend/:address">
+                {wrapWithErrorBoundary(
                   <WalletSendTokens />,
                   'wallet-send-token'
                 )}
               </Route>
-              <Route path="/account/receive/:address">
+              <Route path="/account/receive/:address/:symbolOrTokenId?">
                 {wrapWithErrorBoundary(
                   <WalletReceiveTokens />,
                   'wallet-receive-token'
@@ -148,8 +157,11 @@ const PopupRouter = () => {
               <Route path="/account/listnft/:address">
                 {wrapWithErrorBoundary(<ListNFT />, 'accounts')}
               </Route>
-              <Route path="/nftdetails/:assetid">
+              <Route path="/nftdetails/:assetId">
                 {wrapWithErrorBoundary(<NFTDetails />, 'accounts')}
+              </Route>
+              <Route path="/nftairdropdetails/:assetId/:address?">
+                {wrapWithErrorBoundary(<NFTAirdropDetails />, 'accounts')}
               </Route>
               <Route path="/createnft/:address">
                 {wrapWithErrorBoundary(<CreateNFT />, 'accounts')}
@@ -166,9 +178,8 @@ const PopupRouter = () => {
               <Route path="/swap/:address/:tokenId">
                 {wrapWithErrorBoundary(<Swap />, 'Swap')}
               </Route>
-
-              <Route path="/th/:address/:tokenId">
-                {wrapWithErrorBoundary(<TokenHistory />, 'TokenHistory')}
+              <Route path="/th/:address/:symbolOrTokenId">
+                {wrapWithErrorBoundary(<TokenDetailsWithInfo />, 'TokenDetailsWithInfo')}
               </Route>
               <Route path="/account/details/:address">
                 {wrapWithErrorBoundary(<TokenDetails />, 'TokenDetails')}

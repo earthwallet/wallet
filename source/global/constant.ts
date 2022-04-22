@@ -18,10 +18,13 @@ export const STATE_PORT = 'EARTH_WALLET';
 
 export const TEST_NETWORKS = [NetworkType.BitcoinTestnet, NetworkType.Rinkeby];
 
+/* Attribution: API provided by https://www.coingecko.com/en/api/documentation */
+
 export const CGECKO_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
 
-export const DEFAULT_SYMBOL = 'ETH';
+export const DEFAULT_GROUP_SYMBOL = 'BTC';
 
+// once a symbol is marked isLive true, it shouldnt be marked as isLive false
 export const DEFAULT_SYMBOLS = [
   {
     name: 'Bitcoin',
@@ -41,6 +44,8 @@ export const DEFAULT_SYMBOLS = [
     isLive: true,
     preGenerate: true,
     order: 0,
+    addressTitle: 'Account Id',
+    addressType: 'accountId',
   },
   {
     name: 'ICP Ed25519',
@@ -203,11 +208,11 @@ export const LIVE_SYMBOLS_OBJS = DEFAULT_SYMBOLS.filter(
   .sort((a, b) => a.order - b.order)
   .map((symbolObj) => symbolObj);
 
-export const SELECT_SYMBOLS_OBJS = (symbol: string) =>
+export const getInfoBySymbol = (symbol: string) =>
   DEFAULT_SYMBOLS.filter((symbolObj) => symbolObj.isLive)
     .sort((a, b) => a.order - b.order)
     .map((symbolObj) => symbolObj)
-    .filter((symbolObj) => symbolObj.symbol === symbol);
+    .filter((symbolObj) => symbolObj.symbol === symbol)[0];
 
 export const LIVE_SYMBOLS_GECKOIDs = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.isLive

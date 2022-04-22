@@ -13,6 +13,9 @@
   overflow-y: scroll;
 }
 
+.body {
+  width: 100vw;
+}
 .empty {
   align-items: center;
   display: flex;
@@ -100,7 +103,7 @@
   padding: 8px 20px;
   display: flex;
   width: fit-content;
-  margin: 0 6px;
+  margin: 0 3px;
   border: 2px solid #2496ff;
   box-sizing: border-box;
   border-radius: 29px;
@@ -222,5 +225,5 @@
 
   border-radius: 12px;
   margin: 24px;
-  width: calc(100vw - 24px);
+  width: calc(100vw - 48px);
 }

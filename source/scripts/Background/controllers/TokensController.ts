@@ -28,6 +28,7 @@ import { Principal } from '@dfinity/principal';
 import { v4 as uuid } from 'uuid';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
+import { keyable } from '../types/IAssetsController';
 
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
@@ -54,12 +55,12 @@ export default class TokensController implements ITokensController {
           method: 'balanceOf',
           args: Principal.fromText(accountInfo?.meta?.principalId),
         });
-        usd = await canisterAgent({
+        const conv_res = await canisterAgent({
           canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
           method: 'get_icp_xdr_conversion_rate',
         });
         const TRILLION_SDR_PER_ICP =
-          usd?.data?.xdr_permyriad_per_icp.toString() / 10000;
+          conv_res?.data?.xdr_permyriad_per_icp.toString() / 10000;
         ratio_per_icp = TRILLION_SDR_PER_ICP;
         balanceTxt =
           (response?.toString() &&
@@ -71,6 +72,7 @@ export default class TokensController implements ITokensController {
         const ICP_PRICE_IN_USD = currentUSDValue?.usd;
         const SDR_PRICE_IN_USD = ICP_PRICE_IN_USD / TRILLION_SDR_PER_ICP;
         price = (balanceTxt * SDR_PRICE_IN_USD)?.toFixed(2);
+        usd = SDR_PRICE_IN_USD;
       } else if (
         tokenInfo.wrappedSymbol != null &&
         tokenInfo.wrappedSymbol == 'ICP'
@@ -97,6 +99,7 @@ export default class TokensController implements ITokensController {
         price,
         balanceTxt,
         ratio_per_icp,
+        usd,
       };
       store.dispatch(
         storeEntities({
@@ -284,13 +287,55 @@ export default class TokensController implements ITokensController {
     return txnId;
   };
 
+  transferToken = async (
+    identityJSON: string,
+    tokenId: string,
+    recipient: string,
+    amount: number,
+    address: string,
+    callback?: (path: string) => void
+  ) => {
+    const state = store.getState();
+
+    if (state.entities.recents == null) {
+      store.dispatch(createEntity({ entity: 'recents' }));
+    }
+
+    store.dispatch(
+      updateEntities({
+        entity: 'recents',
+        key: recipient,
+        data: {
+          symbol: 'ICP',
+          addressType: 'principal',
+          lastSentAt: new Date().getTime(),
+          sentBy: address,
+        },
+      })
+    );
+
+    const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
+
+    const response: keyable = await canisterAgent({
+      canisterId: tokenId,
+      method: 'transfer',
+      args: [
+        Principal.fromText(recipient),
+        amount * Math.pow(10, getTokenInfo(tokenId).decimals),
+      ],
+      fromIdentity: currentIdentity,
+    });
+    callback && callback('s');
+    await this.getTokenBalances(address);
+    return response;
+  };
+
   mintToken = async (
     txnId: string,
     identityJSON: string,
 
     callback?: (path: string) => void
   ) => {
-    console.log(txnId);
     const state = store.getState();
     const txnObj = state.entities.txnRequests.byId[txnId];
     const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
@@ -309,7 +354,7 @@ export default class TokensController implements ITokensController {
               loading: true,
               status: 'Transferring ICP',
               current: 1,
-              total: 2,
+              total: 3,
               type: 'mint',
             },
           ],
@@ -334,7 +379,7 @@ export default class TokensController implements ITokensController {
               status: '',
               error: error?.message,
               current: 1,
-              total: 2,
+              total: 3,
               type: 'mint',
             },
           ],
@@ -351,8 +396,8 @@ export default class TokensController implements ITokensController {
               id: txnId,
               loading: true,
               status: 'Minting',
-              current: 1,
-              total: 2,
+              current: 2,
+              total: 3,
               type: 'mint',
               sendIndex: index?.toString(),
             },
@@ -375,7 +420,7 @@ export default class TokensController implements ITokensController {
                 loading: false,
                 status: '',
                 current: 2,
-                total: 2,
+                total: 3,
                 type: 'mint',
                 sendIndex: index?.toString(),
               },
@@ -392,8 +437,8 @@ export default class TokensController implements ITokensController {
                 loading: false,
                 status: '',
                 error: JSON.stringify(response['Err']),
-                current: 1,
-                total: 2,
+                current: 2,
+                total: 3,
                 type: 'mint',
                 sendIndex: index?.toString(),
               },
@@ -411,8 +456,8 @@ export default class TokensController implements ITokensController {
               loading: false,
               status: '',
               error: error?.message,
-              current: 1,
-              total: 2,
+              current: 2,
+              total: 3,
               type: 'mint',
               sendIndex: index?.toString(),
             },
@@ -421,7 +466,37 @@ export default class TokensController implements ITokensController {
       );
       return;
     }
+    store.dispatch(
+      storeEntities({
+        entity: 'txnRequests',
+        data: [
+          {
+            id: txnId,
+            loading: true,
+            status: 'Updating balances',
+            current: 3,
+            total: 3,
+            type: 'mint',
+          },
+        ],
+      })
+    );
     await this.getTokenBalances(txnObj.address);
+    store.dispatch(
+      storeEntities({
+        entity: 'txnRequests',
+        data: [
+          {
+            id: txnId,
+            loading: false,
+            status: 'Updating balances',
+            current: 3,
+            total: 3,
+            type: 'mint',
+          },
+        ],
+      })
+    );
     callback && callback('/account/details/' + txnObj.address);
   };
 

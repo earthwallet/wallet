@@ -111,7 +111,7 @@ const Wallet = ({
           <div className={styles.copyCont}>
             <div className={styles.copyName}>{selectedAccount?.meta?.name}</div>
             <div className={styles.copyAddress}>
-              {getShortAddress(selectedAccount?.id || '')}
+              {getShortAddress(selectedAccount?.address || '')}
             </div>
           </div>
           <div className={styles.copyButton}>
