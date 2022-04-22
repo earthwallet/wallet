@@ -1598,11 +1598,10 @@
   resolved "https://registry.npmjs.org/@discoveryjs/json-ext/-/json-ext-0.5.5.tgz"
   integrity sha512-6nFkfkmSeV/rqSaS4oWHgmpnYw194f6hmWF5is6b0J1naJZoiD0NTc9AiUwPHvWsowkjuHErCZT1wa0jg+BLIA==
 
-"@earthwallet/assets@^0.3.28":
+"@earthwallet/assets@0.3.28":
   version "0.3.28"
   resolved "https://registry.yarnpkg.com/@earthwallet/assets/-/assets-0.3.28.tgz#fce4ef17fdf7a2044b87341ca069fe1adffa952d"
   integrity sha512-hlpzhPwdToZ+FhCgF/lmgozSJkXOq0z55lDj9sRAckRoleaQXLX8zIJk1lIsvUhBOTu9EkFeHDRyJUWCAnGypQ==
-
   dependencies:
     "@alch/alchemy-web3" "^1.3.0"
     "@dfinity/agent" "^0.9.3"

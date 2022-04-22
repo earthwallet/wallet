@@ -7,7 +7,7 @@ const TOKENS_LIST = [
     isLive: true,
     decimals: 12,
     id: 'cyiep-riaaa-aaaam-qadnq-cai',
-    name: 'Earth SDR',
+    name: 'SDR',
     symbol: 'SDR',
     wrappedSymbol: 'XDR',
     tokenCanisterId: 'cyiep-riaaa-aaaam-qadnq-cai',

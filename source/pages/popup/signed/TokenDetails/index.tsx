@@ -118,14 +118,14 @@ const Wallet = ({
             onClick={() => setMainNav('tokens')}
             className={clsx(styles.tabnav,
               mainNav === 'tokens' && styles.tabnav_active)}>
-            Tokens
+            Wallet
           </div>
           <div
             onClick={() => setMainNav('nfts')}
             className={clsx(styles.tabnav,
               mainNav === 'nfts' && styles.tabnav_active)}
           >
-            NFTs
+            Art
           </div>
           <div onClick={() => setMainNav('apps')}
             className={clsx(styles.tabnav,

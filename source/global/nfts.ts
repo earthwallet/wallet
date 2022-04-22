@@ -145,8 +145,8 @@ export const ICP_NFT_LIST = [
     isLive: true,
     standard: 'EXT',
     order: 6,
-    description: `Internet Astronauts is a collection of 10,000 unique digital NFT collectibles only found on the Internet Computer! Internet Astronauts can have 
-    advantages for various dapps on the Internet Computer Protocol(ICP) since all dapps on-chain. 
+    description: `Internet Astronauts is a collection of 10,000 unique digital NFT collectibles only found on the Internet Computer! Internet Astronauts can have
+    advantages for various dapps on the Internet Computer Protocol(ICP) since all dapps on-chain.
     Holders will receive the Space Center membership where they can have fun.`,
     icon: 'https://sr4qi-vaaaa-aaaah-qcaaq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=6roeh-nykor-uwiaa-aaaaa-b4aqa-eaqca-aaaaa-a',
   },
@@ -284,7 +284,7 @@ export const getAirDropNFTInfo = () => ({
   name: 'Earth Day 2022', //can be changed
   //can be changed
   description:
-    'Something new is coming to Earth, and this NFT gets you early access.',
+    'Happy Earth Day! Something new is coming to Earth and this NFT gets you early access...',
   icon: NFT_EARTH_DAY, //can be changed
   claimedTxt: 'Congratulations! Your Earth Day NFT is registered and will be sent to account ',
   //can be changed
