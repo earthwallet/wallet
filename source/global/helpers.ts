@@ -51,13 +51,13 @@ export const parsePrincipalObj = (data: keyable): keyable =>
   typeof data === 'object'
     ? Array.isArray(data)
       ? data.map((object) => parsePrincipalObj(object))
-      : Object.entries(data).reduce((acum, [key, val]) => {
-          const current: keyable = { ...acum };
-          if (val._isPrincipal) {
+      : Object.entries(data)?.reduce((acum, [key, val]) => {
+          let current: keyable = { ...acum };
+          if (val?._isPrincipal) {
             current[key] = Principal.fromUint8Array(
-              new Uint8Array(Object.values(val._arr))
+              new Uint8Array(Object.values(val?._arr))
             );
-          } else if (typeof val === 'object') {
+          } else if (typeof val === 'object' && val != null) {
             current[key] = parsePrincipalObj(val);
           } else {
             current[key] = val;
