@@ -10,6 +10,7 @@ import {
 import { parseBigIntToString } from '~utils/common';
 import LIVE_ICP_NFT_LIST_CANISTER_IDS, {
   getAirDropNFTInfo,
+  getTokenCollectionInfo,
 } from '~global/nfts';
 import { canisterAgentApi, getTokenIdentifier } from '@earthwallet/assets';
 import { isArray } from 'lodash';
@@ -72,8 +73,8 @@ export default class AssetsController implements IAssetsController {
     return parsedTokens;
   };
 
-  fetchEarthEXTCollection = async (collectionId: string) => {
-    console.log('fetchEarthEXTCollection');
+  fetchEarthArtCollection = async (collectionId: string) => {
+    console.log('fetchEarthArtCollection');
     //const state = store.getState();
 
     let response;
@@ -130,6 +131,42 @@ export default class AssetsController implements IAssetsController {
     ); */
   };
 
+  fetchListingsByUser = async (
+    address: string,
+    collectionId = 'vsjkh-vyaaa-aaaak-qajgq-cai'
+  ) => {
+    const response = await canisterAgent({
+      canisterId: getTokenCollectionInfo(collectionId).marketplaceId || '',
+      method: 'getNFTsListingsByUser',
+      args: { address: address },
+    });
+    console.log(response, 'fetchListingsByUser', address);
+
+    if (response != null) {
+      response.map((token: keyable) => {
+        return (
+          token[0] &&
+          store.dispatch(
+            updateEntities({
+              entity: 'assets',
+              key: getTokenIdentifier(
+                token[0].nft?.nftCanister.toText(),
+                token[0].nft.nftIdentifier.nat32.toString()
+              ),
+              data: {
+                loading: false,
+                forSale: true,
+                info: {
+                  price: token[0].price.toString(),
+                  symbol: Object.keys(token[0].symbol)[0].toUpperCase(),
+                },
+              },
+            })
+          )
+        );
+      });
+    }
+  };
   fetchCollectionInfo = async (collectionId: string) => {
     const response = await canisterAgentApi(
       collectionId,
@@ -146,6 +183,7 @@ export default class AssetsController implements IAssetsController {
           entity: 'collectionInfo',
           key: collectionId,
           data: {
+            standard: 'EarthArt',
             name: response.name,
             description: response.description,
             fee: response.fee?.toString(),
@@ -285,25 +323,7 @@ export default class AssetsController implements IAssetsController {
         index,
         canisterId,
       ] of LIVE_ICP_NFT_LIST_CANISTER_IDS.entries()) {
-        if (canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
-          const response = await canisterAgentApi(
-            canisterId,
-            'tokens_ext',
-            account.address
-          );
-
-          allTokens[index] = response.map((_token: any[]) => {
-            const id = getTokenIdentifier(canisterId, _token[0]);
-            this.fetchEarthNFT(canisterId, _token[0]);
-            return {
-              id,
-              tokenIdentifier: id,
-              address: _token[1],
-              tokenIndex: _token[0],
-              canisterId,
-            };
-          });
-        } else if (canisterId === 'vsjkh-vyaaa-aaaak-qajgq-cai') {
+        if (canisterId === 'vsjkh-vyaaa-aaaak-qajgq-cai') {
           const response = await canisterAgent({
             canisterId,
             method: 'getNFTsByUser',
@@ -321,13 +341,15 @@ export default class AssetsController implements IAssetsController {
             }
             return {
               id,
-              type: 'EarthNFT',
+              standard: 'EarthArt',
               tokenIdentifier: id,
               address: account.address,
               tokenIndex: _token[0],
               canisterId: canisterId,
             };
           });
+
+          this.fetchListingsByUser(account.address, canisterId);
         } else {
           allTokens[index] = await this.fetchICPAssets(account, canisterId);
         }

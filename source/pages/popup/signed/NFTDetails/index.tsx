@@ -6,7 +6,7 @@ import Header from '~components/Header';
 import { useSelector } from 'react-redux';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { selectAssetById } from '~state/wallet';
-import { getTokenImageURL } from '~global/nfts';
+import { getEarthArtCollectionIcon, getTokenImageURL } from '~global/nfts';
 import clsx from 'clsx';
 import { useController } from '~hooks/useController';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -34,6 +34,7 @@ const NFTDetails = ({
     const [loading, setLoading] = useState(false);
     const controller = useController();
     const assetCollectionInfo: keyable = useSelector(selectCollectionInfo(canisterId));
+    console.log(asset,assetCollectionInfo, 'NFTDetails');
 
     useEffect((): void => {
         setLoading(true);
@@ -79,7 +80,7 @@ const NFTDetails = ({
                     </div>
                     <div className={styles.sep}></div>
                     <div className={styles.creatorCont}>
-                        <img src={assetCollectionInfo?.icon} className={styles.creatorIcon}></img>
+                        <img src={asset?.standard == 'EarthArt' ? getEarthArtCollectionIcon(canisterId) : assetCollectionInfo?.icon} className={styles.creatorIcon}></img>
                         <div className={styles.creatorInfo}>
                             <div className={styles.creatorTitle}>{assetCollectionInfo?.name}</div>
                             <div className={styles.creatorSubtitle}>{assetCollectionInfo?.description}</div>

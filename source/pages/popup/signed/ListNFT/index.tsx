@@ -3,7 +3,7 @@ import Header from '~components/Header';
 import styles from './index.scss';
 import clsx from 'clsx';
 import NextStepButton from '~components/NextStepButton';
-import { canisterAgentApi, listNFTsExt } from '@earthwallet/assets';
+import { canisterAgent, canisterAgentApi, listNFTsExt } from '@earthwallet/assets';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
@@ -19,6 +19,7 @@ import Warning from '~components/Warning';
 import { useController } from '~hooks/useController';
 import { validateMnemonic } from '@earthwallet/keyring';
 import { useHistory } from 'react-router-dom';
+import { Principal } from '@dfinity/principal';
 
 const MIN_LENGTH = 6;
 
@@ -55,6 +56,7 @@ const ListNFT = ({
 
     const controller = useController();
 
+    console.log(selectedAssetObj, 'selectedAssetObj');
     useEffect(() => {
         if (queryParams.get('assetId') === null) {
             setSelectedAsset(selectedAccount?.symbol)
@@ -136,6 +138,49 @@ const ListNFT = ({
                         setTxCompleteTxt('Listed');
                         setLoadingSend(false);
                         setIsBusy(false);
+                    }
+                } catch (error) {
+                    console.log(error);
+                    setTxError("Please try again later! Error: " + JSON.stringify(error));
+                    setLoadingSend(false);
+                    setIsBusy(false);
+                }
+            }
+            else if (selectedAssetObj?.standard == 'EarthArt') {
+                try {
+                    const resp = await canisterAgent({
+                        canisterId: selectedAssetObj?.canisterId,
+                        method: 'setApprovalForAll',
+                        fromIdentity: currentIdentity,
+                        args: {
+                            id: { principal: Principal.fromText('vvimt-yaaaa-aaaak-qajga-cai') },
+                            approved: true,
+                        },
+                    });
+                    const status = await canisterAgent({
+                        canisterId: 'vvimt-yaaaa-aaaak-qajga-cai',
+                        method: 'createListing',
+                        fromIdentity: currentIdentity,
+                        args: {
+                            groupIdentifier: [],
+                            nft: {
+                                nftCanister: Principal.fromText(selectedAssetObj?.canisterId),
+                                nftIdentifier: { nat32: selectedAssetObj.tokenIndex },
+                            },
+                            price: selectedAmount === 0 ? 0 : BigInt(selectedAmount * Math.pow(10, 8)),
+                            symbol: { icp: null },
+                        },
+                    });
+                    console.log(resp, status, 'listNFT')
+                    await controller.assets.fetchListingsByUser(address)
+                    if (status.ok != null) {
+                        history.replace(`/nftdetails/${selectedAsset}`);
+                        setTxCompleteTxt('Listed');
+                        setLoadingSend(false);
+                        setIsBusy(false);
+                    }
+                    else {
+                        throw (status.err)
                     }
                 } catch (error) {
                     console.log(error);

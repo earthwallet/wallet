@@ -225,7 +225,8 @@ export const ICP_NFT_LIST = [
   {
     name: 'Earth orchestrator',
     id: 'vsjkh-vyaaa-aaaak-qajgq-cai',
-    standard: 'EarthEXT',
+    marketplaceId: 'vvimt-yaaaa-aaaak-qajga-cai',
+    standard: 'EarthArt',
     isLive: true,
     isAirdrop: false,
     description:
@@ -246,11 +247,16 @@ export const getTokenCollectionInfo = (canisterId: string) =>
   ICP_NFT_LIST.filter((asset) => asset.id === canisterId)[0];
 
 export const getTokenImageURL = (asset: keyable) => {
+  let imageURL = '';
+
+  if (asset?.standard == 'EarthArt') {
+    imageURL = `https://${asset?.canisterId}.raw.ic0.app/id/${asset?.tokenIndex}`;
+    return imageURL;
+  }
   if (asset?.canisterId === 'vsjkh-vyaaa-aaaak-qajgq-cai') {
     return NFT_PLACEHOLDER;
   }
   const isWrapped = getTokenCollectionInfo(asset?.canisterId)?.wrapped;
-  let imageURL = '';
   if (isWrapped) {
     if (getTokenCollectionInfo(asset?.canisterId)?.tokenImage !== undefined) {
       let _tokenImage = getTokenCollectionInfo(asset?.canisterId).tokenImage;
@@ -267,6 +273,9 @@ export const getTokenImageURL = (asset: keyable) => {
   return imageURL;
 };
 
+export const getEarthArtCollectionIcon = (collectionId: string) =>
+  `https://${collectionId}.raw.ic0.app/collection`;
+
 export const getTokenImageUrlFromnftId = (nftId: string) => {
   const canisterId = decodeTokenId(nftId).canister;
 
@@ -278,7 +287,7 @@ export default LIVE_ICP_NFT_LIST_CANISTER_IDS;
 
 export const getAirDropNFTInfo = () => ({
   id: 'earth-day', //slug
-  standard: 'EarthEXT',
+  standard: 'EarthArt',
   isLive: true,
   isAirdrop: true,
   name: 'Earth day NFT', //can be changed
