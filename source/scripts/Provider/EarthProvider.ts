@@ -2,7 +2,7 @@ import { getBalance } from '@earthwallet/keyring';
 //import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import { IWalletState } from '~state/wallet/types';
 import store from '~state/store';
-import { canisterAgentApi } from '@earthwallet/assets';
+import { canisterAgent } from '@earthwallet/assets';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
@@ -116,24 +116,26 @@ export class EarthProvider {
           singleRequest?.args && parseObjWithBigInt(singleRequest?.args);
         const argsWithPrincipalAndBigInt = parsePrincipalObj(argsWithBigInt);
 
-        response[counter] = await canisterAgentApi(
-          singleRequest?.canisterId,
-          singleRequest?.method,
-          argsWithPrincipalAndBigInt,
-          fromIdentity
-        );
+        response[counter] = await canisterAgent({
+          canisterId: singleRequest?.canisterId,
+          method: singleRequest?.method,
+          args: argsWithPrincipalAndBigInt,
+          fromIdentity,
+          host: singleRequest?.host,
+        });
         counter++;
       }
     } else {
       const argsWithBigInt = request?.args && parseObjWithBigInt(request?.args);
       const argsWithPrincipalAndBigInt = parsePrincipalObj(argsWithBigInt);
 
-      response = await canisterAgentApi(
-        request?.canisterId,
-        request?.method,
-        argsWithPrincipalAndBigInt,
-        fromIdentity
-      );
+      response = await canisterAgent({
+        canisterId: request?.canisterId,
+        method: request?.method,
+        args: argsWithPrincipalAndBigInt,
+        fromIdentity,
+        host: request?.host,
+      });
     }
 
     let parsedResponse = '';

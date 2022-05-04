@@ -14,13 +14,18 @@ import useGetAccountGroupAssetBalances from '~hooks/useGetAccountGroupAssetBalan
 import ICON_SETTINGS from '~assets/images/icon_more_settings.svg';
 import useGetCollectionStats from '~hooks/useGetCollectionStats';
 
-const Page = () => {
+const Accounts = () => {
   const history = useHistory();
   const accountGroups = useSelector(selectActiveAccountGroups);
   const loading = useGetAccountGroupBalances(accountGroups);
 
   useGetAccountGroupAssetBalances(accountGroups);
   useGetCollectionStats();
+  /* 
+  highlight connected Address
+  chrome.tabs.query({active:true,currentWindow:true},function(tab){
+    console.log(tab[0].url);
+  }); */
 
   return (
     <div className={styles.page}>
@@ -130,4 +135,4 @@ const AssetsICPCount = ({ icpAddress }: { icpAddress: string }) => {
   </div>
 }
 
-export default Page;
+export default Accounts;
