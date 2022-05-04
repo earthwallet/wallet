@@ -106,13 +106,21 @@ export const messagesHandler = (
       } else if (method === 'wallet.getAddressMeta') {
         result = mainController.provider.getAddressMeta(origin);
       } else if (method === 'wallet.sessionSign') {
-        result = await mainController.provider.sessionSign({
-          ...params,
-        }, origin);
+        result = await mainController.provider.sessionSign(
+          {
+            ...params,
+          },
+          origin
+        );
       } else if (method === 'wallet.generateSessionId') {
         result = mainController.provider.generateSessionId();
-      }
-      else if (method === 'wallet.sign' || method === 'wallet.signRaw' || method === 'wallet.createSession') {
+      } else if (method === 'wallet.closeSession') {
+        result = mainController.provider.closeSession(origin);
+      } else if (
+        method === 'wallet.sign' ||
+        method === 'wallet.signRaw' ||
+        method === 'wallet.createSession'
+      ) {
         if (pendingWindow) {
           return Promise.resolve(null);
         }
@@ -134,14 +142,13 @@ export const messagesHandler = (
               //https://forum.dfinity.org/t/mismatching-dfinity-agent-versions-can-cause-hashing-issues/7359/5
               const approvedIdentityJSON =
                 mainController.dapp.getApprovedIdentityJSON();
-                if (method === 'wallet.createSession') {
-                  result = await mainController.provider.createSession(
-                    signatureRequest,
-                    approvedIdentityJSON,
-                    windowId
-                  );
-                }
-               else if (method === 'wallet.signRaw') {
+              if (method === 'wallet.createSession') {
+                result = await mainController.provider.createSession(
+                  signatureRequest,
+                  approvedIdentityJSON,
+                  windowId
+                );
+              } else if (method === 'wallet.signRaw') {
                 result = await mainController.provider.signRaw(
                   signatureRequest,
                   approvedIdentityJSON,

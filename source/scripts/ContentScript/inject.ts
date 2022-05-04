@@ -77,7 +77,7 @@ async function handleRequest (req) {
 
 window.earth = {
   evtRegMap: {},
-  version: '6.0',
+  version: '6.1',
   isConnected: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.isConnected')()
@@ -106,6 +106,10 @@ window.earth = {
   generateSessionId: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.generateSessionId')()
+  },
+  closeSession: async () => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.closeSession')()
   },
   connect: async (params) => {
     const accepted = await window.providerManager.connect()

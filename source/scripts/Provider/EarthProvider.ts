@@ -161,6 +161,32 @@ export class EarthProvider {
 
     return response;
   }
+  //closes any active session
+  closeSession(origin: string) {
+    console.log('closeSession', origin);
+
+    const state = store.getState();
+    const sessionState = Object.keys(state.entities.dappSessions?.byId)
+      ?.map((id) => state.entities.dappSessions.byId[id])
+      .filter(
+        (dappSession: keyable) =>
+          typeof dappSession == 'object' && dappSession.origin == origin
+      );
+
+    sessionState.map((session) =>
+      store.dispatch(
+        updateEntities({
+          entity: 'dappSessions',
+          key: session.id,
+          data: {
+            vault: {},
+            active: false,
+          },
+        })
+      )
+    );
+    return { success: 'Closed active session' };
+  }
 
   //8e82f9bc
   async sessionSign(request: keyable, origin: string) {
@@ -175,13 +201,15 @@ export class EarthProvider {
       ?.map((id) => state.entities.dappSessions.byId[id])
       .filter(
         (dappSession: keyable) =>
-          typeof dappSession == 'object' && dappSession.origin == origin
+          typeof dappSession == 'object' &&
+          dappSession.origin == origin &&
+          dappSession.active
       )[0];
     let approvedIdentityJSON = '';
 
     if (sessionState == undefined) {
       return {
-        error: 'Wrong sessionId! Please try again or create a new Session',
+        error: 'No active sessions! Please create new session',
       };
     } else {
       try {
@@ -192,7 +220,8 @@ export class EarthProvider {
       } catch (error) {
         console.log('Wrong sessionId! Please try again');
         return {
-          error: 'Wrong sessionId! Please try again or create a new Session',
+          error:
+            'Wrong sessionId value sent! Please try again or create a new Session',
         };
       }
     }
@@ -247,6 +276,7 @@ export class EarthProvider {
             address,
             canisterIds: request.canisterIds,
             expiryAt: new Date().getTime() + request.expiryTime * 1000,
+            active: true,
           },
         ],
       })
