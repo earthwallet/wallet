@@ -2,7 +2,11 @@ import { CGECKO_PRICE_API } from '~global/constant';
 import store from '~state/store';
 import type { IAssetsController, keyable } from '../types/IAssetsController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
-import { decodeTokenId, getNFTsFromCanisterExt } from '@earthwallet/assets';
+import {
+  canisterAgent,
+  decodeTokenId,
+  getNFTsFromCanisterExt,
+} from '@earthwallet/assets';
 import { parseBigIntToString } from '~utils/common';
 import LIVE_ICP_NFT_LIST_CANISTER_IDS, {
   getAirDropNFTInfo,
@@ -126,6 +130,30 @@ export default class AssetsController implements IAssetsController {
     ); */
   };
 
+  fetchCollectionInfo = async (collectionId: string) => {
+    const response = await canisterAgentApi(
+      collectionId,
+      'getCollectionWithNFTS'
+    );
+    const state = store.getState();
+
+    if (state.entities.collectionInfo == null) {
+      store.dispatch(createEntity({ entity: 'collectionInfo' }));
+    }
+    response &&
+      store.dispatch(
+        updateEntities({
+          entity: 'collectionInfo',
+          key: collectionId,
+          data: {
+            name: response.name,
+            description: response.description,
+            fee: response.fee?.toString(),
+            nftCount: response.nftCount?.toString(),
+          },
+        })
+      );
+  };
   fetchEarthNFT = async (collectionId: string, tokenId: number) => {
     store.dispatch(
       updateEntities({
@@ -235,6 +263,8 @@ export default class AssetsController implements IAssetsController {
   };
 
   getICPAssetsOfAccount = async (account: keyable) => {
+    const state = store.getState();
+
     let allTokens: keyable = [];
     store.dispatch(
       storeEntities({
@@ -271,6 +301,31 @@ export default class AssetsController implements IAssetsController {
               address: _token[1],
               tokenIndex: _token[0],
               canisterId,
+            };
+          });
+        } else if (canisterId === 'vsjkh-vyaaa-aaaak-qajgq-cai') {
+          const response = await canisterAgent({
+            canisterId,
+            method: 'getNFTsByUser',
+            args: [{ address: account.address }, []],
+          });
+
+          allTokens[index] = response.map((_token: any[]) => {
+            const canisterId = _token[1]?.toText();
+            const id = getTokenIdentifier(_token[1]?.toText(), _token[0]);
+            //this.fetchEarthNFT(canisterId, _token[0]);
+            const collectionInfo =
+              state.entities?.collectionInfo?.byId[canisterId];
+            if (collectionInfo == null) {
+              this.fetchCollectionInfo(canisterId);
+            }
+            return {
+              id,
+              type: 'EarthNFT',
+              tokenIdentifier: id,
+              address: account.address,
+              tokenIndex: _token[0],
+              canisterId: canisterId,
             };
           });
         } else {

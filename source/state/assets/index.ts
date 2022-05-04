@@ -5,6 +5,7 @@ import { getSymbol } from '~utils/common';
 import { IAssetState } from './types';
 import { AppState } from '~state/store';
 import { keyable } from '~scripts/Background/types/IAssetsController';
+import { getTokenCollectionInfo } from '~global/nfts';
 
 const initialState: IAssetState = {
   assetList: {},
@@ -77,4 +78,9 @@ export const selectTxnRequestsByAddress =
     );
   };
 
+export const selectCollectionInfo =
+  (collectionId: string) => (state: AppState) =>
+    getTokenCollectionInfo(collectionId)
+      ? getTokenCollectionInfo(collectionId)
+      : state.entities?.collectionInfo.byId[collectionId] || {};
 export default AssetState.reducer;

@@ -223,10 +223,10 @@ export const ICP_NFT_LIST = [
     icon: 'https://jmuqr-yqaaa-aaaaj-qaicq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=ewpzr-jqkor-uwiaa-aaaaa-cmaca-uaqca-aabwo-a',
   },
   {
-    name: 'Earth DAO',
-    id: 'ntwio-byaaa-aaaak-qaama-cai',
+    name: 'Earth orchestrator',
+    id: 'vsjkh-vyaaa-aaaak-qajgq-cai',
     standard: 'EarthEXT',
-    isLive: false,
+    isLive: true,
     isAirdrop: false,
     description:
       'Earth DAO - Guardians NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
@@ -246,7 +246,7 @@ export const getTokenCollectionInfo = (canisterId: string) =>
   ICP_NFT_LIST.filter((asset) => asset.id === canisterId)[0];
 
 export const getTokenImageURL = (asset: keyable) => {
-  if (asset?.canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
+  if (asset?.canisterId === 'vsjkh-vyaaa-aaaak-qajgq-cai') {
     return NFT_PLACEHOLDER;
   }
   const isWrapped = getTokenCollectionInfo(asset?.canisterId)?.wrapped;

@@ -11,15 +11,20 @@ import { useSelector } from 'react-redux';
 import ICON_GRID from '~assets/images/icon_grid.svg';
 import ICON_LIST from '~assets/images/icon_list.svg';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
-import { getAirDropNFTInfo, getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
+import { getAirDropNFTInfo, getTokenImageURL } from '~global/nfts';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { keyable } from '~scripts/Background/types/IMainController';
-import { selectAirdropStatus } from '~state/assets';
+import { selectAirdropStatus, selectCollectionInfo } from '~state/assets';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
 
+const AssetName = ({ canisterId }: { canisterId: string }) => {
+    const assetInfo: keyable = useSelector(selectCollectionInfo(canisterId));
+    console.log(assetInfo, canisterId, 'AssetName');
+    return <>{assetInfo?.name}</>
+}
 
 const NFTList = ({
     match: {
@@ -159,33 +164,36 @@ export const AssetsList = ({ address }: { address: string }) => {
                 </SkeletonTheme>
 
             </div>}
-            {assets?.map((asset: keyable, i: number) => (<div
-                key={i}
-                onClick={() => history.push(`/nftdetails/${asset.id}`)}
-                className={styles.listitem}>
-                <img className={styles.listicon}
-                    onError={({ currentTarget }) => {
-                        currentTarget.onerror = null;
-                        currentTarget.src = ICON_PLACEHOLDER;
-                    }}
-                    src={getTokenImageURL(asset)} />
-                <div className={styles.listinfo}>
-                    <div className={styles.listtitle}>{asset?.title || asset?.tokenIndex}</div>
-                    <div className={styles.listsubtitle}>{getTokenCollectionInfo(asset?.canisterId)?.name}</div>
-                </div>
-                <div
-                    className={styles.liststats}
-                ><div className={styles.listprice}>{asset?.forSale
-                    ? 'For sale'
-                    : 'Unlisted'}</div>
-                    {asset?.forSale && <div className={styles.listsubtitle}>{(asset?.info?.price / 100000000)?.toFixed(2)} ICP</div>}
-                </div>
-                <img
-                    className={styles.listforward}
-                    src={ICON_FORWARD}
-                />
-            </div>))}
-            {false && <div
+            {assets?.map((asset: keyable, i: number) => {
+                return (<div
+                    key={i}
+                    onClick={() => history.push(`/nftdetails/${asset.id}`)}
+                    className={styles.listitem}>
+                    <img className={styles.listicon}
+                        onError={({ currentTarget }) => {
+                            currentTarget.onerror = null;
+                            currentTarget.src = ICON_PLACEHOLDER;
+                        }}
+                        src={getTokenImageURL(asset)} />
+                    <div className={styles.listinfo}>
+                        <div className={styles.listtitle}>{asset?.title || asset?.tokenIndex}</div>
+                        <div className={styles.listsubtitle}>
+                            <AssetName canisterId={asset.canisterId} />
+                        </div>
+                    </div>
+                    <div
+                        className={styles.liststats}
+                    ><div className={styles.listprice}>{asset?.forSale
+                        ? 'For sale'
+                        : 'Unlisted'}</div>
+                        {asset?.forSale && <div className={styles.listsubtitle}>{(asset?.info?.price / 100000000)?.toFixed(2)} ICP</div>}
+                    </div>
+                    <img
+                        className={styles.listforward}
+                        src={ICON_FORWARD} />
+                </div>);
+            })}
+            {true && <div
                 onClick={() => history.push('/account/marketplace/' + address)}
                 className={styles.listitem}>
                 <div
