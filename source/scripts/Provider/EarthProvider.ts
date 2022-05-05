@@ -8,6 +8,7 @@ import { createEntity, storeEntities, updateEntities } from '~state/entities';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import {
   parseObjWithBigInt,
+  parseObjWithOutBigInt,
   parsePrincipalObj,
   stringifyWithBigInt,
 } from '~global/helpers';
@@ -159,7 +160,7 @@ export class EarthProvider {
       })
     );
 
-    return response;
+    return parseObjWithOutBigInt(response);
   }
   //closes any active session
   closeSession(origin: string) {

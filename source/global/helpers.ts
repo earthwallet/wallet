@@ -10,7 +10,7 @@ export const shortenAddress = (address: string, startCut = 7, endCut = 4) => {
 };
 
 export const parseObjWithOutBigInt = (obj: keyable) =>
-  obj && JSON.parse(stringifyWithBigInt(obj));
+  obj && safeParseJSON(stringifyWithBigInt(obj));
 
 export const parseObjWithBigInt = (obj: keyable) =>
   obj &&
