@@ -23,6 +23,7 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix"
   },
   "dependencies": {
+    "@dfinity/rosetta-client": "^0.5.2",
     "@babel/runtime": "7.14.0",
     "@earthwallet/assets": "0.3.28",
     "@earthwallet/keyring": "0.3.1",

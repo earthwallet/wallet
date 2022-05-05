@@ -2,7 +2,7 @@ import { getBalance } from '@earthwallet/keyring';
 //import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import { IWalletState } from '~state/wallet/types';
 import store from '~state/store';
-import { canisterAgent } from '@earthwallet/assets';
+import { canisterAgent } from './canisterAgent';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
@@ -190,7 +190,6 @@ export class EarthProvider {
 
   //8e82f9bc
   async sessionSign(request: keyable, origin: string) {
-    console.log('sessionSign', request, origin);
     //todo check expirytime
     //check canisterIds array for approved canisters
     //close expiredSessions
