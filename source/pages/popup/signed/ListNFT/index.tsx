@@ -146,7 +146,7 @@ const ListNFT = ({
                     setIsBusy(false);
                 }
             }
-            else if (selectedAssetObj?.standard == 'EarthArt') {
+            else if (selectedAssetObj?.type == 'EarthArt') {
                 try {
                     const resp = await canisterAgent({
                         canisterId: selectedAssetObj?.canisterId,

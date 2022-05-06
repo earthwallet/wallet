@@ -32,6 +32,14 @@ export interface IAssetsController {
     address: string,
     callback?: (path: string) => void
   ) => Promise<void>;
+  transferEarthArt: (
+    identityJSON: string,
+    collectionId: string,
+    recipient: string,
+    amount: number,
+    address: string,
+    callback?: (path: string) => void
+  ) => Promise<void>;
 }
 
 export interface keyable {

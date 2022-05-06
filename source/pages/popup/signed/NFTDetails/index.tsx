@@ -12,6 +12,7 @@ import { useController } from '~hooks/useController';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { decodeTokenId } from '@earthwallet/assets';
 import { selectCollectionInfo } from '~state/assets';
+import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 
 
 interface Props extends RouteComponentProps<{ assetId: string }> {
@@ -34,7 +35,7 @@ const NFTDetails = ({
     const [loading, setLoading] = useState(false);
     const controller = useController();
     const assetCollectionInfo: keyable = useSelector(selectCollectionInfo(canisterId));
-    console.log(asset,assetCollectionInfo, 'NFTDetails');
+    console.log(asset, assetCollectionInfo, 'NFTDetails');
 
     useEffect((): void => {
         setLoading(true);
@@ -80,7 +81,12 @@ const NFTDetails = ({
                     </div>
                     <div className={styles.sep}></div>
                     <div className={styles.creatorCont}>
-                        <img src={asset?.standard == 'EarthArt' ? getEarthArtCollectionIcon(canisterId) : assetCollectionInfo?.icon} className={styles.creatorIcon}></img>
+                        <img
+                            onError={({ currentTarget }) => {
+                                currentTarget.onerror = null;
+                                currentTarget.src = ICON_PLACEHOLDER;
+                            }}
+                            src={asset?.type == 'EarthArt' ? getEarthArtCollectionIcon(canisterId) : assetCollectionInfo?.icon} className={styles.creatorIcon}></img>
                         <div className={styles.creatorInfo}>
                             <div className={styles.creatorTitle}>{assetCollectionInfo?.name}</div>
                             <div className={styles.creatorSubtitle}>{assetCollectionInfo?.description}</div>

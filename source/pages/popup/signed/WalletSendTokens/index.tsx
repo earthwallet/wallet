@@ -31,6 +31,7 @@ import { getTokenImageURL } from '~global/nfts';
 import AddressInput from '~components/AddressInput';
 import { getTokenInfo } from '~global/tokens';
 import { selectInfoBySymbolOrToken } from '~state/token';
+import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 
 const MIN_LENGTH = 6;
 interface keyable {
@@ -253,9 +254,17 @@ const WalletSendTokens = ({
           setIsBusy(false);
         }
       } else {
-        if (getSelectedAsset(selectedAsset).type == 'DIP20') {
+        if (getSelectedAsset(selectedAsset)?.type == 'DIP20') {
           const callback = (path: string) => console.log(path);
           controller.tokens.transferToken(secret, selectedAsset, selectedRecp, selectedAmount, address, callback).then(() => {
+
+            setTxCompleteTxt('Successfully transferred to ' + getShortAddress(selectedRecp, 3));
+            setLoadingSend(false);
+            setIsBusy(false);
+          });
+        } else if (getSelectedAsset(selectedAsset)?.type == 'EarthArt') {
+          const callback = (path: string) => console.log(path);
+          controller.assets.transferEarthArt(secret, selectedAsset, selectedRecp, selectedAmount, address, callback).then(() => {
 
             setTxCompleteTxt('Successfully transferred to ' + getShortAddress(selectedRecp, 3));
             setLoadingSend(false);
@@ -400,7 +409,7 @@ const WalletSendTokens = ({
             amountCallback={setSelectedAmount}
             errorCallback={setError}
           />}
-          {getSelectedAsset(selectedAsset) && getSelectedAsset(selectedAsset).type != 'nft' && <AmountInput
+          {getSelectedAsset(selectedAsset) && getSelectedAsset(selectedAsset).format != 'nft' && <AmountInput
             initialValue={selectedAmount.toString()}
             address={address}
             fees={fees}
@@ -415,6 +424,10 @@ const WalletSendTokens = ({
             <img
               className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
               src={getSymbol(selectedAccount?.symbol)?.icon}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src = ICON_PLACEHOLDER;
+              }}
             />
             <div>
               <div className={styles.tokenText}>{getSymbol(selectedAccount?.symbol)?.name}</div>
@@ -427,6 +440,10 @@ const WalletSendTokens = ({
               <img
                 className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
                 src={getTokenInfo(selectedAsset)?.icon}
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null;
+                  currentTarget.src = ICON_PLACEHOLDER;
+                }}
               />
               <div>
                 <div className={styles.tokenText}>{getTokenInfo(selectedAsset)?.name}</div>
@@ -438,6 +455,10 @@ const WalletSendTokens = ({
                 <img
                   className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
                   src={getTokenImageURL(selectedAssetObj)}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null;
+                    currentTarget.src = ICON_PLACEHOLDER;
+                  }}
                 />
                 <div>
                   <div className={styles.tokenText}>{selectedAssetObj?.tokenIndex}</div>
@@ -565,6 +586,10 @@ const SelectedAsset = ({ icon, label, loading, balanceTxt, onSelectedAssetClick,
   <img
     className={styles.tokenLogo}
     src={icon}
+    onError={({ currentTarget }) => {
+      currentTarget.onerror = null;
+      currentTarget.src = ICON_PLACEHOLDER;
+    }}
   />
   <div className={styles.tokenSelectionLabelDiv}>
     <div className={styles.tokenLabel}>{label}</div>
@@ -587,6 +612,10 @@ const AssetOption = ({ icon, label, balanceTxt, onAssetOptionClick }: AssetOptio
   <img
     className={styles.tokenLogo}
     src={icon}
+    onError={({ currentTarget }) => {
+      currentTarget.onerror = null;
+      currentTarget.src = ICON_PLACEHOLDER;
+    }}
   />
   <div className={styles.tokenSelectionLabelDiv}>
     <div className={styles.tokenLabel}>{label}</div>

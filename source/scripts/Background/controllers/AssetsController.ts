@@ -20,6 +20,8 @@ import { parseObjWithOutBigInt } from '~global/helpers';
 import getBrowserFingerprint from 'get-browser-fingerprint';
 import { registerExtensionAndAccounts, statusExtension } from '~utils/services';
 import { updateExtensionId } from '~state/wallet';
+import { Principal } from '@dfinity/principal';
+
 export default class AssetsController implements IAssetsController {
   fetchFiatPrices = async (symbols: keyable, currency = 'USD') => {
     try {
@@ -59,11 +61,17 @@ export default class AssetsController implements IAssetsController {
   };
 
   fetchICPAssets = async (account: keyable, canisterId: string) => {
+    console.log('getNFTsFromCanisterExt', canisterId, account.address);
+
     const tokens: keyable = await getNFTsFromCanisterExt(
       canisterId,
       account.address
     );
-    const parsedTokens = tokens.map((token: keyable) => ({
+    if (tokens == undefined) {
+      console.log('error getNFTsFromCanisterExt', canisterId, account.address);
+      return {};
+    }
+    const parsedTokens = tokens?.map((token: keyable) => ({
       id: token.tokenIdentifier,
       address: account.address,
       canisterId,
@@ -183,7 +191,7 @@ export default class AssetsController implements IAssetsController {
           entity: 'collectionInfo',
           key: collectionId,
           data: {
-            standard: 'EarthArt',
+            type: 'EarthArt',
             name: response.name,
             description: response.description,
             fee: response.fee?.toString(),
@@ -228,7 +236,18 @@ export default class AssetsController implements IAssetsController {
       })
     );
   };
+
+  getEarthArtCollectionInfo = async () => {
+    const response = await canisterAgent({
+      canisterId: 'vsjkh-vyaaa-aaaak-qajgq-cai',
+      method: 'getCollections',
+    });
+    response.map((canister: Principal) =>
+      this.fetchCollectionInfo(canister.toText())
+    );
+  };
   getCollectionStats = async () => {
+    this.getEarthArtCollectionInfo();
     let allStats: keyable = [];
     const state = store.getState();
 
@@ -341,7 +360,7 @@ export default class AssetsController implements IAssetsController {
             }
             return {
               id,
-              standard: 'EarthArt',
+              type: 'EarthArt',
               tokenIdentifier: id,
               address: account.address,
               tokenIndex: _token[0],
@@ -462,6 +481,62 @@ export default class AssetsController implements IAssetsController {
         })
       )
     );
+  };
+
+  transferEarthArt = async (
+    identityJSON: string,
+    nftId: string,
+    recipient: string,
+    amount: number,
+    address: string,
+    callback?: (path: string) => void
+  ) => {
+    const state = store.getState();
+
+    if (state.entities.recents == null) {
+      store.dispatch(createEntity({ entity: 'recents' }));
+    }
+
+    store.dispatch(
+      updateEntities({
+        entity: 'recents',
+        key: recipient,
+        data: {
+          symbol: 'ICP',
+          addressType: 'accountId',
+          lastSentAt: new Date().getTime(),
+          sentBy: address,
+        },
+      })
+    );
+
+    const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
+
+    const response: keyable = await canisterAgent({
+      canisterId: decodeTokenId(nftId).canister,
+      method: 'safeTransferFrom',
+      args: {
+        to: {
+          address: recipient,
+        },
+        notify: false,
+        tokenIndex: decodeTokenId(nftId).index,
+        from: {
+          address: address,
+        },
+        memo: [],
+      },
+
+      fromIdentity: currentIdentity,
+    });
+    console.log(response, amount, 'res');
+    callback && callback('s');
+    this.getICPAssetsOfAccount({ address, symbol: 'ICP' });
+    if (state.entities.accounts.byId[recipient] != undefined) {
+      this.getICPAssetsOfAccount({ recipient, symbol: 'ICP' });
+    }
+    //await this.getTokenBalances(address);
+    return;
   };
 
   updateTokenDetails = async ({
