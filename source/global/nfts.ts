@@ -172,7 +172,7 @@ export const ICP_NFT_LIST = [
     name: 'Motoko Day',
     id: 'oeee4-qaaaa-aaaak-qaaeq-cai',
     isLive: true,
-    order: 1,
+    order: 2,
     type: 'EXT',
     description: `On the Motoko programming language's 2nd birthday, the DFINITY Foundation distributed 10,000 Motoko ghosts designed by Jon Ball of Pokedstudios to the community.`,
     icon: 'https://oeee4-qaaaa-aaaak-qaaeq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=w44h6-eakor-uwiaa-aaaaa-cuaab-eaqca-aaedg-a',
@@ -232,6 +232,7 @@ export const ICP_NFT_LIST = [
     description:
       'Earth DAO - Guardians NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
     icon: ICON_EARTH,
+    order: 1,
   },
 ];
 

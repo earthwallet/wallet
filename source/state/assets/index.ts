@@ -78,6 +78,12 @@ export const selectTxnRequestsByAddress =
     );
   };
 
+export const selectAllCollectionInfo = () => (state: AppState) =>
+  Object.keys(state.entities.collectionInfo?.byId)?.map((id) => ({
+    ...state.entities.collectionInfo.byId[id],
+    ...{ id: id },
+  }));
+
 export const selectCollectionInfo =
   (collectionId: string) => (state: AppState) =>
     getTokenCollectionInfo(collectionId)

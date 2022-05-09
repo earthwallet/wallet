@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styles from "./index.scss";
 //import img from "~assets/images/marketplaceImg.svg";
 import Header from '~components/Header';
-import { getTokenCollectionInfo } from '~global/nfts';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
 import {
@@ -13,7 +12,7 @@ import {
 //import { ClipLoader } from 'react-spinners';
 import NFTCard from '~components/NFTCard';
 import { useSelector } from 'react-redux';
-import { selectAssetBySymbol, selectStatsOfCollection } from '~state/assets';
+import { selectAssetBySymbol, selectCollectionInfo, selectStatsOfCollection } from '~state/assets';
 import { getSymbol } from '~utils/common';
 import useQuery from '~hooks/useQuery';
 import millify from 'millify';
@@ -28,7 +27,7 @@ const NFTCollection = ({
     const queryParams = useQuery();
 
     const history = useHistory();
-    const nftCollObj = getTokenCollectionInfo(nftId);
+    const nftCollObj = useSelector(selectCollectionInfo(nftId));
     const [loading, setLoading] = useState<boolean>(false);
     const [listings, setListings] = useState<keyable>([]);
     const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
@@ -66,28 +65,28 @@ const NFTCollection = ({
                 className={styles.header}
                 showMenu
                 type={'wallet'}
-                text={nftCollObj.name}
+                text={nftCollObj?.name}
             ><div className={styles.empty} /></Header>
             <div className={styles.mainContainer}>
                 <div className={styles.stats}>
                     <div className={styles.statrow}>
                         <div className={styles.statcol}>
                             <div className={styles.key}>Listings</div>
-                            <div className={styles.val}>{nftObj.listings ? millify(nftObj?.listings, {
+                            <div className={styles.val}>{nftObj?.listings ? millify(nftObj?.listings, {
                                 precision: 2,
                                 lowercase: true
                             }) : '-'}</div>
                         </div>
                         <div className={styles.statcol}>
                             <div className={styles.key}>Collection Size</div>
-                            <div className={styles.val}>{nftObj.tokens ? millify(nftObj?.tokens, {
+                            <div className={styles.val}>{nftObj?.tokens ? millify(nftObj?.tokens, {
                                 precision: 2,
                                 lowercase: true
                             }) : '-'}</div>
                         </div>
                         <div className={styles.statcol}>
                             <div className={styles.key}>Sales</div>
-                            <div className={styles.val}>{nftObj.sales ? millify(nftObj?.sales, {
+                            <div className={styles.val}>{nftObj?.sales ? millify(nftObj?.sales, {
                                 precision: 2,
                                 lowercase: true
                             }) : '-'}</div>
@@ -96,7 +95,7 @@ const NFTCollection = ({
                     <div className={styles.statrow}>
                         <div className={styles.statcol}>
                             <div className={styles.key}>Volume</div>
-                            <div className={styles.val}>${nftObj.total ? millify(nftObj?.total * currentUSDValue?.usd, {
+                            <div className={styles.val}>${nftObj?.total ? millify(nftObj?.total * currentUSDValue?.usd, {
                                 precision: 2,
                                 lowercase: true
                             }) : '-'}</div>
@@ -114,15 +113,15 @@ const NFTCollection = ({
                     key={index}
                     loading
                 />) : listings.map((nftObj: keyable) => <div
-                    key={nftObj.tokenId}
+                    key={nftObj?.tokenId}
                     className={styles.nftcardcont}
-                    onClick={() => history.push(`/nft/buy/${nftObj.tokenId}?price=${nftObj.price}&address=${address}`)}
+                    onClick={() => history.push(`/nft/buy/${nftObj?.tokenId}?price=${nftObj?.price}&address=${address}`)}
                 >
                     <NFTCard
-                        id={nftObj.id}
-                        img={nftObj.icon}
-                        text={nftObj.price / Math.pow(10, 8)}
-                        price={nftObj.price / Math.pow(10, 8) * currentUSDValue?.usd}
+                        id={nftObj?.id}
+                        img={nftObj?.icon}
+                        text={nftObj?.price / Math.pow(10, 8)}
+                        price={nftObj?.price / Math.pow(10, 8) * currentUSDValue?.usd}
                     /></div>)}
             </div>
         </div>
