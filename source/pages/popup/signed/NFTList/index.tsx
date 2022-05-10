@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import ICON_GRID from '~assets/images/icon_grid.svg';
 import ICON_LIST from '~assets/images/icon_list.svg';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
-import { getAirDropNFTInfo, getTokenImageURL } from '~global/nfts';
+import { getAirDropNFTInfo, getTokenImageURL, MARKETPLACE_ENABLED } from '~global/nfts';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { keyable } from '~scripts/Background/types/IMainController';
@@ -22,7 +22,6 @@ interface Props extends RouteComponentProps<{ address: string }> {
 
 const AssetName = ({ canisterId }: { canisterId: string }) => {
     const assetInfo: keyable = useSelector(selectCollectionInfo(canisterId));
-    console.log(assetInfo, canisterId, 'AssetName');
     return <>{assetInfo?.name}</>
 }
 
@@ -136,6 +135,13 @@ export const AssetsList = ({ address }: { address: string }) => {
 
     const history = useHistory();
     if (!loading && assets?.length == 0) {
+        if (MARKETPLACE_ENABLED && airdropAssetStatus?.airdropEnabled)
+            return <div className={styles.listitemscont}><AirDropCampaign />
+                <ExploreCollections address={address} />
+            </div>
+        if (MARKETPLACE_ENABLED) {
+            return <ExploreCollections address={address} />
+        }
         if (airdropAssetStatus?.airdropEnabled) {
             return <div className={styles.listitemscont}><AirDropCampaign /></div>
         }
@@ -164,6 +170,7 @@ export const AssetsList = ({ address }: { address: string }) => {
                 </SkeletonTheme>
 
             </div>}
+            {MARKETPLACE_ENABLED && <ExploreCollections address={address} />}
             {assets?.map((asset: keyable, i: number) => {
                 return (<div
                     key={i}
@@ -193,25 +200,29 @@ export const AssetsList = ({ address }: { address: string }) => {
                         src={ICON_FORWARD} />
                 </div>);
             })}
-            {true && <div
-                onClick={() => history.push('/account/marketplace/' + address)}
-                className={styles.listitem}>
-                <div
-                    className={styles.listicon} >
-                    <div>💎</div>
-                </div>
-                <div className={styles.listinfo}>
-                    <div className={styles.listtitle}>Explore Collections</div>
-                </div>
-                <div className={styles.liststats}></div>
-                <img
-                    className={styles.listforward}
-                    src={ICON_FORWARD}
-                />
-            </div>}
         </div>
     }
 }
+
+const ExploreCollections = ({ address }: { address: string }) => {
+    const history = useHistory();
+    return <div
+        onClick={() => history.push('/account/marketplace/' + address)}
+        className={styles.listitem}>
+        <div
+            className={styles.listicon} >
+            <div>💎</div>
+        </div>
+        <div className={styles.listinfo}>
+            <div className={styles.listtitle}>Explore Collections</div>
+        </div>
+        <div className={styles.liststats}></div>
+        <img
+            className={styles.listforward}
+            src={ICON_FORWARD}
+        />
+    </div>
+};
 
 export const AssetsCoverflow = ({ address }: { address: string }) => {
     const assets: keyable = useSelector(selectAssetsICPByAddress(address));

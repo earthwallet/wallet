@@ -90,7 +90,7 @@ const PopupRouter = () => {
               <Route path="/account/marketplace/:address">
                 {wrapWithErrorBoundary(<NFTMarketplace />, 'NFTMarketplace')}
               </Route>
-              <Route path="/nft/collection/:nftId">
+              <Route path="/nft/collection/:collectionId">
                 {wrapWithErrorBoundary(<NFTCollection />, 'NFTCollection')}
               </Route>
               <Route path="/nft/buy/:nftId">

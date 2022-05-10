@@ -16,49 +16,73 @@ import { selectAssetBySymbol, selectCollectionInfo, selectStatsOfCollection } fr
 import { getSymbol } from '~utils/common';
 import useQuery from '~hooks/useQuery';
 import millify from 'millify';
-interface Props extends RouteComponentProps<{ nftId: string }> {
+import { Principal } from '@dfinity/principal';
+
+interface Props extends RouteComponentProps<{ collectionId: string }> {
 }
 
 const NFTCollection = ({
     match: {
-        params: { nftId },
+        params: { collectionId },
     },
 }: Props) => {
     const queryParams = useQuery();
 
     const history = useHistory();
-    const nftCollObj = useSelector(selectCollectionInfo(nftId));
+    const nftCollObj = useSelector(selectCollectionInfo(collectionId));
     const [loading, setLoading] = useState<boolean>(false);
     const [listings, setListings] = useState<keyable>([]);
     const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
     const address: string = queryParams.get('address') || '';
-    const nftObj = useSelector(selectStatsOfCollection(nftId));
+    const nftObj = useSelector(selectStatsOfCollection(collectionId));
+    console.log(nftCollObj, collectionId, 'NFTCollection');
 
     useEffect(() => {
         const fetchNfts = async () => {
             setLoading(true);
-            const response = await canisterAgentApi(nftId, 'listings');
-            const listings = response.map((list: keyable) => ({
-                id: list[0],
-                price: list[1].price?.toString(),
-                tokenId: getTokenIdentifier(
-                    nftId,
-                    list[0]
-                ),
-                locked: list[1] && list[1]?.locked && list[1]?.locked[0] && Date.now() >= Number(list[1]?.locked[0] / 1000000n),
-                icon: `https://${nftId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${getTokenIdentifier(
-                    nftId,
-                    list[0]
-                )}`
-            })).filter((a: keyable) => !(a.locked)).sort((a: keyable, b: keyable) => (a.price - b.price));
-            //[0][1].price
-            console.log(listings, 'listings');
-            setListings(listings);
+            if (nftCollObj.type != 'EarthArt') {
+                const response = await canisterAgentApi(collectionId, 'listings');
+                const listings = response.map((list: keyable) => ({
+                    id: list[0],
+                    price: list[1].price?.toString(),
+                    tokenId: getTokenIdentifier(
+                        collectionId,
+                        list[0]
+                    ),
+                    locked: list[1] && list[1]?.locked && list[1]?.locked[0] && Date.now() >= Number(list[1]?.locked[0] / 1000000n),
+                    icon: `https://${collectionId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${getTokenIdentifier(
+                        collectionId,
+                        list[0]
+                    )}`
+                })).filter((a: keyable) => !(a.locked)).sort((a: keyable, b: keyable) => (a.price - b.price));
+                //[0][1].price
+                console.log(listings, 'listings');
+                setListings(listings);
+            }
+            else {
+                const response = await canisterAgentApi('vvimt-yaaaa-aaaak-qajga-cai', 'getListingsByCanister', Principal.fromText(collectionId));
+                const listings = response.map((list: keyable) => {
+                    const collectionId = list[0].nft?.nftCanister.toText();
+                    const tokenIndex = list[0].nft.nftIdentifier.nat32.toString();
+                    const price = list[0].price?.toString();
+                    return {
+                        tokenId: getTokenIdentifier(
+                            collectionId,
+                            tokenIndex
+                        ),
+                        id: tokenIndex,
+                        icon: `https://${collectionId}.raw.ic0.app/id/${tokenIndex}`,
+                        price,
+                    }
+                });
+                console.log(listings, 'listings');
+                setListings(listings);
+            }
             setLoading(false);
 
         }
         fetchNfts();
-    }, [nftId !== null]);
+    }, [collectionId !== null]);
     return (
         <div className={styles.page}>
             <Header
@@ -75,7 +99,7 @@ const NFTCollection = ({
                             <div className={styles.val}>{nftObj?.listings ? millify(nftObj?.listings, {
                                 precision: 2,
                                 lowercase: true
-                            }) : '-'}</div>
+                            }) : (listings.length || '-')}</div>
                         </div>
                         <div className={styles.statcol}>
                             <div className={styles.key}>Collection Size</div>
@@ -115,7 +139,7 @@ const NFTCollection = ({
                 />) : listings.map((nftObj: keyable) => <div
                     key={nftObj?.tokenId}
                     className={styles.nftcardcont}
-                    onClick={() => history.push(`/nft/buy/${nftObj?.tokenId}?price=${nftObj?.price}&address=${address}`)}
+                    onClick={() => history.push(`/nft/buy/${nftObj?.tokenId}?price=${nftObj?.price}&address=${address}&type=${nftCollObj.type}`)}
                 >
                     <NFTCard
                         id={nftObj?.id}

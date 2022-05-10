@@ -34,16 +34,17 @@ const NFTSettle = ({
   const queryParams = useQuery();
   const price: number = parseInt(queryParams.get('price') || '');
   const address: string = queryParams.get('address') || '';
+  const type: string = queryParams.get('type') || '';
 
   const canisterId = decodeTokenId(nftId).canister;
-  const index = decodeTokenId(nftId).index;
+  const tokenIndex = decodeTokenId(nftId).index;
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
   // const [loading, setLoading] = useState(false);
   const selectedAccount = useSelector(selectAccountById(address));
 
-  const asset: keyable = { canisterId, id: nftId, tokenIdentifier: nftId };
+  const asset: keyable = { canisterId, id: nftId, tokenIndex, type, tokenIdentifier: nftId };
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
   const usdValue = currentUSDValue?.usd;
   //const { show } = useToast();
@@ -111,7 +112,7 @@ const NFTSettle = ({
             <img src={getTokenImageURL(asset)} className={styles.ethIconContainer}></img>
           </div>
           <div className={styles.ethTextContainer}>
-            <span className={styles.ethereumText}>{index}</span>
+            <span className={styles.ethereumText}>{tokenIndex}</span>
             <span className={styles.ethVal}>{price / Math.pow(10, 8)} ICP</span>
             <span className={styles.usdText}>${(price * usdValue / Math.pow(10, 8)).toFixed(3)}</span>
           </div>

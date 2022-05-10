@@ -302,3 +302,5 @@ export const getAirDropNFTInfo = () => ({
   disclaimer:
     'disclaimer: 🛎️ Only one earth nft can be claimed per extension. Please allow 5 minutes for us to verify your tweet.',
 });
+
+export const MARKETPLACE_ENABLED = true;
