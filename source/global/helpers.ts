@@ -40,15 +40,11 @@ export const safeParseJSON = (jsonString: string) => {
 
   return parsed; // Could be undefined!
 };
-/* 
-GNU General Public License v3.0
-https://github.com/Psychedelic/plug/blob/e4242a26f288556ee478ff9f4ac02d375d93c284/source/shared/utils/ids.js#L23
-
-Modified version of parsePrincipalObj that deserializes serialized principal
-*/
 
 export const parsePrincipalObj = (data: keyable): keyable =>
-  typeof data === 'object'
+  data?._isPrincipal
+    ? Principal.fromUint8Array(new Uint8Array(Object.values(data?._arr)))
+    : typeof data === 'object'
     ? Array.isArray(data)
       ? data.map((object) => parsePrincipalObj(object))
       : Object.entries(data)?.reduce((acum, [key, val]) => {

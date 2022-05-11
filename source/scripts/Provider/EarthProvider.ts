@@ -10,6 +10,7 @@ import {
   parseObjWithBigInt,
   parseObjWithOutBigInt,
   parsePrincipalObj,
+  safeParseJSON,
   stringifyWithBigInt,
 } from '~global/helpers';
 import { PREGENERATE_SYMBOLS } from '~global/constant';
@@ -116,14 +117,20 @@ export class EarthProvider {
         const argsWithBigInt =
           singleRequest?.args && parseObjWithBigInt(singleRequest?.args);
         const argsWithPrincipalAndBigInt = parsePrincipalObj(argsWithBigInt);
-
-        response[counter] = await canisterAgent({
-          canisterId: singleRequest?.canisterId,
-          method: singleRequest?.method,
-          args: argsWithPrincipalAndBigInt,
-          fromIdentity,
-          host: singleRequest?.host,
-        });
+        try {
+          response[counter] = await canisterAgent({
+            canisterId: singleRequest?.canisterId,
+            method: singleRequest?.method,
+            args: argsWithPrincipalAndBigInt,
+            fromIdentity,
+            host: singleRequest?.host,
+          });
+        } catch (error) {
+          const errorRes = safeParseJSON(
+            JSON.stringify(error, Object.getOwnPropertyNames(error))
+          );
+          response[counter] = { type: 'error', message: errorRes.message };
+        }
         counter++;
       }
     } else {
@@ -138,8 +145,10 @@ export class EarthProvider {
           host: request?.host,
         });
       } catch (error) {
-        console.log(error);
-        response = error;
+        const errorRes = safeParseJSON(
+          JSON.stringify(error, Object.getOwnPropertyNames(error))
+        );
+        response = { type: 'error', message: errorRes.message };
       }
     }
 
