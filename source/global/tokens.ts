@@ -43,17 +43,20 @@ const TOKENS_LIST = [
     sendFees: 0,
   },
   {
-    id: '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0',
+    id: '137',
     networkSymbol: 'ETH',
     name: 'Polygon',
     icon: ICON_MATIC,
     symbol: 'MATIC',
     coinGeckoId: 'polygon',
-    fees: 0,
     evmChain: true,
     isLive: true,
+    chainId: 137,
+    fees: 0,
+    sendFees: 0,
   },
   {
+    id: '56',
     networkSymbol: 'ETH',
     name: 'Binance Smart',
     icon: ICON_BNB,
@@ -63,9 +66,12 @@ const TOKENS_LIST = [
     preGenerate: false,
     order: 8,
     evmChain: true,
-    fees: 0,
+    chainId: 56,
+    fees: 0, // ??
+    sendFees: 0,
   },
   {
+    id: '43114',
     networkSymbol: 'ETH',
     name: 'Avalanche C Chain',
     icon: ICON_AVAX,
@@ -75,7 +81,9 @@ const TOKENS_LIST = [
     preGenerate: false,
     order: 14,
     evmChain: true,
+    chainId: 43114,
     fees: 0,
+    sendFees: 0,
   },
 ];
 
