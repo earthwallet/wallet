@@ -27,7 +27,7 @@ export interface IAssetsController {
   buyNft: (
     txnId: string,
     identityJSON: string,
-    nftId: string,
+    asset: keyable,
     price: number,
     address: string,
     callback?: (path: string) => void

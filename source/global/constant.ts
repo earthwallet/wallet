@@ -9,10 +9,8 @@ import ICON_LTC from '~assets/images/icon_mini_ltc.png';
 import ICON_BCH from '~assets/images/icon_mini_bch.png';
 import ICON_BNB from '~assets/images/icon_mini_bnb.png';
 import ICON_BTG from '~assets/images/icon_btg.png';
-import ICON_MATIC from '~assets/images/icon_matic.png';
 import ICON_AVAX from '~assets/images/icon_avalanche.svg';
 import ICON_DOGE from '~assets/images/icon_doge.png';
-import ICON_EARTH from '~assets/images/icon-512.png';
 
 export const STATE_PORT = 'EARTH_WALLET';
 
@@ -57,11 +55,11 @@ export const DEFAULT_SYMBOLS = [
     order: -1,
   },
   {
-    name: 'Ethereum',
+    name: 'Ethereum VM',
     icon: ICON_ETH,
     symbol: 'ETH',
     coinGeckoId: 'ethereum',
-    isLive: false,
+    isLive: true,
     preGenerate: true,
     order: 2,
   },
@@ -111,26 +109,6 @@ export const DEFAULT_SYMBOLS = [
     order: 7,
   },
   {
-    name: 'Binance Smart',
-    icon: ICON_BNB,
-    symbol: 'BSC',
-    coinGeckoId: 'binancecoin',
-    isLive: false,
-    preGenerate: false,
-    order: 8,
-    evmChain: true,
-  },
-  {
-    name: 'Polygon',
-    icon: ICON_MATIC,
-    symbol: 'MATIC',
-    coinGeckoId: 'polygon',
-    isLive: false,
-    preGenerate: false,
-    order: 9,
-    evmChain: true,
-  },
-  {
     name: 'Bitcoin Gold',
     icon: ICON_BTG,
     symbol: 'BTG',
@@ -165,26 +143,6 @@ export const DEFAULT_SYMBOLS = [
     isLive: false,
     preGenerate: true,
     order: 13,
-  },
-  {
-    name: 'Avalanche C Chain',
-    icon: ICON_AVAX,
-    symbol: 'AVAC',
-    coinGeckoId: 'avalanche',
-    isLive: false,
-    preGenerate: false,
-    order: 14,
-    evmChain: true,
-  },
-  {
-    name: 'Earth',
-    icon: ICON_EARTH,
-    symbol: 'EARTH',
-    coinGeckoId: 'internet-computer',
-    isLive: false,
-    preGenerate: false,
-    order: 15,
-    icpChain: true,
   },
 ];
 

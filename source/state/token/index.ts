@@ -5,7 +5,7 @@ import type { ITokenState } from './types';
 import { AppState } from '~state/store';
 import { keyable } from '~scripts/Background/types/IMainController';
 //import groupBy from 'lodash/groupBy';
-import TOKENS, { getTokenInfo } from '~global/tokens';
+import { getTokenInfo, getLiveTokensByNetworkSymbol } from '~global/tokens';
 import { getInfoBySymbol } from '~global/constant';
 import millify from 'millify';
 
@@ -33,8 +33,9 @@ const TokenState = createSlice({
 
 export const { updateError, updateLoading, hydrateWallet } = TokenState.actions;
 
-export const selectTokensInfo = (state: AppState) => {
-  return TOKENS;
+export const selectTokensInfo = (address: string) => (state: AppState) => {
+  const activeAccount = state.entities.accounts.byId[address];
+  return getLiveTokensByNetworkSymbol(activeAccount.symbol);
   return (
     state.entities.tokensInfo?.byId &&
     Object.keys(state.entities.tokensInfo?.byId)?.map(

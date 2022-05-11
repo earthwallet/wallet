@@ -321,7 +321,7 @@ export default class TokensController implements ITokensController {
       method: 'transfer',
       args: [
         Principal.fromText(recipient),
-        amount * Math.pow(10, getTokenInfo(tokenId).decimals),
+        amount * Math.pow(10, getTokenInfo(tokenId).decimals || 0),
       ],
       fromIdentity: currentIdentity,
     });
@@ -406,7 +406,7 @@ export default class TokensController implements ITokensController {
       );
       const response: any = await canisterAgentApi(
         txnObj.params.to,
-        getTokenInfo(txnObj.params.to).mintMethod,
+        getTokenInfo(txnObj.params.to)?.mintMethod || '',
         [[], index],
         currentIdentity
       );

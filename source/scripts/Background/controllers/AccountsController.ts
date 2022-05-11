@@ -372,45 +372,20 @@ export default class AccountsController implements IAccountsController {
 
     let forwardAddress = '';
     for (const symbol of symbols) {
-      if (getInfoBySymbol(symbol).evmChain) {
-        const selectedETHAccount = existingAllAccounts.filter(
-          (a) => a.symbol === 'ETH'
+      if (symbol !== 'ICP') {
+        const selectedAccount = existingAllAccounts.filter(
+          (a) => a.symbol === symbol
         )[0];
-        // BIP_0021 uri format example MATIC:xyzzyxxxxxx
-        const address_uri = symbol + ':' + selectedETHAccount.id;
+        forwardAddress = selectedAccount.id;
         store.dispatch(
           updateEntities({
             entity: 'accounts',
-            key: address_uri,
+            key: selectedAccount.id,
             data: {
-              ...selectedETHAccount,
-              ...{
-                id: address_uri,
-                active: status,
-                symbol,
-                evmChain: true,
-                order: getInfoBySymbol(symbol).order,
-              },
+              active: status,
             },
           })
         );
-        forwardAddress = address_uri;
-      } else {
-        if (symbol !== 'ICP') {
-          const selectedAccount = existingAllAccounts.filter(
-            (a) => a.symbol === symbol
-          )[0];
-          forwardAddress = selectedAccount.id;
-          store.dispatch(
-            updateEntities({
-              entity: 'accounts',
-              key: selectedAccount.id,
-              data: {
-                active: status,
-              },
-            })
-          );
-        }
       }
     }
 

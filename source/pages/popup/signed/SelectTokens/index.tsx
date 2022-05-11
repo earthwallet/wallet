@@ -31,19 +31,13 @@ const SelectTokens = ({
 }: Props) => {
   const controller = useController();
   const history = useHistory();
-  const tokenInfos = useSelector(selectTokensInfo);
+  const tokenInfos = useSelector(selectTokensInfo(address));
   const tokens = useSelector(selectActiveTokensByAddress(address));
   const [checkedArr, setCheckedArr] = useState<string[]>([]);
   const [existingActive, setExistingActive] = useState<string[]>([]);
 
-  const getTokens = useCallback(() => {
-    //)
-    //controller.tokens.getTokens()
-
-  }, [history]);
 
   useEffect(() => {
-    getTokens();
 
     let existingActiveAccountTokens = tokens.map((token: { id: string; }) => token.id);
     tokens.length !== 0 && setCheckedArr(existingActiveAccountTokens);

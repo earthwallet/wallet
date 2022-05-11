@@ -585,11 +585,12 @@ export default class AssetsController implements IAssetsController {
   buyNft = async (
     txnId: string,
     identityJSON: string,
-    nftId: string,
+    asset: keyable,
     price: number,
     address: string,
     callback?: (path: string) => void
   ) => {
+    const nftId = asset.id;
     const state = store.getState();
 
     if (state.entities.txnRequests == null) {
