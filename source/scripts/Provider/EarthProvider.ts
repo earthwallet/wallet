@@ -129,14 +129,18 @@ export class EarthProvider {
     } else {
       const argsWithBigInt = request?.args && parseObjWithBigInt(request?.args);
       const argsWithPrincipalAndBigInt = parsePrincipalObj(argsWithBigInt);
-
-      response = await canisterAgent({
-        canisterId: request?.canisterId,
-        method: request?.method,
-        args: argsWithPrincipalAndBigInt,
-        fromIdentity,
-        host: request?.host,
-      });
+      try {
+        response = await canisterAgent({
+          canisterId: request?.canisterId,
+          method: request?.method,
+          args: argsWithPrincipalAndBigInt,
+          fromIdentity,
+          host: request?.host,
+        });
+      } catch (error) {
+        console.log(error);
+        response = error;
+      }
     }
 
     let parsedResponse = '';

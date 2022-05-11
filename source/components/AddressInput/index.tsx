@@ -11,6 +11,7 @@ import ICON_VALID_ADDRESS from '~assets/images/icon_valid_address.svg';
 import { useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { validate } from 'bitcoin-address-validation';
+var web3 = require('web3');
 
 const PRINCIPAL_NOT_ACCEPTED = 'Principal id is not accepted!';
 
@@ -123,6 +124,18 @@ export default function AddressInput({
                 setRecpError('Not a valid btc address');
             }
         }
+        else if (inputType === 'ETH') {
+            setSelectedRecp(recipient);
+            if (web3.utils.isAddress(recipient)) {
+                setRecpError('');
+                setValid(true);
+                search && replaceQuery('recipient', recipient);
+            }
+            else {
+                setValid(false);
+                setRecpError('Not a valid EVM address');
+            }
+        }
     };
 
     const togglePrincipal = () => {
@@ -155,7 +168,7 @@ export default function AddressInput({
                     required
                     value={selectedRecp}
                 />}
-            {inputType == 'BTC' ? <div className={styles.type}>BTC</div> : inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : <div className={styles.type}>AID</div>}
+            {inputType == 'ETH' ? <div className={styles.type}>Ox</div> : inputType == 'BTC' ? <div className={styles.type}>BTC</div> : inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : <div className={styles.type}>AID</div>}
         </div>
         {recpError !== '' && <Warning
             isBelowInput

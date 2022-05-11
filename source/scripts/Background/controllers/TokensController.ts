@@ -29,7 +29,36 @@ import { v4 as uuid } from 'uuid';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
 import { keyable } from '../types/IAssetsController';
+import axios, { AxiosRequestConfig } from 'axios';
+var web3 = require('web3');
 
+export const getBalanceMatic = async (address: string) => {
+  const data = JSON.stringify({
+    jsonrpc: '2.0',
+    method: 'eth_getBalance',
+    params: [address, 'latest'],
+    id: 0,
+  });
+
+  const config: AxiosRequestConfig = {
+    method: 'post',
+    url: 'https://polygon-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    serverRes = error;
+  }
+
+  return serverRes;
+};
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
     const state = store.getState();
@@ -42,71 +71,100 @@ export default class TokensController implements ITokensController {
         ?.map((id) => state.entities.tokens.byId[id])
         .filter((token) => token.address === address && token.active);
 
-    for (const activeToken of activeTokens) {
-      const tokenInfo = getTokenInfo(activeToken.tokenId);
-      let response;
-      let usd;
-      let price;
-      let balanceTxt;
-      let ratio_per_icp;
-      if (tokenInfo.wrappedSymbol != null && tokenInfo.wrappedSymbol == 'XDR') {
-        response = await canisterAgent({
-          canisterId: activeToken.tokenId,
-          method: 'balanceOf',
-          args: Principal.fromText(accountInfo?.meta?.principalId),
-        });
-        const conv_res = await canisterAgent({
-          canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
-          method: 'get_icp_xdr_conversion_rate',
-        });
-        const TRILLION_SDR_PER_ICP =
-          conv_res?.data?.xdr_permyriad_per_icp.toString() / 10000;
-        ratio_per_icp = TRILLION_SDR_PER_ICP;
-        balanceTxt =
-          (response?.toString() &&
-            Number(
-              response?.toString() / Math.pow(10, tokenInfo.decimals)
-            ).toFixed(4)) ||
-          0;
-        const currentUSDValue = state.entities.prices.byId['internet-computer'];
-        const ICP_PRICE_IN_USD = currentUSDValue?.usd;
-        const SDR_PRICE_IN_USD = ICP_PRICE_IN_USD / TRILLION_SDR_PER_ICP;
-        price = (balanceTxt * SDR_PRICE_IN_USD)?.toFixed(2);
-        usd = SDR_PRICE_IN_USD;
-      } else if (
-        tokenInfo.wrappedSymbol != null &&
-        tokenInfo.wrappedSymbol == 'ICP'
-      ) {
-        response = await canisterAgent({
-          canisterId: activeToken.tokenId,
-          method: 'balanceOf',
-          args: Principal.fromText(accountInfo?.meta?.principalId),
-        });
-        balanceTxt =
-          (response?.toString() &&
-            Number(
-              response?.toString() / Math.pow(10, tokenInfo.decimals)
-            ).toFixed(4)) ||
-          0;
-        const currentUSDValue = state.entities.prices.byId['internet-computer'];
-        const ICP_PRICE_IN_USD = currentUSDValue?.usd;
-        price = (balanceTxt * ICP_PRICE_IN_USD)?.toFixed(2);
-      }
+    if (accountInfo.symbol == 'ICP') {
+      for (const activeToken of activeTokens) {
+        const tokenInfo = getTokenInfo(activeToken.tokenId);
+        let response;
+        let usd;
+        let price;
+        let balanceTxt;
+        let ratio_per_icp;
+        if (
+          tokenInfo.wrappedSymbol != null &&
+          tokenInfo.wrappedSymbol == 'XDR'
+        ) {
+          response = await canisterAgent({
+            canisterId: activeToken.tokenId,
+            method: 'balanceOf',
+            args: Principal.fromText(accountInfo?.meta?.principalId),
+          });
+          const conv_res = await canisterAgent({
+            canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
+            method: 'get_icp_xdr_conversion_rate',
+          });
+          const TRILLION_SDR_PER_ICP =
+            conv_res?.data?.xdr_permyriad_per_icp.toString() / 10000;
+          ratio_per_icp = TRILLION_SDR_PER_ICP;
+          balanceTxt =
+            (response?.toString() &&
+              Number(
+                response?.toString() / Math.pow(10, tokenInfo.decimals)
+              ).toFixed(4)) ||
+            0;
+          const currentUSDValue =
+            state.entities.prices.byId['internet-computer'];
+          const ICP_PRICE_IN_USD = currentUSDValue?.usd;
+          const SDR_PRICE_IN_USD = ICP_PRICE_IN_USD / TRILLION_SDR_PER_ICP;
+          price = (balanceTxt * SDR_PRICE_IN_USD)?.toFixed(2);
+          usd = SDR_PRICE_IN_USD;
+        } else if (
+          tokenInfo.wrappedSymbol != null &&
+          tokenInfo.wrappedSymbol == 'ICP'
+        ) {
+          response = await canisterAgent({
+            canisterId: activeToken.tokenId,
+            method: 'balanceOf',
+            args: Principal.fromText(accountInfo?.meta?.principalId),
+          });
+          balanceTxt =
+            (response?.toString() &&
+              Number(
+                response?.toString() / Math.pow(10, tokenInfo.decimals)
+              ).toFixed(4)) ||
+            0;
+          const currentUSDValue =
+            state.entities.prices.byId['internet-computer'];
+          const ICP_PRICE_IN_USD = currentUSDValue?.usd;
+          price = (balanceTxt * ICP_PRICE_IN_USD)?.toFixed(2);
+        }
 
-      const balance = {
-        id: address + '_WITH_' + activeToken.tokenId,
-        balance: response?.toString(),
-        price,
-        balanceTxt,
-        ratio_per_icp,
-        usd,
-      };
-      store.dispatch(
-        storeEntities({
-          entity: 'tokens',
-          data: [balance],
-        })
-      );
+        const balance = {
+          id: address + '_WITH_' + activeToken.tokenId,
+          balance: response?.toString(),
+          price,
+          balanceTxt,
+          ratio_per_icp,
+          usd,
+        };
+        store.dispatch(
+          storeEntities({
+            entity: 'tokens',
+            data: [balance],
+          })
+        );
+      }
+    } else if (accountInfo.symbol == 'ETH') {
+      for (const activeToken of activeTokens) {
+        const tokenInfo = getTokenInfo(activeToken.tokenId);
+        if (tokenInfo.symbol == 'MATIC') {
+          const response = await getBalanceMatic(address);
+          const balanceAmount = web3.utils.hexToNumber(response.result);
+          console.log(response, 'MATIC', address, balanceAmount);
+          const balance = {
+            id: address + '_WITH_' + activeToken.tokenId,
+            balance: '9.9',
+            price: 0.7 * 9.9,
+            balanceTxt: '9.9',
+            usd: 0.7,
+          };
+          store.dispatch(
+            storeEntities({
+              entity: 'tokens',
+              data: [balance],
+            })
+          );
+        }
+      }
     }
     return;
   };
