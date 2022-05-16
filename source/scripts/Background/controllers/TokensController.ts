@@ -29,36 +29,8 @@ import { v4 as uuid } from 'uuid';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
 import { keyable } from '../types/IAssetsController';
-import axios, { AxiosRequestConfig } from 'axios';
-var web3 = require('web3');
+import { getBalanceMatic } from '~utils/services';
 
-export const getBalanceMatic = async (address: string) => {
-  const data = JSON.stringify({
-    jsonrpc: '2.0',
-    method: 'eth_getBalance',
-    params: [address, 'latest'],
-    id: 0,
-  });
-
-  const config: AxiosRequestConfig = {
-    method: 'post',
-    url: 'https://polygon-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: data,
-  };
-
-  let serverRes;
-  try {
-    const response = await axios(config);
-    serverRes = response.data;
-  } catch (error) {
-    serverRes = error;
-  }
-
-  return serverRes;
-};
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
     const state = store.getState();
@@ -144,23 +116,25 @@ export default class TokensController implements ITokensController {
         );
       }
     } else if (accountInfo.symbol == 'ETH') {
+      console.log('getTokenBalances', 'MATIC');
       for (const activeToken of activeTokens) {
         const tokenInfo = getTokenInfo(activeToken.tokenId);
         if (tokenInfo.symbol == 'MATIC') {
-          const response = await getBalanceMatic(address);
-          const balanceAmount = web3.utils.hexToNumber(response.result);
-          console.log(response, 'MATIC', address, balanceAmount);
-          const balance = {
+          console.log('getBalanceMatic', 'MATIC');
+          const balance = await getBalanceMatic(address);
+          const balanceAmount = balance / Math.pow(10, tokenInfo.decimals || 0);
+          console.log(balance, 'MATIC', address, balanceAmount);
+          const balanceObj = {
             id: address + '_WITH_' + activeToken.tokenId,
-            balance: '9.9',
-            price: 0.7 * 9.9,
-            balanceTxt: '9.9',
-            usd: 0.7,
+            balance,
+            price: 0.735 * balanceAmount,
+            balanceTxt: balanceAmount,
+            usd: 0.735,
           };
           store.dispatch(
             storeEntities({
               entity: 'tokens',
-              data: [balance],
+              data: [balanceObj],
             })
           );
         }

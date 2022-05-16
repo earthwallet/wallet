@@ -254,7 +254,7 @@ const WalletSendTokens = ({
           setIsBusy(false);
         }
       } else {
-        if (getSelectedAsset(selectedAsset)?.type == 'DIP20') {
+        if (getSelectedAsset(selectedAsset)?.type == 'DIP20' || getSelectedAsset(selectedAsset)?.type == 'ERC20') {
           const callback = (path: string) => console.log(path);
           controller.tokens.transferToken(secret, selectedAsset, selectedRecp, selectedAmount, address, callback).then(() => {
 
@@ -436,7 +436,7 @@ const WalletSendTokens = ({
             </div>
 
           </div>
-            : getSelectedAsset(selectedAsset)?.type == 'DIP20' ? <div className={styles.confirmAmountCont}>
+            : (getSelectedAsset(selectedAsset)?.type == 'DIP20' || getSelectedAsset(selectedAsset)?.type == 'ERC20') ? <div className={styles.confirmAmountCont}>
               <img
                 className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
                 src={getTokenInfo(selectedAsset)?.icon}
@@ -466,7 +466,7 @@ const WalletSendTokens = ({
                 </div>
               </div>
           }
-          {getSelectedAsset(selectedAsset)?.type == 'DIP20' && <div className={styles.feeCont}>
+          {(getSelectedAsset(selectedAsset)?.type == 'DIP20' || getSelectedAsset(selectedAsset)?.type == 'ERC20') && <div className={styles.feeCont}>
             <div className={styles.feeRow}>
               <div className={styles.feeTitle}>Transaction Fee</div>
               <div>
@@ -644,7 +644,7 @@ const AmountInput = ({ address, fees, initialValue, amountCallback, errorCallbac
   const [initialized, setInitialized] = useState(false);
   const tokenInfo = useSelector(selectInfoBySymbolOrToken(tokenId || '', address));
 
-  const price = tokenInfo?.type == "DIP20" ? tokenInfo?.usd : currentUSDValue?.usd;
+  const price = tokenInfo?.type == "DIP20" || tokenInfo?.type == "ERC20" ? tokenInfo?.usd : currentUSDValue?.usd;
 
   useEffect(() => {
     if (initialValue != undefined && initialValue != '0')
@@ -662,7 +662,7 @@ const AmountInput = ({ address, fees, initialValue, amountCallback, errorCallbac
 
   const loadMaxAmount = useCallback((): void => {
     let maxAmount
-    if (tokenInfo?.type == "DIP20") {
+    if (tokenInfo?.type == "DIP20" || tokenInfo?.type == "ERC20") {
       maxAmount = tokenInfo.balance / Math.pow(10, tokenInfo.decimals) - fees;
       maxAmount = parseFloat(maxAmount.toFixed(8));
 
@@ -678,7 +678,7 @@ const AmountInput = ({ address, fees, initialValue, amountCallback, errorCallbac
     setInitialized(true);
 
     let maxAmount
-    if (tokenInfo?.type == "DIP20") {
+    if (tokenInfo?.type == "DIP20" || tokenInfo?.type == "ERC20") {
       maxAmount = tokenInfo.balance / Math.pow(10, tokenInfo.decimals) - fees;
       maxAmount = parseFloat(maxAmount.toFixed(8));
 

@@ -264,7 +264,7 @@ const TokensList = ({ address }: { address: string }) => {
     <div className={styles.tokensList}>
       <div className={styles.listHeader}>
         <div className={styles.listHeaderTitle}>Total Balance</div>
-        <div className={styles.listHeaderSubtitle}>${activeTokenAndAddressBalance?.toFixed(2) || 0}</div>
+        <div className={styles.listHeaderSubtitle}>${isNaN(activeTokenAndAddressBalance?.toFixed(2)) ? 0 : activeTokenAndAddressBalance?.toFixed(2) || 0}</div>
       </div>
       <div className={styles.listitemscont}>
         <div

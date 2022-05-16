@@ -23,6 +23,7 @@ import { getSymbol } from '~utils/common';
 import { GROUP_ID_SYMBOL } from '~global/constant';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { principal_to_address } from '@earthwallet/assets';
+import { getBalanceETH } from '~utils/services';
 
 interface keyable {
   [key: string]: any;
@@ -193,14 +194,20 @@ export default class AccountsController implements IAccountsController {
           ],
         })
       );
+      let balance: keyable = {};
+      if (account.symbol == 'ETH') {
+        const value = await getBalanceETH(account.address);
+        balance = { currency: { decimals: 18, symbol: 'ETH' }, value: value };
+      } else {
+        balance = await _getBalance(
+          account.address,
+          account.symbol === 'ICP_Ed25519' ? 'ICP' : account.symbol
+        );
+      }
 
-      let balance: keyable = await _getBalance(
-        account.address,
-        account.symbol === 'ICP_Ed25519' ? 'ICP' : account.symbol
-      );
       if (account.symbol === 'ICP' || account.symbol === 'ICP_Ed25519') {
         balance.value = balance?.balances[0]?.value;
-        balance.currency = balance?.balances[0].currency;
+        balance.currency = balance?.balances[0]?.currency;
       }
       return { ...balance, ...{ id: account.address, symbol: account.symbol } };
     };
