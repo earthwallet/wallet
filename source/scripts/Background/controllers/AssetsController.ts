@@ -40,6 +40,7 @@ export default class AssetsController implements IAssetsController {
           `${CGECKO_PRICE_API}?ids=${activeAssetIds}&vs_currencies=${currency}&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`
         )
       ).json();
+      console.log(data, 'fetchFiatPrices');
       store.dispatch(
         storeEntities({
           entity: 'prices',
@@ -61,8 +62,6 @@ export default class AssetsController implements IAssetsController {
   };
 
   fetchICPAssets = async (account: keyable, canisterId: string) => {
-    console.log('getNFTsFromCanisterExt', canisterId, account.address);
-
     const tokens: keyable = await getNFTsFromCanisterExt(
       canisterId,
       account.address

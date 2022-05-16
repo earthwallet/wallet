@@ -93,7 +93,9 @@ const SelectTokens = ({
             key={tokenObj.symbol}
             className={clsx(styles.checkboxCont, tokenObj.symbol === "ICP" && styles.checkboxCont_disabled)}>
             <div className={styles.checkboxContent}>
-              <div className={styles.networkIcon}>{tokenObj?.name?.charAt(0)}</div>
+              {tokenObj?.icon != undefined
+                ? <img src={tokenObj?.icon} className={styles.networkIcon} />
+                : <div className={styles.networkIcon}>{tokenObj?.name?.charAt(0)}</div>}
               <div className={styles.checkboxTitle}>
                 <div>{tokenObj.name}</div>
                 <div>{tokenObj.symbol}</div>

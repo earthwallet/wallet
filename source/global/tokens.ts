@@ -49,7 +49,7 @@ const TOKENS_LIST = [
     type: 'ERC20',
     icon: ICON_MATIC,
     symbol: 'MATIC',
-    coinGeckoId: 'polygon',
+    coinGeckoId: 'matic-network',
     evmChain: true,
     isLive: true,
     chainId: 137,
@@ -100,4 +100,7 @@ export const getLiveTokensByNetworkSymbol = (networkSymbol: string) =>
     (token) => token.isLive
   );
 
+export const LIVE_TOKENS_GECKOIDs = TOKENS_LIST.filter(
+  (tokenObj) => tokenObj.isLive && tokenObj.coinGeckoId != undefined
+).map((tokenObj) => tokenObj.coinGeckoId);
 export default LIVE_TOKENS;

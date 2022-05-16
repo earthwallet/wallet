@@ -35,3 +35,6 @@ declare module 'get-browser-fingerprint' {
   const fingerprint: fingerprint.getBrowserFingerprint;
   export = fingerprint;
 }
+
+declare module 'react-id-swiper';
+declare module 'react-id-swiper/lib/custom';

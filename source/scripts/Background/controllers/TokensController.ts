@@ -124,12 +124,17 @@ export default class TokensController implements ITokensController {
           const balance = await getBalanceMatic(address);
           const balanceAmount = balance / Math.pow(10, tokenInfo.decimals || 0);
           console.log(balance, 'MATIC', address, balanceAmount);
+          const currentUSDValue =
+            state.entities.prices.byId[tokenInfo.coinGeckoId || ''];
+          const MATIC_PRICE_IN_USD = currentUSDValue?.usd;
+
           const balanceObj = {
             id: address + '_WITH_' + activeToken.tokenId,
             balance,
-            price: 0.735 * balanceAmount,
+            price: (MATIC_PRICE_IN_USD * balanceAmount || 0)?.toFixed(2),
             balanceTxt: balanceAmount,
-            usd: 0.735,
+            usd: MATIC_PRICE_IN_USD,
+            usd_24h_change: currentUSDValue.usd_24h_change,
           };
           store.dispatch(
             storeEntities({

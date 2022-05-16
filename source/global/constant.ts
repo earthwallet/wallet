@@ -1,5 +1,5 @@
 import { NetworkType } from './types';
-import ICON_ETH from '~assets/images/icon_eth_mini.png';
+import ICON_ETH from '~assets/images/icon_eth.png';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
 import ICON_ICP_ED25519 from '~assets/images/icon_icp_ed25519.png';
 import ICON_DOT from '~assets/images/icon_mini_dot.png';
