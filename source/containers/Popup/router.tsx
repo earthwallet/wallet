@@ -80,6 +80,9 @@ const PopupRouter = () => {
             <Switch location={item}>
               <Route path="/popup.html">
                 <Redirect to="/accounts" />
+
+                {/*                 <Redirect to="/account/confirmsend/0x115c11f14fabb8b4fbdee2239c0686b42b3b62eb?tokenId=137&recipient=0x12e20a120b7c905dcab2199c555f9d3ea5cb29b6" />
+ */}
               </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />

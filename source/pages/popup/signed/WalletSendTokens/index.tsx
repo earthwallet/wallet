@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styles from './index.scss';
 import InputWithLabel from '~components/InputWithLabel';
 import NextStepButton from '~components/NextStepButton';
@@ -15,7 +15,7 @@ import { principal_to_address } from '@earthwallet/keyring/build/main/util/icp';
 import { getSymbol } from '~utils/common';
 
 import { decryptString } from '~utils/vault';
-import { validateMnemonic, getFees } from '@earthwallet/keyring';
+import { validateMnemonic, getFees, createWallet } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
 import { selectBalanceByAddress } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
@@ -32,6 +32,9 @@ import AddressInput from '~components/AddressInput';
 import { getTokenInfo } from '~global/tokens';
 import { selectInfoBySymbolOrToken } from '~state/token';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
+import { getFeesExtended, getFeesExtended_MATIC } from '~utils/services';
+import { createAlchemyWeb3 } from '@alch/alchemy-web3';
+import { ethers } from 'ethers';
 
 const MIN_LENGTH = 6;
 interface keyable {
@@ -56,7 +59,6 @@ const WalletSendTokens = ({
   const assets: keyable = useSelector(selectActiveTokensAndAssetsICPByAddress(address));
 
 
-  const dropDownRef = useRef(null);
   const [selectedRecp, setSelectedRecp] = useState<string>('');
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
   const [pass, setPass] = useState('');
@@ -65,6 +67,7 @@ const WalletSendTokens = ({
   const [error, setError] = useState('');
   const [txError, setTxError] = useState('');
   const [fees, setFees] = useState<number>(0);
+  const [feesArr, setFeesArr] = useState<keyable[]>([]);
 
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
   const [selectCredit, setSelectCredit] = useState<boolean>(true);
@@ -141,6 +144,27 @@ const WalletSendTokens = ({
       else {
         setFees(getTokenInfo(tokenId)?.sendFees);
       }
+    } else if (selectedAccount?.symbol === 'ETH') {
+      if (tokenId == null) {
+        //getETHFees
+      }
+      else {
+        setIsBusy(true);
+        getFeesExtended(selectedAccount?.symbol, tokenId).then((_feesArr: keyable[]) => {
+
+          _feesArr[0] && setFees(_feesArr[0]?.gas);
+          setFeesArr(_feesArr);
+          console.log(_feesArr, 'getFeesExtended')
+        })
+        // @ts-ignore
+        //getFees(eth, matic)
+        /*       getFees(selectedAccount?.symbol).then(fees => {
+                setIsBusy(false);
+                const BTC_DECIMAL = 8;
+                setFees(fees.fast.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber());
+              }) */
+        setIsBusy(false);
+      }
     }
   }, [selectedAccount?.id === address]);
 
@@ -174,15 +198,72 @@ const WalletSendTokens = ({
       if (selectedAmount === 0) {
         alert('Amount cannot be 0');
       }
-      if (selectedAccount?.symbol != 'BTC') {
-        return;
+      let hash: any;
+      if (selectedAccount?.symbol == 'BTC') {
+        hash = await controller.accounts.sendBTC(
+          selectedRecp,
+          selectedAmount,
+          mnemonic,
+          address
+        );
+
+      } else if (selectedAccount?.symbol == 'ETH') {
+        if (selectedAsset === selectedAccount?.symbol) {
+          // sendETH
+        } else if (getSelectedAsset(selectedAsset)?.type == 'ERC20') {
+          //alert('do MATIC');
+
+          const wallet_tx = await createWallet(mnemonic, 'MATIC');
+
+          const web3 = createAlchemyWeb3(
+            'https://polygon-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc'
+          );
+          console.log(wallet_tx.address);
+
+          const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
+          console.log('private key', privateKey);
+
+          const nonce = await web3.eth.getTransactionCount(wallet_tx.address, 'latest');
+          console.log('nonce', nonce);
+
+          const transaction = {
+            nonce: nonce,
+            from: wallet_tx.address,
+            to: selectedRecp,
+            value: web3.utils.toWei(selectedAmount.toString(), 'ether'),
+          };
+          // estimate gas usage. This is units. minimum cap being 21000 units
+          const estimateGas = await web3.eth.estimateGas(transaction);
+          console.log('estimate', estimateGas);
+
+          // get gas prices
+
+          //
+          // const fee = await web3.eth.getMaxPriorityFeePerGas();
+          // console.log('fee', web3.utils.toBN(fee).toString());
+          const priorityFees: keyable = await getFeesExtended_MATIC();
+          console.log(priorityFees)
+          // use 200% gas estimate as gas limit to be safe.
+          // sign transaction
+          const signedTx: keyable = await web3.eth.accounts.signTransaction(
+            {
+              gas: estimateGas,
+              maxPriorityFeePerGas: web3.utils.toWei(
+                priorityFees['fast']['maxPriorityFee'].toFixed(5),
+                'gwei'
+              ),
+              maxFeePerGas: web3.utils.toWei(priorityFees['fast']['maxFee'].toFixed(5), 'gwei'),
+              ...transaction,
+            },
+            privateKey
+          );
+          console.log('signedTx', signedTx);
+          //send signed transaction
+          const result = await web3.eth.sendSignedTransaction(signedTx?.rawTransaction);
+          console.log(result);
+        }
+
       }
-      const hash: any = await controller.accounts.sendBTC(
-        selectedRecp,
-        selectedAmount,
-        mnemonic,
-        address
-      );
 
       await controller.accounts
         .getBalancesOfAccount(selectedAccount)
@@ -338,14 +419,13 @@ const WalletSendTokens = ({
       text={'Send'}
       type={'wallet'} />
     <div className={styles.pagecont}
-      ref={dropDownRef}
     >
       {!(txCompleteTxt === undefined || txCompleteTxt === '') && <div
         className={styles.paymentDone}>
         {txCompleteTxt}
       </div>}
       {step1
-        ? <div style={{ width: '100vw' }}>
+        ? <div className={styles.innercontainer}>
           <div className={styles.earthInputLabel}>Add recipient</div>
           <AddressInput
             initialValue={selectedRecp}
@@ -375,8 +455,8 @@ const WalletSendTokens = ({
                 onSelectedAssetClick={toggle}
                 label={selectedAssetObj?.label}
                 loading={false}
-                balanceTxt={selectedAssetObj.balanceTxt}
-                icon={selectedAssetObj.icon || getTokenInfo(selectedAsset).icon}
+                balanceTxt={selectedAssetObj?.balanceTxt}
+                icon={selectedAssetObj?.icon || getTokenInfo(selectedAsset)?.icon}
               />
               }
               {toggleAssetDropdown &&
@@ -395,7 +475,7 @@ const WalletSendTokens = ({
                     onAssetOptionClick={() => toggleAndSetAsset(asset?.id || index)}
                     label={asset.label}
                     icon={asset.icon || getTokenInfo(asset?.id).icon}
-                    balanceTxt={asset.balanceTxt}
+                    balanceTxt={asset?.balanceTxt}
                   />
                   )}
                 </div>
@@ -418,6 +498,14 @@ const WalletSendTokens = ({
             errorCallback={setError}
           />
           }
+          {selectedAccount?.symbol == 'ETH' && <><div className={styles.earthInputLabel}>Transaction Fee</div>
+            <div className={styles.feeSelector}>
+              {feesArr.map((feeObj: keyable) => <div key={feeObj?.label} className={clsx(styles.feeSelectCont, feeObj?.label == 'Safe Low' && styles.feeSelectCont_selected)}>
+                <div className={styles.feeLabel}>{feeObj?.label}</div>
+                <div className={styles.feePrice}>{feeObj?.gas?.toFixed(4)} MATIC</div>
+                <div className={styles.feePriceUSD}>${(feeObj?.gas * 0.67)?.toFixed(4)}</div>
+              </div>)}
+            </div></>}
         </div>
         : <div className={styles.confirmPage}>
           {selectedAsset === selectedAccount?.symbol ? <div className={styles.confirmAmountCont}>

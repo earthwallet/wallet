@@ -47,10 +47,21 @@
   color: #ffffff;
   text-align: left;
   width: calc(100% - 48px);
-  padding: 27px 24px 13px;
+  padding: 18px 24px 9px;
   display: flex;
   align-items: center;
 }
+.pagecont {
+  width: 375px;
+  height: 560px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.innercontainer {
+  height: fit-content;
+  margin-bottom: 126px;
+}
+
 .paymentDone {
   text-align: center;
   border: 1px dashed #1b8d1b;
@@ -491,4 +502,65 @@
   margin: 0px 24px;
   padding: 5px 12px;
   opacity: 0.9;
+}
+
+.feeLabel {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 27px;
+  /* identical to box height */
+
+  color: #ffffff;
+}
+
+.feePrice {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 18px;
+
+  color: #ffffff;
+}
+.feePriceUSD {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.025em;
+
+  /* Brand / Forest Green / 100% */
+
+  color: #55d171;
+}
+
+.feeSelectCont {
+  display: flex;
+  height: 94px;
+  flex: 1;
+  justify-content: center;
+  flex-direction: column;
+  padding: 12px;
+}
+.feeSelectCont_selected {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 14px;
+}
+.feeSelector {
+  width: calc(100vw - 48px);
+  margin: 0 24px;
+  display: flex;
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
 }
