@@ -204,8 +204,6 @@ export class EarthProvider {
 
   async sessionSign(request: keyable, origin: string) {
     console.log('sessionSign', request, origin);
-    //todo check expirytime
-    //check canisterIds array for approved canisters
     //close expiredSessions
     //todo create new txn request for array and single
     //limit txn log to 100 entries
@@ -232,11 +230,19 @@ export class EarthProvider {
           message: `Requested canisterId is not in approved canisterIds list. Please try again or request for updateSession`,
         };
       }
+      if (sessionState.expiryAt - new Date().getTime() < 0) {
+        this.closeSession(origin);
+        return {
+          type: 'error',
+          message: `Session Expired. Please create a new Session`,
+        };
+      }
       try {
         approvedIdentityJSON = decryptString(
           sessionState?.vault?.encryptedJson,
           request.sessionId.toString()
         );
+        return this.sign(request, approvedIdentityJSON);
       } catch (error) {
         console.log('Wrong sessionId! Please try again');
         return {
@@ -246,8 +252,6 @@ export class EarthProvider {
         };
       }
     }
-    //
-    return this.sign(request, approvedIdentityJSON);
   }
 
   async createSession(
