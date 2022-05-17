@@ -202,7 +202,6 @@ export class EarthProvider {
     return { success: 'Closed active session' };
   }
 
-  //8e82f9bc
   async sessionSign(request: keyable, origin: string) {
     console.log('sessionSign', request, origin);
     //todo check expirytime
@@ -223,9 +222,16 @@ export class EarthProvider {
 
     if (sessionState == undefined) {
       return {
-        error: 'No active sessions! Please create new session',
+        type: 'error',
+        message: 'No active sessions! Please create new session',
       };
     } else {
+      if (!sessionState.canisterIds.includes(request?.canisterId)) {
+        return {
+          type: 'error',
+          message: `Requested canisterId is not in approved canisterIds list. Please try again or request for updateSession`,
+        };
+      }
       try {
         approvedIdentityJSON = decryptString(
           sessionState?.vault?.encryptedJson,
@@ -234,7 +240,8 @@ export class EarthProvider {
       } catch (error) {
         console.log('Wrong sessionId! Please try again');
         return {
-          error:
+          type: 'error',
+          message:
             'Wrong sessionId value sent! Please try again or create a new Session',
         };
       }
