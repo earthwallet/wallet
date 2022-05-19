@@ -6,6 +6,7 @@ import ConnectDappPage from '~pages/dapp/ConnectDappPage';
 import SignTransactionPage from '~pages/dapp/SignTransactionPage';
 import queryString from 'query-string';
 import ToastProvider from '~components/ToastProvider';
+import UnsignedApprovePage from '~pages/dapp/UnsignedApprovePage';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -51,6 +52,9 @@ const DappRouter = () => {
               </Route>
               <Route path="/sign">
                 {wrapWithErrorBoundary(<SignTransactionPage />, 'sign')}
+              </Route>
+              <Route path="/approve">
+                {wrapWithErrorBoundary(<UnsignedApprovePage />, 'approve')}
               </Route>
             </Switch>
           </ToastProvider>

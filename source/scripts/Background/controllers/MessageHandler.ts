@@ -124,7 +124,6 @@ export const messagesHandler = (
         if (pendingWindow) {
           return Promise.resolve(null);
         }
-        console.log(params, 'wallet.createSession');
         const signatureRequest =
           method === 'wallet.createSession'
             ? { ...params, type: 'createSession' }
@@ -154,6 +153,75 @@ export const messagesHandler = (
                   approvedIdentityJSON,
                   windowId
                 );
+              } else {
+                result = await mainController.provider.sign(
+                  signatureRequest,
+                  approvedIdentityJSON,
+                  windowId
+                );
+              }
+
+              const parsedResult = parseObjWithOutBigInt(result);
+              port.postMessage({
+                id: message.id,
+                data: { result: parsedResult },
+              });
+              pendingWindow = false;
+            }
+          },
+          {
+            once: true,
+            passive: true,
+          }
+        );
+
+        browser.windows.onRemoved.addListener((id) => {
+          if (popup && id === popup.id) {
+            port.postMessage({
+              id: message.id,
+              data: { result: 'USER_REJECTED' },
+            });
+            pendingWindow = false;
+          }
+        });
+
+        return Promise.resolve(null);
+      } else if (
+        method === 'wallet.updateSession' ||
+        method === 'wallet.disconnect'
+      ) {
+        if (pendingWindow) {
+          return Promise.resolve(null);
+        }
+        const signatureRequest =
+          method === 'wallet.updateSession'
+            ? { ...params, type: 'updateSession' }
+            : method === 'wallet.disconnect'
+            ? { message: params, type: 'disconnect' }
+            : params;
+        const windowId = uuid();
+        mainController.dapp.setSignatureRequest(signatureRequest, windowId);
+        const popup = await mainController.createPopup(windowId, 'approve');
+        pendingWindow = true;
+        window.addEventListener(
+          'unsignedApproval',
+          async (ev: any) => {
+            if (ev.detail.substring(1) === windowId) {
+              //https://forum.dfinity.org/t/mismatching-dfinity-agent-versions-can-cause-hashing-issues/7359/5
+              const approvedIdentityJSON =
+                mainController.dapp.getApprovedIdentityJSON();
+              if (method === 'wallet.updateSession') {
+                result = await mainController.provider.createSession(
+                  signatureRequest,
+                  approvedIdentityJSON,
+                  windowId
+                );
+              } else if (method === 'wallet.disconnect') {
+                await mainController.dapp.deleteOriginAndRequests(origin);
+                result = {
+                  type: 'success',
+                  message: 'disconnected succesfully',
+                };
               } else {
                 result = await mainController.provider.sign(
                   signatureRequest,
