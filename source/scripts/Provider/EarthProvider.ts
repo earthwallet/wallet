@@ -253,6 +253,51 @@ export class EarthProvider {
       }
     }
   }
+  async updateSession(request: keyable, origin: string) {
+    //updated active session
+    console.log('updateSession', request, origin);
+
+    const state = store.getState();
+    const sessionState = Object.keys(state.entities.dappSessions?.byId)
+      ?.map((id) => ({ ...state.entities.dappSessions.byId[id], id: id }))
+      .filter(
+        (dappSession: keyable) =>
+          typeof dappSession == 'object' &&
+          dappSession.origin == origin &&
+          dappSession.active
+      )[0];
+
+    if (request.canisterIds == undefined) {
+      return {
+        type: 'error',
+        message: 'No canisterIds specified.',
+      };
+    }
+    if (sessionState == undefined) {
+      return {
+        type: 'error',
+        message: 'No active sessions! Please create new session',
+      };
+    } else {
+      const existingCanisterIds = sessionState.canisterIds;
+      const requestCanisterIds = Array.isArray(request.canisterIds)
+        ? request.canisterIds
+        : [request.canisterIds];
+      const newCanisterIds = existingCanisterIds.concat(requestCanisterIds);
+      const uniqCanisterIds = Array.from(new Set(newCanisterIds));
+      console.log('updateSession', sessionState.id, uniqCanisterIds);
+      store.dispatch(
+        updateEntities({
+          entity: 'dappSessions',
+          key: sessionState.id,
+          data: {
+            canisterIds: uniqCanisterIds,
+          },
+        })
+      );
+      return 'Successfully updated active session!';
+    }
+  }
 
   async createSession(
     request: keyable,
@@ -288,6 +333,27 @@ export class EarthProvider {
       store.dispatch(createEntity({ entity: 'dappSessions' }));
     }
 
+    if (request.canisterIds == undefined) {
+      store.dispatch(
+        updateEntities({
+          entity: 'dappRequests',
+          key: requestId,
+          data: {
+            loading: false,
+            error: 'canisterIds cannot be empty',
+          },
+        })
+      );
+      return {
+        type: 'error',
+        message: 'No canisterIds specified.',
+      };
+    }
+
+    let canisterIds = Array.isArray(request.canisterIds)
+      ? request.canisterIds
+      : [request.canisterIds];
+
     store.dispatch(
       storeEntities({
         entity: 'dappSessions',
@@ -299,7 +365,7 @@ export class EarthProvider {
             },
             origin,
             address,
-            canisterIds: request.canisterIds,
+            canisterIds,
             expiryAt: new Date().getTime() + request.expiryTime * 1000,
             active: true,
           },

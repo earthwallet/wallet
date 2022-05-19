@@ -211,16 +211,15 @@ export const messagesHandler = (
               const approvedIdentityJSON =
                 mainController.dapp.getApprovedIdentityJSON();
               if (method === 'wallet.updateSession') {
-                result = await mainController.provider.createSession(
+                result = await mainController.provider.updateSession(
                   signatureRequest,
-                  approvedIdentityJSON,
-                  windowId
+                  origin
                 );
               } else if (method === 'wallet.disconnect') {
                 await mainController.dapp.deleteOriginAndRequests(origin);
                 result = {
                   type: 'success',
-                  message: 'disconnected succesfully',
+                  message: 'Disconnected successfully!',
                 };
               } else {
                 result = await mainController.provider.sign(

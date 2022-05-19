@@ -91,10 +91,9 @@ window.earth = {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.createSession')({sessionId, canisterIds, expiryTime})
   },
-  updateSession: async ({canisterIds, expiryTime}) => {
-    //check if already session is active
+  updateSession: async ({canisterIds}) => {
     const icp = window.providerManager.getProviderFor('ICP')
-    return icp.getMethod('wallet.createSession')({sessionId, canisterIds, expiryTime})
+    return icp.getMethod('wallet.updateSession')({ canisterIds })
   },
   sign: async (params) => {
     const icp = window.providerManager.getProviderFor('ICP')

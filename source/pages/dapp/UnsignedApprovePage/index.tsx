@@ -95,22 +95,10 @@ const UnsignedApprovePage = () => {
       : request?.type === 'updateSession'
         ? <div className={styles.requestBody}>
           <div className={styles.label}>
-            Session Id
-          </div>
-          <div className={styles.value}>
-            {request?.sessionId}
-          </div>
-          <div className={styles.label}>
             CanisterIds
           </div>
           <div className={styles.value}>
             {request?.canisterIds?.length > 0 && request?.canisterIds.map((canisterId: string) => <div className={styles.canisterid} key={canisterId}>{canisterId}</div>)}
-          </div>
-          <div className={styles.label}>
-            Expiry Time
-          </div>
-          <div className={styles.value}>
-            {request?.expiryTime}
           </div>
         </div>
         : Array.isArray(request)
