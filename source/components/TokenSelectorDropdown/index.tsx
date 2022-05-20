@@ -7,7 +7,7 @@ import { selectTokenByTokenPair } from '~state/token';
 import { keyable } from '~scripts/Background/types/IMainController';
 //import { mint } from '@earthwallet/assets';
 import ICON_CARET from '~assets/images/icon_caret.svg';
-import { selectBalanceByAddress } from '~state/wallet';
+import { selectBalanceById } from '~state/wallet';
 
 export const TokenSelectorDropdown = ({
     filterTokenId,
@@ -124,7 +124,7 @@ export const TokenBalance = ({ selectedToken, address, setBalance }: { selectedT
 }
 
 const ICPBalance = ({ address, setBalance }: { address: string, setBalance: (balance: string | number) => void }) => {
-    const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+    const currentBalance: keyable = useSelector(selectBalanceById(address));
 
     useEffect(() => {
         setBalance((currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0))

@@ -67,8 +67,8 @@ const EarthCollections = ({ address }: { address: string }) => {
     const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
     const history = useHistory();
     const collections = useSelector(selectAllCollectionInfo());
-    return (<>{collections.map((nftObj: keyable) => <div
-        key={nftObj.id}
+    return (<>{collections.map((nftObj: keyable, index: number) => <div
+        key={index}
         className={styles.nft}
         onClick={() => history.push(`/nft/collection/${nftObj.id}?address=${address}`)}
     >

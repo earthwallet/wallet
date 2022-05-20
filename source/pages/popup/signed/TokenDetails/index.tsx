@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
 import { getTransactions } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
-import { selectBalanceByAddress } from '~state/wallet';
+import { selectBalanceById } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
 
 import { useHistory } from 'react-router-dom';
@@ -58,7 +58,7 @@ const Wallet = ({
   const [selectedGridToken, setSelectedGridToken] = useState<string>('');
 
   useEffect(() => {
-    if (!(selectedAccount?.symbol === 'ICP' || selectedAccount?.symbol === 'ETH')) {
+    if (!(selectedAccount?.symbol === 'ICP' || selectedAccount?.symbol === 'ETH' || selectedAccount?.symbol === 'MATIC')) {
       history.replace('/account/minidetails/' + address)
     }
     else {
@@ -162,7 +162,7 @@ const Wallet = ({
       {mainNav === 'tokens' && <>
         <div>
           {nav === 'grid' && <TokensGridflow
-            selectedSymbol={selectedAccount.symbol}
+            selectedSymbol={selectedAccount?.symbol}
             setSelectedGridToken={setSelectedGridToken}
             address={address} />}
           {nav === 'list' && <TokensList address={address} />}
@@ -246,17 +246,17 @@ const TokensList = ({ address }: { address: string }) => {
       </div>
       <div className={styles.listitemscont}>
         <div
-          onClick={() => history.push('/th/' + address + '/' + selectedAccount.symbol)}
+          onClick={() => history.push('/th/' + address + '/' + selectedAccount?.symbol)}
           className={styles.listitem}>
           <img
             className={styles.listicon}
-            src={getInfoBySymbol(selectedAccount.symbol)?.icon} >
+            src={getInfoBySymbol(selectedAccount?.symbol)?.icon} >
           </img>
           <div className={styles.listinfo}>
-            <div className={styles.listtitle}>{getInfoBySymbol(selectedAccount.symbol)?.name}</div>
+            <div className={styles.listtitle}>{getInfoBySymbol(selectedAccount?.symbol)?.name}</div>
           </div>
           <GroupSymbolBalance groupId={selectedAccount?.groupId}
-            symbol={getInfoBySymbol(selectedAccount.symbol)?.symbol} />
+            symbol={getInfoBySymbol(selectedAccount?.symbol)?.symbol} />
           <img
             className={styles.listforward}
             src={ICON_FORWARD}
@@ -311,19 +311,20 @@ const TokensList = ({ address }: { address: string }) => {
 
 const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: string }) => {
   const currentAccount: keyable = useSelector(selectGroupBalanceByGroupIdAndSymbol(groupId, symbol));
+  console.log(currentAccount, 'GroupSymbolBalance');
   return <div
     className={styles.liststats}
   >
     <div><Balance account={currentAccount[0]} /></div>
     <div className={styles.listsubtitle}>
-      <BalanceWithUSD address={currentAccount[0]?.address} />
+      <BalanceWithUSD id={currentAccount[0]?.id} />
     </div>
   </div>
 }
 
 
 const TokenOrSymbolBalance = ({ address, tokenId }: { address: string, tokenId: string }) => {
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentBalance: keyable = useSelector(selectBalanceById(address));
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(tokenId)?.coinGeckoId || ''));
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
 
@@ -463,12 +464,12 @@ const TokensGridflow = ({ address, setSelectedGridToken, selectedSymbol }: { add
 
 
 const Balance = ({ account }: { account: keyable }) => {
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(account?.address));
+  const currentBalance: keyable = useSelector(selectBalanceById(account?.id));
   return <div className={styles.listprice}>{((currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)).toFixed(4)} {account?.symbol}</div>
 }
 
-const BalanceWithUSD = ({ address }: { address: string }) => {
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+const BalanceWithUSD = ({ id }: { id: string }) => {
+  const currentBalance: keyable = useSelector(selectBalanceById(id));
   return <div className={styles.netlast}>
     <div className={styles.netstats}>${currentBalance?.balanceInUSD?.toFixed(2)}
       {

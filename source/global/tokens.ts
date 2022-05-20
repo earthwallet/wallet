@@ -1,5 +1,4 @@
 import ICON_SDR from '~assets/images/icon_SDR.png';
-import ICON_MATIC from '~assets/images/icon_matic.png';
 import ICON_BNB from '~assets/images/icon_mini_bnb.png';
 import ICON_AVAX from '~assets/images/icon_avalanche.svg';
 
@@ -41,21 +40,6 @@ const TOKENS_LIST = [
     addressType: 'principal',
     addressTitle: 'Principal Id',
     sendFees: 0,
-  },
-  {
-    id: '137',
-    networkSymbol: 'ETH',
-    name: 'Polygon',
-    type: 'ERC20',
-    icon: ICON_MATIC,
-    symbol: 'MATIC',
-    coinGeckoId: 'matic-network',
-    evmChain: true,
-    isLive: true,
-    chainId: 137,
-    fees: 0,
-    sendFees: 0,
-    decimals: 18,
   },
   {
     id: '56',

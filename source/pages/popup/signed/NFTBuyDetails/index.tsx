@@ -14,7 +14,7 @@ import useQuery from '~hooks/useQuery';
 import { decodeTokenId } from '@earthwallet/assets';
 import useToast from '~hooks/useToast';
 import { useSelector } from 'react-redux';
-import { selectBalanceByAddress } from '~state/wallet';
+import { selectBalanceById } from '~state/wallet';
 import { selectCollectionInfo } from '~state/assets';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 
@@ -36,7 +36,7 @@ const NFTBuyDetails = ({
     const type: string = queryParams.get('type') || '';
 
     const history = useHistory();
-    const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+    const currentBalance: keyable = useSelector(selectBalanceById(address));
 
     const canisterId = decodeTokenId(nftId).canister;
     const tokenIndex = decodeTokenId(nftId).index;

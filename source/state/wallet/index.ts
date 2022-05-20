@@ -114,7 +114,7 @@ export const selectGroupBalanceByGroupIdAndSymbol =
       .filter((account) => account.symbol === symbol);
   };
 
-export const selectBalanceByAddress = (address: string) => (state: AppState) =>
+export const selectBalanceById = (address: string) => (state: AppState) =>
   state.entities.balances.byId[address];
 
 export const selectBalanceInUSDByAddress =

@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
 import { getTransactions } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
-import { selectBalanceByAddress } from '~state/wallet';
+import { selectBalanceById } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
 import useToast from '~hooks/useToast';
 
@@ -45,7 +45,7 @@ const Wallet = ({
   const history = useHistory();
 
 
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentBalance: keyable = useSelector(selectBalanceById(address));
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
   const [walletTransactions, setWalletTransactions] = useState<any>();

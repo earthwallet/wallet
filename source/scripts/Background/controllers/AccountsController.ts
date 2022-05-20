@@ -20,10 +20,10 @@ import {
 } from '@earthwallet/keyring';
 import { encryptString } from '~utils/vault';
 import { getSymbol } from '~utils/common';
-import { GROUP_ID_SYMBOL } from '~global/constant';
+import { getInfoBySymbol, GROUP_ID_SYMBOL } from '~global/constant';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { principal_to_address } from '@earthwallet/assets';
-import { getBalanceETH } from '~utils/services';
+import { getBalanceETH, getBalanceMatic } from '~utils/services';
 
 interface keyable {
   [key: string]: any;
@@ -182,12 +182,13 @@ export default class AccountsController implements IAccountsController {
   };
   getBalancesOfAccount = async (account: keyable) => {
     const fetchBalance = async (account: keyable) => {
+      console.log(account, 'fetchBalance');
       store.dispatch(
         storeEntities({
           entity: 'balances',
           data: [
             {
-              id: account.address,
+              id: account.id,
               symbol: account.symbol,
               loading: true,
             },
@@ -198,6 +199,9 @@ export default class AccountsController implements IAccountsController {
       if (account.symbol == 'ETH') {
         const value = await getBalanceETH(account.address);
         balance = { currency: { decimals: 18, symbol: 'ETH' }, value: value };
+      } else if (account.symbol == 'MATIC') {
+        const value = await getBalanceMatic(account.address);
+        balance = { currency: { decimals: 18, symbol: 'MATIC' }, value: value };
       } else {
         balance = await _getBalance(
           account.address,
@@ -209,7 +213,7 @@ export default class AccountsController implements IAccountsController {
         balance.value = balance?.balances[0]?.value;
         balance.currency = balance?.balances[0]?.currency;
       }
-      return { ...balance, ...{ id: account.address, symbol: account.symbol } };
+      return { ...balance, ...{ id: account.id, symbol: account.symbol } };
     };
     try {
       let balance: keyable = await fetchBalance(account);
@@ -379,20 +383,46 @@ export default class AccountsController implements IAccountsController {
 
     let forwardAddress = '';
     for (const symbol of symbols) {
-      if (symbol !== 'ICP') {
-        const selectedAccount = existingAllAccounts.filter(
-          (a) => a.symbol === symbol
+      if (getInfoBySymbol(symbol).evmChain) {
+        const selectedETHAccount = existingAllAccounts.filter(
+          (a) => a.symbol === 'ETH'
         )[0];
-        forwardAddress = selectedAccount.id;
+        //https://en.bitcoin.it/wiki/BIP_0021
+        // BIP_0021 uri format example MATIC:xyzzyxxxxxx
+        const address_uri = symbol + ':' + selectedETHAccount.id;
         store.dispatch(
           updateEntities({
             entity: 'accounts',
-            key: selectedAccount.id,
+            key: address_uri,
             data: {
-              active: status,
+              ...selectedETHAccount,
+              ...{
+                id: address_uri,
+                active: status,
+                symbol,
+                evmChain: true,
+                order: getInfoBySymbol(symbol).order,
+              },
             },
           })
         );
+        forwardAddress = address_uri;
+      } else {
+        if (symbol !== 'ICP') {
+          const selectedAccount = existingAllAccounts.filter(
+            (a) => a.symbol === symbol
+          )[0];
+          forwardAddress = selectedAccount.id;
+          store.dispatch(
+            updateEntities({
+              entity: 'accounts',
+              key: selectedAccount.id,
+              data: {
+                active: status,
+              },
+            })
+          );
+        }
       }
     }
 

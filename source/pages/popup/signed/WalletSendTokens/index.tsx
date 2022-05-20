@@ -17,7 +17,7 @@ import { getSymbol } from '~utils/common';
 import { decryptString } from '~utils/vault';
 import { validateMnemonic, getFees, createWallet } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
-import { selectBalanceByAddress } from '~state/wallet';
+import { selectBalanceById } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
 import { DEFAULT_ICP_FEES } from '~global/constant';
 import indexToHash from './indexToHash'
@@ -53,7 +53,7 @@ const WalletSendTokens = ({
   const [step1, setStep1] = useState(true);
   const selectedAccount = useSelector(selectAccountById(address));
   const controller = useController();
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentBalance: keyable = useSelector(selectBalanceById(address));
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
   const assets: keyable = useSelector(selectActiveTokensAndAssetsICPByAddress(address));
@@ -725,7 +725,7 @@ const AmountInput = ({ address, fees, initialValue, amountCallback, errorCallbac
 }) => {
   const selectedAccount = useSelector(selectAccountById(address));
 
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentBalance: keyable = useSelector(selectBalanceById(address));
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
   const [error, setError] = useState('');

@@ -11,6 +11,7 @@ import ICON_BNB from '~assets/images/icon_mini_bnb.png';
 import ICON_BTG from '~assets/images/icon_btg.png';
 import ICON_AVAX from '~assets/images/icon_avalanche.svg';
 import ICON_DOGE from '~assets/images/icon_doge.png';
+import ICON_MATIC from '~assets/images/icon_matic.png';
 
 export const STATE_PORT = 'EARTH_WALLET';
 
@@ -55,11 +56,11 @@ export const DEFAULT_SYMBOLS = [
     order: -1,
   },
   {
-    name: 'Ethereum VM',
+    name: 'Ethereum',
     icon: ICON_ETH,
     symbol: 'ETH',
     coinGeckoId: 'ethereum',
-    isLive: true,
+    isLive: false,
     preGenerate: true,
     order: 2,
   },
@@ -143,6 +144,16 @@ export const DEFAULT_SYMBOLS = [
     isLive: false,
     preGenerate: true,
     order: 13,
+  },
+  {
+    name: 'Polygon',
+    icon: ICON_MATIC,
+    symbol: 'MATIC',
+    coinGeckoId: 'matic-network',
+    isLive: true,
+    preGenerate: false,
+    order: 3,
+    evmChain: true,
   },
 ];
 

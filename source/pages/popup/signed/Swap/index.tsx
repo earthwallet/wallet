@@ -22,7 +22,7 @@ import ICON_MINT from '~assets/images/icon_mint.svg';
 import clsx from 'clsx';
 import { getTokenInfo } from '~global/tokens';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
-import { selectBalanceByAddress } from '~state/wallet';
+import { selectBalanceById } from '~state/wallet';
 
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
@@ -51,7 +51,7 @@ const Swap = ({
   const [priceFetch, setPriceFetch] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const history = useHistory();
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentBalance: keyable = useSelector(selectBalanceById(address));
   const maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - getTokenInfo(tokenId).fees;
 
 
