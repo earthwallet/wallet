@@ -202,6 +202,37 @@ export class EarthProvider {
     return { success: 'Closed active session' };
   }
 
+  isSessionActive(sessionId: string | number, origin: string) {
+    const state = store.getState();
+    const sessionState = Object.keys(state.entities.dappSessions?.byId)
+      ?.map((id) => state.entities.dappSessions.byId[id])
+      .filter(
+        (dappSession: keyable) =>
+          typeof dappSession == 'object' &&
+          dappSession.origin == origin &&
+          dappSession.active
+      )[0];
+    let approvedIdentityJSON = '';
+
+    if (sessionState == undefined) {
+      return false;
+    } else {
+      if (sessionState.expiryAt - new Date().getTime() < 0) {
+        this.closeSession(origin);
+        return false;
+      }
+      try {
+        approvedIdentityJSON = decryptString(
+          sessionState?.vault?.encryptedJson,
+          sessionId.toString()
+        );
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+  }
+
   async sessionSign(request: keyable, origin: string) {
     console.log('sessionSign', request, origin);
     //close expiredSessions

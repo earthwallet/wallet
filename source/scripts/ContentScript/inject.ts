@@ -111,6 +111,10 @@ window.earth = {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.generateSessionId')()
   },
+  isSessionActive: async (params) => {
+    const icp = window.providerManager.getProviderFor('ICP')
+    return icp.getMethod('wallet.isSessionActive')(params)
+  },
   closeSession: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.closeSession')()

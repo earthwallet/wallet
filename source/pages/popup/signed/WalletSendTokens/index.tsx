@@ -41,6 +41,7 @@ interface keyable {
   [key: string]: any
 }
 
+
 interface Props extends RouteComponentProps<{ address: string }> {
 }
 
@@ -144,27 +145,14 @@ const WalletSendTokens = ({
       else {
         setFees(getTokenInfo(tokenId)?.sendFees);
       }
-    } else if (selectedAccount?.symbol === 'ETH') {
-      if (tokenId == null) {
-        //getETHFees
-      }
-      else {
-        setIsBusy(true);
-        getFeesExtended(selectedAccount?.symbol, tokenId).then((_feesArr: keyable[]) => {
+    } else if (selectedAccount?.symbol === 'MATIC') {
+      setIsBusy(true);
+      getFeesExtended(selectedAccount?.symbol).then((_feesArr: keyable[]) => {
 
-          _feesArr[0] && setFees(_feesArr[0]?.gas);
-          setFeesArr(_feesArr);
-          console.log(_feesArr, 'getFeesExtended')
-        })
-        // @ts-ignore
-        //getFees(eth, matic)
-        /*       getFees(selectedAccount?.symbol).then(fees => {
-                setIsBusy(false);
-                const BTC_DECIMAL = 8;
-                setFees(fees.fast.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber());
-              }) */
-        setIsBusy(false);
-      }
+        _feesArr[0] && setFees(_feesArr[0]?.gas);
+        setFeesArr(_feesArr);
+      })
+      setIsBusy(false);
     }
   }, [selectedAccount?.id === address]);
 
@@ -498,7 +486,7 @@ const WalletSendTokens = ({
             errorCallback={setError}
           />
           }
-          {selectedAccount?.symbol == 'ETH' && <><div className={styles.earthInputLabel}>Transaction Fee</div>
+          {selectedAccount?.symbol == 'MATIC' && <><div className={styles.earthInputLabel}>Transaction Fee</div>
             <div className={styles.feeSelector}>
               {feesArr.map((feeObj: keyable) => <div key={feeObj?.label} className={clsx(styles.feeSelectCont, feeObj?.label == 'Safe Low' && styles.feeSelectCont_selected)}>
                 <div className={styles.feeLabel}>{feeObj?.label}</div>
@@ -635,7 +623,7 @@ const WalletSendTokens = ({
     }}>
       {step1
         ? <NextStepButton
-          disabled={loadingSend || !selectedRecp || recpError !== '' || error !== ''}
+          disabled={selectedAmount == 0 || loadingSend || !selectedRecp || recpError !== '' || error !== ''}
           loading={isBusy}
           onClick={onConfirm}>
           {'Next'}

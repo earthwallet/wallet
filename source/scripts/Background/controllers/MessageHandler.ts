@@ -114,6 +114,8 @@ export const messagesHandler = (
         );
       } else if (method === 'wallet.generateSessionId') {
         result = mainController.provider.generateSessionId();
+      } else if (method === 'wallet.isSessionActive') {
+        result = mainController.provider.isSessionActive(params, origin);
       } else if (method === 'wallet.closeSession') {
         result = mainController.provider.closeSession(origin);
       } else if (

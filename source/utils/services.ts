@@ -177,6 +177,19 @@ export const getFeesExtended = async (symbol: string, tokenId?: string) => {
         serverRes = error;
       }
     }
+  } else if (symbol == 'MATIC') {
+    const config: AxiosRequestConfig = {
+      method: 'get',
+      url: 'https://gasstation-mainnet.matic.network/v2',
+      headers: {},
+    };
+
+    try {
+      const response = await axios(config);
+      serverRes = response.data;
+    } catch (error) {
+      serverRes = error;
+    }
   }
 
   console.log(serverRes);

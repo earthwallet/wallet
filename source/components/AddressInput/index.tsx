@@ -124,7 +124,7 @@ export default function AddressInput({
                 setRecpError('Not a valid btc address');
             }
         }
-        else if (inputType === 'ETH') {
+        else if (inputType === 'ETH' || inputType === 'MATIC') {
             setSelectedRecp(recipient);
             if (web3.utils.isAddress(recipient)) {
                 setRecpError('');
@@ -168,7 +168,7 @@ export default function AddressInput({
                     required
                     value={selectedRecp}
                 />}
-            {inputType == 'ETH' ? <div className={styles.type}>Ox</div> : inputType == 'BTC' ? <div className={styles.type}>BTC</div> : inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : <div className={styles.type}>AID</div>}
+            {(inputType == 'ETH' || inputType == 'MATIC') ? <div className={styles.type}>Ox</div> : inputType == 'BTC' ? <div className={styles.type}>BTC</div> : inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : <div className={styles.type}>AID</div>}
         </div>
         {recpError !== '' && <Warning
             isBelowInput
