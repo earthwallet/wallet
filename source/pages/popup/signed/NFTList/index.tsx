@@ -6,7 +6,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import Swiper from 'react-id-swiper';
-import { selectAssetsICPByAddress, selectAssetsICPCountLoadingByAddress } from '~state/wallet';
+import { selectAccountById, selectAssetsByAddress, selectAssetsICPCountLoadingByAddress } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import ICON_GRID from '~assets/images/icon_grid.svg';
 import ICON_LIST from '~assets/images/icon_list.svg';
@@ -73,34 +73,18 @@ const NFTList = ({
                     </div>
                 }
             </div>
-
-            {/*  <Link
-                className={clsx(styles.resetLink, styles.bottomFixed)}
-                to={`/account/details/${address}`}
-            >
-                <div className={styles.assetsAndActivityDiv}>
-                    <div className={styles.tabsPill}></div>
-                    <div className={styles.tabsView}>
-                        <div
-                            className={clsx(
-                                styles.tabView,
-                                styles.selectedTabView
-                            )}
-                        >
-                            Previous Owners
-                        </div>
-                    </div>
-                </div>
-            </Link> */}
         </div>
     );
 };
 
 export const AssetsList = ({ address }: { address: string }) => {
-    const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+    const assets: keyable = useSelector(selectAssetsByAddress(address));
     const loading: boolean = useSelector(selectAssetsICPCountLoadingByAddress(address));
     const airdropAsset = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
+    const selectedAccount = useSelector(selectAccountById(address));
+    console.log(assets, 'AssetsList');
+    const SHOW_MARKETPLACE = selectedAccount.symbol == "ICP" && MARKETPLACE_ENABLED;
 
     const AirDropCampaign = () => {
         return <div
@@ -135,11 +119,11 @@ export const AssetsList = ({ address }: { address: string }) => {
 
     const history = useHistory();
     if (!loading && assets?.length == 0) {
-        if (MARKETPLACE_ENABLED && airdropAssetStatus?.airdropEnabled)
+        if (SHOW_MARKETPLACE && airdropAssetStatus?.airdropEnabled)
             return <div className={styles.listitemscont}><AirDropCampaign />
                 <ExploreCollections address={address} />
             </div>
-        if (MARKETPLACE_ENABLED) {
+        if (SHOW_MARKETPLACE) {
             return <ExploreCollections address={address} />
         }
         if (airdropAssetStatus?.airdropEnabled) {
@@ -170,7 +154,7 @@ export const AssetsList = ({ address }: { address: string }) => {
                 </SkeletonTheme>
 
             </div>}
-            {MARKETPLACE_ENABLED && <ExploreCollections address={address} />}
+            {SHOW_MARKETPLACE && <ExploreCollections address={address} />}
             {assets?.map((asset: keyable, i: number) => {
                 return (<div
                     key={i}
@@ -185,7 +169,7 @@ export const AssetsList = ({ address }: { address: string }) => {
                     <div className={styles.listinfo}>
                         <div className={styles.listtitle}>{asset?.title || asset?.tokenIndex}</div>
                         <div className={styles.listsubtitle}>
-                            <AssetName canisterId={asset.canisterId} />
+                            {asset?.symbol == 'ETH' ? asset.tokenName : <AssetName canisterId={asset.canisterId} />}
                         </div>
                     </div>
                     <div
@@ -225,7 +209,7 @@ const ExploreCollections = ({ address }: { address: string }) => {
 };
 
 export const AssetsCoverflow = ({ address }: { address: string }) => {
-    const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+    const assets: keyable = useSelector(selectAssetsByAddress(address));
     const airdropAsset = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
 

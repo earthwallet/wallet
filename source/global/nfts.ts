@@ -250,6 +250,9 @@ export const getTokenCollectionInfo = (canisterId: string) =>
 export const getTokenImageURL = (asset: keyable) => {
   let imageURL = '';
 
+  if (asset?.symbol == 'ETH') {
+    return asset.tokenImage;
+  }
   if (asset?.type == 'EarthArt') {
     imageURL = `https://${asset?.canisterId}.raw.ic0.app/id/${asset?.tokenIndex}`;
     return imageURL;
@@ -289,7 +292,7 @@ export default LIVE_ICP_NFT_LIST_CANISTER_IDS;
 export const getAirDropNFTInfo = () => ({
   id: 'earth-day', //slug
   type: 'EarthArt',
-  isLive: true,
+  isLive: false,
   isAirdrop: true,
   name: 'Earth day NFT', //can be changed
   //can be changed

@@ -212,7 +212,6 @@ export class EarthProvider {
           dappSession.origin == origin &&
           dappSession.active
       )[0];
-    let approvedIdentityJSON = '';
 
     if (sessionState == undefined) {
       return false;
@@ -222,10 +221,7 @@ export class EarthProvider {
         return false;
       }
       try {
-        approvedIdentityJSON = decryptString(
-          sessionState?.vault?.encryptedJson,
-          sessionId.toString()
-        );
+        decryptString(sessionState?.vault?.encryptedJson, sessionId.toString());
         return true;
       } catch (error) {
         return false;

@@ -1,3 +1,4 @@
+import { decodeTokenId } from '@earthwallet/assets';
 import axios, { AxiosRequestConfig } from 'axios';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 var web3 = require('web3');
@@ -162,11 +163,10 @@ export const getFeesExtended = async (symbol: string, tokenId?: string) => {
   let serverRes;
   if (symbol == 'ETH') {
     if (tokenId == null) {
-      //get eth fees
     } else {
       const config: AxiosRequestConfig = {
         method: 'get',
-        url: 'https://gasstation-mainnet.matic.network/v2',
+        url: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=C64M8N55WWFJHHT4WF3ZNVU7SYDXFG4QT1',
         headers: {},
       };
 
@@ -244,4 +244,49 @@ export const getFeesExtended_MATIC = async () => {
   }
 
   return serverRes;
+};
+
+export const getERC721 = async (address: string) => {
+  const config: AxiosRequestConfig = {
+    method: 'get',
+    url: `https://api.etherscan.io/api?module=account&action=tokennfttx&address=${address}&sort=asc&apikey=C64M8N55WWFJHHT4WF3ZNVU7SYDXFG4QT1`,
+    headers: {},
+  };
+
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data?.result;
+  } catch (error) {
+    serverRes = error;
+  }
+  return serverRes;
+};
+
+//https://docs.opensea.io/reference/retrieving-a-single-asset
+export const getETHAssetInfo = async (asset: keyable) => {
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    url: `https://api.opensea.io/api/v1/asset/${asset.contractAddress}/${asset.tokenIndex}/`,
+    params: { include_orders: 'false' },
+  };
+
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    serverRes = error;
+  }
+  return serverRes;
+};
+
+export const getTokenInfoFromTokenId = (nftId: string) => {
+  if (nftId.includes('_WITH_')) {
+    const index = nftId.split('_WITH_', 2)[1];
+    const contractAddress = nftId.split('_WITH_', 2)[0];
+    return { index, contractAddress, canister: '' };
+  } else {
+    return decodeTokenId(nftId);
+  }
 };

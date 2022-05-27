@@ -129,7 +129,7 @@ export const selectAssetsICPCountByAddress =
   (address: string) => (state: AppState) =>
     state.entities.assetsCount?.byId[address];
 
-export const selectAssetsICPByAddress =
+export const selectAssetsByAddress =
   (address: string) => (state: AppState) => {
     return (
       state.entities.assets?.byId &&

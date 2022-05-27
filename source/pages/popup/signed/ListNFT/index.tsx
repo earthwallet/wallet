@@ -9,7 +9,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { decryptString } from '~utils/vault';
-import { selectAccountById, selectAssetsICPByAddress } from '~state/wallet';
+import { selectAccountById, selectAssetsByAddress } from '~state/wallet';
 import useQuery from '~hooks/useQuery';
 import { isJsonString } from '~utils/common';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
@@ -43,7 +43,7 @@ const ListNFT = ({
 
     const [txCompleteTxt, setTxCompleteTxt] = useState<string>('');
 
-    const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+    const assets: keyable = useSelector(selectAssetsByAddress(address));
 
     const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.tokenIdentifier === assetId)[0]
 

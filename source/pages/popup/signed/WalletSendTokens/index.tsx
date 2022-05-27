@@ -145,7 +145,7 @@ const WalletSendTokens = ({
       else {
         setFees(getTokenInfo(tokenId)?.sendFees);
       }
-    } else if (selectedAccount?.symbol === 'MATIC') {
+    } else if (selectedAccount?.symbol === 'MATIC' || selectedAccount?.symbol === 'ETH') {
       setIsBusy(true);
       getFeesExtended(selectedAccount?.symbol).then((_feesArr: keyable[]) => {
 
@@ -486,7 +486,7 @@ const WalletSendTokens = ({
             errorCallback={setError}
           />
           }
-          {selectedAccount?.symbol == 'MATIC' && <><div className={styles.earthInputLabel}>Transaction Fee</div>
+          {selectedAccount?.symbol == 'MATIC' || selectedAccount?.symbol == 'ETH' && <><div className={styles.earthInputLabel}>Transaction Fee</div>
             <div className={styles.feeSelector}>
               {feesArr.map((feeObj: keyable) => <div key={feeObj?.label} className={clsx(styles.feeSelectCont, feeObj?.label == 'Safe Low' && styles.feeSelectCont_selected)}>
                 <div className={styles.feeLabel}>{feeObj?.label}</div>

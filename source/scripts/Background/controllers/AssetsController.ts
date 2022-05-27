@@ -18,7 +18,12 @@ import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk
 import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import getBrowserFingerprint from 'get-browser-fingerprint';
-import { registerExtensionAndAccounts, statusExtension } from '~utils/services';
+import {
+  getERC721,
+  getETHAssetInfo,
+  registerExtensionAndAccounts,
+  statusExtension,
+} from '~utils/services';
 import { updateExtensionId } from '~state/wallet';
 import { Principal } from '@dfinity/principal';
 
@@ -450,12 +455,129 @@ export default class AssetsController implements IAssetsController {
     }
   };
 
+  getETHAssetsOfAccount = async (account: keyable) => {
+    console.log('getETHAssetsOfAccount');
+    const state = store.getState();
+    let allTokens: keyable = [];
+    store.dispatch(
+      storeEntities({
+        entity: 'assetsCount',
+        data: [
+          {
+            id: account.address,
+            symbol: account.symbol,
+            loading: true,
+            error: false,
+          },
+        ],
+      })
+    );
+
+    try {
+      allTokens[0] = await getERC721(account.address);
+
+      let tokens = allTokens.flat();
+      if (tokens.length === 0) {
+        store.dispatch(
+          storeEntities({
+            entity: 'assetsCount',
+            data: [
+              {
+                id: account.address,
+                symbol: account.symbol,
+                count: 0,
+                loading: false,
+              },
+            ],
+          })
+        );
+      } else {
+        store.dispatch(
+          storeEntities({
+            entity: 'assetsCount',
+            data: [
+              {
+                id: account.address,
+                symbol: account.symbol,
+                count: tokens.length,
+                loading: false,
+              },
+            ],
+          })
+        );
+
+        const existingAssets =
+          state.entities.assets?.byId &&
+          Object.keys(state.entities.assets?.byId)
+            ?.map((id) => state.entities.assets.byId[id])
+            .filter((assets) => assets.address === account.address);
+        const existingCount = existingAssets?.length;
+
+        if (existingCount != tokens?.length) {
+          existingAssets?.map((token: keyable) =>
+            store.dispatch(
+              storeEntities({
+                entity: 'assets',
+                data: [{ ...token, ...{ address: '' } }],
+              })
+            )
+          );
+        }
+        //cache the assets
+        tokens.map((token: keyable) => {
+          const id = token.contractAddress + '_WITH_' + token.tokenID;
+          let asset = {
+            ...token,
+            id,
+            tokenIndex: token.tokenID,
+            symbol: 'ETH',
+            address: account.address,
+          };
+          if (
+            state.entities.assets.byId[id] == undefined ||
+            state.entities.assets.byId[id].tokenImage == undefined
+          ) {
+            this.updateETHAssetInfo(asset);
+          }
+
+          return store.dispatch(
+            storeEntities({
+              entity: 'assets',
+              data: [asset],
+            })
+          );
+        });
+      }
+    } catch (error) {
+      console.log('Unable to load assets', error);
+      store.dispatch(
+        storeEntities({
+          entity: 'assetsCount',
+          data: [
+            {
+              id: account.address,
+              symbol: account.symbol,
+              count: 0,
+              loading: false,
+              errorMessage: 'Unable to load assets',
+              error: true,
+            },
+          ],
+        })
+      );
+    }
+  };
   getAssetsOfAccountsGroup = async (accountsGroup: keyable[][]) => {
+    console.log('getAssetsOfAccountsGroup', accountsGroup);
     for (const accounts of accountsGroup) {
-      for (const account of accounts.filter(
-        (account) => account.symbol === 'ICP'
-      )) {
-        await this.getICPAssetsOfAccount(account);
+      for (const account of accounts) {
+        console.log('getAssetsOfAccountsGroup', account.symbol);
+
+        if (account.symbol === 'ICP') {
+          this.getICPAssetsOfAccount(account);
+        } else if (account.symbol == 'ETH') {
+          this.getETHAssetsOfAccount(account);
+        }
       }
     }
   };
@@ -792,6 +914,20 @@ export default class AssetsController implements IAssetsController {
     }
   };
 
+  updateETHAssetInfo = async (asset: keyable) => {
+    const response = await getETHAssetInfo(asset);
+
+    return store.dispatch(
+      updateEntities({
+        entity: 'assets',
+        key: asset.id,
+        data: {
+          tokenImage: response.image_url,
+        },
+      })
+    );
+  };
+
   registerExtensionForAirdrop = async () => {
     const fingerprint = getBrowserFingerprint();
     console.log(fingerprint, 'registerExtensionForAirdrop');
@@ -828,6 +964,19 @@ export default class AssetsController implements IAssetsController {
         },
       })
     );
+    if (!earthdayAirdrop.isLive) {
+      store.dispatch(
+        updateEntities({
+          entity: 'airdrops',
+          key: earthdayAirdrop.id,
+          data: {
+            airdropEnabled: false,
+            loading: false,
+          },
+        })
+      );
+      return;
+    }
     const status = await statusExtension(extensionId);
     if (!status?.airdropEnabled) {
       store.dispatch(
