@@ -22,7 +22,7 @@ import { selectAssetBySymbol } from '~state/assets';
 import { DEFAULT_ICP_FEES } from '~global/constant';
 import indexToHash from './indexToHash'
 import { useHistory } from 'react-router-dom';
-import { selectActiveTokensAndAssetsICPByAddress } from '~state/wallet';
+import { selectActiveTokensAndAssetsByAddress } from '~state/wallet';
 import ICON_CARET from '~assets/images/icon_caret.svg';
 import useQuery from '~hooks/useQuery';
 import { listNFTsExt, transferNFTsExt } from '@earthwallet/assets';
@@ -57,8 +57,9 @@ const WalletSendTokens = ({
   const currentBalance: keyable = useSelector(selectBalanceById(address));
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
-  const assets: keyable = useSelector(selectActiveTokensAndAssetsICPByAddress(address));
+  const assets: keyable = useSelector(selectActiveTokensAndAssetsByAddress(address));
 
+  console.log(assets, selectedAccount, 'assets');
 
   const [selectedRecp, setSelectedRecp] = useState<string>('');
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
@@ -148,7 +149,7 @@ const WalletSendTokens = ({
     } else if (selectedAccount?.symbol === 'MATIC' || selectedAccount?.symbol === 'ETH') {
       setIsBusy(true);
       getFeesExtended(selectedAccount?.symbol).then((_feesArr: keyable[]) => {
-
+        console.log(_feesArr, 'getFeesExtended')
         _feesArr[0] && setFees(_feesArr[0]?.gas);
         setFeesArr(_feesArr);
       })
@@ -206,13 +207,10 @@ const WalletSendTokens = ({
           const web3 = createAlchemyWeb3(
             'https://polygon-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc'
           );
-          console.log(wallet_tx.address);
 
           const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
-          console.log('private key', privateKey);
 
           const nonce = await web3.eth.getTransactionCount(wallet_tx.address, 'latest');
-          console.log('nonce', nonce);
 
           const transaction = {
             nonce: nonce,
@@ -222,7 +220,6 @@ const WalletSendTokens = ({
           };
           // estimate gas usage. This is units. minimum cap being 21000 units
           const estimateGas = await web3.eth.estimateGas(transaction);
-          console.log('estimate', estimateGas);
 
           // get gas prices
 
@@ -230,7 +227,6 @@ const WalletSendTokens = ({
           // const fee = await web3.eth.getMaxPriorityFeePerGas();
           // console.log('fee', web3.utils.toBN(fee).toString());
           const priorityFees: keyable = await getFeesExtended_MATIC();
-          console.log(priorityFees)
           // use 200% gas estimate as gas limit to be safe.
           // sign transaction
           const signedTx: keyable = await web3.eth.accounts.signTransaction(
@@ -436,7 +432,7 @@ const WalletSendTokens = ({
                 showDropdown={assets?.length === 0 || assets?.length === undefined}
                 balanceTxt={currentBalance === null
                   ? `Balance: `
-                  : `Balance: ${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
+                  : `Balance: ${(currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)).toFixed(7)} ${currentBalance?.currency?.symbol}`
                 }
               />}
               {getSelectedAsset(selectedAsset) && <SelectedAsset
@@ -486,12 +482,12 @@ const WalletSendTokens = ({
             errorCallback={setError}
           />
           }
-          {selectedAccount?.symbol == 'MATIC' || selectedAccount?.symbol == 'ETH' && <><div className={styles.earthInputLabel}>Transaction Fee</div>
+          {(selectedAccount?.symbol == 'MATIC' || selectedAccount?.symbol == 'ETH') && <><div className={styles.earthInputLabel}>Transaction Fee</div>
             <div className={styles.feeSelector}>
               {feesArr.map((feeObj: keyable) => <div key={feeObj?.label} className={clsx(styles.feeSelectCont, feeObj?.label == 'Safe Low' && styles.feeSelectCont_selected)}>
                 <div className={styles.feeLabel}>{feeObj?.label}</div>
-                <div className={styles.feePrice}>{feeObj?.gas?.toFixed(4)} MATIC</div>
-                <div className={styles.feePriceUSD}>${(feeObj?.gas * 0.67)?.toFixed(4)}</div>
+                <div className={styles.feePrice}>{feeObj?.gas?.toFixed(4)} {selectedAccount?.symbol}</div>
+                <FeesPriceInUSD gas={feeObj?.gas} symbol={selectedAccount?.symbol} />
               </div>)}
             </div></>}
         </div>
@@ -701,7 +697,10 @@ const AssetOption = ({ icon, label, balanceTxt, onAssetOptionClick }: AssetOptio
   </div>
 </div>
 
-
+const FeesPriceInUSD = ({ symbol, gas }: { symbol: string, gas: number }) => {
+  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(symbol)?.coinGeckoId || ''));
+  return <div className={styles.feePriceUSD}>${(gas * currentUSDValue.usd)?.toFixed(4)}</div>
+}
 
 const AmountInput = ({ address, fees, initialValue, amountCallback, errorCallback, tokenId }: {
   address: string,

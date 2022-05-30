@@ -87,7 +87,7 @@ const NFTDetails = ({
                             }}
                             src={asset?.type == 'EarthArt' ? getEarthArtCollectionIcon(canisterId) : assetCollectionInfo?.icon} className={styles.creatorIcon}></img>
                         <div className={styles.creatorInfo}>
-                            <div className={styles.creatorTitle}>{assetCollectionInfo?.name}</div>
+                            <div className={styles.creatorTitle}>{asset?.symbol == 'ETH' ? asset.tokenName : assetCollectionInfo?.name}</div>
                             <div className={styles.creatorSubtitle}>{assetCollectionInfo?.description}</div>
                         </div>
                     </div>

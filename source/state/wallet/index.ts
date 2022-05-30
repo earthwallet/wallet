@@ -129,15 +129,14 @@ export const selectAssetsICPCountByAddress =
   (address: string) => (state: AppState) =>
     state.entities.assetsCount?.byId[address];
 
-export const selectAssetsByAddress =
-  (address: string) => (state: AppState) => {
-    return (
-      state.entities.assets?.byId &&
-      Object.keys(state.entities.assets?.byId)
-        ?.map((id) => state.entities.assets.byId[id])
-        .filter((assets) => assets.address === address)
-    );
-  };
+export const selectAssetsByAddress = (address: string) => (state: AppState) => {
+  return (
+    state.entities.assets?.byId &&
+    Object.keys(state.entities.assets?.byId)
+      ?.map((id) => state.entities.assets.byId[id])
+      .filter((assets) => assets.address === address)
+  );
+};
 
 export const selectAssetsICPCountLoadingByAddress =
   (address: string) => (state: AppState) =>
@@ -189,7 +188,7 @@ export const selectRecentsOf =
 export const selectDappActiveAccountAddress = (state: AppState) =>
   state.wallet?.activeAccount?.address;
 
-export const selectActiveTokensAndAssetsICPByAddress =
+export const selectActiveTokensAndAssetsByAddress =
   (address: string) => (state: AppState) => {
     const assets =
       (state.entities.assets?.byId &&
@@ -198,7 +197,7 @@ export const selectActiveTokensAndAssetsICPByAddress =
             ...state.entities.assets.byId[id],
             ...{
               format: 'nft',
-              id: state.entities.assets.byId[id]?.tokenIdentifier,
+              id: state.entities.assets.byId[id]?.tokenIdentifier || id,
               balanceTxt: '1 NFT',
               label: state.entities.assets.byId[id]?.tokenIndex,
               icon: getTokenImageURL(state.entities.assets.byId[id]),

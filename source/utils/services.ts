@@ -159,23 +159,73 @@ export const getBalanceETH = async (address: string) => {
   return balance;
 };
 
-export const getFeesExtended = async (symbol: string, tokenId?: string) => {
+export const getFeesExtended = async (symbol: string) => {
   let serverRes;
-  if (symbol == 'ETH') {
-    if (tokenId == null) {
-    } else {
-      const config: AxiosRequestConfig = {
-        method: 'get',
-        url: 'https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=C64M8N55WWFJHHT4WF3ZNVU7SYDXFG4QT1',
-        headers: {},
-      };
+  let fees: keyable[] = [];
+  const estimateGas = 21000;
 
-      try {
-        const response = await axios(config);
-        serverRes = response.data;
-      } catch (error) {
-        serverRes = error;
-      }
+  if (symbol == 'ETH') {
+    const config: AxiosRequestConfig = {
+      method: 'get',
+      url: 'https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees',
+      headers: {},
+    };
+
+    try {
+      const response = await axios(config);
+      serverRes = response.data;
+
+      const totalSafeLowGas =
+        estimateGas *
+        (parseFloat(serverRes?.estimatedBaseFee) +
+          parseFloat(serverRes?.low?.suggestedMaxPriorityFeePerGas));
+      const totalStandardGas =
+        estimateGas *
+        (parseFloat(serverRes?.estimatedBaseFee) +
+          parseFloat(serverRes?.medium?.suggestedMaxPriorityFeePerGas));
+      const totalFastGas =
+        estimateGas *
+        (parseFloat(serverRes?.estimatedBaseFee) +
+          parseFloat(serverRes?.high?.suggestedMaxPriorityFeePerGas));
+      console.log(response, config, 'getFeesExtended');
+      console.log(
+        totalSafeLowGas,
+        serverRes?.low?.suggestedMaxPriorityFeePerGas,
+        'getFeesExtended'
+      );
+
+      //totalGas for a txn = (maxPriorityFeePerGas + baseFee) * estimateGas
+      // maxFeePerGas = web3.utils.fromWei(priorityFees['fast']['maxFee'], 'gwei') * estimateGas
+      fees = [
+        {
+          label: 'Safe Low',
+          ...serverRes?.low,
+          gas: totalSafeLowGas / Math.pow(10, 9),
+          maxFee:
+            (estimateGas * parseFloat(serverRes?.low.suggestedMaxFeePerGas)) /
+            Math.pow(10, 9),
+        },
+        {
+          label: 'Standard',
+          ...serverRes?.medium,
+          gas: totalStandardGas / Math.pow(10, 9),
+          maxFee:
+            (estimateGas *
+              parseFloat(serverRes?.medium.suggestedMaxFeePerGas)) /
+            Math.pow(10, 9),
+        },
+        {
+          label: 'Fast',
+          ...serverRes?.high,
+          gas: totalFastGas / Math.pow(10, 9),
+          maxFee:
+            (estimateGas * parseFloat(serverRes?.high.suggestedMaxFeePerGas)) /
+            Math.pow(10, 9),
+        },
+      ];
+    } catch (error) {
+      serverRes = error;
+      console.log(error, 'getFeesExtended');
     }
   } else if (symbol == 'MATIC') {
     const config: AxiosRequestConfig = {
@@ -187,6 +237,35 @@ export const getFeesExtended = async (symbol: string, tokenId?: string) => {
     try {
       const response = await axios(config);
       serverRes = response.data;
+      const totalSafeLowGas =
+        estimateGas *
+        (serverRes?.estimatedBaseFee + serverRes?.low?.maxPriorityFee);
+      const totalStandardGas =
+        estimateGas *
+        (serverRes?.estimatedBaseFee + serverRes?.standard?.maxPriorityFee);
+      const totalFastGas =
+        estimateGas *
+        (serverRes?.estimatedBaseFee + serverRes?.fast?.maxPriorityFee);
+
+      //totalGas for a txn = (maxPriorityFeePerGas + baseFee) * estimateGas
+      // maxFeePerGas = web3.utils.fromWei(priorityFees['fast']['maxFee'], 'gwei') * estimateGas
+      fees = [
+        {
+          label: 'Safe Low',
+          ...serverRes?.safeLow,
+          gas: totalSafeLowGas / Math.pow(10, 9),
+        },
+        {
+          label: 'Standard',
+          ...serverRes?.standard,
+          gas: totalStandardGas / Math.pow(10, 9),
+        },
+        {
+          label: 'Fast',
+          ...serverRes?.fast,
+          gas: totalFastGas / Math.pow(10, 9),
+        },
+      ];
     } catch (error) {
       serverRes = error;
     }
@@ -194,36 +273,7 @@ export const getFeesExtended = async (symbol: string, tokenId?: string) => {
 
   console.log(serverRes);
   //Calculating the total transaction fee works as follows: Gas units (limit) * (Base fee + Tip)
-  const estimateGas = 21000;
-  const totalSafeLowGas =
-    estimateGas *
-    (serverRes?.estimatedBaseFee + serverRes?.safeLow?.maxPriorityFee);
-  const totalStandardGas =
-    estimateGas *
-    (serverRes?.estimatedBaseFee + serverRes?.standard?.maxPriorityFee);
-  const totalFastGas =
-    estimateGas *
-    (serverRes?.estimatedBaseFee + serverRes?.fast?.maxPriorityFee);
 
-  //totalGas for a txn = (maxPriorityFeePerGas + baseFee) * estimateGas
-  // maxFeePerGas = web3.utils.fromWei(priorityFees['fast']['maxFee'], 'gwei') * estimateGas
-  const fees = [
-    {
-      label: 'Safe Low',
-      ...serverRes?.safeLow,
-      gas: totalSafeLowGas / Math.pow(10, 9),
-    },
-    {
-      label: 'Standard',
-      ...serverRes?.safeLow,
-      gas: totalStandardGas / Math.pow(10, 9),
-    },
-    {
-      label: 'Fast',
-      ...serverRes?.fast,
-      gas: totalFastGas / Math.pow(10, 9),
-    },
-  ];
   return fees;
 };
 
