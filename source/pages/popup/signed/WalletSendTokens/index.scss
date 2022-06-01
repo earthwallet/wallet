@@ -563,3 +563,22 @@
     opacity: 0.7;
   }
 }
+
+.customizeLink {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #2496ff;
+  /* display: block; */
+  /* align-items: flex-end; */
+  width: calc(100vw - 48px);
+  text-align: end;
+  margin: 12px 24px;
+  user-select: none;
+  cursor: pointer;
+  &:active {
+    opacity: 0.7;
+  }
+}

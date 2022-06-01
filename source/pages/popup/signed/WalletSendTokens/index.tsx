@@ -35,6 +35,9 @@ import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import { getFeesExtended, getFeesExtended_MATIC } from '~utils/services';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
+import opensea from 'opensea-js';
+import HDWalletProvider from '@truffle/hdwallet-provider';
+
 
 const MIN_LENGTH = 6;
 interface keyable {
@@ -189,7 +192,7 @@ const WalletSendTokens = ({
     }
     try {
       if (selectedAmount === 0) {
-        alert('Amount cannot be 0');
+        getSelectedAsset(selectedAsset)?.format != 'nft' && alert('Amount cannot be 0');
       }
       let hash: any;
       if (selectedAccount?.symbol == 'BTC') {
@@ -236,54 +239,74 @@ const WalletSendTokens = ({
           console.log(result);
 
           // sendETH
-        } else if (getSelectedAsset(selectedAsset)?.type == 'ERC20') {
-          //alert('do MATIC');
+        } else if (getSelectedAsset(selectedAsset)?.format == 'nft') {
 
-          const wallet_tx = await createWallet(mnemonic, 'MATIC');
 
-          const web3 = createAlchemyWeb3(
-            'https://polygon-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc'
-          );
+          const provider = new HDWalletProvider({
+            mnemonic: mnemonic,
+            providerOrUrl: 'https://eth-mainnet.alchemyapi.io/v2/WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80',
+            addressIndex: 0
+          });
 
-          const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
+          const seaport = new opensea.OpenSeaPort(provider, {
+            networkName: opensea.Network.Main
+          })
 
-          const nonce = await web3.eth.getTransactionCount(wallet_tx.address, 'latest');
+          await seaport.transfer({
+            fromAddress: selectedAccount.address,
+            toAddress: selectedRecp,
+            asset: {
+              tokenAddress: getSelectedAsset(selectedAsset)?.contractAddress,
+              tokenId: getSelectedAsset(selectedAsset)?.tokenIndex,
+            }
+          });
 
-          const transaction = {
-            nonce: nonce,
-            from: wallet_tx.address,
-            to: selectedRecp,
-            value: web3.utils.toWei(selectedAmount.toString(), 'ether'),
-          };
-          // estimate gas usage. This is units. minimum cap being 21000 units
-          const estimateGas = await web3.eth.estimateGas(transaction);
-
-          // get gas prices
-
-          //
-          // const fee = await web3.eth.getMaxPriorityFeePerGas();
-          // console.log('fee', web3.utils.toBN(fee).toString());
-          const priorityFees: keyable = await getFeesExtended_MATIC();
-          // use 200% gas estimate as gas limit to be safe.
-          // sign transaction
-          const signedTx: keyable = await web3.eth.accounts.signTransaction(
-            {
-              gas: estimateGas,
-              maxPriorityFeePerGas: web3.utils.toWei(
-                priorityFees['fast']['maxPriorityFee'].toFixed(5),
-                'gwei'
-              ),
-              maxFeePerGas: web3.utils.toWei(priorityFees['fast']['maxFee'].toFixed(5), 'gwei'),
-              ...transaction,
-            },
-            privateKey
-          );
-          console.log('signedTx', signedTx);
-          //send signed transaction
-          const result = await web3.eth.sendSignedTransaction(signedTx?.rawTransaction);
-          console.log(result);
         }
+      } else if (selectedAccount?.symbol == 'MATIC') {
+        //alert('do MATIC');
 
+        const wallet_tx = await createWallet(mnemonic, 'MATIC');
+
+        const web3 = createAlchemyWeb3(
+          'https://polygon-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc'
+        );
+
+        const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
+
+        const nonce = await web3.eth.getTransactionCount(wallet_tx.address, 'latest');
+
+        const transaction = {
+          nonce: nonce,
+          from: wallet_tx.address,
+          to: selectedRecp,
+          value: web3.utils.toWei(selectedAmount.toString(), 'ether'),
+        };
+        // estimate gas usage. This is units. minimum cap being 21000 units
+        const estimateGas = await web3.eth.estimateGas(transaction);
+
+        // get gas prices
+
+        //
+        // const fee = await web3.eth.getMaxPriorityFeePerGas();
+        // console.log('fee', web3.utils.toBN(fee).toString());
+        const priorityFees: keyable = await getFeesExtended_MATIC();
+        // use 200% gas estimate as gas limit to be safe.
+        // sign transaction
+        const signedTx: keyable = await web3.eth.accounts.signTransaction(
+          {
+            gas: estimateGas,
+            maxPriorityFeePerGas: web3.utils.toWei(
+              priorityFees['fast']['maxPriorityFee'].toFixed(5),
+              'gwei'
+            ),
+            maxFeePerGas: web3.utils.toWei(priorityFees['fast']['maxFee'].toFixed(5), 'gwei'),
+            ...transaction,
+          },
+          privateKey
+        );
+        //send signed transaction
+        const result = await web3.eth.sendSignedTransaction(signedTx?.rawTransaction);
+        console.log(result);
       }
 
       await controller.accounts
@@ -528,7 +551,9 @@ const WalletSendTokens = ({
                 <div className={styles.feePrice}>{feeObj?.gas?.toFixed(7)}{selectedAccount?.symbol}</div>
                 <FeesPriceInUSD gas={feeObj?.gas} symbol={selectedAccount?.symbol} />
               </div>)}
-            </div></>}
+            </div>
+            <div className={styles.customizeLink}>Advanced Options</div>
+          </>}
         </div>
         : <div className={styles.confirmPage}>
           {selectedAsset === selectedAccount?.symbol ? <div className={styles.confirmAmountCont}>
