@@ -718,6 +718,10 @@ export default class AssetsController implements IAssetsController {
       store.dispatch(createEntity({ entity: 'txnRequests' }));
     }
 
+    if(asset.type == 'EarthArt') {
+      alert('EarthArt buy')
+    }
+
     store.dispatch(
       storeEntities({
         entity: 'txnRequests',

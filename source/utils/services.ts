@@ -198,7 +198,7 @@ export const getFeesExtended = async (symbol: string) => {
       // maxFeePerGas = web3.utils.fromWei(priorityFees['fast']['maxFee'], 'gwei') * estimateGas
       fees = [
         {
-          label: 'Safe Low',
+          label: 'Low',
           ...serverRes?.low,
           gas: totalSafeLowGas / Math.pow(10, 9),
           maxFee:
@@ -251,7 +251,7 @@ export const getFeesExtended = async (symbol: string) => {
       // maxFeePerGas = web3.utils.fromWei(priorityFees['fast']['maxFee'], 'gwei') * estimateGas
       fees = [
         {
-          label: 'Safe Low',
+          label: 'Low',
           ...serverRes?.safeLow,
           gas: totalSafeLowGas / Math.pow(10, 9),
         },

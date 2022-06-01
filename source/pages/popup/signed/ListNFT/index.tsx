@@ -163,6 +163,7 @@ const ListNFT = ({
                         fromIdentity: currentIdentity,
                         args: {
                             groupIdentifier: [],
+                            expiry: [],
                             nft: {
                                 nftCanister: Principal.fromText(selectedAssetObj?.canisterId),
                                 nftIdentifier: { nat32: selectedAssetObj.tokenIndex },

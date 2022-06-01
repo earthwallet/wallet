@@ -91,6 +91,7 @@ const NFTSettle = ({
 
     if (isJsonString(secret)) {
       const callback = (path: string) => history.replace(path);
+   
       controller.assets.buyNft(txnId, secret, asset, price, address, callback).then(() => {
         setIsBusy(false);
       });

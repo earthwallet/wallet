@@ -70,9 +70,10 @@ const WalletSendTokens = ({
   const [txError, setTxError] = useState('');
   const [fees, setFees] = useState<number>(0);
   const [feesArr, setFeesArr] = useState<keyable[]>([]);
+  const [feesOptionSelected, setFeesOptionSelected] = useState<number>(0);
 
+  const DEFAULT_FEE_INDEX = 1;
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
-  const [selectCredit, setSelectCredit] = useState<boolean>(true);
   const [selectedAsset, setSelectedAsset] = useState<string>('');
   const [selectedAssetObj, setSelectedAssetObj] = useState<keyable>({});
 
@@ -149,15 +150,18 @@ const WalletSendTokens = ({
     } else if (selectedAccount?.symbol === 'MATIC' || selectedAccount?.symbol === 'ETH') {
       setIsBusy(true);
       getFeesExtended(selectedAccount?.symbol).then((_feesArr: keyable[]) => {
-        console.log(_feesArr, 'getFeesExtended')
-        _feesArr[0] && setFees(_feesArr[0]?.gas);
+        setFeesOptionSelected(DEFAULT_FEE_INDEX);
+        _feesArr[DEFAULT_FEE_INDEX] && setFees(_feesArr[DEFAULT_FEE_INDEX]?.gas);
         setFeesArr(_feesArr);
       })
       setIsBusy(false);
     }
   }, [selectedAccount?.id === address]);
 
-
+  const changeFees = useCallback((index: number) => {
+    setFeesOptionSelected(index);
+    setFees(feesArr[index]?.gas)
+  }, [feesArr[0]]);
 
 
   const onConfirm = useCallback(() => {
@@ -198,6 +202,39 @@ const WalletSendTokens = ({
 
       } else if (selectedAccount?.symbol == 'ETH') {
         if (selectedAsset === selectedAccount?.symbol) {
+          const wallet_tx = await createWallet(mnemonic, 'MATIC');
+
+          const web3 = createAlchemyWeb3(
+            'https://eth-mainnet.alchemyapi.io/v2/WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80'
+          );
+          const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
+          const nonce = await web3.eth.getTransactionCount(wallet_tx.address, 'latest');
+
+          const transaction = {
+            nonce: nonce,
+            from: wallet_tx.address,
+            to: selectedRecp,
+            value: web3.utils.toWei(selectedAmount.toString(), 'ether'),
+          };
+          const estimateGas = await web3.eth.estimateGas(transaction);
+
+          const signedTx: keyable = await web3.eth.accounts.signTransaction(
+            {
+              gas: estimateGas,
+              maxPriorityFeePerGas: web3.utils.toWei(
+                feesArr[feesOptionSelected]?.suggestedMaxPriorityFeePerGas,
+                'gwei'
+              ),
+              maxFeePerGas: web3.utils.toWei(feesArr[feesOptionSelected]?.suggestedMaxFeePerGas, 'gwei'),
+              ...transaction,
+            },
+            privateKey
+          );
+          console.log('signedTx', signedTx);
+          //send signed transaction
+          const result = await web3.eth.sendSignedTransaction(signedTx?.rawTransaction);
+          console.log(result);
+
           // sendETH
         } else if (getSelectedAsset(selectedAsset)?.type == 'ERC20') {
           //alert('do MATIC');
@@ -484,9 +521,11 @@ const WalletSendTokens = ({
           }
           {(selectedAccount?.symbol == 'MATIC' || selectedAccount?.symbol == 'ETH') && <><div className={styles.earthInputLabel}>Transaction Fee</div>
             <div className={styles.feeSelector}>
-              {feesArr.map((feeObj: keyable) => <div key={feeObj?.label} className={clsx(styles.feeSelectCont, feeObj?.label == 'Safe Low' && styles.feeSelectCont_selected)}>
+              {feesArr.map((feeObj: keyable, index: number) => <div
+                onClick={() => changeFees(index)}
+                key={feeObj?.label} className={clsx(styles.feeSelectCont, feesOptionSelected == index && styles.feeSelectCont_selected)}>
                 <div className={styles.feeLabel}>{feeObj?.label}</div>
-                <div className={styles.feePrice}>{feeObj?.gas?.toFixed(4)} {selectedAccount?.symbol}</div>
+                <div className={styles.feePrice}>{feeObj?.gas?.toFixed(7)}{selectedAccount?.symbol}</div>
                 <FeesPriceInUSD gas={feeObj?.gas} symbol={selectedAccount?.symbol} />
               </div>)}
             </div></>}
@@ -564,15 +603,7 @@ const WalletSendTokens = ({
                 <div className={styles.feeValue}>${(fees * currentUSDValue?.usd).toFixed(3)}</div>
               </div>
             </div>
-            {false && selectCredit && <div className={styles.feeRow}>
-              <div className={styles.feeTitle}>Earth Credit<span
-                onClick={() => setSelectCredit(false)}
-                className={styles.removeBtn}>Remove</span></div>
-              <div>
-                <div className={styles.feeAmount}>You Recieve</div>
-                <div className={styles.feeValue}>1.50 EARTH</div>
-              </div>
-            </div>}
+
             <div className={styles.feeRow}>
               <div className={styles.feeTotal}>Total</div>
               <div>
@@ -619,7 +650,7 @@ const WalletSendTokens = ({
     }}>
       {step1
         ? <NextStepButton
-          disabled={selectedAmount == 0 || loadingSend || !selectedRecp || recpError !== '' || error !== ''}
+          disabled={(selectedAmount == 0 && getSelectedAsset(selectedAsset)?.format != 'nft') || loadingSend || !selectedRecp || recpError !== '' || error !== ''}
           loading={isBusy}
           onClick={onConfirm}>
           {'Next'}
