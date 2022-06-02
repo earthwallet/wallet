@@ -37,7 +37,6 @@ import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
 import { OpenSeaPort, Network } from 'opensea-js'
 import HDWalletProvider from '@truffle/hdwallet-provider';
-import { Asset } from 'opensea-js/lib/types';
 
 
 const MIN_LENGTH = 6;
@@ -156,50 +155,8 @@ const WalletSendTokens = ({
       setIsBusy(true);
 
       if (getSelectedAsset(selectedAsset)?.format == 'nft') {
-        console.log('_estimateGasForTransfer')
-        const currentAsset: Asset = {
-          tokenAddress: getSelectedAsset(selectedAsset)?.contractAddress,
-          tokenId: getSelectedAsset(selectedAsset)?.tokenIndex,
-        };
+        console.log('_estimateGasForTransfer');
 
-        const TEST_MNE =
-          'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano';
-
-        const provider = new HDWalletProvider({
-          mnemonic: TEST_MNE,
-          providerOrUrl: 'https://eth-mainnet.alchemyapi.io/v2/WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80',
-          addressIndex: 0
-        });
-
-        const asset = {
-          tokenAddress: "0x06012c8cf97bead5deae237070f9587f8e7a266d", // CryptoKitties
-          tokenId: "1", // Token ID
-        }
-
-
-
-        const seaport = new OpenSeaPort(provider, {
-          networkName: Network.Main
-        });
-
-        seaport.getAssetBalance({
-          accountAddress: '0x88207b431510DbE0AddBDaE3bD53013813fC8c71', // string
-          asset, // Asset
-        }).then(balance => {
-          const ownsKitty = balance.isGreaterThan(0)
-
-          console.log(ownsKitty, balance.toString(), 'seaport getAssetBalance');
-        })
-
-
-        seaport._estimateGasForTransfer({
-          assets: [currentAsset],
-          fromAddress: selectedAccount.address,
-          toAddress: selectedRecp,
-        }).then((_fees) => {
-          setFees(_fees);
-          console.log(_fees, '_estimateGasForTransfer');
-        });
 
       } else {
         getFeesExtended(selectedAccount?.symbol).then((_feesArr: keyable[]) => {
@@ -305,17 +262,7 @@ const WalletSendTokens = ({
           })
 
 
-          /* 
-           const currentAsset: Asset = {
-            tokenAddress: getSelectedAsset(selectedAsset)?.contractAddress,
-            tokenId: getSelectedAsset(selectedAsset)?.tokenIndex,
-          };
 
-          const gasFees = await seaport._estimateGasForTransfer({
-            assets: [currentAsset],
-            fromAddress: selectedAccount.address,
-            toAddress: selectedRecp,
-          }); */
 
 
           await seaport.transfer({

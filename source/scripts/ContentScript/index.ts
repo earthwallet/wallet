@@ -19,6 +19,7 @@ function injectEthereum(asset: string, name: string) {
     })
   );
 }
+console.log(injectEthereum);
 
 //injectEthereum('ETH', 'eth');
 
