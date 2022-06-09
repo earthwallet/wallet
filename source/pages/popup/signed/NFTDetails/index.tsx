@@ -38,8 +38,14 @@ const NFTDetails = ({
 
     useEffect((): void => {
         setLoading(true);
-        controller.assets.
-            updateTokenCollectionDetails(asset).then(() => setLoading(false))
+        if (asset.symbol != 'ETH') {
+            controller.assets.
+                updateTokenCollectionDetails(asset).then(() => setLoading(false))
+        }
+        else {
+            controller.assets.updateETHAssetInfo(asset).then(() => setLoading(false))
+        }
+
     }, [assetId === asset?.id]);
 
     return (
@@ -85,10 +91,10 @@ const NFTDetails = ({
                                 currentTarget.onerror = null;
                                 currentTarget.src = ICON_PLACEHOLDER;
                             }}
-                            src={asset?.type == 'EarthArt' ? getEarthArtCollectionIcon(canisterId) : assetCollectionInfo?.icon} className={styles.creatorIcon}></img>
+                            src={asset?.symbol == 'ETH' ? asset?.collectionImage : asset?.type == 'EarthArt' ? getEarthArtCollectionIcon(canisterId) : assetCollectionInfo?.icon} className={styles.creatorIcon}></img>
                         <div className={styles.creatorInfo}>
                             <div className={styles.creatorTitle}>{asset?.symbol == 'ETH' ? asset.tokenName : assetCollectionInfo?.name}</div>
-                            <div className={styles.creatorSubtitle}>{assetCollectionInfo?.description}</div>
+                            <div className={styles.creatorSubtitle}>{asset?.symbol == 'ETH' ? asset.description : assetCollectionInfo?.description}</div>
                         </div>
                     </div>
                 </div>

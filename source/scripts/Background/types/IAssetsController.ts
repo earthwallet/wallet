@@ -40,6 +40,7 @@ export interface IAssetsController {
     address: string,
     callback?: (path: string) => void
   ) => Promise<void>;
+  updateETHAssetInfo: (asset: keyable) => Promise<void>;
 }
 
 export interface keyable {

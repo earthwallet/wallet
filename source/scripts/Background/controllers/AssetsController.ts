@@ -718,8 +718,8 @@ export default class AssetsController implements IAssetsController {
       store.dispatch(createEntity({ entity: 'txnRequests' }));
     }
 
-    if(asset.type == 'EarthArt') {
-      alert('EarthArt buy')
+    if (asset.type == 'EarthArt') {
+      alert('EarthArt buy');
     }
 
     store.dispatch(
@@ -920,16 +920,18 @@ export default class AssetsController implements IAssetsController {
 
   updateETHAssetInfo = async (asset: keyable) => {
     const response = await getETHAssetInfo(asset);
-
-    return store.dispatch(
+    store.dispatch(
       updateEntities({
         entity: 'assets',
         key: asset.id,
         data: {
           tokenImage: response.image_url,
+          description: response?.asset_contract?.description,
+          collectionImage: response?.asset_contract?.image_url,
         },
       })
     );
+    return;
   };
 
   registerExtensionForAirdrop = async () => {
