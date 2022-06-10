@@ -477,7 +477,20 @@ export default class AssetsController implements IAssetsController {
       allTokens[0] = await getERC721(account.address);
 
       let tokens = allTokens.flat();
-      if (tokens.length === 0) {
+      const tokensWithId = tokens.map((asset: keyable) => ({
+        ...asset,
+        ...{ id: asset.contractAddress + "_WITH_" + asset.tokenID },
+      }));
+      const tokensRepeatCount = tokensWithId.reduce((acc: { [x: string]: number; }, curr: { id: any; }) => {
+        const { id } = curr;
+        if (acc[id]) ++acc[id];
+        else acc[id] = 1;
+        return acc;
+      }, {});
+      const tokensAfterRemovingOutTokens = tokensWithId.filter(
+        (obj: { id: string | number; }) => tokensRepeatCount[obj.id] == 1
+      );
+      if (tokensAfterRemovingOutTokens.length === 0) {
         store.dispatch(
           storeEntities({
             entity: 'assetsCount',
@@ -499,7 +512,7 @@ export default class AssetsController implements IAssetsController {
               {
                 id: account.address,
                 symbol: account.symbol,
-                count: tokens.length,
+                count: tokensAfterRemovingOutTokens.length,
                 loading: false,
               },
             ],
@@ -513,7 +526,7 @@ export default class AssetsController implements IAssetsController {
             .filter((assets) => assets.address === account.address);
         const existingCount = existingAssets?.length;
 
-        if (existingCount != tokens?.length) {
+        if (existingCount != tokensAfterRemovingOutTokens?.length) {
           existingAssets?.map((token: keyable) =>
             store.dispatch(
               storeEntities({
@@ -524,7 +537,7 @@ export default class AssetsController implements IAssetsController {
           );
         }
         //cache the assets
-        tokens.map((token: keyable) => {
+        tokensAfterRemovingOutTokens.map((token: keyable) => {
           const id = token.contractAddress + '_WITH_' + token.tokenID;
           let asset = {
             ...token,
