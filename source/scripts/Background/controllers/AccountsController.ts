@@ -24,6 +24,8 @@ import { getInfoBySymbol, GROUP_ID_SYMBOL } from '~global/constant';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { principal_to_address } from '@earthwallet/assets';
 import { getBalanceETH, getBalanceMatic } from '~utils/services';
+import { createAlchemyWeb3 } from '@alch/alchemy-web3';
+import { ethers } from 'ethers';
 
 interface keyable {
   [key: string]: any;
@@ -146,7 +148,53 @@ export default class AccountsController implements IAccountsController {
 
     return index;
   };
+  sendETH = async (
+    selectedRecp: string,
+    selectedAmount: number,
+    mnemonic: string,
+    feesArr: keyable,
+    feesOptionSelected: number
+  ) => {
+    const wallet_tx = await createWallet(mnemonic, 'ETH');
 
+    const web3 = createAlchemyWeb3(
+      'https://eth-mainnet.alchemyapi.io/v2/WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80'
+    );
+    const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
+    const nonce = await web3.eth.getTransactionCount(
+      wallet_tx.address,
+      'latest'
+    );
+
+    const transaction = {
+      nonce: nonce,
+      from: wallet_tx.address,
+      to: selectedRecp,
+      value: web3.utils.toWei(selectedAmount.toString(), 'ether'),
+    };
+    const estimateGas = await web3.eth.estimateGas(transaction);
+
+    const signedTx: keyable = await web3.eth.accounts.signTransaction(
+      {
+        gas: estimateGas,
+        maxPriorityFeePerGas: web3.utils.toWei(
+          feesArr[feesOptionSelected]?.suggestedMaxPriorityFeePerGas,
+          'gwei'
+        ),
+        maxFeePerGas: web3.utils.toWei(
+          feesArr[feesOptionSelected]?.suggestedMaxFeePerGas,
+          'gwei'
+        ),
+        ...transaction,
+      },
+      privateKey
+    );
+    //send signed transaction
+    const result = await web3.eth.sendSignedTransaction(
+      signedTx?.rawTransaction
+    );
+    console.log(result);
+  };
   sendBTC = async (
     selectedRecp: string,
     selectedAmount: number,

@@ -162,10 +162,9 @@ export const getBalanceETH = async (address: string) => {
   return balance;
 };
 
-export const getFeesExtended = async (symbol: string) => {
+export const getFeesExtended = async (symbol: string, estimateGas = 2100) => {
   let serverRes;
   let fees: keyable[] = [];
-  const estimateGas = 21000;
 
   if (symbol == 'ETH') {
     const config: AxiosRequestConfig = {

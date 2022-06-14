@@ -30,6 +30,13 @@ export interface IAccountsController {
     selectedAmount: number,
     mnemonic: string,
     address: string
+  ) => Promise<any>;  
+  sendETH: (
+    selectedRecp: string,
+    selectedAmount: number,
+    mnemonic: string,
+    feesArr: keyable,
+    feesOptionSelected: number
   ) => Promise<any>;
   getBalancesOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   getBalancesOfAccount: (account: keyable) => Promise<void>;
