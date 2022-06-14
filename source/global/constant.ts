@@ -1,4 +1,4 @@
-import { NetworkType } from './types';
+import { NetworkSymbol, NETWORK_TITLE } from './types';
 import ICON_ETH from '~assets/images/icon_eth.png';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
 import ICON_ICP_ED25519 from '~assets/images/icon_icp_ed25519.png';
@@ -15,7 +15,10 @@ import ICON_MATIC from '~assets/images/icon_matic.png';
 
 export const STATE_PORT = 'EARTH_WALLET';
 
-export const TEST_NETWORKS = [NetworkType.BitcoinTestnet, NetworkType.Rinkeby];
+export const TEST_NETWORKS = [
+  NETWORK_TITLE[NetworkSymbol.BitcoinTestnet],
+  NETWORK_TITLE[NetworkSymbol.Rinkeby],
+];
 
 /* Attribution: API provided by https://www.coingecko.com/en/api/documentation */
 

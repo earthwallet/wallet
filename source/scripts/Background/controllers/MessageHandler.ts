@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { parseObjWithOutBigInt } from '~global/helpers';
+import { NetworkSymbol } from '~global/types';
 import { IMainController } from '../types/IMainController';
 
 type Message = {
@@ -64,7 +65,11 @@ export const messagesHandler = (
         return Promise.resolve(null);
       }
       const windowId = uuid();
-      const popup = await mainController.createPopup(windowId);
+      const popup = await mainController.createPopup(
+        windowId,
+        undefined,
+        message.data.asset as NetworkSymbol
+      );
       pendingWindow = true;
 
       if (popup) {
@@ -105,6 +110,8 @@ export const messagesHandler = (
         result = mainController.provider.getBalance();
       } else if (method === 'wallet.getAddressMeta') {
         result = mainController.provider.getAddressMeta(origin);
+      } else if (method === 'wallet.getActiveAddress') {
+        result = mainController.provider.getActiveAddress(origin);
       } else if (method === 'wallet.sessionSign') {
         result = await mainController.provider.sessionSign(
           {

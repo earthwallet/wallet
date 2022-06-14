@@ -11,6 +11,7 @@ import TokensController from './TokensController';
 import store from '~state/store';
 import { preloadStateAsync } from '~state/app';
 import { storeEntities } from '~state/entities';
+import { NetworkSymbol } from '~global/types';
 
 export default class MainController {
   accounts: Readonly<IAccountsController>;
@@ -72,9 +73,13 @@ export default class MainController {
     return items as keyable;
   }
 
-  async createPopup(windowId: string, route?: string) {
+  async createPopup(windowId: string, route?: string, asset?: NetworkSymbol) {
     const _window = await browser.windows.getCurrent();
     if (!_window || !_window.width) return null;
+
+    if (asset) {
+      this.accounts.updateActiveNetwork(asset);
+    }
 
     let url = `/dapp.html?`;
     if (route) {

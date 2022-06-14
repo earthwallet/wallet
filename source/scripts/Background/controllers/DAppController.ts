@@ -33,7 +33,7 @@ class DAppController implements IDAppController {
   }
 
   addSignRequest(request: any, id: string) {
-     if (request.type === 'createSession') {
+    if (request.type === 'createSession') {
       const { sessionId, ...requestData } = request;
 
       store.dispatch(
@@ -50,8 +50,7 @@ class DAppController implements IDAppController {
           ],
         })
       );
-    }
-   else if (request.type === 'signRaw') {
+    } else if (request.type === 'signRaw') {
       store.dispatch(
         storeEntities({
           entity: 'dappRequests',

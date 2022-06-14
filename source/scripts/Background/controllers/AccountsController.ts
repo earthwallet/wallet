@@ -10,6 +10,7 @@ import {
   updateNewMnemonic,
   updateError,
   updateLoading,
+  updateActiveNetwork,
 } from '~state/wallet';
 import type { IAccountsController } from '../types/IAccountsController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
@@ -24,6 +25,7 @@ import { getInfoBySymbol, GROUP_ID_SYMBOL } from '~global/constant';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { principal_to_address } from '@earthwallet/assets';
 import { getBalanceETH, getBalanceMatic } from '~utils/services';
+import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
 
 interface keyable {
   [key: string]: any;
@@ -366,6 +368,12 @@ export default class AccountsController implements IAccountsController {
     //clear new mnemonic
     store.dispatch(updateNewMnemonic(''));
     callback && callback(groupId);
+  };
+
+  updateActiveNetwork = (symbol: NetworkSymbol) => {
+    store.dispatch(
+      updateActiveNetwork({ symbol, title: NETWORK_TITLE[symbol] })
+    );
   };
 
   updateActiveAccountsOfGroup = async (

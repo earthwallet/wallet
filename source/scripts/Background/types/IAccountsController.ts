@@ -1,4 +1,5 @@
 import { EarthKeyringPair } from '@earthwallet/keyring';
+import { NetworkSymbol } from '~global/types';
 
 interface keyable {
   [key: string]: any;
@@ -34,6 +35,7 @@ export interface IAccountsController {
   getBalancesOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   getBalancesOfAccount: (account: keyable) => Promise<void>;
   getTotalBalanceOfAccountGroup: (accounts: keyable[][]) => void;
+  updateActiveNetwork: (symbol: NetworkSymbol) => void;
   migrateExistingICP: (mnemonic: string) => Promise<{
     keypair: EarthKeyringPair;
     balance: keyable;
