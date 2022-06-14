@@ -18,12 +18,7 @@ import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk
 import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import getBrowserFingerprint from 'get-browser-fingerprint';
-import {
-  getERC721,
-  getETHAssetInfo,
-  registerExtensionAndAccounts,
-  statusExtension,
-} from '~utils/services';
+import { getERC721, getETHAssetInfo } from '~utils/services';
 import { updateExtensionId } from '~state/wallet';
 import { Principal } from '@dfinity/principal';
 
@@ -479,16 +474,19 @@ export default class AssetsController implements IAssetsController {
       let tokens = allTokens.flat();
       const tokensWithId = tokens.map((asset: keyable) => ({
         ...asset,
-        ...{ id: asset.contractAddress + "_WITH_" + asset.tokenID },
+        ...{ id: asset.contractAddress + '_WITH_' + asset.tokenID },
       }));
-      const tokensRepeatCount = tokensWithId.reduce((acc: { [x: string]: number; }, curr: { id: any; }) => {
-        const { id } = curr;
-        if (acc[id]) ++acc[id];
-        else acc[id] = 1;
-        return acc;
-      }, {});
+      const tokensRepeatCount = tokensWithId.reduce(
+        (acc: { [x: string]: number }, curr: { id: any }) => {
+          const { id } = curr;
+          if (acc[id]) ++acc[id];
+          else acc[id] = 1;
+          return acc;
+        },
+        {}
+      );
       const tokensAfterRemovingOutTokens = tokensWithId.filter(
-        (obj: { id: string | number; }) => tokensRepeatCount[obj.id] == 1
+        (obj: { id: string | number }) => tokensRepeatCount[obj.id] == 1
       );
       if (tokensAfterRemovingOutTokens.length === 0) {
         store.dispatch(
@@ -938,8 +936,8 @@ export default class AssetsController implements IAssetsController {
         entity: 'assets',
         key: asset.id,
         data: {
-          tokenImage: response.image_url,
-          description: response?.asset_contract?.description,
+          tokenImage: response?.media[0].gateway,
+          description: response?.description,
           collectionImage: response?.asset_contract?.image_url,
         },
       })
@@ -970,10 +968,22 @@ export default class AssetsController implements IAssetsController {
       return;
     }
     const earthdayAirdrop = getAirDropNFTInfo();
+
     if (state.entities.airdrops == null) {
       store.dispatch(createEntity({ entity: 'airdrops' }));
     }
 
+    store.dispatch(
+      updateEntities({
+        entity: 'airdrops',
+        key: earthdayAirdrop.id,
+        data: {
+          airdropEnabled: earthdayAirdrop.isLive,
+          loading: false,
+        },
+      })
+    );
+    /* 
     store.dispatch(
       updateEntities({
         entity: 'airdrops',
@@ -995,8 +1005,8 @@ export default class AssetsController implements IAssetsController {
         })
       );
       return;
-    }
-    const status = await statusExtension(extensionId);
+    } */
+    /*  const status = await statusExtension(extensionId);
     if (!status?.airdropEnabled) {
       store.dispatch(
         updateEntities({
@@ -1023,8 +1033,8 @@ export default class AssetsController implements IAssetsController {
           },
         })
       );
-    }
-    if (status?.accountIds?.length != ICPAccounts.length) {
+    } */
+    /*  if (status?.accountIds?.length != ICPAccounts.length) {
       const response = await registerExtensionAndAccounts(
         fingerprint.toString(),
         ICPAccounts
@@ -1040,6 +1050,6 @@ export default class AssetsController implements IAssetsController {
           })
         );
       }
-    }
+    } */
   };
 }

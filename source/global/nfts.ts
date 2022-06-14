@@ -292,7 +292,7 @@ export default LIVE_ICP_NFT_LIST_CANISTER_IDS;
 export const getAirDropNFTInfo = () => ({
   id: 'earth-day', //slug
   type: 'EarthArt',
-  isLive: false,
+  isLive: true,
   isAirdrop: true,
   name: 'Earth day NFT', //can be changed
   //can be changed

@@ -150,7 +150,7 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_MATIC,
     symbol: 'MATIC',
     coinGeckoId: 'matic-network',
-    isLive: true,
+    isLive: false,
     preGenerate: false,
     order: 3,
     evmChain: true,
