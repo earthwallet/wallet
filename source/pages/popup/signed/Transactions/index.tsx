@@ -54,15 +54,18 @@ const Transactions = ({
     return timestamp;
   };
 
-
-  useEffect(() => {
-    const loadTransactions = async (address: string) => {
+  const loadTransactions = async (address: string) => {
+    if (selectedAccount?.symbol != 'ETH') {
       setLoading(true);
       const transactions = await getTransactions(address, selectedAccount?.symbol);
       setLoading(false);
-
+      console.log(transactions, 'transactions')
       setWalletTransactions(transactions);
-    };
+    } else {
+
+    }
+  };
+  useEffect(() => {
 
     if (address) {
       loadTransactions(address);
