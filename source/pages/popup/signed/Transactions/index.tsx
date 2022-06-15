@@ -18,6 +18,7 @@ import { selectAssetBySymbol, selectTxnRequestsByAddress } from '~state/assets';
 import clsx from 'clsx';
 import { getTokenImageUrlFromnftId } from '~global/nfts';
 import { getTokenInfo } from '~global/tokens';
+import { getETHTransactions } from '~utils/services';
 
 interface Props extends RouteComponentProps<{ address: string }> {
   className?: string;
@@ -62,6 +63,14 @@ const Transactions = ({
       console.log(transactions, 'transactions')
       setWalletTransactions(transactions);
     } else {
+      setLoading(true);
+
+      const response = await getETHTransactions(address);
+      setLoading(false);
+
+      console.log(response, 'transactions')
+      const wallet = { txs: response };
+      setWalletTransactions(wallet);
 
     }
   };
@@ -137,6 +146,48 @@ const Transactions = ({
           </div>
           <div className={styles.transSubColPrice}>
             ${(getAmount(transaction) * usdValue).toFixed(3)}
+          </div>
+        </div>
+        <div className={styles.transColAction}>
+          <img src={ICON_FORWARD} />
+        </div>
+      </div>
+    }
+    if (symbol === 'ETH') {
+      return <div
+        className={styles.transItem}
+        key={index}
+        onClick={() => window.open(`https://etherscan.io/tx/${transaction?.hash}`, "_blank")}
+      >
+        <div className={styles.transColIcon}>
+          {statusToIcon(
+            transaction.to == address
+              ? 'Receive'
+              : 'Send'
+          )}
+        </div>
+        <div className={styles.transColStatus}>
+          <div>
+            {transaction.to == address
+              ? 'Receive'
+              : 'Send'}
+          </div>
+          <div className={styles.transSubColTime}>
+            <div className={styles.transDate}>Block: {transaction.block}</div>
+            <div className={styles.transSubColDot}></div>
+            <div className={styles.transAddress}>
+              {transaction.to == address ? 'from ' + getShortAddress(transaction.from, 3) : 'to ' + getShortAddress(transaction.to, 3)}
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.transColValue}>
+          <div>
+            {transaction.value}
+            {symbol}
+          </div>
+          <div className={styles.transSubColPrice}>
+            ${(transaction.value * usdValue).toFixed(3)}
           </div>
         </div>
         <div className={styles.transColAction}>
@@ -329,7 +380,6 @@ const Transactions = ({
           onClick={() => history.goBack()}
         >
           <img src={ICON_CARET} />
-
           <div className={styles.transTitle}>Transactions</div>
         </div>
         <div className={styles.pageloading}>
@@ -349,7 +399,7 @@ const Transactions = ({
         >
           <img src={ICON_CARET} />
 
-          <div className={styles.transTitle}>Transactions</div>
+          <div className={styles.transTitle}>Transactions {walletTransactions?.txs.length}</div>
         </div>
 
         {walletTransactions &&

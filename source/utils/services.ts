@@ -298,33 +298,70 @@ export const getFeesExtended_MATIC = async () => {
   return serverRes;
 };
 
-export const getTransactions = async (address: string) => {
+export const getETHTransactions = async (address: string) => {
+  const data = JSON.stringify({
+    jsonrpc: '2.0',
+    id: 0,
+    method: 'alchemy_getAssetTransfers',
+    params: [
+      {
+        fromBlock: '0x0',
+        fromAddress: address,
+        excludeZeroValue: false,
+        category: ['external'],
+      },
+    ],
+  });
+  const toTransfersData = {
+    jsonrpc: '2.0',
+    id: 0,
+    method: 'alchemy_getAssetTransfers',
+    params: [
+      {
+        fromBlock: '0x0',
+        toAddress: address,
+        excludeZeroValue: false,
+        category: ['external'],
+      },
+    ],
+  };
   const config: AxiosRequestConfig = {
-    method: 'get',
-    url: `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&sort=desc&apikey=${ETHERSCAN_API_KEY}`,
-    headers: {},
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data: data,
+    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+  };
+  const toConfig: AxiosRequestConfig = {
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data: toTransfersData,
+    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
   };
 
-  let serverRes: any = {
-    total: 0,
-    symbol: 'ETH',
-    txs: [],
-  };
+  let serverRes: any = [];
   try {
     const response = await axios(config);
-    serverRes.total = response.data?.result.length;
-    serverRes.txs = response.data?.result;
+    serverRes = response.data?.result?.transfers;
   } catch (error) {
     serverRes = error;
   }
-  //console.log(serverRes);
-  return serverRes;
+  try {
+    const responseTo = await axios(toConfig);
+    if (responseTo.data?.result?.transfers != undefined) {
+      serverRes = [...serverRes, ...responseTo.data?.result?.transfers];
+    }
+  } catch (error) {
+    serverRes = error;
+  }
+  const txns = serverRes.map((tx: { blockNum: any; }) => ({...tx, block: web3.utils.hexToNumberString(tx.blockNum)})).sort((a: { block: number; },b: { block: number; }) =>b.block - a.block)
+  console.log(serverRes, 'getTransactions');
+  return txns;
 };
 
 export const getERC721 = async (address: string) => {
   const config: AxiosRequestConfig = {
     method: 'get',
-    url: `https://api.etherscan.io/api?module=account&action=tokennfttx&address=${address}&sort=asc&apikey=C64M8N55WWFJHHT4WF3ZNVU7SYDXFG4QT1`,
+    url: `https://api.etherscan.io/api?module=account&action=tokennfttx&address=${address}&sort=asc&apikey=${ETHERSCAN_API_KEY}`,
     headers: {},
   };
 

@@ -46,7 +46,7 @@
   justify-content: flex-start;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 12px;
+  padding: 12px 0;
   overflow: hidden;
 }
 
@@ -66,10 +66,14 @@
   border-bottom: 1px solid #ffffff1a;
   padding: 23px 0;
   display: flex;
-  width: calc(340px - 32px);
+  width: calc(340px - 24px);
   overflow: hidden;
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
+  margin: 0 12px;
 
   &:active {
     opacity: 0.7;
@@ -155,6 +159,7 @@
 .transItems {
   height: 502px;
   overflow: hidden scroll;
+  width: 100%;
 }
 
 .noTrans {
