@@ -83,38 +83,41 @@ export const AssetsList = ({ address }: { address: string }) => {
     const airdropAsset = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
     const selectedAccount = useSelector(selectAccountById(address));
-    console.log(assets, 'AssetsList');
     const SHOW_MARKETPLACE = selectedAccount.symbol == "ICP" && MARKETPLACE_ENABLED;
 
     const AirDropCampaign = () => {
-        return <div
-            onClick={() => history.push(`/nftairdropdetails/${airdropAsset.id}/${address}`)}
-            className={styles.listitem}>
-            <img className={styles.listicon}
-                onError={({ currentTarget }) => {
-                    currentTarget.onerror = null;
-                    currentTarget.src = ICON_PLACEHOLDER;
-                }}
-                src={airdropAsset.icon} />
-            <div className={styles.listinfo}>
-                <div className={styles.listtitle}>{airdropAsset?.name}</div>
-                <div className={styles.listsubtitle}>{airdropAsset?.description}</div>
+        if (selectedAccount.symbol == 'ETH') {
+            return <div
+                onClick={() => history.push(`/nftairdropdetails/${airdropAsset.id}/${address}`)}
+                className={styles.listitem}>
+                <img className={styles.listicon}
+                    onError={({ currentTarget }) => {
+                        currentTarget.onerror = null;
+                        currentTarget.src = ICON_PLACEHOLDER;
+                    }}
+                    src={airdropAsset.icon} />
+                <div className={styles.listinfo}>
+                    <div className={styles.listtitle}>{airdropAsset?.name}</div>
+                    <div className={styles.listsubtitle}>{airdropAsset?.description}</div>
+                </div>
+                <div
+                    className={styles.liststats}
+                ><div className={styles.listprice}>{airdropAsset?.isAirdrop
+                    ? 'Airdrop'
+                    : 'Unlisted'}</div>
+                    {airdropAssetStatus.accountIdVerified == undefined
+                        ? <div className={clsx(styles.listsubtitle, styles.freetxt)}>Free</div>
+                        : <div className={clsx(styles.listsubtitle)}>Claimed</div>
+                    }
+                </div>
+                <img
+                    className={styles.listforward}
+                    src={ICON_FORWARD}
+                />
             </div>
-            <div
-                className={styles.liststats}
-            ><div className={styles.listprice}>{airdropAsset?.isAirdrop
-                ? 'Airdrop'
-                : 'Unlisted'}</div>
-                {airdropAssetStatus.accountIdVerified == undefined
-                    ? <div className={clsx(styles.listsubtitle, styles.freetxt)}>Free</div>
-                    : <div className={clsx(styles.listsubtitle)}>Claimed</div>
-                }
-            </div>
-            <img
-                className={styles.listforward}
-                src={ICON_FORWARD}
-            />
-        </div>
+        } else {
+            return <div></div>
+        }
     }
 
     const history = useHistory();

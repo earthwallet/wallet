@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import ICON_ADD from '~assets/images/icon_add_account.svg';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { selectActiveAccountGroups, selectAssetsICPCountByAddress, selectGroupBalanceByAddress } from '~state/wallet';
+import { selectActiveAccountGroups, selectAssetsICPCountByAddress, selectGroupBalanceByAddress, selectGroupCountByGroupId } from '~state/wallet';
 import { useHistory } from 'react-router-dom';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { getSymbol } from '~utils/common';
@@ -76,7 +76,7 @@ const Accounts = () => {
                             {accountGroup.sort((a: keyable, b: keyable) => a.order - b.order).map((account: keyable) =>
                               <img src={getSymbol(account.symbol)?.icon} className={styles.accountIcon} key={account.id} />
                             )}
-                            <AssetsICPCount icpAddress={accountGroup.filter((account: keyable) => account.symbol === 'ICP')[0]?.address} />
+                            <GroupAssetsCountWithLoading icpAccount={accountGroup.filter((account: keyable) => account.symbol === 'ICP')[0]} />
                           </div>
                         </div>
                         <div className={styles.infoBalance}><GroupBalance loading={loading} groupId={accountGroup[0].groupId} />
@@ -124,10 +124,12 @@ const GroupBalance = ({ groupId, loading }: { groupId: string, loading: boolean 
   return <div>${currentBalance?.balanceInUSD?.toFixed(3) || 0}</div>
 }
 
-const AssetsICPCount = ({ icpAddress }: { icpAddress: string }) => {
-  const assetsObj: keyable = useSelector(selectAssetsICPCountByAddress(icpAddress));
-
-  return <div className={styles.assetCount}>{(assetsObj?.count === 0 || assetsObj?.count === undefined) ? '' : assetsObj?.count === 1 ? '1 NFT' : `${assetsObj?.count} NFTs`}
+const GroupAssetsCountWithLoading = ({ icpAccount }: { icpAccount: keyable }) => {
+  const assetsObj: keyable = useSelector(selectAssetsICPCountByAddress(icpAccount?.address));
+  const assetCount: number = useSelector(
+    selectGroupCountByGroupId(icpAccount?.groupId)
+  );
+  return <div className={styles.assetCount}>{(assetCount === 0 || assetCount === undefined) ? '' : assetCount === 1 ? '1 NFT' : `${assetCount} NFTs`}
     {assetsObj?.loading && <span className={styles.assetCountLoading}><SkeletonTheme color="#222" highlightColor="#000">
       <Skeleton width={20} />
     </SkeletonTheme>
