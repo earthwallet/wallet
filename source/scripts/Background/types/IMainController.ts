@@ -1,4 +1,5 @@
 import { Windows } from 'webextension-polyfill-ts';
+import { NetworkSymbol } from '~global/types';
 import { EarthProvider } from '~scripts/Provider/EarthProvider';
 import { IAccountsController } from './IAccountsController';
 import { IAssetsController } from './IAssetsController';
@@ -20,6 +21,7 @@ export interface IMainController {
   migrateLocalStorage: () => Promise<keyable>;
   createPopup: (
     windowId: string,
-    route?: string
+    route?: string,
+    asset?: NetworkSymbol
   ) => Promise<Windows.Window | null>;
 }

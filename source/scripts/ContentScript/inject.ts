@@ -49,8 +49,8 @@ class ProviderManager {
     return this.cache[asset]
   }
 
-  connect () {
-    return this.proxy('CONNECT_REQUEST')
+  connect (asset) {
+    return this.proxy('CONNECT_REQUEST', { asset })
   }
 }
 
@@ -71,9 +71,8 @@ const ethereumProvider = ({
 }) => `
 async function getAddresses () {
   const eth = window.providerManager.getProviderFor('${asset}')
-  let addresses = await eth.getMethod('wallet.getAddresses')()
-  addresses = addresses.map(a => '0x' + a.address)
-  return addresses
+  const data = await eth.getMethod('wallet.getActiveAddress')()
+  return [data]
 }
 
 async function handleRequest (req) {
@@ -98,6 +97,13 @@ async function handleRequest (req) {
   if(req.method === 'eth_accounts') {
     return getAddresses()
   }
+  if(req.method === 'eth_chainId') {
+    return {
+      "id": 83,
+      "jsonrpc": "2.0",
+      "result": "1"
+    }
+  }
   return eth.getMethod('jsonrpc')(req.method, ...req.params)
 }
 
@@ -107,7 +113,7 @@ window.${name} = {
   networkVersion: '${network.networkId}',
   chainId: '${network.chainId.toString(16)}',
   enable: async () => {
-    const accepted = await window.providerManager.enable()
+    const accepted = await window.providerManager.connect("${name}")
     if (!accepted) throw new Error('User rejected')
     return getAddresses()
   },
@@ -226,7 +232,7 @@ window.earth = {
     return icp.getMethod('wallet.closeSession')()
   },
   connect: async (params) => {
-    const accepted = await window.providerManager.connect()
+    const accepted = await window.providerManager.connect('ICP')
     if (!accepted) throw new Error('User rejected')
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.getAddress')(params)

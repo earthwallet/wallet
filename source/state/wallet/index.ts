@@ -1,8 +1,8 @@
 import { EarthKeyringPair } from '@earthwallet/keyring';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NetworkType } from '~global/types';
+import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
 
-import type { IWalletState } from './types';
+import type { IWalletState, NetworkInfo } from './types';
 //import type { StoreInterface } from '~state/IStore';
 import { AppState } from '~state/store';
 import groupBy from 'lodash/groupBy';
@@ -15,7 +15,10 @@ const initialState: IWalletState = {
   newMnemonic: '',
   loading: false,
   error: '',
-  activeNetwork: NetworkType.ICP,
+  activeNetwork: {
+    title: NETWORK_TITLE[NetworkSymbol.ICP],
+    symbol: NetworkSymbol.ICP,
+  },
   extensionId: '',
 };
 
@@ -47,6 +50,12 @@ const WalletState = createSlice({
     ) {
       state.activeAccount = action.payload;
     },
+    updateActiveNetwork(
+      state: IWalletState,
+      action: PayloadAction<NetworkInfo>
+    ) {
+      state.activeNetwork = action.payload;
+    },
     hydrateWallet(state: IWalletState, action: PayloadAction<IWalletState>) {
       Object.assign(state, action.payload);
     },
@@ -56,6 +65,7 @@ const WalletState = createSlice({
 export const {
   updateAccounts,
   updateActiveAccount,
+  updateActiveNetwork,
   updateNewMnemonic,
   updateExtensionId,
   updateError,
@@ -72,6 +82,11 @@ export const selectAccounts_ICP = (state: AppState) =>
   Object.keys(state.entities.accounts.byId)
     .map((id) => state.entities.accounts.byId[id])
     .filter((account) => account.symbol === 'ICP');
+
+export const selectAccountsByNetwork = (network: string) => (state: AppState) =>
+  Object.keys(state.entities.accounts.byId)
+    .map((id) => state.entities.accounts.byId[id])
+    .filter((account) => account.symbol === network);
 
 export const selectAccountsByGroupId = (groupId: string) => (state: AppState) =>
   Object.keys(state.entities.accounts.byId)

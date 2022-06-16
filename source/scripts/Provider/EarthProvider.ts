@@ -23,13 +23,20 @@ export class EarthProvider {
   getNetwork() {
     const { activeNetwork }: IWalletState = store.getState().vault;
 
-    return activeNetwork;
+    return activeNetwork.title;
   }
 
   getAddress() {
     const { activeAccount }: IWalletState = store.getState().wallet;
 
     return activeAccount?.address;
+  }
+
+  getActiveAddress(origin: string) {
+    const dapp = store.getState().dapp;
+    const address = dapp[origin]?.address;
+    const account = store.getState().entities.accounts.byId[address];
+    return account.address;
   }
 
   generateSessionId() {
@@ -79,7 +86,7 @@ export class EarthProvider {
       store.getState().vault;
 
     return activeAccount
-      ? await getBalance(activeAccount?.address, activeNetwork)
+      ? await getBalance(activeAccount?.address, activeNetwork.title)
       : null;
   }
 
