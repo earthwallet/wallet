@@ -39,6 +39,8 @@ import { OpenSeaPort, Network } from 'opensea-js';
 import HDWalletProvider from '@truffle/hdwallet-provider';
 
 const MIN_LENGTH = 6;
+const DEFAULT_FEE_INDEX = 1;
+
 interface keyable {
   [key: string]: any;
 }
@@ -73,9 +75,8 @@ const WalletSendTokens = ({
   const [txError, setTxError] = useState('');
   const [fees, setFees] = useState<number>(0);
   const [feesArr, setFeesArr] = useState<keyable[]>([]);
-  const [feesOptionSelected, setFeesOptionSelected] = useState<number>(0);
-
-  const DEFAULT_FEE_INDEX = 1;
+  const [feesOptionSelected, setFeesOptionSelected] =
+    useState<number>(DEFAULT_FEE_INDEX);
   const [loadingSend, setLoadingSend] = useState<boolean>(false);
   const [selectedAsset, setSelectedAsset] = useState<string>('');
   const [selectedAssetObj, setSelectedAssetObj] = useState<keyable>({});
@@ -93,6 +94,26 @@ const WalletSendTokens = ({
     setSelectedAsset(asset);
     setSelectedAssetObj(getSelectedAsset(asset));
     setSelectedAmount(0);
+    if (selectedAccount?.symbol == 'ETH') {
+      if (getSelectedAsset(selectedAsset)?.format == 'nft') {
+        //ERC721 Transfer estimate is 84904 as per etherscan
+        getFeesExtended(selectedAccount?.symbol, 84904).then(
+          (_feesArr: keyable[]) => {
+            setFeesOptionSelected(feesOptionSelected);
+            _feesArr[feesOptionSelected] &&
+              setFees(_feesArr[feesOptionSelected]?.gas);
+            setFeesArr(_feesArr);
+          }
+        );
+      } else {
+        getFeesExtended(selectedAccount?.symbol).then((_feesArr: keyable[]) => {
+          setFeesOptionSelected(feesOptionSelected);
+          _feesArr[feesOptionSelected] &&
+            setFees(_feesArr[feesOptionSelected]?.gas);
+          setFeesArr(_feesArr);
+        });
+      }
+    }
   }, []);
 
   const [isBusy, setIsBusy] = useState(false);
@@ -153,6 +174,14 @@ const WalletSendTokens = ({
 
       if (getSelectedAsset(selectedAsset)?.format == 'nft') {
         console.log('_estimateGasForTransfer');
+        getFeesExtended(selectedAccount?.symbol, 84904).then(
+          (_feesArr: keyable[]) => {
+            setFeesOptionSelected(DEFAULT_FEE_INDEX);
+            _feesArr[DEFAULT_FEE_INDEX] &&
+              setFees(_feesArr[DEFAULT_FEE_INDEX]?.gas);
+            setFeesArr(_feesArr);
+          }
+        );
       } else {
         getFeesExtended(selectedAccount?.symbol).then((_feesArr: keyable[]) => {
           setFeesOptionSelected(DEFAULT_FEE_INDEX);
@@ -214,48 +243,13 @@ const WalletSendTokens = ({
         );
       } else if (selectedAccount?.symbol == 'ETH') {
         if (selectedAsset === selectedAccount?.symbol) {
-          const wallet_tx = await createWallet(mnemonic, 'MATIC');
-
-          const web3 = createAlchemyWeb3(
-            'https://eth-mainnet.alchemyapi.io/v2/WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80'
+          hash = await controller.accounts.sendETH(
+            selectedRecp,
+            selectedAmount,
+            mnemonic,
+            feesArr,
+            feesOptionSelected
           );
-          const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
-          const nonce = await web3.eth.getTransactionCount(
-            wallet_tx.address,
-            'latest'
-          );
-
-          const transaction = {
-            nonce: nonce,
-            from: wallet_tx.address,
-            to: selectedRecp,
-            value: web3.utils.toWei(selectedAmount.toString(), 'ether'),
-          };
-          const estimateGas = await web3.eth.estimateGas(transaction);
-
-          const signedTx: keyable = await web3.eth.accounts.signTransaction(
-            {
-              gas: estimateGas,
-              maxPriorityFeePerGas: web3.utils.toWei(
-                feesArr[feesOptionSelected]?.suggestedMaxPriorityFeePerGas,
-                'gwei'
-              ),
-              maxFeePerGas: web3.utils.toWei(
-                feesArr[feesOptionSelected]?.suggestedMaxFeePerGas,
-                'gwei'
-              ),
-              ...transaction,
-            },
-            privateKey
-          );
-          console.log('signedTx', signedTx);
-          //send signed transaction
-          const result = await web3.eth.sendSignedTransaction(
-            signedTx?.rawTransaction
-          );
-          console.log(result);
-
-          // sendETH
         } else if (getSelectedAsset(selectedAsset)?.format == 'nft') {
           const provider = new HDWalletProvider({
             mnemonic: mnemonic,

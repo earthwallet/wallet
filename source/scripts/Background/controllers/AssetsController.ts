@@ -18,12 +18,7 @@ import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk
 import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import getBrowserFingerprint from 'get-browser-fingerprint';
-import {
-  getERC721,
-  getETHAssetInfo,
-  registerExtensionAndAccounts,
-  statusExtension,
-} from '~utils/services';
+import { getERC721, getETHAssetInfo } from '~utils/services';
 import { updateExtensionId } from '~state/wallet';
 import { Principal } from '@dfinity/principal';
 
@@ -477,7 +472,23 @@ export default class AssetsController implements IAssetsController {
       allTokens[0] = await getERC721(account.address);
 
       let tokens = allTokens.flat();
-      if (tokens.length === 0) {
+      const tokensWithId = tokens.map((asset: keyable) => ({
+        ...asset,
+        ...{ id: asset.contractAddress + '_WITH_' + asset.tokenID },
+      }));
+      const tokensRepeatCount = tokensWithId.reduce(
+        (acc: { [x: string]: number }, curr: { id: any }) => {
+          const { id } = curr;
+          if (acc[id]) ++acc[id];
+          else acc[id] = 1;
+          return acc;
+        },
+        {}
+      );
+      const tokensAfterRemovingOutTokens = tokensWithId.filter(
+        (obj: { id: string | number }) => tokensRepeatCount[obj.id] == 1
+      );
+      if (tokensAfterRemovingOutTokens.length === 0) {
         store.dispatch(
           storeEntities({
             entity: 'assetsCount',
@@ -499,7 +510,7 @@ export default class AssetsController implements IAssetsController {
               {
                 id: account.address,
                 symbol: account.symbol,
-                count: tokens.length,
+                count: tokensAfterRemovingOutTokens.length,
                 loading: false,
               },
             ],
@@ -513,7 +524,7 @@ export default class AssetsController implements IAssetsController {
             .filter((assets) => assets.address === account.address);
         const existingCount = existingAssets?.length;
 
-        if (existingCount != tokens?.length) {
+        if (existingCount != tokensAfterRemovingOutTokens?.length) {
           existingAssets?.map((token: keyable) =>
             store.dispatch(
               storeEntities({
@@ -524,7 +535,7 @@ export default class AssetsController implements IAssetsController {
           );
         }
         //cache the assets
-        tokens.map((token: keyable) => {
+        tokensAfterRemovingOutTokens.map((token: keyable) => {
           const id = token.contractAddress + '_WITH_' + token.tokenID;
           let asset = {
             ...token,
@@ -718,8 +729,8 @@ export default class AssetsController implements IAssetsController {
       store.dispatch(createEntity({ entity: 'txnRequests' }));
     }
 
-    if(asset.type == 'EarthArt') {
-      alert('EarthArt buy')
+    if (asset.type == 'EarthArt') {
+      alert('EarthArt buy');
     }
 
     store.dispatch(
@@ -920,16 +931,18 @@ export default class AssetsController implements IAssetsController {
 
   updateETHAssetInfo = async (asset: keyable) => {
     const response = await getETHAssetInfo(asset);
-
-    return store.dispatch(
+    store.dispatch(
       updateEntities({
         entity: 'assets',
         key: asset.id,
         data: {
-          tokenImage: response.image_url,
+          tokenImage: response?.media[0].gateway,
+          description: response?.description,
+          collectionImage: response?.asset_contract?.image_url,
         },
       })
     );
+    return;
   };
 
   registerExtensionForAirdrop = async () => {
@@ -955,10 +968,22 @@ export default class AssetsController implements IAssetsController {
       return;
     }
     const earthdayAirdrop = getAirDropNFTInfo();
+
     if (state.entities.airdrops == null) {
       store.dispatch(createEntity({ entity: 'airdrops' }));
     }
 
+    store.dispatch(
+      updateEntities({
+        entity: 'airdrops',
+        key: earthdayAirdrop.id,
+        data: {
+          airdropEnabled: earthdayAirdrop.isLive,
+          loading: false,
+        },
+      })
+    );
+    /* 
     store.dispatch(
       updateEntities({
         entity: 'airdrops',
@@ -980,8 +1005,8 @@ export default class AssetsController implements IAssetsController {
         })
       );
       return;
-    }
-    const status = await statusExtension(extensionId);
+    } */
+    /*  const status = await statusExtension(extensionId);
     if (!status?.airdropEnabled) {
       store.dispatch(
         updateEntities({
@@ -1008,8 +1033,8 @@ export default class AssetsController implements IAssetsController {
           },
         })
       );
-    }
-    if (status?.accountIds?.length != ICPAccounts.length) {
+    } */
+    /*  if (status?.accountIds?.length != ICPAccounts.length) {
       const response = await registerExtensionAndAccounts(
         fingerprint.toString(),
         ICPAccounts
@@ -1025,6 +1050,6 @@ export default class AssetsController implements IAssetsController {
           })
         );
       }
-    }
+    } */
   };
 }

@@ -19,7 +19,7 @@ function injectEthereum(asset: string, name: string) {
     })
   );
 }
-injectEthereum('ETH', 'ethereum');
+injectEthereum('ETH', 'ETH');
 
 function inject(content: string) {
   const container = document.head || document.documentElement;

@@ -3,6 +3,9 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 var web3 = require('web3');
 
+const ETHERSCAN_API_KEY = 'C64M8N55WWFJHHT4WF3ZNVU7SYDXFG4QT1';
+const ALCHEMY_API_KEY = 'WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80';
+
 const AIRDROP_FIREBASE_URL =
   'https://us-central1-test-earth-art.cloudfunctions.net';
 
@@ -140,7 +143,7 @@ export const getBalanceETH = async (address: string) => {
 
   const config: AxiosRequestConfig = {
     method: 'post',
-    url: 'https://eth-mainnet.alchemyapi.io/v2/WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80',
+    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -159,10 +162,9 @@ export const getBalanceETH = async (address: string) => {
   return balance;
 };
 
-export const getFeesExtended = async (symbol: string) => {
+export const getFeesExtended = async (symbol: string, estimateGas = 2100) => {
   let serverRes;
   let fees: keyable[] = [];
-  const estimateGas = 21000;
 
   if (symbol == 'ETH') {
     const config: AxiosRequestConfig = {
@@ -296,6 +298,29 @@ export const getFeesExtended_MATIC = async () => {
   return serverRes;
 };
 
+export const getTransactions = async (address: string) => {
+  const config: AxiosRequestConfig = {
+    method: 'get',
+    url: `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&sort=desc&apikey=${ETHERSCAN_API_KEY}`,
+    headers: {},
+  };
+
+  let serverRes: any = {
+    total: 0,
+    symbol: 'ETH',
+    txs: [],
+  };
+  try {
+    const response = await axios(config);
+    serverRes.total = response.data?.result.length;
+    serverRes.txs = response.data?.result;
+  } catch (error) {
+    serverRes = error;
+  }
+  //console.log(serverRes);
+  return serverRes;
+};
+
 export const getERC721 = async (address: string) => {
   const config: AxiosRequestConfig = {
     method: 'get',
@@ -317,8 +342,8 @@ export const getERC721 = async (address: string) => {
 export const getETHAssetInfo = async (asset: keyable) => {
   const config: AxiosRequestConfig = {
     method: 'GET',
-    url: `https://api.opensea.io/api/v1/asset/${asset.contractAddress}/${asset.tokenIndex}/`,
-    params: { include_orders: 'false' },
+    url: `https://eth-mainnet.g.alchemy.com/nft/v2/${ALCHEMY_API_KEY}/getNFTMetadata?contractAddress=${asset.contractAddress}&tokenId=${asset.tokenIndex}`,
+    headers: {},
   };
 
   let serverRes;

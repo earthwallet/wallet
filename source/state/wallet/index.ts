@@ -203,6 +203,24 @@ export const selectRecentsOf =
 export const selectDappActiveAccountAddress = (state: AppState) =>
   state.wallet?.activeAccount?.address;
 
+export const selectGroupCountByGroupId =
+  (groupId: string) => (state: AppState) => {
+    const sameGroup = Object.keys(state.entities.accounts.byId)
+      .map((id) => state.entities.accounts.byId[id])
+      .filter((account) => account.groupId === groupId && account.active);
+
+    var count = 0;
+    sameGroup.forEach((account) => {
+      const assetsByAddress =
+        state.entities.assets?.byId &&
+        Object.keys(state.entities.assets?.byId)
+          ?.map((id) => state.entities.assets.byId[id])
+          .filter((assets) => assets.address === account.address);
+      count = count + assetsByAddress.length;
+    });
+    return count;
+  };
+
 export const selectActiveTokensAndAssetsByAddress =
   (address: string) => (state: AppState) => {
     const assets =
