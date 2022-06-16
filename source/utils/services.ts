@@ -7,7 +7,7 @@ const ETHERSCAN_API_KEY = 'C64M8N55WWFJHHT4WF3ZNVU7SYDXFG4QT1';
 const ALCHEMY_API_KEY = 'WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80';
 
 const AIRDROP_FIREBASE_URL =
-  'https://us-central1-test-earth-art.cloudfunctions.net';
+  'https://us-central1-earthwallet-1f3ab.cloudfunctions.net';
 
 export const registerExtensionAndAccounts = async (
   extensionId: string,
