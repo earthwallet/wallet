@@ -77,41 +77,48 @@ async function getAddresses () {
 
 async function handleRequest (req) {
   const eth = window.providerManager.getProviderFor('${asset}')
-  if(req.method.startsWith('metamask_')) return null
-
+  
   if(req.method === 'eth_requestAccounts') {
     return await window.${name}.enable()
   }
+
+  if(req.method === 'wallet_requestPermissions') {
+    return Promise.resolve(req.params)
+  }
+
   if(req.method === 'personal_sign') { 
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
     return '0x' + sig
   }
+
+  if(req.method === 'eth_signTypedData' ||
+    req.method === 'eth_signTypedData_v3' ||
+    req.method === 'eth_signTypedData_v4') {
+    const sig = await eth.getMethod('wallet.signTypedData')(req)
+    return sig;
+  }
+
   if(req.method === 'eth_sendTransaction') {
     const to = req.params[0].to
     const value = req.params[0].value
     const data = req.params[0].data
     const gas = req.params[0].gas
-    const result = await eth.getMethod('chain.sendTransaction')({ to, value, data, gas })
+    const result = await eth.getMethod('wallet.sendTransaction')({ to, value, data, gas })
     return '0x' + result.hash
   }
+
   if(req.method === 'eth_accounts') {
     return getAddresses()
   }
-  if(req.method === 'eth_chainId') {
-    return {
-      "id": 83,
-      "jsonrpc": "2.0",
-      "result": "1"
-    }
-  }
-  return eth.getMethod('jsonrpc')(req.method, ...req.params)
+  return eth.getMethod('eth_jsonrpc')(req.method, req.params)
 }
 
 window.${name} = {
-  isLiquality: true,
+  isMetaMask: true,
+  isEarth: true,
   isEIP1193: true,
   networkVersion: '${network.networkId}',
-  chainId: '${network.chainId.toString(16)}',
+  chainId: '0x${network.chainId.toString(16)}',
   enable: async () => {
     const accepted = await window.providerManager.connect("${name}")
     if (!accepted) throw new Error('User rejected')

@@ -476,4 +476,20 @@ export class EarthProvider {
 
     return response;
   }
+
+  async ethSign(requestId: string, response: string) {
+    store.dispatch(
+      updateEntities({
+        entity: 'dappRequests',
+        key: requestId,
+        data: {
+          loading: false,
+          complete: true,
+          completedAt: new Date().getTime(),
+          error: '',
+          response,
+        },
+      })
+    );
+  }
 }
