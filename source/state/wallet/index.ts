@@ -20,7 +20,7 @@ const initialState: IWalletState = {
     symbol: NetworkSymbol.ICP,
   },
   extensionId: '',
-  restoreInActiveAccounts_ETH: false
+  restoreInActiveAccounts_ETH: false,
 };
 
 const WalletState = createSlice({
@@ -38,6 +38,12 @@ const WalletState = createSlice({
     },
     updateExtensionId(state: IWalletState, action: PayloadAction<string>) {
       state.extensionId = action.payload;
+    },
+    updateRestoreInActiveAccounts_ETH(
+      state: IWalletState,
+      action: PayloadAction<boolean>
+    ) {
+      state.restoreInActiveAccounts_ETH = action.payload;
     },
     updateError(state: IWalletState, action: PayloadAction<string>) {
       state.error = action.payload;
@@ -72,6 +78,7 @@ export const {
   updateError,
   updateLoading,
   hydrateWallet,
+  updateRestoreInActiveAccounts_ETH,
 } = WalletState.actions;
 
 export const selectAccounts = (state: AppState) =>

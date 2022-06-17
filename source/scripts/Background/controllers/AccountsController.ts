@@ -11,6 +11,7 @@ import {
   updateError,
   updateLoading,
   updateActiveNetwork,
+  updateRestoreInActiveAccounts_ETH,
 } from '~state/wallet';
 import type { IAccountsController } from '../types/IAccountsController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
@@ -424,8 +425,36 @@ export default class AccountsController implements IAccountsController {
     );
   };
 
-  updateOnceMakeETHAccountsActive = () => {
-    //
+  restoreOnceInactiveAccountsActive_ETH = async () => {
+    //once restores previously inactive eth pregenerated addresses as active
+    const state = store.getState();
+    const currentWalletRestoreETHStatus =
+      state.wallet.restoreInActiveAccounts_ETH;
+    if (!currentWalletRestoreETHStatus) {
+      const existingInactiveETHAccounts = Object.keys(
+        state.entities.accounts.byId
+      )
+        .map((id) => state.entities.accounts.byId[id])
+        .filter(
+          (account) => account.active == false && account.symbol == 'ETH'
+        );
+      if (existingInactiveETHAccounts?.length != 0) {
+        existingInactiveETHAccounts.map((account) => {
+          store.dispatch(
+            updateEntities({
+              entity: 'accounts',
+              key: account.id,
+              data: {
+                active: true,
+              },
+            })
+          );
+        });
+
+        store.dispatch(updateRestoreInActiveAccounts_ETH(true));
+        return;
+      }
+    }
   };
 
   updateActiveAccountsOfGroup = async (

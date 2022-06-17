@@ -54,5 +54,5 @@ export interface IAccountsController {
     status: boolean,
     callback?: (address?: string) => void
   ) => Promise<void>;
-  updateOnceMakeETHAccountsActive: () => void;
+  restoreOnceInactiveAccountsActive_ETH: () => Promise<void>;
 }
