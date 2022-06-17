@@ -29,6 +29,7 @@ import { selectGroupBalanceByGroupIdAndSymbol } from '~state/wallet';
 import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance, selectTokenByTokenPair } from '~state/token';
 import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
+import { getETHTransactions } from '~utils/services';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -81,8 +82,14 @@ const Wallet = ({
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
-      const transactions = await getTransactions(address, selectedAccount?.symbol);
-      setWalletTransactions(transactions);
+      if (selectedAccount?.symbol != 'ETH') {
+        const transactions = await getTransactions(address, selectedAccount?.symbol);
+        setWalletTransactions(transactions);
+      } else {
+        const response = await getETHTransactions(address);
+        const wallet = { txs: response, total: response?.length };
+        setWalletTransactions(wallet);
+      }
     };
 
 

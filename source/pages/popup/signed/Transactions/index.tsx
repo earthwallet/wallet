@@ -60,16 +60,13 @@ const Transactions = ({
       setLoading(true);
       const transactions = await getTransactions(address, selectedAccount?.symbol);
       setLoading(false);
-      console.log(transactions, 'transactions')
       setWalletTransactions(transactions);
     } else {
       setLoading(true);
 
       const response = await getETHTransactions(address);
       setLoading(false);
-
-      console.log(response, 'transactions')
-      const wallet = { txs: response };
+      const wallet = { txs: response, total: response?.length };
       setWalletTransactions(wallet);
 
     }
@@ -399,7 +396,7 @@ const Transactions = ({
         >
           <img src={ICON_CARET} />
 
-          <div className={styles.transTitle}>Transactions {walletTransactions?.txs.length}</div>
+          <div className={styles.transTitle}>Transactions ({walletTransactions?.txs.length})</div>
         </div>
 
         {walletTransactions &&
