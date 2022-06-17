@@ -162,7 +162,7 @@ export const getBalanceETH = async (address: string) => {
   return balance;
 };
 
-export const getFeesExtended = async (symbol: string, estimateGas = 2100) => {
+export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
   let serverRes;
   let fees: keyable[] = [];
 

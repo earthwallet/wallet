@@ -29,6 +29,8 @@ import { getBalanceETH, getBalanceMatic } from '~utils/services';
 import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
+import { OpenSeaPort, Network } from 'opensea-js';
+import HDWalletProvider from '@truffle/hdwallet-provider';
 
 interface keyable {
   [key: string]: any;
@@ -196,8 +198,37 @@ export default class AccountsController implements IAccountsController {
     const result = await web3.eth.sendSignedTransaction(
       signedTx?.rawTransaction
     );
-    console.log(result);
+    return result?.transactionHash;
   };
+
+  sendERC721_ETH = async (
+    selectedRecp: string,
+    fromAddress: string,
+    mnemonic: string,
+    selectedAssetObj: keyable
+  ) => {
+    const provider = new HDWalletProvider({
+      mnemonic: mnemonic,
+      providerOrUrl:
+        'https://eth-mainnet.alchemyapi.io/v2/WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80',
+      addressIndex: 0,
+    });
+
+    const seaport = new OpenSeaPort(provider, {
+      networkName: Network.Main,
+    });
+
+    const result = await seaport.transfer({
+      fromAddress: fromAddress,
+      toAddress: selectedRecp,
+      asset: {
+        tokenAddress: selectedAssetObj?.contractAddress,
+        tokenId: selectedAssetObj?.tokenIndex,
+      },
+    });
+    return result;
+  };
+
   sendBTC = async (
     selectedRecp: string,
     selectedAmount: number,

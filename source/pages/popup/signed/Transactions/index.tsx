@@ -180,8 +180,7 @@ const Transactions = ({
 
         <div className={styles.transColValue}>
           <div>
-            {transaction.value}
-            {symbol}
+            {transaction.value} {symbol}
           </div>
           <div className={styles.transSubColPrice}>
             ${(transaction.value * usdValue).toFixed(3)}
