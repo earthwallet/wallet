@@ -424,6 +424,10 @@ export default class AccountsController implements IAccountsController {
     );
   };
 
+  updateOnceMakeETHAccountsActive = () => {
+    //
+  };
+
   updateActiveAccountsOfGroup = async (
     groupId: string,
     symbols: string[],

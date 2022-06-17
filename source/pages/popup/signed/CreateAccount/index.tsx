@@ -29,7 +29,7 @@ import { IWalletState } from '~state/wallet/types';
 import { AppState } from '~state/store';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { PREGENERATE_SYMBOLS } from '~global/constant';
+import { ACTIVE_SYMBOLS, PREGENERATE_SYMBOLS } from '~global/constant';
 import useToast from '~hooks/useToast';
 
 const Page = () => {
@@ -58,7 +58,7 @@ const Page = () => {
       setIsBusy(true);
       const callback = (address: string) => history.replace('/accounts?hightlight=' + address);
       controller.accounts
-        .createOrUpdateAccounts(newMnemonic, PREGENERATE_SYMBOLS, name, password, [], callback)
+        .createOrUpdateAccounts(newMnemonic, PREGENERATE_SYMBOLS, name, password, ACTIVE_SYMBOLS, callback)
         .then(() => {
         });
     }

@@ -20,6 +20,7 @@ const initialState: IWalletState = {
     symbol: NetworkSymbol.ICP,
   },
   extensionId: '',
+  restoreInActiveAccounts_ETH: false
 };
 
 const WalletState = createSlice({

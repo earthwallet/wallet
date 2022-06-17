@@ -18,4 +18,5 @@ export interface IWalletState {
   error: string;
   loading: boolean;
   extensionId: string;
+  restoreInActiveAccounts_ETH: boolean;
 }

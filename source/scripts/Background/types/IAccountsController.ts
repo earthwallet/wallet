@@ -31,7 +31,7 @@ export interface IAccountsController {
     selectedAmount: number,
     mnemonic: string,
     address: string
-  ) => Promise<any>;  
+  ) => Promise<any>;
   sendETH: (
     selectedRecp: string,
     selectedAmount: number,
@@ -54,4 +54,5 @@ export interface IAccountsController {
     status: boolean,
     callback?: (address?: string) => void
   ) => Promise<void>;
+  updateOnceMakeETHAccountsActive: () => void;
 }

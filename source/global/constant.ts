@@ -27,6 +27,7 @@ export const CGECKO_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
 export const DEFAULT_GROUP_SYMBOL = 'BTC';
 
 // once a symbol is marked isLive true, it shouldnt be marked as isLive false
+// isActive networks will be marked active for user on create or import
 export const DEFAULT_SYMBOLS = [
   {
     name: 'Bitcoin',
@@ -48,6 +49,7 @@ export const DEFAULT_SYMBOLS = [
     order: 0,
     addressTitle: 'Account Id',
     addressType: 'accountId',
+    isActive: true,
   },
   {
     name: 'ICP Ed25519',
@@ -66,6 +68,7 @@ export const DEFAULT_SYMBOLS = [
     isLive: true,
     preGenerate: true,
     order: 2,
+    isActive: true,
   },
   {
     name: 'Polkadot',
@@ -164,6 +167,12 @@ export const GROUP_ID_SYMBOL = 'BTC';
 
 export const PREGENERATE_SYMBOLS = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.preGenerate
+)
+  .sort((a, b) => a.order - b.order)
+  .map((symbolObj) => symbolObj.symbol);
+
+export const ACTIVE_SYMBOLS = DEFAULT_SYMBOLS.filter(
+  (symbolObj) => symbolObj.isActive
 )
   .sort((a, b) => a.order - b.order)
   .map((symbolObj) => symbolObj.symbol);

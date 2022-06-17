@@ -318,7 +318,6 @@ const TokensList = ({ address }: { address: string }) => {
 
 const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: string }) => {
   const currentAccount: keyable = useSelector(selectGroupBalanceByGroupIdAndSymbol(groupId, symbol));
-  console.log(currentAccount, 'GroupSymbolBalance');
   return <div
     className={styles.liststats}
   >
@@ -477,7 +476,6 @@ const Balance = ({ account }: { account: keyable }) => {
 
 const BalanceWithUSD = ({ id }: { id: string }) => {
   const currentBalance: keyable = useSelector(selectBalanceById(id));
-  console.log(currentBalance, 'currentBalance');
   return <div className={styles.netlast}>
     <div className={styles.netstats}>${currentBalance?.balanceInUSD?.toFixed(2)}
       {
