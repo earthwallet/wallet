@@ -9,6 +9,7 @@ import { stringifyWithBigInt } from '~global/helpers';
 class DAppController implements IDAppController {
   #current: DAppInfo = { origin: '', logo: '', title: '', address: '' };
   #request: keyable;
+  #requestType: string;
   #approvedIdentityJSON: string;
 
   fromPageConnectDApp(origin: string, title: string) {
@@ -119,6 +120,14 @@ class DAppController implements IDAppController {
   setSignatureRequest(req: keyable, requestId: string) {
     this.#request = req;
     this.addSignRequest(req, requestId);
+  }
+
+  setSignatureType(reqType: string) {
+    this.#requestType = reqType;
+  }
+
+  getSignatureType() {
+    return this.#requestType;
   }
 
   getSignatureRequest = () => {
