@@ -126,10 +126,14 @@ export const selectActiveTokensByAddressWithInfo =
     if (activeTokens?.length == 0) {
       return [];
     } else {
-      return activeTokens.map((tokenObj: keyable) => ({
-        ...tokenObj,
-        ...getTokenInfo(tokenObj.tokenId),
-      }));
+      return activeTokens.map((tokenObj: keyable) =>
+        getTokenInfo(tokenObj.tokenId)
+          ? {
+              ...tokenObj,
+              ...getTokenInfo(tokenObj.tokenId),
+            }
+          : tokenObj
+      );
     }
   };
 

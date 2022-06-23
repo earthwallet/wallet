@@ -133,6 +133,94 @@ export const getBalanceMatic = async (address: string) => {
   return balance;
 };
 
+export const getBalance_ETH_ERC20 = async (address: string) => {
+  const data = JSON.stringify({
+    jsonrpc: '2.0',
+    method: 'alchemy_getTokenBalances',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params: [`0xd8da6bf26964af9d7eed9e03e53415d37aa96045`, 'DEFAULT_TOKENS'],
+    id: 42,
+  });
+
+  const config: AxiosRequestConfig = {
+    method: 'post',
+    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+  var nonZeroBalances = [];
+  var metadata: keyable;
+  var serverRes = [];
+  // Make the request and print the formatted response:
+  const response = await axios(config);
+
+  // Get balances
+  const balances = response['data']['result'];
+
+  // Remove tokens with zero balance
+  nonZeroBalances = balances['tokenBalances']
+    .map((token: keyable) => ({
+      ...token,
+      tokenBalance: web3.utils.hexToNumberString(token.tokenBalance),
+    }))
+    .filter((token: keyable) => {
+      return token['tokenBalance'] !== '0';
+    });
+
+  console.log(
+    `Token balances of ${address} \n getBalance_ETH_ERC20`,
+    nonZeroBalances,
+    response
+  );
+
+  // Counter for SNo of final output
+  let i = 0;
+
+  // Loop through all tokens with non-zero balance
+  for (const token of nonZeroBalances) {
+    // Get balance of token
+    let balance = token['tokenBalance'];
+
+    const metadataParams = JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'alchemy_getTokenMetadata',
+      params: [`${token['contractAddress']}`],
+      id: 42,
+    });
+
+    //  const config: AxiosRequestConfig = {
+
+    const metadataConfig: AxiosRequestConfig = {
+      method: 'post',
+      url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: metadataParams,
+    };
+
+    const respo2 = await axios(metadataConfig);
+    metadata = respo2.data.result;
+    // Compute token balance in human-readable format
+    balance = balance / Math.pow(10, metadata?.decimals);
+    balance = balance.toFixed(2);
+
+    serverRes[i] = { ...token, ...metadata, ...{ balanceTxt: balance } };
+    i++;
+    // Print name, balance, and symbol of token
+    console.log(
+      `${i}. ${metadata['name']}: ${balance} 
+               ${metadata['symbol']}`,
+      'getBalance_ETH_ERC20'
+    );
+  }
+  return serverRes;
+};
+
 export const getBalanceETH = async (address: string) => {
   const data = JSON.stringify({
     jsonrpc: '2.0',
@@ -353,7 +441,12 @@ export const getETHTransactions = async (address: string) => {
   } catch (error) {
     serverRes = error;
   }
-  const txns = serverRes.map((tx: { blockNum: any; }) => ({...tx, block: web3.utils.hexToNumberString(tx.blockNum)})).sort((a: { block: number; },b: { block: number; }) =>b.block - a.block)
+  const txns = serverRes
+    .map((tx: { blockNum: any }) => ({
+      ...tx,
+      block: web3.utils.hexToNumberString(tx.blockNum),
+    }))
+    .sort((a: { block: number }, b: { block: number }) => b.block - a.block);
   console.log(serverRes, 'getTransactions');
   return txns;
 };

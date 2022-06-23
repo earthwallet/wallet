@@ -29,7 +29,7 @@ import { v4 as uuid } from 'uuid';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
 import { keyable } from '../types/IAssetsController';
-import { getBalanceMatic } from '~utils/services';
+import { getBalanceMatic, getBalance_ETH_ERC20 } from '~utils/services';
 
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
@@ -117,6 +117,30 @@ export default class TokensController implements ITokensController {
       }
     } else if (accountInfo.symbol == 'ETH') {
       console.log('getTokenBalances', 'MATIC');
+      const balances: keyable[] = await getBalance_ETH_ERC20(address);
+      console.log('getTokenBalances', balances, 'balances ETH');
+
+      for (const balance of balances) {
+        const balanceObj = {
+          id: address + '_WITH_' + balance.contractAddress,
+          balance: balance.tokenBalance,
+          price: 0,
+          usd: 0,
+          usd_24h_change: 0,
+          address: address,
+          ...balance,
+          icon: balance.logo,
+          active: true,
+          network: 'ETH',
+        };
+        store.dispatch(
+          storeEntities({
+            entity: 'tokens',
+            data: [balanceObj],
+          })
+        );
+      }
+
       for (const activeToken of activeTokens) {
         const tokenInfo = getTokenInfo(activeToken.tokenId);
         if (tokenInfo.symbol == 'MATIC') {
