@@ -109,6 +109,7 @@ export const messagesHandler = (
           'https://eth-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc'
         );
         result = await provider.send(args[0], args[1]);
+      } else if (method === 'wallet.sendTransaction') {
       } else if (method === 'wallet.signMessage') {
         mainController.dapp.setSignatureType('personal_sign');
         const signatureRequest = args[0];
@@ -246,6 +247,8 @@ export const messagesHandler = (
               //https://forum.dfinity.org/t/mismatching-dfinity-agent-versions-can-cause-hashing-issues/7359/5
               const approvedIdentityJSON =
                 mainController.dapp.getApprovedIdentityJSON();
+
+              mainController.dapp.setSignatureType(null);
               if (method === 'wallet.createSession') {
                 result = await mainController.provider.createSession(
                   signatureRequest,

@@ -19,6 +19,7 @@ const initialState: IWalletState = {
     title: NETWORK_TITLE[NetworkSymbol.ICP],
     symbol: NetworkSymbol.ICP,
   },
+  overrideEthereum: false,
   extensionId: '',
 };
 
@@ -56,6 +57,12 @@ const WalletState = createSlice({
     ) {
       state.activeNetwork = action.payload;
     },
+    updateOverrideEthereum(
+      state: IWalletState,
+      action: PayloadAction<boolean>
+    ) {
+      state.overrideEthereum = action.payload;
+    },
     hydrateWallet(state: IWalletState, action: PayloadAction<IWalletState>) {
       Object.assign(state, action.payload);
     },
@@ -70,6 +77,7 @@ export const {
   updateExtensionId,
   updateError,
   updateLoading,
+  updateOverrideEthereum,
   hydrateWallet,
 } = WalletState.actions;
 
