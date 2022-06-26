@@ -21,6 +21,7 @@ const initialState: IWalletState = {
   },
   overrideEthereum: false,
   extensionId: '',
+  restoreInActiveAccounts_ETH: false,
 };
 
 const WalletState = createSlice({
@@ -38,6 +39,12 @@ const WalletState = createSlice({
     },
     updateExtensionId(state: IWalletState, action: PayloadAction<string>) {
       state.extensionId = action.payload;
+    },
+    updateRestoreInActiveAccounts_ETH(
+      state: IWalletState,
+      action: PayloadAction<boolean>
+    ) {
+      state.restoreInActiveAccounts_ETH = action.payload;
     },
     updateError(state: IWalletState, action: PayloadAction<string>) {
       state.error = action.payload;
@@ -79,6 +86,7 @@ export const {
   updateLoading,
   updateOverrideEthereum,
   hydrateWallet,
+  updateRestoreInActiveAccounts_ETH,
 } = WalletState.actions;
 
 export const selectAccounts = (state: AppState) =>

@@ -29,6 +29,7 @@ import { selectGroupBalanceByGroupIdAndSymbol } from '~state/wallet';
 import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance, selectTokenByTokenPair } from '~state/token';
 import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
+import { getETHTransactions } from '~utils/services';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -81,8 +82,14 @@ const Wallet = ({
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
-      const transactions = await getTransactions(address, selectedAccount?.symbol);
-      setWalletTransactions(transactions);
+      if (selectedAccount?.symbol != 'ETH') {
+        const transactions = await getTransactions(address, selectedAccount?.symbol);
+        setWalletTransactions(transactions);
+      } else {
+        const response = await getETHTransactions(address);
+        const wallet = { txs: response, total: response?.length };
+        setWalletTransactions(wallet);
+      }
     };
 
 
@@ -311,7 +318,6 @@ const TokensList = ({ address }: { address: string }) => {
 
 const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: string }) => {
   const currentAccount: keyable = useSelector(selectGroupBalanceByGroupIdAndSymbol(groupId, symbol));
-  console.log(currentAccount, 'GroupSymbolBalance');
   return <div
     className={styles.liststats}
   >
@@ -470,7 +476,6 @@ const Balance = ({ account }: { account: keyable }) => {
 
 const BalanceWithUSD = ({ id }: { id: string }) => {
   const currentBalance: keyable = useSelector(selectBalanceById(id));
-  console.log(currentBalance, 'currentBalance');
   return <div className={styles.netlast}>
     <div className={styles.netstats}>${currentBalance?.balanceInUSD?.toFixed(2)}
       {

@@ -13,11 +13,15 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import useGetAccountGroupAssetBalances from '~hooks/useGetAccountGroupAssetBalances';
 import ICON_SETTINGS from '~assets/images/icon_more_settings.svg';
 import useGetCollectionStats from '~hooks/useGetCollectionStats';
+import { AppState } from '~state/store';
+//import { useController } from '~hooks/useController';
 
 const Accounts = () => {
   const history = useHistory();
   const accountGroups = useSelector(selectActiveAccountGroups);
   const loading = useGetAccountGroupBalances(accountGroups);
+  const { activeNetwork } = useSelector((state: AppState) => state.wallet);
+  //const controller = useController();
 
   useGetAccountGroupAssetBalances(accountGroups);
   useGetCollectionStats();
@@ -26,6 +30,18 @@ const Accounts = () => {
   chrome.tabs.query({active:true,currentWindow:true},function(tab){
     console.log(tab[0].url);
   }); */
+
+  const goToActiveNetworkAddressOrDefaultAddress = (accounts: keyable) => {
+    const filtered = accounts.filter(
+      (account: keyable) => account.symbol === activeNetwork.symbol
+    );
+    if (filtered.length) {
+      history.push('/account/details/' + filtered[0].address);
+    } else {
+      history.push('/account/details/' + accounts[0].address);
+    }
+
+  }
 
   return (
     <div className={styles.page}>
@@ -65,7 +81,7 @@ const Accounts = () => {
                   <div className={styles.address}>
                     <div
                       className={styles.addressLink}
-                      onClick={() => history.push('/account/details/' + accountGroup[0].id)}
+                      onClick={() => goToActiveNetworkAddressOrDefaultAddress(accountGroup)}
                     >
                       <div className={styles.infoRow}>
                         <div className={styles.info}>

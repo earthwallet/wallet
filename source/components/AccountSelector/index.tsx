@@ -43,19 +43,7 @@ const AccountSelector = ({
 
   useEffect(() => {
     if (selectedAccount.symbol !== activeNetwork.symbol) {
-      const filtered = accounts.filter(
-        (account: keyable) => account.symbol === activeNetwork.symbol
-      );
-      if (filtered.length) {
-        setSelectedAccountText(filtered[0].id);
-        setShowDropDown(false);
-        history.push('/account/details/' + filtered[0].id);
-      } else {
-        setSelectedAccountText(accounts[0].id);
-        setShowDropDown(false);
-        history.push('/account/details/' + accounts[0].id);
-        controller.accounts.updateActiveNetwork(accounts[0].symbol);
-      }
+      controller.accounts.updateActiveNetwork(selectedAccount.symbol);
     }
   }, [selectedAccount, activeNetwork]);
 
@@ -89,7 +77,7 @@ const AccountSelector = ({
                 className={clsx(
                   styles.addressItem,
                   account.id === selectedAccount.id &&
-                    styles.addressItem_selected
+                  styles.addressItem_selected
                 )}
                 key={account.id}
                 onClick={() => _onChangePrefix(account)}

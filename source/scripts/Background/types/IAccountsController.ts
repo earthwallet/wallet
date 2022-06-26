@@ -31,13 +31,19 @@ export interface IAccountsController {
     selectedAmount: number,
     mnemonic: string,
     address: string
-  ) => Promise<any>;  
+  ) => Promise<any>;
   sendETH: (
     selectedRecp: string,
     selectedAmount: number,
     mnemonic: string,
     feesArr: keyable,
     feesOptionSelected: number
+  ) => Promise<any>;
+  sendERC721_ETH: (
+    selectedRecp: string,
+    fromAddress: string,
+    mnemonic: string,
+    selectedAssetObj: keyable
   ) => Promise<any>;
   getBalancesOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   getBalancesOfAccount: (account: keyable) => Promise<void>;
@@ -54,4 +60,5 @@ export interface IAccountsController {
     status: boolean,
     callback?: (address?: string) => void
   ) => Promise<void>;
+  restoreOnceInactiveAccountsActive_ETH: () => Promise<void>;
 }

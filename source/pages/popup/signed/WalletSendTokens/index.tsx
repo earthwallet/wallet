@@ -35,8 +35,6 @@ import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import { getFeesExtended, getFeesExtended_MATIC } from '~utils/services';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
-import { OpenSeaPort, Network } from 'opensea-js';
-import HDWalletProvider from '@truffle/hdwallet-provider';
 
 const MIN_LENGTH = 6;
 const DEFAULT_FEE_INDEX = 1;
@@ -45,7 +43,7 @@ interface keyable {
   [key: string]: any;
 }
 
-interface Props extends RouteComponentProps<{ address: string }> {}
+interface Props extends RouteComponentProps<{ address: string }> { }
 
 const WalletSendTokens = ({
   match: {
@@ -144,7 +142,7 @@ const WalletSendTokens = ({
   }, [assetId !== null, tokenId !== null]);
 
   useEffect(() => {
-    controller.accounts.getBalancesOfAccount(selectedAccount).then(() => {});
+    controller.accounts.getBalancesOfAccount(selectedAccount).then(() => { });
     tokenId !== null && controller.tokens.getTokenBalances(address);
 
     if (selectedAccount?.symbol === 'BTC') {
@@ -251,25 +249,12 @@ const WalletSendTokens = ({
             feesOptionSelected
           );
         } else if (getSelectedAsset(selectedAsset)?.format == 'nft') {
-          const provider = new HDWalletProvider({
-            mnemonic: mnemonic,
-            providerOrUrl:
-              'https://eth-mainnet.alchemyapi.io/v2/WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80',
-            addressIndex: 0,
-          });
-
-          const seaport = new OpenSeaPort(provider, {
-            networkName: Network.Main,
-          });
-
-          await seaport.transfer({
-            fromAddress: selectedAccount.address,
-            toAddress: selectedRecp,
-            asset: {
-              tokenAddress: getSelectedAsset(selectedAsset)?.contractAddress,
-              tokenId: getSelectedAsset(selectedAsset)?.tokenIndex,
-            },
-          });
+          hash = await controller.accounts.sendERC721_ETH(
+            selectedRecp,
+            selectedAccount.address,
+            mnemonic,
+            getSelectedAsset(selectedAsset)
+          );
         }
       } else if (selectedAccount?.symbol == 'MATIC') {
         //alert('do MATIC');
@@ -328,7 +313,7 @@ const WalletSendTokens = ({
 
       await controller.accounts
         .getBalancesOfAccount(selectedAccount)
-        .then(() => {});
+        .then(() => { });
       setLoadingSend(false);
       setTxCompleteTxt(
         'Payment Done! Check transactions for more details.' || hash || ''
@@ -410,7 +395,7 @@ const WalletSendTokens = ({
             .then(() => {
               setTxCompleteTxt(
                 'Successfully transferred to ' +
-                  getShortAddress(selectedRecp, 3)
+                getShortAddress(selectedRecp, 3)
               );
               setLoadingSend(false);
               setIsBusy(false);
@@ -429,7 +414,7 @@ const WalletSendTokens = ({
             .then(() => {
               setTxCompleteTxt(
                 'Successfully transferred to ' +
-                  getShortAddress(selectedRecp, 3)
+                getShortAddress(selectedRecp, 3)
               );
               setLoadingSend(false);
               setIsBusy(false);
@@ -461,7 +446,7 @@ const WalletSendTokens = ({
 
             setTxCompleteTxt(
               'Successfully transferred NFT to ' +
-                getShortAddress(selectedRecp, 3)
+              getShortAddress(selectedRecp, 3)
             );
             setLoadingSend(false);
             setIsBusy(false);
@@ -559,9 +544,9 @@ const WalletSendTokens = ({
                         currentBalance === null
                           ? `Balance: `
                           : `Balance: ${(
-                              currentBalance?.value /
-                              Math.pow(10, currentBalance?.currency?.decimals)
-                            ).toFixed(7)} ${currentBalance?.currency?.symbol}`
+                            currentBalance?.value /
+                            Math.pow(10, currentBalance?.currency?.decimals)
+                          ).toFixed(7)} ${currentBalance?.currency?.symbol}`
                       }
                     />
                   )}
@@ -588,10 +573,9 @@ const WalletSendTokens = ({
                         balanceTxt={
                           currentBalance === null
                             ? `Balance: `
-                            : `Balance: ${
-                                currentBalance?.value /
-                                Math.pow(10, currentBalance?.currency?.decimals)
-                              } ${currentBalance?.currency?.symbol}`
+                            : `Balance: ${currentBalance?.value /
+                            Math.pow(10, currentBalance?.currency?.decimals)
+                            } ${currentBalance?.currency?.symbol}`
                         }
                       />
                       {assets?.map((asset: keyable, index: number) => (
@@ -631,34 +615,34 @@ const WalletSendTokens = ({
                 )}
               {(selectedAccount?.symbol == 'MATIC' ||
                 selectedAccount?.symbol == 'ETH') && (
-                <>
-                  <div className={styles.earthInputLabel}>Transaction Fee</div>
-                  <div className={styles.feeSelector}>
-                    {feesArr.map((feeObj: keyable, index: number) => (
-                      <div
-                        onClick={() => changeFees(index)}
-                        key={feeObj?.label}
-                        className={clsx(
-                          styles.feeSelectCont,
-                          feesOptionSelected == index &&
+                  <>
+                    <div className={styles.earthInputLabel}>Transaction Fee</div>
+                    <div className={styles.feeSelector}>
+                      {feesArr.map((feeObj: keyable, index: number) => (
+                        <div
+                          onClick={() => changeFees(index)}
+                          key={feeObj?.label}
+                          className={clsx(
+                            styles.feeSelectCont,
+                            feesOptionSelected == index &&
                             styles.feeSelectCont_selected
-                        )}
-                      >
-                        <div className={styles.feeLabel}>{feeObj?.label}</div>
-                        <div className={styles.feePrice}>
-                          {feeObj?.gas?.toFixed(7)}
-                          {selectedAccount?.symbol}
+                          )}
+                        >
+                          <div className={styles.feeLabel}>{feeObj?.label}</div>
+                          <div className={styles.feePrice}>
+                            {feeObj?.gas?.toFixed(7)}
+                            {selectedAccount?.symbol}
+                          </div>
+                          <FeesPriceInUSD
+                            gas={feeObj?.gas}
+                            symbol={selectedAccount?.symbol}
+                          />
                         </div>
-                        <FeesPriceInUSD
-                          gas={feeObj?.gas}
-                          symbol={selectedAccount?.symbol}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className={styles.customizeLink}>Advanced Options</div>
-                </>
-              )}
+                      ))}
+                    </div>
+                    {false && <div className={styles.customizeLink}>Advanced Options</div>
+                    }                </>
+                )}
             </div>
           ) : (
             <div className={styles.confirmPage}>
@@ -731,41 +715,41 @@ const WalletSendTokens = ({
               )}
               {(getSelectedAsset(selectedAsset)?.type == 'DIP20' ||
                 getSelectedAsset(selectedAsset)?.type == 'ERC20') && (
-                <div className={styles.feeCont}>
-                  <div className={styles.feeRow}>
-                    <div className={styles.feeTitle}>Transaction Fee</div>
-                    <div>
-                      <div className={styles.feeAmount}>
-                        {fees} {getTokenInfo(selectedAsset)?.symbol}
-                      </div>
-                      <div className={styles.feeValue}>
-                        $
-                        {(fees * getSelectedAsset(selectedAsset)?.usd).toFixed(
-                          3
-                        )}
+                  <div className={styles.feeCont}>
+                    <div className={styles.feeRow}>
+                      <div className={styles.feeTitle}>Transaction Fee</div>
+                      <div>
+                        <div className={styles.feeAmount}>
+                          {fees} {getTokenInfo(selectedAsset)?.symbol}
+                        </div>
+                        <div className={styles.feeValue}>
+                          $
+                          {(fees * getSelectedAsset(selectedAsset)?.usd).toFixed(
+                            3
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className={styles.feeRow}>
-                    <div className={styles.feeTotal}>Total</div>
-                    <div>
-                      <div className={styles.feeAmount}>
-                        {(selectedAmount + fees).toFixed(
-                          getTokenInfo(selectedAsset)?.decimals
-                        )}
-                      </div>
-                      <div className={styles.feeValue}>
-                        $
-                        {(
-                          (selectedAmount + fees) *
-                          getSelectedAsset(selectedAsset)?.usd
-                        ).toFixed(3)}
+                    <div className={styles.feeRow}>
+                      <div className={styles.feeTotal}>Total</div>
+                      <div>
+                        <div className={styles.feeAmount}>
+                          {(selectedAmount + fees).toFixed(
+                            getTokenInfo(selectedAsset)?.decimals
+                          )}
+                        </div>
+                        <div className={styles.feeValue}>
+                          $
+                          {(
+                            (selectedAmount + fees) *
+                            getSelectedAsset(selectedAsset)?.usd
+                          ).toFixed(3)}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
               {selectedAsset === selectedAccount?.symbol && (
                 <div className={styles.feeCont}>
                   <div className={styles.feeRow}>
@@ -1017,7 +1001,7 @@ const AmountInput = ({
     } else {
       maxAmount =
         currentBalance?.value /
-          Math.pow(10, currentBalance?.currency?.decimals) -
+        Math.pow(10, currentBalance?.currency?.decimals) -
         fees;
       maxAmount = parseFloat(maxAmount.toFixed(8));
     }
@@ -1034,7 +1018,7 @@ const AmountInput = ({
     } else {
       maxAmount =
         currentBalance?.value /
-          Math.pow(10, currentBalance?.currency?.decimals) -
+        Math.pow(10, currentBalance?.currency?.decimals) -
         fees;
       maxAmount = parseFloat(maxAmount.toFixed(8));
     }

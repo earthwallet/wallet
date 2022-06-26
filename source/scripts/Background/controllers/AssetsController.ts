@@ -18,7 +18,12 @@ import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk
 import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import getBrowserFingerprint from 'get-browser-fingerprint';
-import { getERC721, getETHAssetInfo } from '~utils/services';
+import {
+  getERC721,
+  getETHAssetInfo,
+  registerExtensionAndAccounts,
+  statusExtension,
+} from '~utils/services';
 import { updateExtensionId } from '~state/wallet';
 import { Principal } from '@dfinity/principal';
 
@@ -957,14 +962,14 @@ export default class AssetsController implements IAssetsController {
     } else {
       extensionId = state.wallet.extensionId;
     }
-    const ICPAccounts =
+    const ETHAccounts =
       state.entities.accounts?.byId &&
       Object.keys(state.entities.accounts?.byId)
         ?.map((id) => state.entities.accounts.byId[id])
-        .filter((account) => account.symbol == 'ICP' && account.active)
+        .filter((account) => account.symbol == 'ETH' && account.active)
         .map((account) => account.address);
 
-    if (ICPAccounts.length == 0) {
+    if (ETHAccounts.length == 0) {
       return;
     }
     const earthdayAirdrop = getAirDropNFTInfo();
@@ -973,7 +978,7 @@ export default class AssetsController implements IAssetsController {
       store.dispatch(createEntity({ entity: 'airdrops' }));
     }
 
-    store.dispatch(
+    /*     store.dispatch(
       updateEntities({
         entity: 'airdrops',
         key: earthdayAirdrop.id,
@@ -982,8 +987,8 @@ export default class AssetsController implements IAssetsController {
           loading: false,
         },
       })
-    );
-    /* 
+    ); */
+
     store.dispatch(
       updateEntities({
         entity: 'airdrops',
@@ -1005,8 +1010,9 @@ export default class AssetsController implements IAssetsController {
         })
       );
       return;
-    } */
-    /*  const status = await statusExtension(extensionId);
+    }
+    const status = await statusExtension(extensionId);
+    console.log(status, 'airdropEnabled', extensionId);
     if (!status?.airdropEnabled) {
       store.dispatch(
         updateEntities({
@@ -1033,11 +1039,11 @@ export default class AssetsController implements IAssetsController {
           },
         })
       );
-    } */
-    /*  if (status?.accountIds?.length != ICPAccounts.length) {
+    }
+    if (status?.accountIds?.length != ETHAccounts.length) {
       const response = await registerExtensionAndAccounts(
-        fingerprint.toString(),
-        ICPAccounts
+        extensionId,
+        ETHAccounts
       );
       if (response.status == 'success') {
         store.dispatch(
@@ -1050,6 +1056,6 @@ export default class AssetsController implements IAssetsController {
           })
         );
       }
-    } */
+    }
   };
 }
