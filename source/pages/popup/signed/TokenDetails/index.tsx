@@ -15,7 +15,7 @@ import { selectAccountById } from '~state/wallet';
 import { getTransactions } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
 import { selectBalanceById } from '~state/wallet';
-import { selectAssetBySymbol } from '~state/assets';
+import { selectAssetBySymbol, selectPriceByContractAddress } from '~state/assets';
 
 import { useHistory } from 'react-router-dom';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
@@ -29,7 +29,7 @@ import { selectGroupBalanceByGroupIdAndSymbol } from '~state/wallet';
 import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance, selectTokenByTokenPair } from '~state/token';
 import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
-import { getETHTransactions } from '~utils/services';
+import { getTransactions_ETH } from '~utils/services';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -86,7 +86,7 @@ const Wallet = ({
         const transactions = await getTransactions(address, selectedAccount?.symbol);
         setWalletTransactions(transactions);
       } else {
-        const response = await getETHTransactions(address);
+        const response = await getTransactions_ETH(address);
         const wallet = { txs: response, total: response?.length };
         setWalletTransactions(wallet);
       }
@@ -285,10 +285,10 @@ const TokensList = ({ address }: { address: string }) => {
           </div>
           <div className={styles.liststats} >
             <div className={styles.listprice}>{token?.balanceTxt || 0} {token?.symbol}</div>
-            <div className={styles.listsubtitle}>${token?.price || 0}   {
+            {selectedAccount.symbol == 'ETH' ? <TokenPrice_ETH contractAddress={token?.contractAddress} balance={token?.balance} /> : <div className={styles.listsubtitle}>${token?.price || 0}   {
               token?.usd_24h_change && token?.price !== 0
               && <span className={token?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{token?.usd_24h_change?.toFixed(2)}%</span>
-            }</div>
+            }</div>}
           </div>
           <img
             className={styles.listforward}
@@ -328,6 +328,13 @@ const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: stri
   </div>
 }
 
+const TokenPrice_ETH = ({ contractAddress, balance }: { contractAddress: string, balance: any }) => {
+  const currentUSDValue: keyable = useSelector(selectPriceByContractAddress(contractAddress));
+  return <div className={styles.listsubtitle}>${(currentUSDValue?.usd * balance)?.toFixed(2) || 0}   {
+    currentUSDValue?.usd_24h_change && (currentUSDValue?.usd * balance) !== 0
+    && <span className={currentUSDValue?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentUSDValue?.usd_24h_change?.toFixed(2)}%</span>
+  }</div>
+}
 
 const TokenOrSymbolBalance = ({ address, tokenId }: { address: string, tokenId: string }) => {
   const currentBalance: keyable = useSelector(selectBalanceById(address));

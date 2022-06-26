@@ -18,7 +18,7 @@ import { selectAssetBySymbol, selectTxnRequestsByAddress } from '~state/assets';
 import clsx from 'clsx';
 import { getTokenImageUrlFromnftId } from '~global/nfts';
 import { getTokenInfo } from '~global/tokens';
-import { getETHTransactions } from '~utils/services';
+import { getTransactions_ETH } from '~utils/services';
 
 interface Props extends RouteComponentProps<{ address: string }> {
   className?: string;
@@ -64,7 +64,7 @@ const Transactions = ({
     } else {
       setLoading(true);
 
-      const response = await getETHTransactions(address);
+      const response = await getTransactions_ETH(address);
       setLoading(false);
       const wallet = { txs: response, total: response?.length };
       setWalletTransactions(wallet);

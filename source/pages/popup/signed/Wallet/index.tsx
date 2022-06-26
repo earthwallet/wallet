@@ -23,7 +23,7 @@ import { useHistory } from 'react-router-dom';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
 import { selectAssetsICPCountByAddress } from '~state/wallet';
 import { ClipLoader } from 'react-spinners';
-import { getETHTransactions } from '~utils/services';
+import { getTransactions_ETH } from '~utils/services';
 
 interface Props extends RouteComponentProps<{ address: string }> {
 }
@@ -60,7 +60,7 @@ const Wallet = ({
         const transactions = await getTransactions(address, selectedAccount?.symbol);
         setWalletTransactions(transactions);
       } else {
-        const response = await getETHTransactions(address);
+        const response = await getTransactions_ETH(address);
         const wallet = { txs: response, total: response?.length };
         setWalletTransactions(wallet);
       }

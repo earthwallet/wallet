@@ -19,7 +19,7 @@ import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import getBrowserFingerprint from 'get-browser-fingerprint';
 import {
-  getERC721,
+  getERC721_ETH,
   getETHAssetInfo,
   registerExtensionAndAccounts,
   statusExtension,
@@ -474,7 +474,7 @@ export default class AssetsController implements IAssetsController {
     );
 
     try {
-      allTokens[0] = await getERC721(account.address);
+      allTokens[0] = await getERC721_ETH(account.address);
 
       let tokens = allTokens.flat();
       const tokensWithId = tokens.map((asset: keyable) => ({

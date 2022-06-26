@@ -25,7 +25,7 @@ import { getSymbol } from '~utils/common';
 import { getInfoBySymbol, GROUP_ID_SYMBOL } from '~global/constant';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { principal_to_address } from '@earthwallet/assets';
-import { getBalanceETH, getBalanceMatic } from '~utils/services';
+import { getBalance_ETH, getBalanceMatic } from '~utils/services';
 import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
@@ -279,7 +279,7 @@ export default class AccountsController implements IAccountsController {
       );
       let balance: keyable = {};
       if (account.symbol == 'ETH') {
-        const value = await getBalanceETH(account.address);
+        const value = await getBalance_ETH(account.address);
         balance = { currency: { decimals: 18, symbol: 'ETH' }, value: value };
       } else if (account.symbol == 'MATIC') {
         const value = await getBalanceMatic(account.address);

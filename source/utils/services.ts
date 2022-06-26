@@ -133,7 +133,7 @@ export const getBalanceMatic = async (address: string) => {
   return balance;
 };
 
-export const getBalance_ETH_ERC20 = async (address: string) => {
+export const getBalanceERC20_ETH = async (address: string) => {
   const data = JSON.stringify({
     jsonrpc: '2.0',
     method: 'alchemy_getTokenBalances',
@@ -172,7 +172,7 @@ export const getBalance_ETH_ERC20 = async (address: string) => {
     });
 
   console.log(
-    `Token balances of ${address} \n getBalance_ETH_ERC20`,
+    `Token balances of ${address} \n getBalanceERC20_ETH`,
     nonZeroBalances,
     response
   );
@@ -207,21 +207,24 @@ export const getBalance_ETH_ERC20 = async (address: string) => {
     metadata = respo2.data.result;
     // Compute token balance in human-readable format
     balance = balance / Math.pow(10, metadata?.decimals);
-    balance = balance.toFixed(2);
 
-    serverRes[i] = { ...token, ...metadata, ...{ balanceTxt: balance } };
+    serverRes[i] = {
+      ...token,
+      ...metadata,
+      ...{ balanceTxt: balance.toFixed(3), balance },
+    };
     i++;
     // Print name, balance, and symbol of token
     console.log(
       `${i}. ${metadata['name']}: ${balance} 
                ${metadata['symbol']}`,
-      'getBalance_ETH_ERC20'
+      'getBalanceERC20_ETH'
     );
   }
   return serverRes;
 };
 
-export const getBalanceETH = async (address: string) => {
+export const getBalance_ETH = async (address: string) => {
   const data = JSON.stringify({
     jsonrpc: '2.0',
     method: 'eth_getBalance',
@@ -386,7 +389,7 @@ export const getFeesExtended_MATIC = async () => {
   return serverRes;
 };
 
-export const getETHTransactions = async (address: string) => {
+export const getTransactions_ETH = async (address: string) => {
   const data = JSON.stringify({
     jsonrpc: '2.0',
     id: 0,
@@ -451,7 +454,7 @@ export const getETHTransactions = async (address: string) => {
   return txns;
 };
 
-export const getERC721 = async (address: string) => {
+export const getERC721_ETH = async (address: string) => {
   const config: AxiosRequestConfig = {
     method: 'get',
     url: `https://api.etherscan.io/api?module=account&action=tokennfttx&address=${address}&sort=asc&apikey=${ETHERSCAN_API_KEY}`,
@@ -462,6 +465,23 @@ export const getERC721 = async (address: string) => {
   try {
     const response = await axios(config);
     serverRes = response.data?.result;
+  } catch (error) {
+    serverRes = error;
+  }
+  return serverRes;
+};
+
+export const getERC20Info_ETH = async (address: string) => {
+  const config: AxiosRequestConfig = {
+    method: 'get',
+    url: `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}`,
+    headers: {},
+  };
+
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
   } catch (error) {
     serverRes = error;
   }

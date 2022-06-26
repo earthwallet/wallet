@@ -29,7 +29,7 @@ import { v4 as uuid } from 'uuid';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
 import { keyable } from '../types/IAssetsController';
-import { getBalanceMatic, getBalance_ETH_ERC20 } from '~utils/services';
+import { getBalanceERC20_ETH, getERC20Info_ETH } from '~utils/services';
 
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
@@ -117,16 +117,16 @@ export default class TokensController implements ITokensController {
       }
     } else if (accountInfo.symbol == 'ETH') {
       console.log('getTokenBalances', 'MATIC');
-      const balances: keyable[] = await getBalance_ETH_ERC20(address);
+      const balances: keyable[] = await getBalanceERC20_ETH(address);
       console.log('getTokenBalances', balances, 'balances ETH');
 
       for (const balance of balances) {
         const balanceObj = {
           id: address + '_WITH_' + balance.contractAddress,
           balance: balance.tokenBalance,
-          price: 0,
-          usd: 0,
-          usd_24h_change: 0,
+          price: null,
+          usd: null,
+          usd_24h_change: null,
           address: address,
           ...balance,
           icon: balance.logo,
@@ -139,37 +139,58 @@ export default class TokensController implements ITokensController {
             data: [balanceObj],
           })
         );
-      }
-
-      for (const activeToken of activeTokens) {
-        const tokenInfo = getTokenInfo(activeToken.tokenId);
-        if (tokenInfo.symbol == 'MATIC') {
-          console.log('getBalanceMatic', 'MATIC');
-          const balance = await getBalanceMatic(address);
-          const balanceAmount = balance / Math.pow(10, tokenInfo.decimals || 0);
-          console.log(balance, 'MATIC', address, balanceAmount);
-          const currentUSDValue =
-            state.entities.prices.byId[tokenInfo.coinGeckoId || ''];
-          const MATIC_PRICE_IN_USD = currentUSDValue?.usd;
-
-          const balanceObj = {
-            id: address + '_WITH_' + activeToken.tokenId,
-            balance,
-            price: (MATIC_PRICE_IN_USD * balanceAmount || 0)?.toFixed(2),
-            balanceTxt: balanceAmount,
-            usd: MATIC_PRICE_IN_USD,
-            usd_24h_change: currentUSDValue.usd_24h_change,
-          };
-          store.dispatch(
-            storeEntities({
-              entity: 'tokens',
-              data: [balanceObj],
-            })
-          );
-        }
+        this.updateERC20Price(balance.contractAddress);
       }
     }
     return;
+  };
+
+  updateERC20Price = async (contractAddress: string) => {
+    console.log('contractAddress', contractAddress);
+    const state = store.getState();
+    // updates if price is last updated 15mins back
+    if (
+      !(
+        Math.abs(
+          new Date().getTime() -
+            new Date(
+              state.entities.prices.byId[contractAddress]?.last_updated || 0
+            ).getTime()
+        ) < 900000
+      ) ||
+      state.entities.prices.byId[contractAddress] == null
+    ) {
+      const resp = await getERC20Info_ETH(contractAddress);
+      if (resp == null) {
+        return;
+      }
+      const { last_updated } = resp;
+      const usd = resp?.market_data.current_price.usd;
+
+      const usd_market_cap = resp?.market_data.market_cap.usd;
+
+      const usd_24h_change = resp?.market_data.price_change_24h;
+      const usd_24h_vol =
+        resp?.market_data.market_cap_change_24h_in_currency.usd;
+
+      const priceInfo = {
+        id: contractAddress,
+        loading: false,
+        error: false,
+        usd,
+        usd_market_cap,
+        usd_24h_change,
+        usd_24h_vol,
+        last_updated,
+      };
+
+      store.dispatch(
+        storeEntities({
+          entity: 'prices',
+          data: [priceInfo],
+        })
+      );
+    }
   };
 
   getTokens = async (callback?: ((address: string) => void) | undefined) => {
