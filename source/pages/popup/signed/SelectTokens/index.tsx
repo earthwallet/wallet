@@ -16,7 +16,7 @@ import { useController } from '~hooks/useController';
 import { useHistory } from 'react-router-dom';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
-import { selectActiveTokensByAddress, selectTokensInfo } from '~state/token';
+import { selectActiveTokensByAddress, selectTokensInfo } from '~state/tokens';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 //import { useSelector } from 'react-redux';
 //import { selectActiveAccountsByGroupId } from '~state/wallet';

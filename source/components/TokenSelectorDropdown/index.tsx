@@ -3,7 +3,7 @@ import styles from './index.scss';
 
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { selectTokenByTokenPair } from '~state/token';
+import { selectTokenByTokenPair } from '~state/tokens';
 import { keyable } from '~scripts/Background/types/IMainController';
 //import { mint } from '@earthwallet/assets';
 import ICON_CARET from '~assets/images/icon_caret.svg';

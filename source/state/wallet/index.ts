@@ -253,19 +253,54 @@ export const selectActiveTokensAndAssetsByAddress =
             const tokenInfo = getTokenInfo(
               state.entities.tokens.byId[id]?.tokenId
             );
-            return {
-              ...state.entities.tokens.byId[id],
-              ...{
-                format: 'token',
-                type: tokenInfo.type,
-                label: tokenInfo.symbol,
-                id: state.entities.tokens.byId[id]?.tokenId,
-                balanceTxt:
-                  state.entities.tokens.byId[id]?.balanceTxt +
-                  ' ' +
-                  tokenInfo.symbol,
-              },
-            };
+            const getTokenInfoFromStore = (contractAddress: string) =>
+              state.entities.tokensInfo?.byId[contractAddress];
+            const tokenObj = state.entities.tokens.byId[id];
+            if (tokenObj?.network == 'ETH') {
+              return {
+                ...state.entities.tokens.byId[id],
+                ...{
+                  format: 'token',
+                  label: tokenInfo.symbol,
+                  id: state.entities.tokens.byId[id]?.tokenId,
+                },
+                ...{
+                  balance:
+                    tokenObj?.tokenBalance /
+                    Math.pow(
+                      10,
+                      getTokenInfoFromStore(tokenObj?.contractAddress)
+                        ?.decimals || 0
+                    ),
+                  balanceTxt:
+                    (
+                      tokenObj?.tokenBalance /
+                      Math.pow(
+                        10,
+                        getTokenInfoFromStore(tokenObj?.contractAddress)
+                          ?.decimals || 0
+                      )
+                    ).toFixed(3) +
+                    ' ' +
+                    getTokenInfoFromStore(tokenObj?.contractAddress).symbol,
+                },
+                ...getTokenInfoFromStore(tokenObj?.contractAddress),
+              };
+            } else {
+              return {
+                ...state.entities.tokens.byId[id],
+                ...{
+                  format: 'token',
+                  type: tokenInfo.type,
+                  label: tokenInfo.symbol,
+                  id: state.entities.tokens.byId[id]?.tokenId,
+                  balanceTxt:
+                    state.entities.tokens.byId[id]?.balanceTxt +
+                    ' ' +
+                    tokenInfo.symbol,
+                },
+              };
+            }
           })
           .filter((token) => token.address === address && token.active)) ||
       [];

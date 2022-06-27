@@ -9,7 +9,7 @@ import ICON_MINT from '~assets/images/icon_mint.svg';
 import ICON_STAKE from '~assets/images/th/stake.svg';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
-import { selectInfoBySymbolOrToken } from '~state/token';
+import { selectInfoBySymbolOrToken } from '~state/tokens';
 import { useSelector } from 'react-redux';
 import icon_rec from '~assets/images/icon_rec.svg';
 import icon_send from '~assets/images/icon_send.svg';

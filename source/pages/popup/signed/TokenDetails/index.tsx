@@ -26,7 +26,7 @@ import { getInfoBySymbol } from '~global/constant';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
 import { selectGroupBalanceByGroupIdAndSymbol } from '~state/wallet';
-import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance, selectTokenByTokenPair } from '~state/token';
+import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance, selectTokenByTokenPair } from '~state/tokens';
 import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
 import { getTransactions_ETH } from '~utils/services';

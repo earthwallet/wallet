@@ -30,7 +30,7 @@ import { getShortAddress } from '~utils/common';
 import { getTokenImageURL } from '~global/nfts';
 import AddressInput from '~components/AddressInput';
 import { getTokenInfo } from '~global/tokens';
-import { selectInfoBySymbolOrToken } from '~state/token';
+import { selectInfoBySymbolOrToken } from '~state/tokens';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import { getFeesExtended, getFeesExtended_MATIC } from '~utils/services';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';

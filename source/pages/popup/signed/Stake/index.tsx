@@ -8,7 +8,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import clsx from 'clsx';
 //import ICON_EARTH from '~assets/images/icon-512.png';
 import { useSelector } from 'react-redux';
-import { selectTokenByTokenPair, selectTokensInfo, selectTokensInfoById } from '~state/token';
+import { selectTokenByTokenPair, selectTokensInfo, selectTokensInfoById } from '~state/tokens';
 import NextStepButton from '~components/NextStepButton';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { useController } from '~hooks/useController';

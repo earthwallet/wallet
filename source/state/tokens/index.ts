@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import type { ITokenState } from './types';
+import type { ITokensState } from './types';
 //import type { StoreInterface } from '~state/IStore';
 import { AppState } from '~state/store';
 import { keyable } from '~scripts/Background/types/IMainController';
@@ -9,29 +9,40 @@ import { getTokenInfo, getLiveTokensByNetworkSymbol } from '~global/tokens';
 import { getInfoBySymbol } from '~global/constant';
 import millify from 'millify';
 
-const initialState: ITokenState = {
+const initialState: ITokensState = {
   loading: false,
   error: '',
+  tokensInfoLastUpdated_ETH: 0,
 };
 
 const TokenState = createSlice({
-  name: 'wallet',
+  name: 'tokens',
   initialState,
   reducers: {
-    updateError(state: ITokenState, action: PayloadAction<string>) {
+    updateError(state: ITokensState, action: PayloadAction<string>) {
       state.error = action.payload;
     },
-    updateLoading(state: ITokenState, action: PayloadAction<boolean>) {
+    updateLoading(state: ITokensState, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
-
-    hydrateWallet(state: ITokenState, action: PayloadAction<ITokenState>) {
+    updateTokensInfoLastUpdated_ETH(
+      state: ITokensState,
+      action: PayloadAction<number>
+    ) {
+      state.tokensInfoLastUpdated_ETH = action.payload;
+    },
+    hydrateTokens(state: ITokensState, action: PayloadAction<ITokensState>) {
       Object.assign(state, action.payload);
     },
   },
 });
 
-export const { updateError, updateLoading, hydrateWallet } = TokenState.actions;
+export const {
+  updateError,
+  updateLoading,
+  updateTokensInfoLastUpdated_ETH,
+  hydrateTokens,
+} = TokenState.actions;
 
 export const selectTokensInfo = (address: string) => (state: AppState) => {
   const activeAccount = state.entities.accounts.byId[address];
@@ -123,16 +134,38 @@ export const selectActiveTokensByAddressWithInfo =
       Object.keys(state.entities.tokens?.byId)
         ?.map((id) => state.entities.tokens.byId[id])
         .filter((token) => token.address === address && token.active);
+    const getTokenInfoFromStore = (address: string) =>
+      state.entities.tokensInfo?.byId[address];
     if (activeTokens?.length == 0) {
       return [];
     } else {
       return activeTokens.map((tokenObj: keyable) =>
-        getTokenInfo(tokenObj.tokenId)
+        tokenObj.network != 'ETH'
           ? {
               ...tokenObj,
               ...getTokenInfo(tokenObj.tokenId),
             }
-          : tokenObj
+          : {
+              ...tokenObj,
+              ...{
+                balance:
+                  tokenObj.tokenBalance /
+                  Math.pow(
+                    10,
+                    getTokenInfoFromStore(tokenObj.contractAddress)?.decimals ||
+                      0
+                  ),
+                balanceTxt: (
+                  tokenObj.tokenBalance /
+                  Math.pow(
+                    10,
+                    getTokenInfoFromStore(tokenObj.contractAddress)?.decimals ||
+                      0
+                  )
+                ).toFixed(3),
+              },
+              ...getTokenInfoFromStore(tokenObj.contractAddress),
+            }
       );
     }
   };

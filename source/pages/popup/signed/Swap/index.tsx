@@ -11,7 +11,7 @@ import ICON_SWAP from '~assets/images/icon_swap.svg';
 //import clsx from 'clsx';
 import NextStepButton from '~components/NextStepButton';
 import { useSelector } from 'react-redux';
-import { selectTokensInfo, selectTokensInfoById } from '~state/token';
+import { selectTokensInfo, selectTokensInfoById } from '~state/tokens';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 import TokenSelectorDropdown from '~components/TokenSelectorDropdown';
 import useToast from '~hooks/useToast';

@@ -29,7 +29,12 @@ import { v4 as uuid } from 'uuid';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
 import { keyable } from '../types/IAssetsController';
-import { getBalanceERC20_ETH, getERC20Info_ETH } from '~utils/services';
+import {
+  getBalanceERC20_ETH,
+  getDefaultTokensErc20_ETH,
+  getERC20Info_ETH,
+} from '~utils/services';
+import { updateTokensInfoLastUpdated_ETH } from '~state/tokens';
 
 export default class TokensController implements ITokensController {
   getTokenBalances = async (address: string) => {
@@ -116,30 +121,44 @@ export default class TokensController implements ITokensController {
         );
       }
     } else if (accountInfo.symbol == 'ETH') {
-      console.log('getTokenBalances', 'MATIC');
+      console.log('getTokenBalances', 'ETH');
       const balances: keyable[] = await getBalanceERC20_ETH(address);
       console.log('getTokenBalances', balances, 'balances ETH');
 
       for (const balance of balances) {
-        const balanceObj = {
-          id: address + '_WITH_' + balance.contractAddress,
-          balance: balance.tokenBalance,
-          price: null,
-          usd: null,
-          usd_24h_change: null,
-          address: address,
-          ...balance,
-          icon: balance.logo,
-          active: true,
-          network: 'ETH',
-        };
-        store.dispatch(
-          storeEntities({
-            entity: 'tokens',
-            data: [balanceObj],
-          })
-        );
-        this.updateERC20Price(balance.contractAddress);
+        if (balance.tokenBalance > 0) {
+          const balanceObj = {
+            id: address + '_WITH_' + balance.contractAddress,
+            address: address,
+            ...balance,
+            active: true,
+            network: 'ETH',
+          };
+          store.dispatch(
+            storeEntities({
+              entity: 'tokens',
+              data: [balanceObj],
+            })
+          );
+          this.updateERC20Price(balance.contractAddress);
+        } else {
+          const tokenId = address + '_WITH_' + balance.contractAddress;
+          const existingTokenInfo = state.entities.tokens.byId[tokenId];
+          if (existingTokenInfo != undefined) {
+            const balanceObj = {
+              id: tokenId,
+              address: address,
+              ...balance,
+            };
+            store.dispatch(
+              updateEntities({
+                entity: 'tokens',
+                key: balanceObj.id,
+                data: balanceObj,
+              })
+            );
+          }
+        }
       }
     }
     return;
@@ -193,7 +212,7 @@ export default class TokensController implements ITokensController {
     }
   };
 
-  getTokens = async (callback?: ((address: string) => void) | undefined) => {
+  getTokensInfo = async () => {
     const state = store.getState();
 
     if (state.entities.tokens == null) {
@@ -202,31 +221,64 @@ export default class TokensController implements ITokensController {
     if (state.entities.tokensInfo == null) {
       store.dispatch(createEntity({ entity: 'tokensInfo' }));
     }
-    const tokens = await getAllTokens();
-    for (const tokenCanisterId of tokens) {
-      const response = await getMetadata(tokenCanisterId);
-      const { decimals, fee, feeTo, name, owner, symbol, totalSupply } =
-        response;
-
-      const tokenInfo = {
-        id: tokenCanisterId,
-        decimals,
-        fee: fee?.toString(),
-        feeTo: feeTo?.toText(),
-        name,
-        owner: owner?.toText(),
-        symbol,
-        totalSupply: totalSupply.toString(),
-        tokenCanisterId,
-      };
-      store.dispatch(
-        storeEntities({
-          entity: 'tokensInfo',
-          data: [tokenInfo],
-        })
-      );
+    const tokensInfoLastUpdated_ETH = state.tokens?.tokensInfoLastUpdated_ETH;
+    const ONE_DAY_IN_MS = 86400000;
+    if (
+      !(
+        Math.abs(
+          new Date().getTime() - new Date(tokensInfoLastUpdated_ETH).getTime()
+        ) < ONE_DAY_IN_MS
+      ) ||
+      tokensInfoLastUpdated_ETH == 0
+    ) {
+      store.dispatch(updateTokensInfoLastUpdated_ETH(new Date().getTime()));
+      const tokens = await getDefaultTokensErc20_ETH();
+      for (const tokenObj of tokens) {
+        const tokenInfo = {
+          id: tokenObj.contractAddress,
+          icon: tokenObj.logo,
+          ...tokenObj,
+          network: 'ETH',
+          last_updated: new Date().getTime(),
+        };
+        store.dispatch(
+          storeEntities({
+            entity: 'tokensInfo',
+            data: [tokenInfo],
+          })
+        );
+      }
     }
-    callback && callback('address');
+
+    //0x29bc7f4bfc7301b3ddb5c9c4348360fc0ad52ca8
+    if (false) {
+      //disable ICP token info
+      const tokens = await getAllTokens();
+      for (const tokenCanisterId of tokens) {
+        const response = await getMetadata(tokenCanisterId);
+        const { decimals, fee, feeTo, name, owner, symbol, totalSupply } =
+          response;
+
+        const tokenInfo = {
+          id: tokenCanisterId,
+          decimals,
+          fee: fee?.toString(),
+          feeTo: feeTo?.toText(),
+          name,
+          owner: owner?.toText(),
+          symbol,
+          totalSupply: totalSupply.toString(),
+          tokenCanisterId,
+        };
+        store.dispatch(
+          storeEntities({
+            entity: 'tokensInfo',
+            data: [tokenInfo],
+          })
+        );
+      }
+      //callback && callback('address');
+    }
     return;
   };
 

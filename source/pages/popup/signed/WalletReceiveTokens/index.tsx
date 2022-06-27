@@ -13,7 +13,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import useToast from '~hooks/useToast';
 import { getInfoBySymbol } from '~global/constant';
 import ToolTipInfo from '~components/ToolTipInfo';
-import { selectInfoBySymbolOrToken } from '~state/token';
+import { selectInfoBySymbolOrToken } from '~state/tokens';
 
 interface Props extends RouteComponentProps<{ address: string, symbolOrTokenId?: string }> { }
 const WalletReceiveTokens = ({
