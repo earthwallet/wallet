@@ -166,7 +166,7 @@ export const selectActiveTokensByAddressWithInfo =
               },
               ...getTokenInfoFromStore(tokenObj.contractAddress),
             }
-      );
+      ).filter((token: keyable) => token.balance != 0);
     }
   };
 

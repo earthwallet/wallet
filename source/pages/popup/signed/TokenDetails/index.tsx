@@ -295,7 +295,7 @@ const TokensList = ({ address }: { address: string }) => {
             src={ICON_FORWARD}
           />
         </div>)}
-        {<div
+        {selectedAccount.symbol == "ICP" && <div
           onClick={() => history.push('/account/selecttoken/' + selectedAccount?.id)}
           className={styles.listitem}>
           <div

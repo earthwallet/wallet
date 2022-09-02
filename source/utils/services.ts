@@ -213,7 +213,7 @@ export const getBalanceERC20_ETH = async (address: string) => {
       'Content-Type': 'application/json',
     },
     params: [
-      '0x681ea52ac9fa5c516daf2bf1280e8a493442b848' || address,
+      address,
       'DEFAULT_TOKENS',
     ],
     id: 42,
