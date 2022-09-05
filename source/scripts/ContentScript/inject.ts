@@ -114,7 +114,7 @@ async function handleRequest (req) {
 }
 
 window.${name} = {
-  isMetaMask: true,
+  isMetaMask: false,
   isEarth: true,
   isEIP1193: true,
   networkVersion: '${network.networkId}',
