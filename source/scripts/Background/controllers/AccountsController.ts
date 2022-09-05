@@ -31,6 +31,7 @@ import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
 import { OpenSeaPort, Network } from 'opensea-js';
 import HDWalletProvider from '@truffle/hdwallet-provider';
+import { ALCHEMY_ETH_API_KEY } from '~global/config';
 
 interface keyable {
   [key: string]: any;
@@ -116,7 +117,7 @@ export default class AccountsController implements IAccountsController {
     const wallet_tx = await createWallet(mnemonic, 'ETH');
 
     const web3 = createAlchemyWeb3(
-      'https://eth-mainnet.alchemyapi.io/v2/WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80'
+      `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`
     );
     const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
     const nonce = await web3.eth.getTransactionCount(
@@ -163,7 +164,7 @@ export default class AccountsController implements IAccountsController {
     const provider = new HDWalletProvider({
       mnemonic: mnemonic,
       providerOrUrl:
-        'https://eth-mainnet.alchemyapi.io/v2/WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80',
+        `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`,
       addressIndex: 0,
     });
 

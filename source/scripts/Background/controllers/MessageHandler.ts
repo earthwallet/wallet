@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { v4 as uuid } from 'uuid';
 import { browser, Runtime } from 'webextension-polyfill-ts';
+import { ALCHEMY_ETH_API_KEY } from '~global/config';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import { NetworkSymbol } from '~global/types';
 import { IMainController } from '../types/IMainController';
@@ -105,7 +106,7 @@ export const messagesHandler = (
         result = { connected: !!allowed };
       } else if (method === 'eth_jsonrpc') {
         const provider = new ethers.providers.JsonRpcProvider(
-          'https://eth-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc'
+          `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_ETH_API_KEY}`
         );
         result = await provider.send(args[0], args[1]);
       } else if (method === 'wallet.signTypedData') {

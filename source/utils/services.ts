@@ -122,7 +122,7 @@ export const getBalanceMatic = async (address: string) => {
 
   const config: AxiosRequestConfig = {
     method: 'post',
-    url: 'https://polygon-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc',
+    url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_POLYGON_API_KEY}`,
     headers: {
       'Content-Type': 'application/json',
     },
