@@ -30,7 +30,7 @@ import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk
 import { send } from '@earthwallet/keyring';
 import { keyable } from '../types/IAssetsController';
 import {
-  getBalanceERC20_ETH,
+  getBalanceERC20,
   getDefaultTokensErc20_ETH,
   getERC20Info_ETH,
 } from '~utils/services';
@@ -121,9 +121,7 @@ export default class TokensController implements ITokensController {
         );
       }
     } else if (accountInfo.symbol == 'ETH') {
-      console.log('getTokenBalances', 'ETH');
-      const balances: keyable[] = await getBalanceERC20_ETH(address);
-      console.log('getTokenBalances', balances, 'balances ETH');
+      const balances: keyable[] = await getBalanceERC20(address, accountInfo.symbol);
 
       for (const balance of balances) {
         if (balance.tokenBalance > 0) {

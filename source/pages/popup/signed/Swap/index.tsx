@@ -22,17 +22,20 @@ import ICON_MINT from '~assets/images/icon_mint.svg';
 import clsx from 'clsx';
 import { getTokenInfo } from '~global/tokens';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
-import { selectBalanceById } from '~state/wallet';
+import { selectAccountById, selectBalanceById } from '~state/wallet';
 
-interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
+interface Props extends RouteComponentProps<{ accountId: string, tokenId: string }> {
 }
 
 
 const Swap = ({
   match: {
-    params: { address, tokenId },
+    params: { accountId, tokenId },
   },
 }: Props) => {
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+  
   const queryParams = useQuery();
   const type: string = queryParams.get('type') || '';
 

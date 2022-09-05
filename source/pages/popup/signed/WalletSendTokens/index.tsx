@@ -44,15 +44,17 @@ interface keyable {
   [key: string]: any;
 }
 
-interface Props extends RouteComponentProps<{ address: string }> { }
+interface Props extends RouteComponentProps<{ accountId: string }> { }
 
 const WalletSendTokens = ({
   match: {
-    params: { address },
+    params: { accountId },
   },
 }: Props) => {
   const [step1, setStep1] = useState(true);
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+  
   const controller = useController();
   const currentBalance: keyable = useSelector(selectBalanceById(address));
   const currentUSDValue: keyable = useSelector(

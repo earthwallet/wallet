@@ -2,7 +2,14 @@ import { decodeTokenId } from '@earthwallet/assets';
 import axios, { AxiosRequestConfig } from 'axios';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 import { BigNumber, ethers } from 'ethers';
-import { ALCHEMY_ETH_API_KEY, ALCHEMY_POLYGON_API_KEY, ETHERSCAN_API_KEY, ETH_MAINNET_ALCHEMY, POLYGONSCAN_API_KEY, POLY_ALCHEMY } from '~global/config';
+import {
+  ALCHEMY_ETH_API_KEY,
+  ALCHEMY_POLYGON_API_KEY,
+  ETHERSCAN_API_KEY,
+  ETH_MAINNET_ALCHEMY,
+  POLYGONSCAN_API_KEY,
+  POLY_ALCHEMY,
+} from '~global/config';
 import { hexToNumber, hexToNumberString } from 'web3-utils';
 //@ts-ignore
 import IERC721 from './abi/IERC721';
@@ -317,7 +324,10 @@ export const getERC20TokensListFromTxs = async (
 ) => {
   const config: AxiosRequestConfig = {
     method: 'get',
-    url: `https://api.polygonscan.com/api?module=account&action=tokentx&address=${address}&page=1&offset=100&startblock=0&endblock=99999999&sort=asc&apikey=${POLYGONSCAN_API_KEY}`,
+    url:
+      symbol == 'ETH'
+        ? `https://api.etherscan.io/api?module=account&action=tokentx&address=${address}&page=1&offset=100&startblock=0&endblock=99999999&sort=asc&apikey=${ETHERSCAN_API_KEY}`
+        : `https://api.polygonscan.com/api?module=account&action=tokentx&address=${address}&page=1&offset=100&startblock=0&endblock=99999999&sort=asc&apikey=${POLYGONSCAN_API_KEY}`,
     headers: {},
   };
 
@@ -709,16 +719,16 @@ export const getERC20TransferGasLimit = async (
   decimals?: any
 ) => {
   const erc20Interface = new Interface(IERC20.abi);
-  const hexData = erc20Interface.encodeFunctionData("transfer", [
-    toAddress || "0x0000000000000000000000000000000000000000",
+  const hexData = erc20Interface.encodeFunctionData('transfer', [
+    toAddress || '0x0000000000000000000000000000000000000000',
     amount == undefined
       ? 100000
       : ethers.utils.parseUnits(amount.toString(), decimals.toString()),
   ]);
 
   const data = JSON.stringify({
-    jsonrpc: "2.0",
-    method: "eth_estimateGas",
+    jsonrpc: '2.0',
+    method: 'eth_estimateGas',
     params: [
       {
         from: fromAddress,
@@ -730,10 +740,10 @@ export const getERC20TransferGasLimit = async (
   });
 
   const config: AxiosRequestConfig = {
-    method: "post",
-    url: symbol == "MATIC" ? POLY_ALCHEMY : ETH_MAINNET_ALCHEMY,
+    method: 'post',
+    url: symbol == 'MATIC' ? POLY_ALCHEMY : ETH_MAINNET_ALCHEMY,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     data: data,
   };

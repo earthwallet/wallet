@@ -33,7 +33,7 @@ const NFTSettle = ({
 }: Props) => {
   const queryParams = useQuery();
   const price: number = parseInt(queryParams.get('price') || '');
-  const address: string = queryParams.get('address') || '';
+  const accountId: string = queryParams.get('accountId') || '';
   const type: string = queryParams.get('type') || '';
 
   const canisterId = decodeTokenId(nftId).canister;
@@ -41,9 +41,9 @@ const NFTSettle = ({
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
-  // const [loading, setLoading] = useState(false);
-  const selectedAccount = useSelector(selectAccountById(address));
-
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+  
   const asset: keyable = { canisterId, id: nftId, tokenIndex, type, tokenIdentifier: nftId };
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
   const usdValue = currentUSDValue?.usd;

@@ -92,7 +92,7 @@ const PopupRouter = () => {
               <Route path="/accounts">
                 {wrapWithErrorBoundary(<Accounts />, 'accounts')}
               </Route>
-              <Route path="/account/marketplace/:address">
+              <Route path="/account/marketplace/:accountId">
                 {wrapWithErrorBoundary(<NFTMarketplace />, 'NFTMarketplace')}
               </Route>
               <Route path="/nft/collection/:collectionId">
@@ -113,16 +113,16 @@ const PopupRouter = () => {
               <Route path="/account/create">
                 {wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}
               </Route>
-              <Route path="/account/export/:address">
+              <Route path="/account/export/:accountId">
                 {wrapWithErrorBoundary(<Export />, 'export-address')}
               </Route>
               <Route path="/account/import">
                 {wrapWithErrorBoundary(<ImportSeed />, 'import-seed')}
               </Route>
-              <Route path="/account/minidetails/:address">
+              <Route path="/account/minidetails/:accountId">
                 {wrapWithErrorBoundary(<Wallet />, 'wallet')}
               </Route>
-              <Route path="/account/transactions/:address">
+              <Route path="/account/transactions/:accountId">
                 {wrapWithErrorBoundary(<Transactions />, 'transactions')}
               </Route>
               <Route path="/account/transaction/:txnId">
@@ -131,20 +131,20 @@ const PopupRouter = () => {
               <Route path="/transaction/confirm/:txnId">
                 {wrapWithErrorBoundary(<TransactionConfirm />, 'Swap')}
               </Route>
-              <Route path="/account/send/:address">
+              <Route path="/account/send/:accountId">
                 {wrapWithErrorBoundary(
                   <WalletAddressBook />,
                   'wallet-send-token'
                 )}
               </Route>
-              {/*  /account/send/:address ?tokenId or ?assetId */}
-              <Route path="/account/confirmsend/:address">
+              {/*  /account/send/:accountId ?tokenId or ?assetId */}
+              <Route path="/account/confirmsend/:accountId">
                 {wrapWithErrorBoundary(
                   <WalletSendTokens />,
                   'wallet-send-token'
                 )}
               </Route>
-              <Route path="/account/receive/:address/:symbolOrTokenId?">
+              <Route path="/account/receive/:accountId/:symbolOrTokenId?">
                 {wrapWithErrorBoundary(
                   <WalletReceiveTokens />,
                   'wallet-receive-token'
@@ -153,22 +153,22 @@ const PopupRouter = () => {
               <Route path="/account/addnetwork/:groupId">
                 {wrapWithErrorBoundary(<AddNetwork />, 'accounts')}
               </Route>
-              <Route path="/account/selecttoken/:address">
+              <Route path="/account/selecttoken/:accountId">
                 {wrapWithErrorBoundary(<SelectTokens />, 'selecttokens')}
               </Route>
-              <Route path="/account/assets/nftlist/:address">
+              <Route path="/account/assets/nftlist/:accountId">
                 {wrapWithErrorBoundary(<NFTList />, 'accounts')}
               </Route>
-              <Route path="/account/listnft/:address">
+              <Route path="/account/listnft/:accountId">
                 {wrapWithErrorBoundary(<ListNFT />, 'accounts')}
               </Route>
               <Route path="/nftdetails/:assetId">
                 {wrapWithErrorBoundary(<NFTDetails />, 'accounts')}
               </Route>
-              <Route path="/nftairdropdetails/:assetId/:address?">
+              <Route path="/nftairdropdetails/:assetId/:accountId?">
                 {wrapWithErrorBoundary(<NFTAirdropDetails />, 'accounts')}
               </Route>
-              <Route path="/createnft/:address">
+              <Route path="/createnft/:accountId">
                 {wrapWithErrorBoundary(<CreateNFT />, 'accounts')}
               </Route>
               <Route path="/walletsettings">
@@ -177,16 +177,16 @@ const PopupRouter = () => {
               <Route path="/dappdetails/:origin">
                 {wrapWithErrorBoundary(<DappDetails />, 'dappdetails')}
               </Route>
-              <Route path="/stake/:address/:tokenId">
+              <Route path="/stake/:accountId/:tokenId">
                 {wrapWithErrorBoundary(<Stake />, 'Stake')}
               </Route>
-              <Route path="/swap/:address/:tokenId">
+              <Route path="/swap/:accountId/:tokenId">
                 {wrapWithErrorBoundary(<Swap />, 'Swap')}
               </Route>
-              <Route path="/th/:address/:symbolOrTokenId">
+              <Route path="/th/:accountId/:symbolOrTokenId">
                 {wrapWithErrorBoundary(<TokenDetailsWithInfo />, 'TokenDetailsWithInfo')}
               </Route>
-              <Route path="/account/details/:address">
+              <Route path="/account/details/:accountId">
                 {wrapWithErrorBoundary(<TokenDetails />, 'TokenDetails')}
               </Route>
             </Switch>

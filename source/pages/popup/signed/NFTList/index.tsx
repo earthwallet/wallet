@@ -6,7 +6,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import Swiper from 'react-id-swiper';
-import { selectAccountById, selectAssetsByAddress, selectAssetsICPCountLoadingByAddress } from '~state/wallet';
+import { selectAccountById, selectAssetsByAddressAndSymbol, selectAssetsICPCountLoadingByAddress } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import ICON_GRID from '~assets/images/icon_grid.svg';
 import ICON_LIST from '~assets/images/icon_list.svg';
@@ -17,7 +17,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { selectAirdropStatus, selectCollectionInfo } from '~state/assets';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 
 const AssetName = ({ canisterId }: { canisterId: string }) => {
@@ -27,7 +27,7 @@ const AssetName = ({ canisterId }: { canisterId: string }) => {
 
 const NFTList = ({
     match: {
-        params: { address },
+        params: { accountId },
     },
 }: Props) => {
     const [nav, setNav] = useState('list');
@@ -66,10 +66,10 @@ const NFTList = ({
 
                 <div className={styles.tabsep}></div>
                 {nav === 'grid' ? <div className={styles.coverflowcont}>
-                    <AssetsCoverflow address={address} />
+                    <AssetsCoverflow accountId={accountId} />
                 </div>
                     : <div className={styles.listcont}>
-                        <AssetsList address={address} />
+                        <AssetsList accountId={accountId} />
                     </div>
                 }
             </div>
@@ -77,12 +77,13 @@ const NFTList = ({
     );
 };
 
-export const AssetsList = ({ address }: { address: string }) => {
-    const assets: keyable = useSelector(selectAssetsByAddress(address));
+export const AssetsList = ({ accountId }: { accountId: string }) => {
+    const selectedAccount = useSelector(selectAccountById(accountId));
+    const {address, symbol} = selectedAccount;
     const loading: boolean = useSelector(selectAssetsICPCountLoadingByAddress(address));
     const airdropAsset = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
-    const selectedAccount = useSelector(selectAccountById(address));
+    const assets: keyable = useSelector(selectAssetsByAddressAndSymbol(address, symbol));
     const SHOW_MARKETPLACE = selectedAccount.symbol == "ICP" && MARKETPLACE_ENABLED;
 
     const AirDropCampaign = () => {
@@ -211,8 +212,11 @@ const ExploreCollections = ({ address }: { address: string }) => {
     </div>
 };
 
-export const AssetsCoverflow = ({ address }: { address: string }) => {
-    const assets: keyable = useSelector(selectAssetsByAddress(address));
+export const AssetsCoverflow = ({ accountId }: { accountId: string }) => {
+    const selectedAccount = useSelector(selectAccountById(accountId));
+    const {address, symbol} = selectedAccount;
+
+    const assets: keyable = useSelector(selectAssetsByAddressAndSymbol(address, symbol));
     const airdropAsset = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
 

@@ -13,8 +13,9 @@ import { shareTweetURL, shortenAddress } from '~global/helpers';
 import ICON_TWITTER from '~assets/images/icon_twitter.svg';
 import { selectAirdropStatus } from '~state/assets';
 import Confetti from 'react-confetti'
+import { selectAccountById } from '~state/wallet';
 
-interface Props extends RouteComponentProps<{ assetId: string, address: string }> {
+interface Props extends RouteComponentProps<{ assetId: string, accountId: string }> {
     className?: string;
 }
 
@@ -22,12 +23,14 @@ const NFTAirdropDetails = ({
     match: {
         params: {
             assetId,
-            address
+            accountId
         },
     },
 }: Props) => {
     // const history = useHistory();
-
+    const selectedAccount = useSelector(selectAccountById(accountId));
+    const { address } = selectedAccount;
+    
     const asset: keyable = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(asset.id));
 

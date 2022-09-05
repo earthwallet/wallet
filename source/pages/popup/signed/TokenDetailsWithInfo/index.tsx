@@ -13,15 +13,19 @@ import { selectInfoBySymbolOrToken } from '~state/tokens';
 import { useSelector } from 'react-redux';
 import icon_rec from '~assets/images/icon_rec.svg';
 import icon_send from '~assets/images/icon_send.svg';
-interface Props extends RouteComponentProps<{ address: string, symbolOrTokenId: string }> {
+import { selectAccountById } from '~state/wallet';
+interface Props extends RouteComponentProps<{ accountId: string, symbolOrTokenId: string }> {
 }
 
 
 const TokenDetailsWithInfo = ({
   match: {
-    params: { address, symbolOrTokenId },
+    params: { accountId, symbolOrTokenId },
   },
 }: Props) => {
+
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
 
   const history = useHistory();
   const symbolOrTokenInfo = useSelector(selectInfoBySymbolOrToken(symbolOrTokenId, address));

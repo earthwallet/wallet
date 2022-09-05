@@ -31,7 +31,7 @@ import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
 import { getTransactions_ETH } from '~utils/services';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 interface keyable {
   [key: string]: any
@@ -39,7 +39,7 @@ interface keyable {
 
 const Wallet = ({
   match: {
-    params: { address },
+    params: { accountId },
   },
 }: Props) => {
 
@@ -50,7 +50,9 @@ const Wallet = ({
   const controller = useController();
 
 
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+
   const history = useHistory();
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [nav, setNav] = useState('list');
@@ -160,9 +162,9 @@ const Wallet = ({
         </>
       }
       {mainNav === 'nfts' && <>
-        {nav === 'grid' && <AssetsCoverflow address={address} />}
+        {nav === 'grid' && <AssetsCoverflow accountId={accountId} />}
         {nav === 'list' && <div className={styles.nftslistcont}>
-          <AssetsList address={address} />
+          <AssetsList accountId={accountId} />
         </div>}
       </>}
 

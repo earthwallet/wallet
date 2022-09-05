@@ -152,14 +152,17 @@ export const selectAssetsICPCountByAddress =
   (address: string) => (state: AppState) =>
     state.entities.assetsCount?.byId[address];
 
-export const selectAssetsByAddress = (address: string) => (state: AppState) => {
-  return (
-    state.entities.assets?.byId &&
-    Object.keys(state.entities.assets?.byId)
-      ?.map((id) => state.entities.assets.byId[id])
-      .filter((assets) => assets.address === address)
-  );
-};
+export const selectAssetsByAddressAndSymbol =
+  (address: string, symbol: string) => (state: AppState) => {
+    return (
+      state.entities.assets?.byId &&
+      Object.keys(state.entities.assets?.byId)
+        ?.map((id) => state.entities.assets.byId[id])
+        .filter(
+          (assets) => assets.address === address && assets.symbol == symbol
+        )
+    );
+  };
 
 export const selectAssetsICPCountLoadingByAddress =
   (address: string) => (state: AppState) =>
@@ -168,8 +171,8 @@ export const selectAssetsICPCountLoadingByAddress =
 export const selectAssetById = (id: string) => (state: AppState) =>
   state.entities.assets?.byId[id];
 
-export const selectAccountById = (address: string) => (state: AppState) =>
-  state.entities.accounts.byId[address];
+export const selectAccountById = (accountId: string) => (state: AppState) =>
+  state.entities.accounts.byId[accountId];
 
 export const selectOtherAccountsOf = (address: string) => (state: AppState) => {
   const selectedAccount = state.entities.accounts.byId[address];

@@ -15,14 +15,15 @@ import { getInfoBySymbol } from '~global/constant';
 import ToolTipInfo from '~components/ToolTipInfo';
 import { selectInfoBySymbolOrToken } from '~state/tokens';
 
-interface Props extends RouteComponentProps<{ address: string, symbolOrTokenId?: string }> { }
+interface Props extends RouteComponentProps<{ accountId: string, symbolOrTokenId?: string }> { }
 const WalletReceiveTokens = ({
   match: {
-    params: { address, symbolOrTokenId },
+    params: { accountId, symbolOrTokenId },
   },
 }: Props) => {
   const history = useHistory();
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
   const symbolOrTokenInfo = symbolOrTokenId == undefined ? {} : useSelector(selectInfoBySymbolOrToken(symbolOrTokenId, address));
 
   const { show } = useToast();
@@ -44,9 +45,9 @@ const WalletReceiveTokens = ({
         {symbolOrTokenInfo?.addressType != 'principal' && selectedAccount?.meta?.principalId && <div className={styles.principalCont}>
           <div className={styles.accountShareCont}>
             <div className={styles.accountShare}>Your Principal Id</div>
-            <ToolTipInfo 
-            placement='left'
-            title={`With Principal IDs you can create canisters, and authenticate yourself on Internet Computer apps & services.`} />
+            <ToolTipInfo
+              placement='left'
+              title={`With Principal IDs you can create canisters, and authenticate yourself on Internet Computer apps & services.`} />
           </div>
           <div className={styles.accountDetail}>
             <div className={styles.addressDisplay}>
@@ -85,9 +86,9 @@ const IdCard = ({ id, symbol, _onCopy }: { id: string, symbol: string, _onCopy: 
       getInfoBySymbol(symbol)?.addressTitle != undefined
         ? getInfoBySymbol(symbol)?.addressTitle
         : "Public Address"}</div>
-    <ToolTipInfo 
-    placement='left'
-    title={`Share this unique id to receive ${symbol}`} />
+    <ToolTipInfo
+      placement='left'
+      title={`Share this unique id to receive ${symbol}`} />
   </div>
 
     <div className={styles.accountDetail}>

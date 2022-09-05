@@ -6,7 +6,6 @@ import {
 } from '@earthwallet/keyring';
 import store from '~state/store';
 import {
-  updateActiveAccount,
   updateNewMnemonic,
   updateError,
   updateLoading,

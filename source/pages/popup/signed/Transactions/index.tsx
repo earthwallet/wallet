@@ -20,7 +20,7 @@ import { getTokenImageUrlFromnftId } from '~global/nfts';
 import { getTokenInfo } from '~global/tokens';
 import { getTransactions_ETH } from '~utils/services';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
   className?: string;
 }
 interface keyable {
@@ -29,13 +29,14 @@ interface keyable {
 const Transactions = ({
   match: {
     params: {
-      address,
+      accountId,
     },
   },
 }: Props) => {
 
-  const selectedAccount = useSelector(selectAccountById(address));
-
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+  
   const history = useHistory();
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);

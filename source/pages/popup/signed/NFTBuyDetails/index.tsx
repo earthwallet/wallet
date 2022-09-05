@@ -14,7 +14,7 @@ import useQuery from '~hooks/useQuery';
 import { decodeTokenId } from '@earthwallet/assets';
 import useToast from '~hooks/useToast';
 import { useSelector } from 'react-redux';
-import { selectBalanceById } from '~state/wallet';
+import { selectAccountById, selectBalanceById } from '~state/wallet';
 import { selectCollectionInfo } from '~state/assets';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 
@@ -32,9 +32,11 @@ const NFTBuyDetails = ({
 }: Props) => {
     const queryParams = useQuery();
     const price: number = parseInt(queryParams.get('price') || '');
-    const address: string = queryParams.get('address') || '';
+    const accountId: string = queryParams.get('accountId') || '';
     const type: string = queryParams.get('type') || '';
-
+    const selectedAccount = useSelector(selectAccountById(accountId));
+    const { address } = selectedAccount;
+    
     const history = useHistory();
     const currentBalance: keyable = useSelector(selectBalanceById(address));
 
@@ -52,7 +54,7 @@ const NFTBuyDetails = ({
             show('Not Enough Balance');
         }
         else {
-            history.push(`/nft/settle/${nftId}?price=${price}&address=${address}&type=${type}`);
+            history.push(`/nft/settle/${nftId}?price=${price}&accountId=${accountId}&type=${type}`);
         }
     };
     return (

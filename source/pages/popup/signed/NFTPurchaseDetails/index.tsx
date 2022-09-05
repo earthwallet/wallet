@@ -14,6 +14,8 @@ import useQuery from '~hooks/useQuery';
 import { decodeTokenId } from '@earthwallet/assets';
 import Confetti from 'react-confetti'
 import { ClipLoader } from 'react-spinners';
+import { useSelector } from 'react-redux';
+import { selectAccountById } from '~state/wallet';
 
 
 interface Props extends RouteComponentProps<{ nftId: string }> {
@@ -29,7 +31,10 @@ const NFTBuyDetails = ({
 }: Props) => {
     const queryParams = useQuery();
     const price: number = parseInt(queryParams.get('price') || '');
-    const address: string = queryParams.get('address') || '';
+    const accountId: string = queryParams.get('accountId') || '';
+    const selectedAccount = useSelector(selectAccountById(accountId));
+    const { address } = selectedAccount;
+    
     const history = useHistory();
     const [loading, setLoading] = useState<boolean>(false);
     const controller = useController();

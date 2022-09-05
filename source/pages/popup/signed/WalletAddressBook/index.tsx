@@ -23,12 +23,12 @@ interface keyable {
   [key: string]: any
 }
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 
 const WalletAddressBook = ({
   match: {
-    params: { address },
+    params: { accountId },
   },
 }: Props) => {
   const queryParams = useQuery();
@@ -38,8 +38,8 @@ const WalletAddressBook = ({
 
 
   const [step1, setStep1] = useState(true);
-  const selectedAccount = useSelector(selectAccountById(address));
-
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
   const assets: keyable = useSelector(selectActiveTokensAndAssetsByAddress(address));
 
   const dropDownRef = useRef(null);

@@ -9,7 +9,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { decryptString } from '~utils/vault';
-import { selectAccountById, selectAssetsByAddress } from '~state/wallet';
+import { selectAccountById, selectAssetsByAddressAndSymbol } from '~state/wallet';
 import useQuery from '~hooks/useQuery';
 import { isJsonString } from '~utils/common';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
@@ -23,27 +23,29 @@ import { Principal } from '@dfinity/principal';
 
 const MIN_LENGTH = 6;
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 
 
 const ListNFT = ({
     match: {
-        params: { address },
+        params: { accountId },
     },
 }: Props) => {
 
     const history = useHistory();
 
     const [selectedAmount, setSelectedAmount] = useState<number>(0);
-    const selectedAccount = useSelector(selectAccountById(address));
+    const selectedAccount = useSelector(selectAccountById(accountId));
+    const { address, symbol } = selectedAccount;
+    
     const [selectedAsset, setSelectedAsset] = useState<string>('');
     const [selectedAssetObj, setSelectedAssetObj] = useState<keyable>({});
     const [cancelListing, setCancelListing] = useState<boolean>(false);
 
     const [txCompleteTxt, setTxCompleteTxt] = useState<string>('');
 
-    const assets: keyable = useSelector(selectAssetsByAddress(address));
+    const assets: keyable = useSelector(selectAssetsByAddressAndSymbol(address, symbol));
 
     const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.tokenIdentifier === assetId)[0]
 

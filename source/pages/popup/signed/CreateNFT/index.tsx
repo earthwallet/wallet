@@ -12,8 +12,10 @@ import { getBalance, getTransactions } from '@earthwallet/keyring';
 import moment from 'moment-mini';
 import { getShortAddress } from '~utils/common';
 import { ClipLoader } from 'react-spinners';
+import { useSelector } from 'react-redux';
+import { selectAccountById } from '~state/wallet';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
   className?: string;
 }
 interface keyable {
@@ -22,10 +24,14 @@ interface keyable {
 const Transactions = ({
   match: {
     params: {
-      address,
+      accountId,
     },
   },
 }: Props) => {
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+
+  
   const history = useHistory();
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);

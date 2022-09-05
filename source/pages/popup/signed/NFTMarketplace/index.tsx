@@ -12,14 +12,14 @@ import { getSymbol } from '~utils/common';
 import millify from "millify";
 
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
     className?: string;
 }
 
 const NFTMarketplace = ({
     match: {
         params: {
-            address,
+            accountId,
         },
     },
 }: Props) => {
@@ -39,11 +39,11 @@ const NFTMarketplace = ({
                     .sort((a: keyable, b: keyable) => a.order - b.order)
                     .sort((a: keyable, b: keyable) => b.total - a.total)
                     .map((nftObj: keyable) => nftObj.id == 'vsjkh-vyaaa-aaaak-qajgq-cai'
-                        ? <EarthCollections address={address} />
+                        ? <EarthCollections accountId={accountId} />
                         : <div
                             key={nftObj.id}
                             className={styles.nft}
-                            onClick={() => history.push(`/nft/collection/${nftObj.id}?address=${address}`)}
+                            onClick={() => history.push(`/nft/collection/${nftObj.id}?accountId=${accountId}`)}
                         >
                             <MarketplaceCard
                                 price={nftObj?.floor ? millify(nftObj?.floor * currentUSDValue?.usd, {
@@ -63,14 +63,14 @@ const NFTMarketplace = ({
     )
 }
 
-const EarthCollections = ({ address }: { address: string }) => {
+const EarthCollections = ({ accountId }: { accountId: string }) => {
     const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
     const history = useHistory();
     const collections = useSelector(selectAllCollectionInfo());
     return (<>{collections.map((nftObj: keyable, index: number) => <div
         key={index}
         className={styles.nft}
-        onClick={() => history.push(`/nft/collection/${nftObj.id}?address=${address}`)}
+        onClick={() => history.push(`/nft/collection/${nftObj.id}?accountId=${accountId}`)}
     >
         <MarketplaceCard
             price={nftObj?.floor ? millify(nftObj?.floor * currentUSDValue?.usd, {

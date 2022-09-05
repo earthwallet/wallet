@@ -33,7 +33,7 @@ const NFTCollection = ({
     const [loading, setLoading] = useState<boolean>(false);
     const [listings, setListings] = useState<keyable>([]);
     const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
-    const address: string = queryParams.get('address') || '';
+    const accountId: string = queryParams.get('accountId') || '';
     const nftObj = useSelector(selectStatsOfCollection(collectionId));
     console.log(nftCollObj, collectionId, 'NFTCollection');
 
@@ -139,7 +139,7 @@ const NFTCollection = ({
                 />) : listings.map((nftObj: keyable) => <div
                     key={nftObj?.tokenId}
                     className={styles.nftcardcont}
-                    onClick={() => history.push(`/nft/buy/${nftObj?.tokenId}?price=${nftObj?.price}&address=${address}&type=${nftCollObj.type}`)}
+                    onClick={() => history.push(`/nft/buy/${nftObj?.tokenId}?price=${nftObj?.price}&accountId=${accountId}&type=${nftCollObj.type}`)}
                 >
                     <NFTCard
                         id={nftObj?.id}

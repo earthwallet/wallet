@@ -25,7 +25,7 @@ import { selectAssetsICPCountByAddress } from '~state/wallet';
 import { ClipLoader } from 'react-spinners';
 import { getTransactions_ETH } from '~utils/services';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 interface keyable {
   [key: string]: any
@@ -33,7 +33,7 @@ interface keyable {
 
 const Wallet = ({
   match: {
-    params: { address },
+    params: { accountId },
   },
 }: Props) => {
 
@@ -41,8 +41,9 @@ const Wallet = ({
   const { show } = useToast();
 
   const _onCopy = useCallback((): void => show('Copied'), [show]);
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
 
-  const selectedAccount = useSelector(selectAccountById(address));
   const history = useHistory();
 
 

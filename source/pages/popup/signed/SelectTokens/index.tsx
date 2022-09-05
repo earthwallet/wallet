@@ -18,19 +18,23 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
 import { selectActiveTokensByAddress, selectTokensInfo } from '~state/tokens';
 import { keyable } from '~scripts/Background/types/IAssetsController';
+import { selectAccountById } from '~state/wallet';
 //import { useSelector } from 'react-redux';
 //import { selectActiveAccountsByGroupId } from '~state/wallet';
 //import { LIVE_SYMBOLS_OBJS } from '~global/constant';
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 
 const SelectTokens = ({
   match: {
-    params: { address },
+    params: { accountId },
   },
 }: Props) => {
   const controller = useController();
   const history = useHistory();
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+  
   const tokenInfos = useSelector(selectTokensInfo(address));
   const tokens = useSelector(selectActiveTokensByAddress(address));
   const [checkedArr, setCheckedArr] = useState<string[]>([]);

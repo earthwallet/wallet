@@ -724,11 +724,12 @@ export default class AssetsController implements IAssetsController {
     identityJSON: string,
     asset: keyable,
     price: number,
-    address: string,
+    accountId: string,
     callback?: (path: string) => void
   ) => {
     const nftId = asset.id;
     const state = store.getState();
+    const { address } = state.entities.accounts.byId[accountId];
 
     if (state.entities.txnRequests == null) {
       store.dispatch(createEntity({ entity: 'txnRequests' }));
@@ -929,7 +930,7 @@ export default class AssetsController implements IAssetsController {
           ],
         })
       );
-      callback && callback(`/nft/bought/${nftId}?address=${address}`);
+      callback && callback(`/nft/bought/${nftId}?accountId=${accountId}`);
       //setIsBusy(false);
     }
   };

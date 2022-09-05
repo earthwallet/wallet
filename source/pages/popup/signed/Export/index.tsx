@@ -28,14 +28,15 @@ const {
 } = new StringCrypto();
 const MIN_LENGTH = 6;
 
-interface Props extends RouteComponentProps<{ address: string }> { }
+interface Props extends RouteComponentProps<{ accountId: string }> { }
 
 function Export({
   match: {
-    params: { address },
+    params: { accountId },
   },
 }: Props): React.ReactElement<Props> {
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
 
   const [isBusy, setIsBusy] = useState(false);
   const [pass, setPass] = useState('');
