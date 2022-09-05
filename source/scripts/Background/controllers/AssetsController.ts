@@ -19,8 +19,9 @@ import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import getBrowserFingerprint from 'get-browser-fingerprint';
 import {
-  getERC721_ETH,
+  getERC721,
   getETHAssetInfo,
+  getETHAssetInfo_MATIC,
   registerExtensionAndAccounts,
   statusExtension,
 } from '~utils/services';
@@ -99,6 +100,7 @@ export default class AssetsController implements IAssetsController {
           entity: 'assets',
           data: [
             {
+              symbol: 'ICP',
               id: getTokenIdentifier(collectionId, item[0]),
               index: item[0],
               tokenIndex: item[0],
@@ -464,7 +466,7 @@ export default class AssetsController implements IAssetsController {
         entity: 'assetsCount',
         data: [
           {
-            id: account.address,
+            id: account.id,
             symbol: account.symbol,
             loading: true,
             error: false,
@@ -474,12 +476,15 @@ export default class AssetsController implements IAssetsController {
     );
 
     try {
-      allTokens[0] = await getERC721_ETH(account.address);
+      allTokens[0] = await getERC721(account.address, account.symbol);
 
       let tokens = allTokens.flat();
       const tokensWithId = tokens.map((asset: keyable) => ({
         ...asset,
-        ...{ id: asset.contractAddress + '_WITH_' + asset.tokenID },
+        ...{
+          id: asset.contractAddress + '_WITH_' + asset.tokenID,
+          symbol: account.symbol,
+        },
       }));
       const tokensRepeatCount = tokensWithId.reduce(
         (acc: { [x: string]: number }, curr: { id: any }) => {
@@ -499,7 +504,7 @@ export default class AssetsController implements IAssetsController {
             entity: 'assetsCount',
             data: [
               {
-                id: account.address,
+                id: account.id,
                 symbol: account.symbol,
                 count: 0,
                 loading: false,
@@ -513,7 +518,7 @@ export default class AssetsController implements IAssetsController {
             entity: 'assetsCount',
             data: [
               {
-                id: account.address,
+                id: account.id,
                 symbol: account.symbol,
                 count: tokensAfterRemovingOutTokens.length,
                 loading: false,
@@ -526,7 +531,7 @@ export default class AssetsController implements IAssetsController {
           state.entities.assets?.byId &&
           Object.keys(state.entities.assets?.byId)
             ?.map((id) => state.entities.assets.byId[id])
-            .filter((assets) => assets.address === account.address);
+            .filter((assets) => assets.address == account.address);
         const existingCount = existingAssets?.length;
 
         if (existingCount != tokensAfterRemovingOutTokens?.length) {
@@ -546,7 +551,7 @@ export default class AssetsController implements IAssetsController {
             ...token,
             id,
             tokenIndex: token.tokenID,
-            symbol: 'ETH',
+            symbol: account.symbol,
             address: account.address,
           };
           if (
@@ -571,7 +576,7 @@ export default class AssetsController implements IAssetsController {
           entity: 'assetsCount',
           data: [
             {
-              id: account.address,
+              id: account.id,
               symbol: account.symbol,
               count: 0,
               loading: false,
@@ -583,6 +588,7 @@ export default class AssetsController implements IAssetsController {
       );
     }
   };
+
   getAssetsOfAccountsGroup = async (accountsGroup: keyable[][]) => {
     console.log('getAssetsOfAccountsGroup', accountsGroup);
     for (const accounts of accountsGroup) {
@@ -591,7 +597,7 @@ export default class AssetsController implements IAssetsController {
 
         if (account.symbol === 'ICP') {
           this.getICPAssetsOfAccount(account);
-        } else if (account.symbol == 'ETH') {
+        } else if (account.symbol == 'ETH' || account.symbol == 'MATIC') {
           this.getETHAssetsOfAccount(account);
         }
       }
@@ -936,14 +942,27 @@ export default class AssetsController implements IAssetsController {
   };
 
   updateETHAssetInfo = async (asset: keyable) => {
-    const response = await getETHAssetInfo(asset);
+    let response;
+    try {
+      if (asset?.symbol == 'ETH') {
+        response = await getETHAssetInfo(asset);
+      } else if (asset?.symbol == 'MATIC') {
+        response = await getETHAssetInfo_MATIC(asset);
+        console.log(response, 'getETHAssetInfo_MATIC', asset);
+      }
+    } catch (error) {}
     store.dispatch(
       updateEntities({
         entity: 'assets',
         key: asset.id,
         data: {
-          tokenImage: response?.media[0].gateway,
-          description: response?.description,
+          video: response?.metadata?.animation_url,
+          tokenImage:
+            response?.image_url ||
+            (response?.media[0] && response?.media[0]?.gateway) ||
+            response?.image,
+          description:
+            response?.asset_contract?.description || response?.description,
           collectionImage: response?.asset_contract?.image_url,
         },
       })

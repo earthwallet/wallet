@@ -664,19 +664,23 @@ export const getTransactions_ETH = async (address: string) => {
   return txns;
 };
 
-export const getERC721_ETH = async (address: string) => {
+export const getERC721 = async (address: string, symbol?: string) => {
   const config: AxiosRequestConfig = {
     method: 'get',
-    url: `https://api.etherscan.io/api?module=account&action=tokennfttx&address=${address}&sort=asc&apikey=${ETHERSCAN_API_KEY}`,
+    url:
+      symbol == 'MATIC'
+        ? `https://api.polygonscan.com/api?module=account&action=tokennfttx&address=${address}&sort=asc&apikey=${POLYGONSCAN_API_KEY}`
+        : `https://api.etherscan.io/api?module=account&action=tokennfttx&address=${address}&sort=asc&apikey=${ETHERSCAN_API_KEY}`,
     headers: {},
   };
 
-  let serverRes;
+  let serverRes: keyable;
   try {
     const response = await axios(config);
     serverRes = response.data?.result;
-  } catch (error) {
+  } catch (error: any) {
     serverRes = error;
+    serverRes.error = true;
   }
   return serverRes;
 };
@@ -684,8 +688,37 @@ export const getERC721_ETH = async (address: string) => {
 //https://docs.opensea.io/reference/retrieving-a-single-asset
 export const getETHAssetInfo = async (asset: keyable) => {
   const config: AxiosRequestConfig = {
-    method: 'GET',
-    url: `https://eth-mainnet.g.alchemy.com/nft/v2/${ALCHEMY_ETH_API_KEY}/getNFTMetadata?contractAddress=${asset.contractAddress}&tokenId=${asset.tokenIndex}`,
+    method: "GET",
+    url: `https://api.opensea.io/api/v1/asset/${asset.contractAddress}/${asset.tokenIndex}/`,
+    params: { include_orders: "false" },
+  };
+
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    const configAlch: AxiosRequestConfig = {
+      method: "GET",
+      url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}/getNFTMetadata?contractAddress=${asset.contractAddress}&tokenId=${asset.tokenIndex}`,
+      headers: {},
+    };
+    try {
+      const responseAlch = await axios(configAlch);
+      serverRes = responseAlch.data;
+    } catch (error) {
+      serverRes = error;
+    }
+  }
+  return serverRes;
+};
+
+//https://docs.opensea.io/reference/retrieving-a-single-asset
+export const getETHAssetInfo_MATIC = async (asset: keyable) => {
+  //alert(ALCHEMY_ETH_API_KEY + ' getETHAssetInfo_MATIC');
+  const config: AxiosRequestConfig = {
+    method: "GET",
+    url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_POLYGON_API_KEY}/getNFTMetadata?contractAddress=${asset.contractAddress}&tokenId=${asset.tokenIndex}`,
     headers: {},
   };
 

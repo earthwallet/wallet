@@ -133,7 +133,7 @@ export const ICP_NFT_LIST = [
   {
     name: 'ICPuppies',
     id: 'njgly-uaaaa-aaaah-qb6pa-cai',
-    isLive: true,
+    isLive: false,
     type: 'EXT',
     order: 6,
     description: '10,000 randomly generated 8-bit puppy NFTs',

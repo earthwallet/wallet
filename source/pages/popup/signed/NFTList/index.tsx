@@ -79,7 +79,7 @@ const NFTList = ({
 
 export const AssetsList = ({ accountId }: { accountId: string }) => {
     const selectedAccount = useSelector(selectAccountById(accountId));
-    const {address, symbol} = selectedAccount;
+    const { address, symbol } = selectedAccount;
     const loading: boolean = useSelector(selectAssetsICPCountLoadingByAddress(address));
     const airdropAsset = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
@@ -214,7 +214,7 @@ const ExploreCollections = ({ address }: { address: string }) => {
 
 export const AssetsCoverflow = ({ accountId }: { accountId: string }) => {
     const selectedAccount = useSelector(selectAccountById(accountId));
-    const {address, symbol} = selectedAccount;
+    const { address, symbol } = selectedAccount;
 
     const assets: keyable = useSelector(selectAssetsByAddressAndSymbol(address, symbol));
     const airdropAsset = getAirDropNFTInfo();

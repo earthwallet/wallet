@@ -159,7 +159,7 @@ export const selectAssetsByAddressAndSymbol =
       Object.keys(state.entities.assets?.byId)
         ?.map((id) => state.entities.assets.byId[id])
         .filter(
-          (assets) => assets.address === address && assets.symbol == symbol
+          (assets) => assets.address == address && assets.symbol == symbol
         )
     );
   };
