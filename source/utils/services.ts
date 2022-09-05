@@ -1,10 +1,18 @@
 import { decodeTokenId } from '@earthwallet/assets';
 import axios, { AxiosRequestConfig } from 'axios';
 import { keyable } from '~scripts/Background/types/IAssetsController';
-var web3 = require('web3');
+import { BigNumber, ethers } from 'ethers';
+import { ALCHEMY_ETH_API_KEY, ALCHEMY_POLYGON_API_KEY, ETHERSCAN_API_KEY, ETH_MAINNET_ALCHEMY, POLYGONSCAN_API_KEY, POLY_ALCHEMY } from '~global/config';
+import { hexToNumber, hexToNumberString } from 'web3-utils';
+//@ts-ignore
+import IERC721 from './abi/IERC721';
+//@ts-ignore
 
-const ETHERSCAN_API_KEY = 'C64M8N55WWFJHHT4WF3ZNVU7SYDXFG4QT1';
-const ALCHEMY_API_KEY = 'WGaCcGcGiHHQrxew6bZZ9r2qMsP8JS80';
+import IERC20 from './abi/IERC20';
+
+import { Interface } from 'ethers/lib/utils';
+
+var web3 = require('web3');
 
 const AIRDROP_FIREBASE_URL =
   'https://us-central1-earthwallet-1f3ab.cloudfunctions.net';
@@ -140,13 +148,13 @@ export const getDefaultTokensErc20_ETH = async () => {
     headers: {
       'Content-Type': 'application/json',
     },
-    params: ['0x29bc7f4bfc7301b3ddb5c9c4348360fc0ad52ca8', 'DEFAULT_TOKENS'],
+    params: ['0x0000000000000000000000000000000000000000', 'DEFAULT_TOKENS'],
     id: 42,
   });
 
   const config: AxiosRequestConfig = {
     method: 'post',
-    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -180,7 +188,7 @@ export const getDefaultTokensErc20_ETH = async () => {
 
     const metadataConfig: AxiosRequestConfig = {
       method: 'post',
-      url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+      url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -205,23 +213,27 @@ export const getDefaultTokensErc20_ETH = async () => {
   return serverRes;
 };
 
-export const getBalanceERC20_ETH = async (address: string) => {
+export const getBalanceERC20 = async (
+  address: string,
+  symbol: string,
+  tokens?: keyable
+) => {
   const data = JSON.stringify({
     jsonrpc: '2.0',
     method: 'alchemy_getTokenBalances',
     headers: {
       'Content-Type': 'application/json',
     },
-    params: [
-      address,
-      'DEFAULT_TOKENS',
-    ],
+    params: [address, tokens || 'DEFAULT_TOKENS'],
     id: 42,
   });
 
   const config: AxiosRequestConfig = {
     method: 'post',
-    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+    url:
+      symbol == 'ETH'
+        ? `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`
+        : `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_POLYGON_API_KEY}`,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -233,20 +245,16 @@ export const getBalanceERC20_ETH = async (address: string) => {
   const response = await axios(config);
 
   // Get balances
-  const balances = response['data']['result'];
+  const balances = response?.data?.result;
 
-  // Remove tokens with zero balance
   defaultTokenBalances = balances['tokenBalances'].map((token: keyable) => ({
     ...token,
-    tokenBalance: web3.utils.hexToNumberString(token.tokenBalance),
+    tokenBalance: hexToNumberString(token.tokenBalance),
   }));
 
-  // Counter for SNo of final output
   let i = 0;
 
-  // Loop through all tokens with non-zero balance
   for (const token of defaultTokenBalances) {
-    // Get balance of token
     let balance = token['tokenBalance'];
 
     serverRes[i] = {
@@ -254,10 +262,166 @@ export const getBalanceERC20_ETH = async (address: string) => {
       ...{ balance },
     };
     i++;
-    // Print name, balance, and symbol of token
-    console.log(`${i}. ${balance} getBalanceERC20_ETH`);
   }
   return serverRes;
+};
+
+export const getERC20Info_ETH = async (address: string) => {
+  const config: AxiosRequestConfig = {
+    method: 'get',
+    url: `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}`,
+    headers: {},
+  };
+
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    serverRes = error;
+  }
+  return serverRes;
+};
+
+export const getERC20Meta = async (address: string, symbol: string) => {
+  const metadataParams = JSON.stringify({
+    jsonrpc: '2.0',
+    method: 'alchemy_getTokenMetadata',
+    params: [`${address}`],
+    id: 42,
+  });
+
+  //  const config: AxiosRequestConfig = {
+
+  const metadataConfig: AxiosRequestConfig = {
+    method: 'post',
+    url:
+      symbol == 'ETH'
+        ? `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`
+        : `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_POLYGON_API_KEY}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: metadataParams,
+  };
+
+  const respo2 = await axios(metadataConfig);
+  const metadata = respo2?.data?.result;
+
+  return metadata;
+};
+
+export const getERC20TokensListFromTxs = async (
+  address: string,
+  symbol?: string
+) => {
+  const config: AxiosRequestConfig = {
+    method: 'get',
+    url: `https://api.polygonscan.com/api?module=account&action=tokentx&address=${address}&page=1&offset=100&startblock=0&endblock=99999999&sort=asc&apikey=${POLYGONSCAN_API_KEY}`,
+    headers: {},
+  };
+
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data?.result?.map((a: keyable) => a.contractAddress);
+  } catch (error) {
+    serverRes = error;
+  }
+  return serverRes;
+};
+
+export const transferERC721 = async (
+  contractAddress: string,
+  recipientAddress: string,
+  fromAddress: string,
+  tokenId: number,
+  mnemonic: string,
+  symbol: string,
+  maxPriorityFeePerGas: string,
+  maxFeePerGas: string
+) => {
+  const provider = new ethers.providers.AlchemyProvider(
+    symbol == 'MATIC' ? 'matic' : 'homestead',
+    symbol == 'MATIC' ? ALCHEMY_POLYGON_API_KEY : ALCHEMY_ETH_API_KEY
+  );
+  const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+  const sendingWallet = new ethers.Wallet(wallet.privateKey, provider);
+
+  const erc721Contract = new ethers.Contract(
+    contractAddress,
+    IERC721.abi,
+    sendingWallet
+  );
+  let transaction;
+  // //Estimate gas limit
+  // const gasPrice = await provider.getGasPrice();
+  // console.log(gasPrice, 'transferERC721 gasPrice')
+  // console.log(["safeTransferFrom(address,address,uint256)"],fromAddress, recipientAddress, BigNumber.from(tokenId), { gasPrice }, 'transferERC721 gasPrice');
+
+  // const gasLimit = await erc721Contract.estimateGas["safeTransferFrom(address,address,uint256)"](fromAddress, recipientAddress, BigNumber.from(tokenId), { gasPrice });
+  //   console.log(gasLimit, gasPrice, 'transferERC721')
+  // //Call the safetransfer method
+  // transaction = await erc721Contract["safeTransferFrom(address,address,uint256)"](fromAddress, recipientAddress, BigNumber.from(tokenId), { gasLimit });
+  // //Wait for the transaction to complete
+  // await transaction.wait();
+
+  // console.log("Transaction Hash: ", transaction.hash);
+  const gasLimit = await erc721Contract.estimateGas[
+    'safeTransferFrom(address,address,uint256)'
+  ](fromAddress, recipientAddress, BigNumber.from(tokenId));
+  console.log(gasLimit, 'gasLimit transferERC721');
+  transaction = await erc721Contract[
+    'safeTransferFrom(address,address,uint256)'
+  ](fromAddress, recipientAddress, BigNumber.from(tokenId), {
+    maxPriorityFeePerGas: ethers.utils.parseUnits(
+      (parseFloat(maxPriorityFeePerGas) * 2).toString(),
+      'gwei'
+    ),
+    maxFeePerGas: ethers.utils.parseUnits(
+      (parseFloat(maxFeePerGas) * 2).toString(),
+      'gwei'
+    ),
+  });
+  return transaction;
+};
+
+export const transferERC20 = async (
+  contractAddress: string,
+  recipientAddress: string,
+  amount: string,
+  mnemonic: string,
+  symbol: string,
+  maxPriorityFeePerGas: string,
+  maxFeePerGas: string,
+  decimals: number
+) => {
+  const provider = new ethers.providers.AlchemyProvider(
+    symbol == 'MATIC' ? 'matic' : 'homestead',
+    symbol == 'MATIC' ? ALCHEMY_POLYGON_API_KEY : ALCHEMY_ETH_API_KEY
+  );
+  const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+  const sendingWallet = new ethers.Wallet(wallet.privateKey, provider);
+
+  const erc20Contract = new ethers.Contract(
+    contractAddress,
+    IERC20.abi,
+    sendingWallet
+  );
+
+  const transaction = await erc20Contract.transfer(
+    recipientAddress,
+    ethers.utils.parseUnits(amount.toString(), decimals.toString()),
+    {
+      maxPriorityFeePerGas: ethers.utils.parseUnits(
+        maxPriorityFeePerGas,
+        'gwei'
+      ),
+      maxFeePerGas: ethers.utils.parseUnits(maxFeePerGas, 'gwei'),
+    }
+  );
+
+  return transaction;
 };
 
 export const getBalance_ETH = async (address: string) => {
@@ -270,7 +434,7 @@ export const getBalance_ETH = async (address: string) => {
 
   const config: AxiosRequestConfig = {
     method: 'post',
-    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -456,13 +620,13 @@ export const getTransactions_ETH = async (address: string) => {
     method: 'post',
     headers: { 'Content-Type': 'application/json' },
     data: data,
-    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`,
   };
   const toConfig: AxiosRequestConfig = {
     method: 'post',
     headers: { 'Content-Type': 'application/json' },
     data: toTransfersData,
-    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`,
   };
 
   let serverRes: any = [];
@@ -507,28 +671,11 @@ export const getERC721_ETH = async (address: string) => {
   return serverRes;
 };
 
-export const getERC20Info_ETH = async (address: string) => {
-  const config: AxiosRequestConfig = {
-    method: 'get',
-    url: `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}`,
-    headers: {},
-  };
-
-  let serverRes;
-  try {
-    const response = await axios(config);
-    serverRes = response.data;
-  } catch (error) {
-    serverRes = error;
-  }
-  return serverRes;
-};
-
 //https://docs.opensea.io/reference/retrieving-a-single-asset
 export const getETHAssetInfo = async (asset: keyable) => {
   const config: AxiosRequestConfig = {
     method: 'GET',
-    url: `https://eth-mainnet.g.alchemy.com/nft/v2/${ALCHEMY_API_KEY}/getNFTMetadata?contractAddress=${asset.contractAddress}&tokenId=${asset.tokenIndex}`,
+    url: `https://eth-mainnet.g.alchemy.com/nft/v2/${ALCHEMY_ETH_API_KEY}/getNFTMetadata?contractAddress=${asset.contractAddress}&tokenId=${asset.tokenIndex}`,
     headers: {},
   };
 
@@ -550,4 +697,55 @@ export const getTokenInfoFromTokenId = (nftId: string) => {
   } else {
     return decodeTokenId(nftId);
   }
+};
+
+//https://github.com/ethers-io/ethers.js/issues/478
+export const getERC20TransferGasLimit = async (
+  contractAddress: string,
+  fromAddress: string,
+  toAddress: string,
+  symbol: string,
+  amount?: string,
+  decimals?: any
+) => {
+  const erc20Interface = new Interface(IERC20.abi);
+  const hexData = erc20Interface.encodeFunctionData("transfer", [
+    toAddress || "0x0000000000000000000000000000000000000000",
+    amount == undefined
+      ? 100000
+      : ethers.utils.parseUnits(amount.toString(), decimals.toString()),
+  ]);
+
+  const data = JSON.stringify({
+    jsonrpc: "2.0",
+    method: "eth_estimateGas",
+    params: [
+      {
+        from: fromAddress,
+        to: contractAddress,
+        data: hexData,
+      },
+    ],
+    id: 1,
+  });
+
+  const config: AxiosRequestConfig = {
+    method: "post",
+    url: symbol == "MATIC" ? POLY_ALCHEMY : ETH_MAINNET_ALCHEMY,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    serverRes = error;
+  }
+  const gasLimit =
+    serverRes.result == undefined ? 65000 : hexToNumber(serverRes.result);
+  return gasLimit;
 };

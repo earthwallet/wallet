@@ -152,14 +152,16 @@ export const DEFAULT_SYMBOLS = [
     order: 13,
   },
   {
-    name: 'Polygon',
+    name: "Polygon",
     icon: ICON_MATIC,
-    symbol: 'MATIC',
-    coinGeckoId: 'matic-network',
-    isLive: false,
-    preGenerate: false,
-    order: 3,
+    symbol: "MATIC",
+    coinGeckoId: "matic-network",
+    isLive: true,
+    isActive: true,
+    preGenerate: true,
+    order: 9,
     evmChain: true,
+    chainId: 137,
   },
 ];
 

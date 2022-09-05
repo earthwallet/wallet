@@ -56,53 +56,6 @@ export default class AccountsController implements IAccountsController {
     }
   }
 
-  async createOrUpdateAccount(
-    mnemonic: string,
-    symbol: string,
-    name: string,
-    password: string,
-    callback?: (address: string) => void
-  ) {
-    const existingActiveAccount = store.getState().activeAccount;
-
-    const keypair = await createWallet(mnemonic, symbol);
-
-    if (
-      existingActiveAccount !== null &&
-      existingActiveAccount?.address !== keypair.address
-    ) {
-      store.dispatch(updateActiveAccount({ id: keypair.address, ...keypair }));
-    }
-
-    store.dispatch(
-      storeEntities({
-        entity: 'accounts',
-        data: [
-          {
-            meta: {
-              name,
-              createdAt: Math.round(new Date().getTime() / 1000),
-              publicKey: keypair.publicKey,
-              type: keypair.type,
-            },
-            vault: {
-              encryptedMnemonic: encryptString(mnemonic, password),
-              encryptedJson: encryptString(
-                JSON.stringify(keypair.identity.toJSON()),
-                password
-              ),
-              encryptionType: 'AES',
-            },
-            symbol,
-            id: keypair.address,
-          },
-        ],
-      })
-    );
-    //clear new mnemonic
-    store.dispatch(updateNewMnemonic(''));
-    callback && callback(keypair.address);
-  }
 
   getBalance = async (address: string, symbol = 'ICP') => {
     const balance = await _getBalance(address, symbol);
@@ -343,8 +296,7 @@ export default class AccountsController implements IAccountsController {
       for (const account of accounts) {
         let currentBalance = state.entities.balances.byId[account.id];
         const decimals = currentBalance?.currency?.decimals;
-        if (decimals === undefined) {
-          total = 0;
+        if (decimals == undefined) {
           store.dispatch(
             updateEntities({
               entity: 'balances',
@@ -382,7 +334,6 @@ export default class AccountsController implements IAccountsController {
               data: [{ balanceInUSD: total, id: account.groupId }],
             })
           );
-          // do your thing
         }
       }
     }
@@ -404,9 +355,12 @@ export default class AccountsController implements IAccountsController {
     let index = 0;
     const groupId = (await createWallet(mnemonic, GROUP_ID_SYMBOL)).address;
     for (const symbol of symbols) {
+      const symbolInfo = getInfoBySymbol(symbol);
       const keypair = await createWallet(mnemonic, symbol);
       let data = {
-        id: keypair.address,
+        id: symbolInfo?.evmChain
+        ? symbol + ":" + keypair.address
+        : keypair.address,
         groupId,
         ...keypair,
         meta: {

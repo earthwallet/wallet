@@ -75,6 +75,7 @@
     "string-crypto": "2.0.2",
     "swiper": "5.4.5",
     "uuid": "8.3.2",
+    "web3-utils": "^1.7.5",
     "webext-base-css": "1.3.1",
     "webext-redux": "2.1.7",
     "webextension-polyfill-ts": "0.25.0"
