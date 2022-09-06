@@ -24,13 +24,19 @@ import { getSymbol } from '~utils/common';
 import { getInfoBySymbol, GROUP_ID_SYMBOL } from '~global/constant';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { principal_to_address } from '@earthwallet/assets';
-import { getBalance_ETH, getBalanceMatic } from '~utils/services';
+import {
+  getBalance_ETH,
+  getBalanceMatic,
+  transferERC721,
+  transferERC20,
+} from '~utils/services';
 import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
-import { OpenSeaPort, Network } from 'opensea-js';
-import HDWalletProvider from '@truffle/hdwallet-provider';
-import { ALCHEMY_ETH_API_KEY } from '~global/config';
+import {
+  ETH_MAINNET_ALCHEMY_URL,
+  POLY_ALCHEMY_URL,
+} from '~global/config';
 
 interface keyable {
   [key: string]: any;
@@ -55,7 +61,6 @@ export default class AccountsController implements IAccountsController {
       console.log(error);
     }
   }
-
 
   getBalance = async (address: string, symbol = 'ICP') => {
     const balance = await _getBalance(address, symbol);
@@ -111,12 +116,13 @@ export default class AccountsController implements IAccountsController {
     selectedAmount: number,
     mnemonic: string,
     feesArr: keyable,
-    feesOptionSelected: number
+    feesOptionSelected: number,
+    symbol: string
   ) => {
     const wallet_tx = await createWallet(mnemonic, 'ETH');
 
     const web3 = createAlchemyWeb3(
-      `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`
+      symbol == 'ETH' ? ETH_MAINNET_ALCHEMY_URL : POLY_ALCHEMY_URL
     );
     const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
     const nonce = await web3.eth.getTransactionCount(
@@ -130,7 +136,7 @@ export default class AccountsController implements IAccountsController {
       to: selectedRecp,
       value: web3.utils.toWei(selectedAmount.toString(), 'ether'),
     };
-    const estimateGas = await web3.eth.estimateGas(transaction);
+    const estimateGas = '21000';
 
     const signedTx: keyable = await web3.eth.accounts.signTransaction(
       {
@@ -147,39 +153,62 @@ export default class AccountsController implements IAccountsController {
       },
       privateKey
     );
-    //send signed transaction
-    const result = await web3.eth.sendSignedTransaction(
-      signedTx?.rawTransaction
-    );
-    return result?.transactionHash;
+    const hash: string = await new Promise(async (resolve) => {
+      await web3.eth
+        .sendSignedTransaction(signedTx?.rawTransaction)
+        .once('transactionHash', (hash) => {
+          resolve(hash);
+        });
+      console.log("We've finished");
+    });
+    return hash;
   };
 
   sendERC721_ETH = async (
     selectedRecp: string,
     fromAddress: string,
     mnemonic: string,
-    selectedAssetObj: keyable
+    selectedAssetObj: keyable,
+    feesArr: keyable,
+    feesOptionSelected: number,
+    symbol: string
   ) => {
-    const provider = new HDWalletProvider({
-      mnemonic: mnemonic,
-      providerOrUrl:
-        `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`,
-      addressIndex: 0,
-    });
+    const resp = await transferERC721(
+      selectedAssetObj?.contractAddress,
+      selectedRecp,
+      fromAddress,
+      selectedAssetObj?.tokenID,
+      mnemonic,
+      symbol,
+      feesArr[feesOptionSelected]?.suggestedMaxPriorityFeePerGas,
+      feesArr[feesOptionSelected]?.suggestedMaxFeePerGas
+    );
 
-    const seaport = new OpenSeaPort(provider, {
-      networkName: Network.Main,
-    });
+    return resp.hash;
+  };
 
-    const result = await seaport.transfer({
-      fromAddress: fromAddress,
-      toAddress: selectedRecp,
-      asset: {
-        tokenAddress: selectedAssetObj?.contractAddress,
-        tokenId: selectedAssetObj?.tokenIndex,
-      },
-    });
-    return result;
+
+  sendERC20_ETH = async (
+    selectedRecp: string,
+    selectedAmount: number,
+    mnemonic: string,
+    selectedAssetObj: keyable,
+    feesArr: keyable,
+    feesOptionSelected: number,
+    symbol: string
+  ) => {
+    const resp = await transferERC20(
+      selectedAssetObj?.contractAddress,
+      selectedRecp,
+      selectedAmount.toString(),
+      mnemonic,
+      symbol, 
+      feesArr[feesOptionSelected]?.suggestedMaxPriorityFeePerGas,
+      feesArr[feesOptionSelected]?.suggestedMaxFeePerGas,
+      selectedAssetObj?.decimals,
+    );
+
+    return resp.hash;
   };
 
   sendBTC = async (
@@ -359,8 +388,8 @@ export default class AccountsController implements IAccountsController {
       const keypair = await createWallet(mnemonic, symbol);
       let data = {
         id: symbolInfo?.evmChain
-        ? symbol + ":" + keypair.address
-        : keypair.address,
+          ? symbol + ':' + keypair.address
+          : keypair.address,
         groupId,
         ...keypair,
         meta: {

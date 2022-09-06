@@ -35,10 +35,11 @@ const NFTDetails = ({
     const [loading, setLoading] = useState(false);
     const controller = useController();
     const assetCollectionInfo: keyable = useSelector(selectCollectionInfo(canisterId || ''));
+    const accountId = asset.symbol == "MATIC" ?  `${asset.symbol}:${asset.address}` : asset.address;
 
     useEffect((): void => {
         setLoading(true);
-        if (asset.symbol != 'ETH') {
+        if (!(asset.symbol == 'ETH' || asset.symbol == 'MATIC')) {
             controller.assets.
                 updateTokenCollectionDetails(asset).then(() => setLoading(false))
         }
@@ -60,13 +61,13 @@ const NFTDetails = ({
             <div className={styles.fullImage}
                 style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
                 <div className={styles.actions}>
-                    <div onClick={() => history.push(`/account/send/${asset?.address}?assetId=${asset.id}`)}
+                    <div onClick={() => history.push(`/account/send/${accountId}?assetId=${asset.id}`)}
                         className={styles.action}>Transfer</div>
-                    {asset?.symbol != 'ETH' && <div
-                        onClick={() => history.push(`/account/listnft/${asset?.address}?assetId=${asset.id}`)}
+                    {(asset?.symbol == 'ICP') && <div
+                        onClick={() => history.push(`/account/listnft/${accountId}?assetId=${asset.id}`)}
                         className={clsx(styles.action, styles.secAction)}>{asset?.forSale ? 'Update' : 'List for Sale'}</div>}
                     {asset?.forSale && <div
-                        onClick={() => history.push(`/account/listnft/${asset?.address}?assetId=${asset.id}&cancel=true`)}
+                        onClick={() => history.push(`/account/listnft/${accountId}?assetId=${asset.id}&cancel=true`)}
                         className={clsx(styles.action, styles.secAction)}>Cancel</div>}
                 </div>
             </div>
@@ -91,15 +92,15 @@ const NFTDetails = ({
                                 currentTarget.onerror = null;
                                 currentTarget.src = ICON_PLACEHOLDER;
                             }}
-                            src={asset?.symbol == 'ETH'
+                            src={(asset?.symbol == 'ETH' || asset?.symbol == 'MATIC')
                                 ? ICON_PLACEHOLDER
                                 : asset?.type == 'EarthArt'
                                     ? getEarthArtCollectionIcon(canisterId)
                                     : assetCollectionInfo?.icon}
                             className={styles.creatorIcon}></img>
                         <div className={styles.creatorInfo}>
-                            <div className={styles.creatorTitle}>{asset?.symbol == 'ETH' ? asset.tokenName : assetCollectionInfo?.name}</div>
-                            <div className={styles.creatorSubtitle}>{asset?.symbol == 'ETH' ? asset.description : assetCollectionInfo?.description}</div>
+                            <div className={styles.creatorTitle}>{(asset?.symbol == 'ETH' || asset?.symbol == 'MATIC') ? asset.tokenName : assetCollectionInfo?.name}</div>
+                            <div className={styles.creatorSubtitle}>{(asset?.symbol == 'ETH' || asset?.symbol == 'MATIC') ? asset.description : assetCollectionInfo?.description}</div>
                         </div>
                     </div>
                 </div>

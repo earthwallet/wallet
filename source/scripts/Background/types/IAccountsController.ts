@@ -30,13 +30,26 @@ export interface IAccountsController {
     selectedAmount: number,
     mnemonic: string,
     feesArr: keyable,
-    feesOptionSelected: number
+    feesOptionSelected: number,
+    symbol: string
   ) => Promise<any>;
   sendERC721_ETH: (
     selectedRecp: string,
     fromAddress: string,
     mnemonic: string,
-    selectedAssetObj: keyable
+    selectedAssetObj: keyable,
+    feesArr: keyable,
+    feesOptionSelected: number,
+    symbol: string
+  ) => Promise<any>;
+  sendERC20_ETH: (
+    selectedRecp: string,
+    selectedAmount: number,
+    mnemonic: string,
+    selectedAssetObj: keyable,
+    feesArr: keyable,
+    feesOptionSelected: number,
+    symbol: string
   ) => Promise<any>;
   getBalancesOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   getBalancesOfAccount: (account: keyable) => Promise<void>;

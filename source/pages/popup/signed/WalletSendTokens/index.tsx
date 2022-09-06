@@ -15,7 +15,7 @@ import { principal_to_address } from '@earthwallet/keyring/build/main/util/icp';
 import { getSymbol } from '~utils/common';
 
 import { decryptString } from '~utils/vault';
-import { validateMnemonic, getFees, createWallet } from '@earthwallet/keyring';
+import { validateMnemonic, getFees } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
 import { selectBalanceById } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
@@ -32,10 +32,7 @@ import AddressInput from '~components/AddressInput';
 import { getTokenInfo } from '~global/tokens';
 import { selectInfoBySymbolOrToken } from '~state/tokens';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
-import { getERC20TransferGasLimit, getERC721TransferGasLimit, getFeesExtended, getFeesExtended_MATIC } from '~utils/services';
-import { createAlchemyWeb3 } from '@alch/alchemy-web3';
-import { ethers } from 'ethers';
-import { POLY_ALCHEMY_URL } from '~global/config';
+import { getERC20TransferGasLimit, getERC721TransferGasLimit, getFeesExtended } from '~utils/services';
 import { debounce } from 'lodash';
 
 const MIN_LENGTH = 6;
@@ -97,24 +94,7 @@ const WalletSendTokens = ({
     setSelectedAssetObj(getSelectedAsset(asset));
     setSelectedAmount(0);
     if (selectedAccount?.symbol == 'ETH' || selectedAccount?.symbol == 'MATIC') {
-      if (getSelectedAsset(selectedAsset)?.format == 'nft') {
-        //ERC721 Transfer estimate is 84904 as per etherscan
-        getFeesExtended(selectedAccount?.symbol, 84904).then(
-          (_feesArr: keyable[]) => {
-            setFeesOptionSelected(feesOptionSelected);
-            _feesArr[feesOptionSelected] &&
-              setFees(_feesArr[feesOptionSelected]?.gas);
-            setFeesArr(_feesArr);
-          }
-        );
-      } else {
-        getFeesExtended(selectedAccount?.symbol).then((_feesArr: keyable[]) => {
-          setFeesOptionSelected(feesOptionSelected);
-          _feesArr[feesOptionSelected] &&
-            setFees(_feesArr[feesOptionSelected]?.gas);
-          setFeesArr(_feesArr);
-        });
-      }
+      fetchFeesETH();
     }
   }, []);
 
@@ -280,78 +260,37 @@ const WalletSendTokens = ({
           mnemonic,
           address
         );
-      } else if (selectedAccount?.symbol == 'ETH') {
+      } else if (selectedAccount?.symbol == 'ETH' || selectedAccount?.symbol == 'MATIC') {
         if (selectedAsset === selectedAccount?.symbol) {
           hash = await controller.accounts.sendETH(
             selectedRecp,
             selectedAmount,
             mnemonic,
             feesArr,
-            feesOptionSelected
+            feesOptionSelected,
+            selectedAccount?.symbol
           );
         } else if (getSelectedAsset(selectedAsset)?.format == 'nft') {
           hash = await controller.accounts.sendERC721_ETH(
             selectedRecp,
             selectedAccount.address,
             mnemonic,
-            getSelectedAsset(selectedAsset)
+            getSelectedAsset(selectedAsset),
+            feesArr,
+            feesOptionSelected,
+            selectedAccount?.symbol
           );
+        } else if (getSelectedAsset(selectedAsset)?.format == "token") {
+          hash = await controller.accounts.sendERC20_ETH(
+            selectedRecp,
+            selectedAmount,
+            mnemonic,
+            getSelectedAsset(selectedAsset),
+            feesArr,
+            feesOptionSelected,
+            selectedAccount?.symbol)
         }
-      } else if (selectedAccount?.symbol == 'MATIC') {
-        //alert('do MATIC');
-
-        const wallet_tx = await createWallet(mnemonic, 'MATIC');
-
-        const web3 = createAlchemyWeb3(
-          `https://polygon-mainnet.g.alchemy.com/v2/${POLY_ALCHEMY_URL}`
-        );
-
-        const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
-
-        const nonce = await web3.eth.getTransactionCount(
-          wallet_tx.address,
-          'latest'
-        );
-
-        const transaction = {
-          nonce: nonce,
-          from: wallet_tx.address,
-          to: selectedRecp,
-          value: web3.utils.toWei(selectedAmount.toString(), 'ether'),
-        };
-        // estimate gas usage. This is units. minimum cap being 21000 units
-        const estimateGas = await web3.eth.estimateGas(transaction);
-
-        // get gas prices
-
-        //
-        // const fee = await web3.eth.getMaxPriorityFeePerGas();
-        // console.log('fee', web3.utils.toBN(fee).toString());
-        const priorityFees: keyable = await getFeesExtended_MATIC();
-        // use 200% gas estimate as gas limit to be safe.
-        // sign transaction
-        const signedTx: keyable = await web3.eth.accounts.signTransaction(
-          {
-            gas: estimateGas,
-            maxPriorityFeePerGas: web3.utils.toWei(
-              priorityFees['fast']['maxPriorityFee'].toFixed(5),
-              'gwei'
-            ),
-            maxFeePerGas: web3.utils.toWei(
-              priorityFees['fast']['maxFee'].toFixed(5),
-              'gwei'
-            ),
-            ...transaction,
-          },
-          privateKey
-        );
-        //send signed transaction
-        const result = await web3.eth.sendSignedTransaction(
-          signedTx?.rawTransaction
-        );
-        console.log(result);
       }
-
       await controller.accounts
         .getBalancesOfAccount(selectedAccount)
         .then(() => { });
@@ -570,7 +509,7 @@ const WalletSendTokens = ({
                 tokenId={getSelectedAsset(selectedAsset)?.tokenId}
               />
               <div className={styles.assetSelectionDivCont}>
-                <div className={styles.earthInputLabel}>Asset</div>
+                <div className={styles.earthInputLabel}>Selected Asset</div>
                 <div className={styles.tokenSelectionDiv}>
                   {selectedAsset === selectedAccount?.symbol && (
                     <SelectedAsset
@@ -636,6 +575,7 @@ const WalletSendTokens = ({
               </div>
               {selectedAsset === selectedAccount?.symbol && (
                 <AmountInput
+                  selectedAssetObj={getSelectedAsset(selectedAsset)}
                   initialValue={selectedAmount.toString()}
                   accountId={accountId}
                   fees={fees}
@@ -646,6 +586,7 @@ const WalletSendTokens = ({
               {getSelectedAsset(selectedAsset) &&
                 getSelectedAsset(selectedAsset).format != 'nft' && (
                   <AmountInput
+                    selectedAssetObj={getSelectedAsset(selectedAsset)}
                     initialValue={selectedAmount.toString()}
                     accountId={accountId}
                     fees={fees}
@@ -691,7 +632,7 @@ const WalletSendTokens = ({
                 <div className={styles.confirmAmountCont}>
                   <img
                     className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
-                    src={getSymbol(selectedAccount?.symbol)?.icon}
+                    src={getSymbol(selectedAccount?.symbol)?.icon || ICON_PLACEHOLDER}
                     onError={({ currentTarget }) => {
                       currentTarget.onerror = null;
                       currentTarget.src = ICON_PLACEHOLDER;
@@ -714,7 +655,7 @@ const WalletSendTokens = ({
                 <div className={styles.confirmAmountCont}>
                   <img
                     className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
-                    src={getTokenInfo(selectedAsset)?.icon}
+                    src={getTokenInfo(selectedAsset)?.icon || ICON_PLACEHOLDER}
                     onError={({ currentTarget }) => {
                       currentTarget.onerror = null;
                       currentTarget.src = ICON_PLACEHOLDER;
@@ -740,7 +681,7 @@ const WalletSendTokens = ({
                 <div className={styles.confirmAmountCont}>
                   <img
                     className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
-                    src={getTokenImageURL(selectedAssetObj)}
+                    src={getTokenImageURL(selectedAssetObj) || ICON_PLACEHOLDER}
                     onError={({ currentTarget }) => {
                       currentTarget.onerror = null;
                       currentTarget.src = ICON_PLACEHOLDER;
@@ -928,7 +869,7 @@ const SelectedAsset = ({
   >
     <img
       className={styles.tokenLogo}
-      src={icon}
+      src={icon || ICON_PLACEHOLDER}
       onError={({ currentTarget }) => {
         currentTarget.onerror = null;
         currentTarget.src = ICON_PLACEHOLDER;
@@ -962,7 +903,7 @@ const AssetOption = ({
   >
     <img
       className={styles.tokenLogo}
-      src={icon}
+      src={icon || ICON_PLACEHOLDER}
       onError={({ currentTarget }) => {
         currentTarget.onerror = null;
         currentTarget.src = ICON_PLACEHOLDER;
@@ -995,6 +936,7 @@ const AmountInput = ({
   amountCallback,
   errorCallback,
   tokenId,
+  selectedAssetObj
 }: {
   accountId: string;
   fees: any;
@@ -1002,6 +944,7 @@ const AmountInput = ({
   amountCallback: (amount: number) => void;
   errorCallback: (error: string) => void;
   tokenId?: string;
+  selectedAssetObj?: keyable
 }) => {
   const selectedAccount = useSelector(selectAccountById(accountId));
 
@@ -1051,12 +994,17 @@ const AmountInput = ({
 
   const changeAmount = (amount: string) => {
     setInitialized(true);
-
     let maxAmount;
-    if (tokenInfo?.type == 'DIP20' || tokenInfo?.type == 'ERC20') {
+    if (tokenInfo?.type == "DIP20") {
       maxAmount = tokenInfo.balance / Math.pow(10, tokenInfo.decimals) - fees;
       maxAmount = parseFloat(maxAmount.toFixed(8));
-    } else {
+    } else if (tokenInfo?.type == "token" || tokenInfo?.type == "ERC20") {
+      maxAmount = tokenInfo.balance;
+      maxAmount = parseFloat(maxAmount.toFixed(8));
+    } else if (selectedAssetObj?.format == "nft") {
+      maxAmount = 1;
+    }
+    else {
       maxAmount =
         currentBalance?.value /
         Math.pow(10, currentBalance?.currency?.decimals) -
@@ -1090,7 +1038,7 @@ const AmountInput = ({
   return (
     <div>
       <div className={styles.earthInputLabel}>
-        Amount{' '}
+        Amount{' '}{tokenInfo.symbol}
         {selectedAccount?.symbol == 'ICP' && (
           <div onClick={() => loadMaxAmount()} className={styles.maxBtn}>
             Max

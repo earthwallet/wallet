@@ -3,6 +3,7 @@ import NFT_PLACEHOLDER from '~assets/images/nft_placeholder.png';
 import ICON_EARTH from '~assets/images/icon-512.png';
 import { decodeTokenId } from '@earthwallet/assets';
 import NFT_EARTH_DAY from '~assets/images/earthday_nft.png';
+import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 
 export const ICP_NFT_LIST = [
   {
@@ -250,8 +251,8 @@ export const getTokenCollectionInfo = (canisterId: string) =>
 export const getTokenImageURL = (asset: keyable) => {
   let imageURL = '';
 
-  if (asset?.symbol == 'ETH') {
-    return asset.tokenImage;
+  if (asset?.symbol == 'ETH' || asset?.symbol == 'MATIC') {
+    return asset.tokenImage || ICON_PLACEHOLDER;
   }
   if (asset?.type == 'EarthArt') {
     imageURL = `https://${asset?.canisterId}.raw.ic0.app/id/${asset?.tokenIndex}`;

@@ -385,11 +385,11 @@ export const transferERC721 = async (
     'safeTransferFrom(address,address,uint256)'
   ](fromAddress, recipientAddress, BigNumber.from(tokenId), {
     maxPriorityFeePerGas: ethers.utils.parseUnits(
-      (parseFloat(maxPriorityFeePerGas) * 2).toString(),
+      (parseFloat(maxPriorityFeePerGas)).toString(),
       'gwei'
     ),
     maxFeePerGas: ethers.utils.parseUnits(
-      (parseFloat(maxFeePerGas) * 2).toString(),
+      (parseFloat(maxFeePerGas)).toString(),
       'gwei'
     ),
   });
