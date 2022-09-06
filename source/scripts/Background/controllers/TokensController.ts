@@ -10,8 +10,6 @@ import {
 import {
   canisterAgent,
   canisterAgentApi,
-  getAllTokens,
-  getMetadata,
   principal_to_address,
   //tokenAPI,
   //pairFactoryAPI,
@@ -31,16 +29,17 @@ import { send } from '@earthwallet/keyring';
 import { keyable } from '../types/IAssetsController';
 import {
   getBalanceERC20,
-  getDefaultTokensErc20_ETH,
   getERC20Info_ETH,
+  getERC20Meta,
+  getERC20TokensListFromTxs,
 } from '~utils/services';
-import { updateTokensInfoLastUpdated_ETH } from '~state/tokens';
 
 export default class TokensController implements ITokensController {
-  getTokenBalances = async (address: string) => {
+  getTokenBalances = async (accountId: string) => {
     const state = store.getState();
 
-    const accountInfo = state.entities.accounts.byId[address];
+    const accountInfo = state.entities.accounts.byId[accountId];
+    const address = accountInfo.address;
 
     const activeTokens =
       state.entities.tokens?.byId &&
@@ -120,17 +119,26 @@ export default class TokensController implements ITokensController {
           })
         );
       }
-    } else if (accountInfo.symbol == 'ETH') {
-      const balances: keyable[] = await getBalanceERC20(address, accountInfo.symbol);
-
+    } else if (accountInfo.symbol == 'ETH' || accountInfo.symbol == 'MATIC') {
+      console.log('getTokenBalances', 'ETH');
+      let tokens = undefined;
+      if (accountInfo.symbol == 'MATIC') {
+        tokens = await getERC20TokensListFromTxs(accountInfo.address);
+      }
+      const balances: keyable[] = await getBalanceERC20(
+        address,
+        accountInfo.symbol,
+        tokens
+      );
       for (const balance of balances) {
         if (balance.tokenBalance > 0) {
           const balanceObj = {
-            id: address + '_WITH_' + balance.contractAddress,
+            id: accountId + '_WITH_' + balance.contractAddress,
             address: address,
             ...balance,
+            contractAddress: balance.contractAddress?.toLowerCase(),
             active: true,
-            network: 'ETH',
+            network: accountInfo.symbol,
           };
           store.dispatch(
             storeEntities({
@@ -138,7 +146,10 @@ export default class TokensController implements ITokensController {
               data: [balanceObj],
             })
           );
-          this.updateERC20Price(balance.contractAddress);
+          this.updateERC20PriceAndMeta(
+            balance.contractAddress,
+            accountInfo.symbol
+          );
         } else {
           const tokenId = address + '_WITH_' + balance.contractAddress;
           const existingTokenInfo = state.entities.tokens.byId[tokenId];
@@ -162,7 +173,7 @@ export default class TokensController implements ITokensController {
     return;
   };
 
-  updateERC20Price = async (contractAddress: string) => {
+  updateERC20PriceAndMeta = async (contractAddress: string, symbol: string) => {
     console.log('contractAddress', contractAddress);
     const state = store.getState();
     // updates if price is last updated 15mins back
@@ -177,18 +188,34 @@ export default class TokensController implements ITokensController {
       ) ||
       state.entities.prices.byId[contractAddress] == null
     ) {
+      const tokenObj = await getERC20Meta(contractAddress, symbol);
+      const { icon } = getTokenInfo(contractAddress);
+      const tokenInfo = {
+        id: contractAddress,
+        icon: icon != undefined ? icon : tokenObj.logo,
+        ...tokenObj,
+        network: symbol,
+        last_updated: new Date().getTime(),
+        loading: false,
+      };
+      store.dispatch(
+        storeEntities({
+          entity: 'tokensInfo',
+          data: [tokenInfo],
+        })
+      );
       const resp = await getERC20Info_ETH(contractAddress);
-      if (resp == null) {
+      if (resp == null || resp?.market_data == null) {
         return;
       }
       const { last_updated } = resp;
-      const usd = resp?.market_data.current_price.usd;
+      const usd = resp?.market_data?.current_price.usd;
 
-      const usd_market_cap = resp?.market_data.market_cap.usd;
+      const usd_market_cap = resp?.market_data?.market_cap.usd;
 
-      const usd_24h_change = resp?.market_data.price_change_24h;
+      const usd_24h_change = resp?.market_data?.price_change_24h;
       const usd_24h_vol =
-        resp?.market_data.market_cap_change_24h_in_currency.usd;
+        resp?.market_data?.market_cap_change_24h_in_currency?.usd;
 
       const priceInfo = {
         id: contractAddress,
@@ -208,76 +235,6 @@ export default class TokensController implements ITokensController {
         })
       );
     }
-  };
-
-  getTokensInfo = async () => {
-    const state = store.getState();
-
-    if (state.entities.tokens == null) {
-      store.dispatch(createEntity({ entity: 'tokens' }));
-    }
-    if (state.entities.tokensInfo == null) {
-      store.dispatch(createEntity({ entity: 'tokensInfo' }));
-    }
-    const tokensInfoLastUpdated_ETH = state.tokens?.tokensInfoLastUpdated_ETH;
-    const ONE_DAY_IN_MS = 86400000;
-    if (
-      !(
-        Math.abs(
-          new Date().getTime() - new Date(tokensInfoLastUpdated_ETH).getTime()
-        ) < ONE_DAY_IN_MS
-      ) ||
-      tokensInfoLastUpdated_ETH == 0
-    ) {
-      store.dispatch(updateTokensInfoLastUpdated_ETH(new Date().getTime()));
-      const tokens = await getDefaultTokensErc20_ETH();
-      for (const tokenObj of tokens) {
-        const tokenInfo = {
-          id: tokenObj.contractAddress,
-          icon: tokenObj.logo,
-          ...tokenObj,
-          network: 'ETH',
-          last_updated: new Date().getTime(),
-        };
-        store.dispatch(
-          storeEntities({
-            entity: 'tokensInfo',
-            data: [tokenInfo],
-          })
-        );
-      }
-    }
-
-    //0x29bc7f4bfc7301b3ddb5c9c4348360fc0ad52ca8
-    if (false) {
-      //disable ICP token info
-      const tokens = await getAllTokens();
-      for (const tokenCanisterId of tokens) {
-        const response = await getMetadata(tokenCanisterId);
-        const { decimals, fee, feeTo, name, owner, symbol, totalSupply } =
-          response;
-
-        const tokenInfo = {
-          id: tokenCanisterId,
-          decimals,
-          fee: fee?.toString(),
-          feeTo: feeTo?.toText(),
-          name,
-          owner: owner?.toText(),
-          symbol,
-          totalSupply: totalSupply.toString(),
-          tokenCanisterId,
-        };
-        store.dispatch(
-          storeEntities({
-            entity: 'tokensInfo',
-            data: [tokenInfo],
-          })
-        );
-      }
-      //callback && callback('address');
-    }
-    return;
   };
 
   delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -424,7 +381,7 @@ export default class TokensController implements ITokensController {
     tokenId: string,
     recipient: string,
     amount: number,
-    address: string,
+    accountId: string,
     callback?: (path: string) => void
   ) => {
     const state = store.getState();
@@ -432,6 +389,8 @@ export default class TokensController implements ITokensController {
     if (state.entities.recents == null) {
       store.dispatch(createEntity({ entity: 'recents' }));
     }
+    const selectedAccount = state.entities.accounts.byId[accountId];
+    const { address } = selectedAccount;
 
     store.dispatch(
       updateEntities({
@@ -458,7 +417,7 @@ export default class TokensController implements ITokensController {
       fromIdentity: currentIdentity,
     });
     callback && callback('s');
-    await this.getTokenBalances(address);
+    await this.getTokenBalances(accountId);
     return response;
   };
 

@@ -6,9 +6,9 @@ import {
   ALCHEMY_ETH_API_KEY,
   ALCHEMY_POLYGON_API_KEY,
   ETHERSCAN_API_KEY,
-  ETH_MAINNET_ALCHEMY,
+  ETH_MAINNET_ALCHEMY_URL,
   POLYGONSCAN_API_KEY,
-  POLY_ALCHEMY,
+  POLY_ALCHEMY_URL,
 } from '~global/config';
 import { hexToNumber, hexToNumberString } from 'web3-utils';
 //@ts-ignore
@@ -599,7 +599,7 @@ export const getFeesExtended_MATIC = async () => {
   return serverRes;
 };
 
-export const getTransactions_ETH = async (address: string) => {
+export const getTransactions_ETH_MATIC = async (address: string, symbol: string) => {
   const data = JSON.stringify({
     jsonrpc: '2.0',
     id: 0,
@@ -630,13 +630,13 @@ export const getTransactions_ETH = async (address: string) => {
     method: 'post',
     headers: { 'Content-Type': 'application/json' },
     data: data,
-    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`,
+    url: symbol == 'MATIC' ? POLY_ALCHEMY_URL : ETH_MAINNET_ALCHEMY_URL,
   };
   const toConfig: AxiosRequestConfig = {
     method: 'post',
     headers: { 'Content-Type': 'application/json' },
     data: toTransfersData,
-    url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}`,
+    url: symbol == 'MATIC' ? POLY_ALCHEMY_URL : ETH_MAINNET_ALCHEMY_URL,
   };
 
   let serverRes: any = [];
@@ -653,14 +653,14 @@ export const getTransactions_ETH = async (address: string) => {
     }
   } catch (error) {
     serverRes = error;
+    return;
   }
-  const txns = serverRes
-    .map((tx: { blockNum: any }) => ({
+  const txns = serverRes?.map((tx: { blockNum: any }) => ({
       ...tx,
       block: web3.utils.hexToNumberString(tx.blockNum),
     }))
     .sort((a: { block: number }, b: { block: number }) => b.block - a.block);
-  console.log(serverRes, 'getTransactions');
+  console.log(serverRes,  POLY_ALCHEMY_URL, 'getTransactions');
   return txns;
 };
 
@@ -774,7 +774,7 @@ export const getERC20TransferGasLimit = async (
 
   const config: AxiosRequestConfig = {
     method: 'post',
-    url: symbol == 'MATIC' ? POLY_ALCHEMY : ETH_MAINNET_ALCHEMY,
+    url: symbol == 'MATIC' ? POLY_ALCHEMY_URL : ETH_MAINNET_ALCHEMY_URL,
     headers: {
       'Content-Type': 'application/json',
     },

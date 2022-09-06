@@ -23,7 +23,7 @@ import { useHistory } from 'react-router-dom';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
 import { selectAssetsICPCountByAddress } from '~state/wallet';
 import { ClipLoader } from 'react-spinners';
-import { getTransactions_ETH } from '~utils/services';
+import { getTransactions_ETH_MATIC } from '~utils/services';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
 }
@@ -57,11 +57,11 @@ const Wallet = ({
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
-      if (selectedAccount?.symbol != 'ETH') {
+      if (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == "ICP") {
         const transactions = await getTransactions(address, selectedAccount?.symbol);
         setWalletTransactions(transactions);
       } else {
-        const response = await getTransactions_ETH(address);
+        const response = await getTransactions_ETH_MATIC(address, selectedAccount?.symbol);
         const wallet = { txs: response, total: response?.length };
         setWalletTransactions(wallet);
       }

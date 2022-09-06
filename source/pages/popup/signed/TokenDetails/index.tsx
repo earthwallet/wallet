@@ -26,10 +26,10 @@ import { getInfoBySymbol } from '~global/constant';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
 import { selectGroupBalanceByGroupIdAndSymbol } from '~state/wallet';
-import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance, selectTokenByTokenPair } from '~state/tokens';
+import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalanceByAccountId, selectTokenByTokenPair } from '~state/tokens';
 import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
-import { getTransactions_ETH } from '~utils/services';
+import { getTransactions_ETH_MATIC } from '~utils/services';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
 }
@@ -70,8 +70,8 @@ const Wallet = ({
   }, [selectedAccount]);
 
   useEffect(() => {
-    if (address != null) {
-      controller.tokens.getTokenBalances(address);
+    if (accountId != null) {
+      controller.tokens.getTokenBalances(accountId);
     }
   }, []);
 
@@ -84,11 +84,12 @@ const Wallet = ({
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
-      if (selectedAccount?.symbol != 'ETH') {
+      if (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'ICP') {
         const transactions = await getTransactions(address, selectedAccount?.symbol);
         setWalletTransactions(transactions);
       } else {
-        const response = await getTransactions_ETH(address);
+        const response = await getTransactions_ETH_MATIC(address, selectedAccount?.symbol);
+        console.log("getTransactions_ETH_MATIC", address, selectedAccount?.symbol, response)
         const wallet = { txs: response, total: response?.length };
         setWalletTransactions(wallet);
       }
@@ -100,9 +101,9 @@ const Wallet = ({
         .getBalancesOfAccount(selectedAccount)
         .then(() => {
         });
-      loadTransactions(selectedAccount?.id);
+      loadTransactions(selectedAccount?.address);
     }
-  }, [selectedAccount?.id === address]);
+  }, [address != null]);
 
   return (
     <div className={styles.page}>
@@ -171,10 +172,10 @@ const Wallet = ({
       {mainNav === 'tokens' && <>
         <div>
           {nav === 'grid' && <TokensGridflow
-            selectedSymbol={selectedAccount?.symbol}
+            accountId={accountId}
             setSelectedGridToken={setSelectedGridToken}
-            address={address} />}
-          {nav === 'list' && <TokensList address={address} />}
+          />}
+          {nav === 'list' && <TokensList accountId={accountId} />}
         </div>
         <div className={clsx(styles.tokenGrid, nav === 'list' && styles.tokenGridList)}>
           {(nav === 'grid') && <TokenOrSymbolBalance address={address} tokenId={selectedGridToken} />}
@@ -239,14 +240,18 @@ const Wallet = ({
 };
 
 
-const TokensList = ({ address }: { address: string }) => {
+const TokensList = ({ accountId }: { accountId: string }) => {
 
   const history = useHistory();
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
 
-  const tokens = useSelector(selectActiveTokensByAddressWithInfo(address));
-  const activeTokenAndAddressBalance = useSelector(selectActiveTokenAndAddressBalance(address));
+  const { address, symbol } = selectedAccount;
+  console.log(address, symbol, 'TokensList');
+  const tokens = useSelector(selectActiveTokensByAddressWithInfo(address, symbol));
 
+  const activeTokenAndAddressBalance = useSelector(
+    selectActiveTokenAndAddressBalanceByAccountId(accountId)
+  );
   return (
     <div className={styles.tokensList}>
       <div className={styles.listHeader}>
@@ -271,7 +276,7 @@ const TokensList = ({ address }: { address: string }) => {
             src={ICON_FORWARD}
           />
         </div>
-        {tokens?.length > 0 && tokens?.map((token: keyable, i: number) => <div
+        {tokens?.length > 0 && tokens?.filter((token:keyable) => token?.symbol != null).map((token: keyable, i: number) => <div
           onClick={() => history.push('/th/' + address + '/' + token.id)}
           key={i}
           className={styles.listitem}>
@@ -287,7 +292,7 @@ const TokensList = ({ address }: { address: string }) => {
           </div>
           <div className={styles.liststats} >
             <div className={styles.listprice}>{token?.balanceTxt || 0} {token?.symbol}</div>
-            {selectedAccount.symbol == 'ETH' ? <TokenPrice_ETH contractAddress={token?.contractAddress} balance={token?.balance} /> : <div className={styles.listsubtitle}>${token?.price || 0}   {
+            {(selectedAccount.symbol == 'ETH' || selectedAccount.symbol == 'MATIC') ? <TokenPrice_ETH contractAddress={token?.contractAddress} balance={token?.balance} /> : <div className={styles.listsubtitle}>${token?.price || 0}   {
               token?.usd_24h_change && token?.price !== 0
               && <span className={token?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{token?.usd_24h_change?.toFixed(2)}%</span>
             }</div>}
@@ -332,6 +337,8 @@ const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: stri
 
 const TokenPrice_ETH = ({ contractAddress, balance }: { contractAddress: string, balance: any }) => {
   const currentUSDValue: keyable = useSelector(selectPriceByContractAddress(contractAddress));
+  if (currentUSDValue == undefined || currentUSDValue?.usd == undefined)
+  return <></>;
   return <div className={styles.listsubtitle}>${(currentUSDValue?.usd * balance)?.toFixed(2) || 0}   {
     currentUSDValue?.usd_24h_change && (currentUSDValue?.usd * balance) !== 0
     && <span className={currentUSDValue?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentUSDValue?.usd_24h_change?.toFixed(2)}%</span>
@@ -389,8 +396,11 @@ const TokenOrSymbolBalance = ({ address, tokenId }: { address: string, tokenId: 
 
 
 
-const TokensGridflow = ({ address, setSelectedGridToken, selectedSymbol }: { address: string, selectedSymbol: string, setSelectedGridToken: (token: string) => void }) => {
-  const tokens = useSelector(selectActiveTokensByAddressWithInfo(address));
+const TokensGridflow = ({ accountId, setSelectedGridToken }: { accountId: string, setSelectedGridToken: (token: string) => void }) => {
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+  const selectedSymbol = selectedAccount.symbol;
+  const tokens = useSelector(selectActiveTokensByAddressWithInfo(address, selectedSymbol));
   const history = useHistory();
   const [swiper, setSwiper] = useState<any | null>(null);
 

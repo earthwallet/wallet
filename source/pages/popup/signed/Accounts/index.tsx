@@ -36,9 +36,9 @@ const Accounts = () => {
       (account: keyable) => account.symbol === activeNetwork.symbol
     );
     if (filtered.length) {
-      history.push('/account/details/' + filtered[0].address);
+      history.push('/account/details/' + filtered[0].id);
     } else {
-      history.push('/account/details/' + accounts[0].address);
+      history.push('/account/details/' + accounts[0].id);
     }
 
   }

@@ -27,7 +27,7 @@ import {
   SignTypedDataVersion,
   TypedDataV1,
 } from '@metamask/eth-sig-util';
-import { ETH_MAINNET_ALCHEMY } from '~global/config';
+import { ETH_MAINNET_ALCHEMY_URL } from '~global/config';
 // import ICON_ICP from '~assets/images/icon_icp_details.png';
 
 const MIN_LENGTH = 6;
@@ -88,7 +88,7 @@ const SignTransactionPage = () => {
     );
 
     const provider = new ethers.providers.JsonRpcProvider(
-      `https://eth-mainnet.g.alchemy.com/v2/${ETH_MAINNET_ALCHEMY}`
+      `https://eth-mainnet.g.alchemy.com/v2/${ETH_MAINNET_ALCHEMY_URL}`
     );
     const wallet = ethers.Wallet.fromMnemonic(mnemonic);
     const signer = new ethers.Wallet(wallet.privateKey, provider);

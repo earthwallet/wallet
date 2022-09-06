@@ -35,7 +35,7 @@ import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import { getFeesExtended, getFeesExtended_MATIC } from '~utils/services';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
-import { POLY_ALCHEMY } from '~global/config';
+import { POLY_ALCHEMY_URL } from '~global/config';
 
 const MIN_LENGTH = 6;
 const DEFAULT_FEE_INDEX = 1;
@@ -54,7 +54,7 @@ const WalletSendTokens = ({
   const [step1, setStep1] = useState(true);
   const selectedAccount = useSelector(selectAccountById(accountId));
   const { address } = selectedAccount;
-  
+
   const controller = useController();
   const currentBalance: keyable = useSelector(selectBalanceById(address));
   const currentUSDValue: keyable = useSelector(
@@ -146,7 +146,7 @@ const WalletSendTokens = ({
 
   useEffect(() => {
     controller.accounts.getBalancesOfAccount(selectedAccount).then(() => { });
-    tokenId !== null && controller.tokens.getTokenBalances(address);
+    tokenId !== null && controller.tokens.getTokenBalances(accountId);
 
     if (selectedAccount?.symbol === 'BTC') {
       setIsBusy(true);
@@ -265,7 +265,7 @@ const WalletSendTokens = ({
         const wallet_tx = await createWallet(mnemonic, 'MATIC');
 
         const web3 = createAlchemyWeb3(
-          `https://polygon-mainnet.g.alchemy.com/v2/${POLY_ALCHEMY}`
+          `https://polygon-mainnet.g.alchemy.com/v2/${POLY_ALCHEMY_URL}`
         );
 
         const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
@@ -392,7 +392,7 @@ const WalletSendTokens = ({
               selectedAsset,
               selectedRecp,
               selectedAmount,
-              address,
+              accountId,
               callback
             )
             .then(() => {

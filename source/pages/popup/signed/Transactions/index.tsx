@@ -18,7 +18,7 @@ import { selectAssetBySymbol, selectTxnRequestsByAddress } from '~state/assets';
 import clsx from 'clsx';
 import { getTokenImageUrlFromnftId } from '~global/nfts';
 import { getTokenInfo } from '~global/tokens';
-import { getTransactions_ETH } from '~utils/services';
+import { getTransactions_ETH_MATIC } from '~utils/services';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
   className?: string;
@@ -36,7 +36,7 @@ const Transactions = ({
 
   const selectedAccount = useSelector(selectAccountById(accountId));
   const { address } = selectedAccount;
-  
+
   const history = useHistory();
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -57,15 +57,14 @@ const Transactions = ({
   };
 
   const loadTransactions = async (address: string) => {
-    if (selectedAccount?.symbol != 'ETH') {
+    if (selectedAccount?.symbol == 'ICP' || selectedAccount?.symbol == 'BTC') {
       setLoading(true);
       const transactions = await getTransactions(address, selectedAccount?.symbol);
       setLoading(false);
       setWalletTransactions(transactions);
     } else {
       setLoading(true);
-
-      const response = await getTransactions_ETH(address);
+      const response = await getTransactions_ETH_MATIC(address, selectedAccount?.symbol);
       setLoading(false);
       const wallet = { txs: response, total: response?.length };
       setWalletTransactions(wallet);
@@ -151,11 +150,11 @@ const Transactions = ({
         </div>
       </div>
     }
-    if (symbol === 'ETH') {
+    if (symbol === 'ETH' || symbol == 'MATIC') {
       return <div
         className={styles.transItem}
         key={index}
-        onClick={() => window.open(`https://etherscan.io/tx/${transaction?.hash}`, "_blank")}
+        onClick={() => window.open(symbol == 'MATIC' ? `https://polygonscan.com/tx/${transaction?.hash}` : `https://etherscan.io/tx/${transaction?.hash}`, "_blank")}
       >
         <div className={styles.transColIcon}>
           {statusToIcon(

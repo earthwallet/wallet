@@ -59,7 +59,6 @@ const PopupRouter = () => {
         controller.migrateLocalStorage();
         controller.assets.registerExtensionForAirdrop();
         controller.accounts.restoreOnceInactiveAccountsActive_ETH();
-        controller.tokens.getTokensInfo();
       } catch (error) {
         console.log(error);
       }

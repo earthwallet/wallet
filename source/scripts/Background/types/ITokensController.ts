@@ -4,7 +4,6 @@ import { keyable } from './IAssetsController';
 
 export interface ITokensController {
   getTokenBalances: (address: string) => Promise<void>;
-  getTokensInfo: () => Promise<void>;
   updateTokensOfNetwork: (
     groupId: string,
     symbols: string[],

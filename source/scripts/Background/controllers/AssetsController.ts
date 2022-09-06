@@ -80,6 +80,7 @@ export default class AssetsController implements IAssetsController {
       id: token.tokenIdentifier,
       address: account.address,
       canisterId,
+      symbol: account.symbol,
       ...parseBigIntToString(token),
     }));
 
@@ -369,6 +370,7 @@ export default class AssetsController implements IAssetsController {
               type: 'EarthArt',
               tokenIdentifier: id,
               address: account.address,
+              symbol: account.symbol,
               tokenIndex: _token[0],
               canisterId: canisterId,
             };
@@ -531,7 +533,7 @@ export default class AssetsController implements IAssetsController {
           state.entities.assets?.byId &&
           Object.keys(state.entities.assets?.byId)
             ?.map((id) => state.entities.assets.byId[id])
-            .filter((assets) => assets.address == account.address);
+            .filter((assets) => assets.address == account.address && assets.symbol == account.symbol);
         const existingCount = existingAssets?.length;
 
         if (existingCount != tokensAfterRemovingOutTokens?.length) {

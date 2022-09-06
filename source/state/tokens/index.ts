@@ -128,59 +128,70 @@ export const selectInfoBySymbolOrToken =
   };
 
 export const selectActiveTokensByAddressWithInfo =
-  (address: string) => (state: AppState) => {
+  (address: string, symbol: string) => (state: AppState) => {
     const activeTokens =
       state.entities.tokens?.byId &&
       Object.keys(state.entities.tokens?.byId)
         ?.map((id) => state.entities.tokens.byId[id])
-        .filter((token) => token.address === address && token.active);
+        .filter(
+          (token) =>
+            token.network == symbol && token.address === address && token.active
+        );
     const getTokenInfoFromStore = (address: string) =>
       state.entities.tokensInfo?.byId[address];
     if (activeTokens?.length == 0) {
       return [];
     } else {
-      return activeTokens.map((tokenObj: keyable) =>
-        tokenObj.network != 'ETH'
-          ? {
-              ...tokenObj,
-              ...getTokenInfo(tokenObj.tokenId),
-            }
-          : {
-              ...tokenObj,
-              ...{
-                balance:
-                  tokenObj.tokenBalance /
-                  Math.pow(
-                    10,
-                    getTokenInfoFromStore(tokenObj.contractAddress)?.decimals ||
-                      0
-                  ),
-                balanceTxt: (
-                  tokenObj.tokenBalance /
-                  Math.pow(
-                    10,
-                    getTokenInfoFromStore(tokenObj.contractAddress)?.decimals ||
-                      0
-                  )
-                ).toFixed(3),
-              },
-              ...getTokenInfoFromStore(tokenObj.contractAddress),
-            }
-      ).filter((token: keyable) => token.balance != 0);
+      return activeTokens
+        .map((tokenObj: keyable) =>
+          tokenObj.network == 'ICP'
+            ? {
+                ...tokenObj,
+                ...getTokenInfo(tokenObj.tokenId),
+              }
+            : {
+                ...tokenObj,
+                ...{
+                  balance:
+                    tokenObj.tokenBalance /
+                    Math.pow(
+                      10,
+                      getTokenInfoFromStore(tokenObj.contractAddress)
+                        ?.decimals || 0
+                    ),
+                  balanceTxt: (
+                    tokenObj.tokenBalance /
+                    Math.pow(
+                      10,
+                      getTokenInfoFromStore(tokenObj.contractAddress)
+                        ?.decimals || 0
+                    )
+                  ).toFixed(3),
+                },
+                ...getTokenInfoFromStore(tokenObj.contractAddress),
+              }
+        )
+        .filter((token: keyable) => token.balance != 0);
     }
   };
 
-export const selectActiveTokenAndAddressBalance =
-  (address: string) => (state: AppState) => {
+export const selectActiveTokenAndAddressBalanceByAccountId =
+  (accountId: string) => (state: AppState) => {
+    const { address, symbol } = state.entities.accounts.byId[accountId];
     const currentBalanceInUSD =
-      state.entities.balances.byId[address]?.balanceInUSD;
+      state.entities.balances.byId[accountId]?.balanceInUSD;
 
     const activeTokenPrices =
       state.entities.tokens?.byId &&
       Object.keys(state.entities.tokens?.byId)
         ?.map((id) => state.entities.tokens.byId[id])
-        .filter((token) => token.address === address && token.active)
-        .map((token) => token.price || 0);
+        .filter(
+          (token) =>
+            token.address === address && token.active && token.network == symbol
+        )
+        .map((token) =>
+          token.network == 'ICP' ? token.price || 0 : token.price || 0
+        );
     const tokenBalanceSumInUsd = activeTokenPrices.reduce(
       (a: number, b: number) => a + b,
       0
