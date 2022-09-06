@@ -463,14 +463,15 @@ export const getBalance_ETH = async (address: string) => {
   return balance;
 };
 
+//https://ethereum.stackexchange.com/questions/23430/how-to-calculate-the-amount-to-transfer-to-completely-empty-an-account/23431
 export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
   let serverRes;
   let fees: keyable[] = [];
 
-  if (symbol == 'ETH') {
+  if (symbol == "ETH") {
     const config: AxiosRequestConfig = {
-      method: 'get',
-      url: 'https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees',
+      method: "get",
+      url: "https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees",
       headers: {},
     };
 
@@ -490,27 +491,30 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
         estimateGas *
         (parseFloat(serverRes?.estimatedBaseFee) +
           parseFloat(serverRes?.high?.suggestedMaxPriorityFeePerGas));
-      console.log(response, config, 'getFeesExtended');
+      console.log(response, config, "getFeesExtended");
       console.log(
         totalSafeLowGas,
         serverRes?.low?.suggestedMaxPriorityFeePerGas,
-        'getFeesExtended'
+        "getFeesExtended"
       );
 
+      ////Total transaction fee = gas units (limit) x (base fee + tip)
       //totalGas for a txn = (maxPriorityFeePerGas + baseFee) * estimateGas
       // maxFeePerGas = web3.utils.fromWei(priorityFees['fast']['maxFee'], 'gwei') * estimateGas
       fees = [
         {
-          label: 'Low',
+          label: "Low",
           ...serverRes?.low,
           gas: totalSafeLowGas / Math.pow(10, 9),
+          estimateGas,
           maxFee:
             (estimateGas * parseFloat(serverRes?.low.suggestedMaxFeePerGas)) /
             Math.pow(10, 9),
         },
         {
-          label: 'Standard',
+          label: "Standard",
           ...serverRes?.medium,
+          estimateGas,
           gas: totalStandardGas / Math.pow(10, 9),
           maxFee:
             (estimateGas *
@@ -518,8 +522,9 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
             Math.pow(10, 9),
         },
         {
-          label: 'Fast',
+          label: "Fast",
           ...serverRes?.high,
+          estimateGas,
           gas: totalFastGas / Math.pow(10, 9),
           maxFee:
             (estimateGas * parseFloat(serverRes?.high.suggestedMaxFeePerGas)) /
@@ -528,12 +533,12 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
       ];
     } catch (error) {
       serverRes = error;
-      console.log(error, 'getFeesExtended');
+      console.log(error, "getFeesExtended");
     }
-  } else if (symbol == 'MATIC') {
+  } else if (symbol == "MATIC") {
     const config: AxiosRequestConfig = {
-      method: 'get',
-      url: 'https://gasstation-mainnet.matic.network/v2',
+      method: "get",
+      url: "https://gasstation-mainnet.matic.network/v2",
       headers: {},
     };
 
@@ -542,7 +547,7 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
       serverRes = response.data;
       const totalSafeLowGas =
         estimateGas *
-        (serverRes?.estimatedBaseFee + serverRes?.low?.maxPriorityFee);
+        (serverRes?.estimatedBaseFee + serverRes?.safeLow?.maxPriorityFee);
       const totalStandardGas =
         estimateGas *
         (serverRes?.estimatedBaseFee + serverRes?.standard?.maxPriorityFee);
@@ -550,23 +555,33 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
         estimateGas *
         (serverRes?.estimatedBaseFee + serverRes?.fast?.maxPriorityFee);
 
-      //totalGas for a txn = (maxPriorityFeePerGas + baseFee) * estimateGas
-      // maxFeePerGas = web3.utils.fromWei(priorityFees['fast']['maxFee'], 'gwei') * estimateGas
       fees = [
         {
-          label: 'Low',
+          label: "Low",
           ...serverRes?.safeLow,
+          estimateGas,
           gas: totalSafeLowGas / Math.pow(10, 9),
+          suggestedMaxFeePerGas: serverRes?.safeLow?.maxFee.toFixed(5),
+          suggestedMaxPriorityFeePerGas:
+            serverRes?.safeLow?.maxPriorityFee.toFixed(5),
         },
         {
-          label: 'Standard',
+          label: "Standard",
           ...serverRes?.standard,
+          estimateGas,
           gas: totalStandardGas / Math.pow(10, 9),
+          suggestedMaxFeePerGas: serverRes?.standard?.maxFee.toFixed(5),
+          suggestedMaxPriorityFeePerGas:
+            serverRes?.standard?.maxPriorityFee.toFixed(5),
         },
         {
-          label: 'Fast',
+          label: "Fast",
           ...serverRes?.fast,
+          estimateGas,
           gas: totalFastGas / Math.pow(10, 9),
+          suggestedMaxFeePerGas: serverRes?.fast?.maxFee.toFixed(5),
+          suggestedMaxPriorityFeePerGas:
+            serverRes?.fast?.maxPriorityFee.toFixed(5),
         },
       ];
     } catch (error) {
@@ -790,5 +805,71 @@ export const getERC20TransferGasLimit = async (
   }
   const gasLimit =
     serverRes.result == undefined ? 65000 : hexToNumber(serverRes.result);
+  return gasLimit;
+};
+
+
+//https://github.com/ethers-io/ethers.js/issues/478
+//https://abi.hashex.org/
+//remove multiple name
+//https://lab.miguelmota.com/ethereum-input-data-decoder/example/
+
+export const getERC721TransferGasLimit = async (
+  contractAddress: string,
+  fromAddress: string,
+  toAddress: string,
+  symbol: string,
+  tokenId: number
+) => {
+  console.log(
+    contractAddress,
+    fromAddress,
+    toAddress,
+    symbol,
+    tokenId,
+    "getERC721TransferGasLimit"
+  );
+  const erc721Interface = new Interface(IERC721.abi);
+  const hexData = erc721Interface.encodeFunctionData(
+    "safeTransferFrom(address,address,uint256)",
+    [
+      fromAddress,
+      toAddress || "0x0000000000000000000000000000000000000000",
+      BigNumber.from(tokenId),
+    ]
+  );
+  const data = JSON.stringify({
+    jsonrpc: "2.0",
+    method: "eth_estimateGas",
+    params: [
+      {
+        from: fromAddress,
+        to: contractAddress,
+        data: hexData,
+      },
+    ],
+    id: 1,
+  });
+
+  const config: AxiosRequestConfig = {
+    method: "post",
+    url: symbol == "MATIC" ? POLY_ALCHEMY_URL : ETH_MAINNET_ALCHEMY_URL,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    console.log(error, "getERC721TransferGasLimit error");
+    serverRes = error;
+  }
+  const gasLimit =
+    serverRes.result == undefined ? 85000 : hexToNumber(serverRes.result);
+  console.log("gasLimit:", hexData, serverRes, serverRes.result, gasLimit);
   return gasLimit;
 };

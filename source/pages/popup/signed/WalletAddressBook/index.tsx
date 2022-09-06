@@ -6,7 +6,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { selectAccountById, selectOtherAccountsOf, selectRecentsOf } from '~state/wallet';
 import { useSelector } from 'react-redux';
 
-import { selectActiveTokensAndAssetsByAddress } from '~state/wallet';
+import { selectActiveTokensAndAssetsByAccountId } from '~state/wallet';
 import useQuery from '~hooks/useQuery';
 import AddressInput from '~components/AddressInput';
 import Header from '~components/Header';
@@ -40,7 +40,7 @@ const WalletAddressBook = ({
   const [step1, setStep1] = useState(true);
   const selectedAccount = useSelector(selectAccountById(accountId));
   const { address } = selectedAccount;
-  const assets: keyable = useSelector(selectActiveTokensAndAssetsByAddress(address));
+  const assets: keyable = useSelector(selectActiveTokensAndAssetsByAccountId(accountId));
 
   const dropDownRef = useRef(null);
   const [selectedRecp, setSelectedRecp] = useState<string>('');

@@ -22,7 +22,7 @@ import { selectAssetBySymbol } from '~state/assets';
 import { DEFAULT_ICP_FEES } from '~global/constant';
 import indexToHash from './indexToHash';
 import { useHistory } from 'react-router-dom';
-import { selectActiveTokensAndAssetsByAddress } from '~state/wallet';
+import { selectActiveTokensAndAssetsByAccountId } from '~state/wallet';
 import ICON_CARET from '~assets/images/icon_caret.svg';
 import useQuery from '~hooks/useQuery';
 import { listNFTsExt, transferNFTsExt } from '@earthwallet/assets';
@@ -32,10 +32,11 @@ import AddressInput from '~components/AddressInput';
 import { getTokenInfo } from '~global/tokens';
 import { selectInfoBySymbolOrToken } from '~state/tokens';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
-import { getFeesExtended, getFeesExtended_MATIC } from '~utils/services';
+import { getERC20TransferGasLimit, getERC721TransferGasLimit, getFeesExtended, getFeesExtended_MATIC } from '~utils/services';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
 import { POLY_ALCHEMY_URL } from '~global/config';
+import { debounce } from 'lodash';
 
 const MIN_LENGTH = 6;
 const DEFAULT_FEE_INDEX = 1;
@@ -56,16 +57,16 @@ const WalletSendTokens = ({
   const { address } = selectedAccount;
 
   const controller = useController();
-  const currentBalance: keyable = useSelector(selectBalanceById(address));
+  const currentBalance: keyable = useSelector(selectBalanceById(accountId));
   const currentUSDValue: keyable = useSelector(
     selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || '')
   );
 
   const assets: keyable = useSelector(
-    selectActiveTokensAndAssetsByAddress(address)
+    selectActiveTokensAndAssetsByAccountId(accountId)
   );
 
-  console.log(assets, selectedAccount, 'assets');
+  console.log(assets, selectedAccount, currentBalance, accountId, 'assets');
 
   const [selectedRecp, setSelectedRecp] = useState<string>('');
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
@@ -95,7 +96,7 @@ const WalletSendTokens = ({
     setSelectedAsset(asset);
     setSelectedAssetObj(getSelectedAsset(asset));
     setSelectedAmount(0);
-    if (selectedAccount?.symbol == 'ETH') {
+    if (selectedAccount?.symbol == 'ETH' || selectedAccount?.symbol == 'MATIC') {
       if (getSelectedAsset(selectedAsset)?.format == 'nft') {
         //ERC721 Transfer estimate is 84904 as per etherscan
         getFeesExtended(selectedAccount?.symbol, 84904).then(
@@ -144,6 +145,64 @@ const WalletSendTokens = ({
     }
   }, [assetId !== null, tokenId !== null]);
 
+
+  const fetchFeesETH = async (amount?: string) => {
+    setIsBusy(true);
+
+
+    let gasLimit = 21000;
+    if (getSelectedAsset(selectedAsset)?.type == "token") {
+      gasLimit = await getERC20TransferGasLimit(
+        getSelectedAsset(selectedAsset)?.contractAddress,
+        selectedAccount.address,
+        selectedRecp,
+        selectedAccount.symbol,
+        amount,
+        getSelectedAsset(selectedAsset)?.decimals
+      );
+    } else if (getSelectedAsset(selectedAsset)?.format == "nft") {
+      //alert('nft')
+      gasLimit = await getERC721TransferGasLimit(
+        getSelectedAsset(selectedAsset)?.contractAddress,
+        selectedAccount.address,
+        selectedRecp,
+        selectedAccount.symbol,
+        getSelectedAsset(selectedAsset).tokenID,
+      );
+    }
+    console.log(gasLimit, 'gasLimit')
+    getFeesExtended(selectedAccount?.symbol, gasLimit).then(
+      (_feesArr: keyable[]) => {
+        console.log(_feesArr);
+        setFeesOptionSelected(DEFAULT_FEE_INDEX);
+        _feesArr[DEFAULT_FEE_INDEX] &&
+          setFees(_feesArr[DEFAULT_FEE_INDEX]?.gas);
+        setFeesArr(_feesArr);
+      }
+    );
+
+
+    setIsBusy(false);
+    return;
+  };
+
+  const fetchData = async (selectedAmount: any, cb: any) => {
+    const res = await fetchFeesETH(selectedAmount);
+    cb(res);
+  };
+
+  const debouncedFetchData = debounce((selectedAmount, cb) => {
+    fetchData(selectedAmount, cb);
+  }, 500);
+
+  React.useEffect(() => {
+    if (getSelectedAsset(selectedAsset)?.type == "token") {
+      debouncedFetchData(selectedAmount, (res: any) => {
+        console.log(res, "debounced");
+      });
+    }
+  }, [selectedAmount]);
+
   useEffect(() => {
     controller.accounts.getBalancesOfAccount(selectedAccount).then(() => { });
     tokenId !== null && controller.tokens.getTokenBalances(accountId);
@@ -171,28 +230,7 @@ const WalletSendTokens = ({
       selectedAccount?.symbol === 'MATIC' ||
       selectedAccount?.symbol === 'ETH'
     ) {
-      setIsBusy(true);
-
-      if (getSelectedAsset(selectedAsset)?.format == 'nft') {
-        console.log('_estimateGasForTransfer');
-        getFeesExtended(selectedAccount?.symbol, 84904).then(
-          (_feesArr: keyable[]) => {
-            setFeesOptionSelected(DEFAULT_FEE_INDEX);
-            _feesArr[DEFAULT_FEE_INDEX] &&
-              setFees(_feesArr[DEFAULT_FEE_INDEX]?.gas);
-            setFeesArr(_feesArr);
-          }
-        );
-      } else {
-        getFeesExtended(selectedAccount?.symbol).then((_feesArr: keyable[]) => {
-          setFeesOptionSelected(DEFAULT_FEE_INDEX);
-          _feesArr[DEFAULT_FEE_INDEX] &&
-            setFees(_feesArr[DEFAULT_FEE_INDEX]?.gas);
-          setFeesArr(_feesArr);
-        });
-      }
-
-      setIsBusy(false);
+      fetchFeesETH();
     }
   }, [
     selectedAccount?.id === address,
@@ -599,7 +637,7 @@ const WalletSendTokens = ({
               {selectedAsset === selectedAccount?.symbol && (
                 <AmountInput
                   initialValue={selectedAmount.toString()}
-                  address={address}
+                  accountId={accountId}
                   fees={fees}
                   amountCallback={setSelectedAmount}
                   errorCallback={setError}
@@ -609,7 +647,7 @@ const WalletSendTokens = ({
                 getSelectedAsset(selectedAsset).format != 'nft' && (
                   <AmountInput
                     initialValue={selectedAmount.toString()}
-                    address={address}
+                    accountId={accountId}
                     fees={fees}
                     tokenId={getSelectedAsset(selectedAsset)?.tokenId}
                     amountCallback={setSelectedAmount}
@@ -951,23 +989,23 @@ const FeesPriceInUSD = ({ symbol, gas }: { symbol: string; gas: number }) => {
 };
 
 const AmountInput = ({
-  address,
+  accountId,
   fees,
   initialValue,
   amountCallback,
   errorCallback,
   tokenId,
 }: {
-  address: string;
+  accountId: string;
   fees: any;
   initialValue?: string;
   amountCallback: (amount: number) => void;
   errorCallback: (error: string) => void;
   tokenId?: string;
 }) => {
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
 
-  const currentBalance: keyable = useSelector(selectBalanceById(address));
+  const currentBalance: keyable = useSelector(selectBalanceById(accountId));
   const currentUSDValue: keyable = useSelector(
     selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || '')
   );
@@ -975,7 +1013,7 @@ const AmountInput = ({
   const [error, setError] = useState('');
   const [initialized, setInitialized] = useState(false);
   const tokenInfo = useSelector(
-    selectInfoBySymbolOrToken(tokenId || '', address)
+    selectInfoBySymbolOrToken(tokenId || '', accountId)
   );
 
   const price =
@@ -1053,7 +1091,7 @@ const AmountInput = ({
     <div>
       <div className={styles.earthInputLabel}>
         Amount{' '}
-        {selectedAccount?.symbol !== 'BTC' && (
+        {selectedAccount?.symbol == 'ICP' && (
           <div onClick={() => loadMaxAmount()} className={styles.maxBtn}>
             Max
           </div>
