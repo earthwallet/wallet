@@ -111,7 +111,9 @@ export default class TokensController implements ITokensController {
           balanceTxt,
           ratio_per_icp,
           usd,
+          network: accountInfo.symbol,
         };
+        
         store.dispatch(
           storeEntities({
             entity: 'tokens',

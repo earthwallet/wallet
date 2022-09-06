@@ -310,4 +310,8 @@ export const selectActiveTokensAndAssetsByAddress =
     return [...activeTokens, ...assets];
   };
 
+export const selectBalanceByAccountId =
+  (accountId: string) => (state: AppState) =>
+    state.entities.balances.byId[accountId];
+
 export default WalletState.reducer;

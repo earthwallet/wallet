@@ -260,7 +260,7 @@ const TokensList = ({ accountId }: { accountId: string }) => {
       </div>
       <div className={styles.listitemscont}>
         <div
-          onClick={() => history.push('/th/' + address + '/' + selectedAccount?.symbol)}
+          onClick={() => history.push('/th/' + accountId + '/' + selectedAccount?.symbol)}
           className={styles.listitem}>
           <img
             className={styles.listicon}
@@ -277,7 +277,7 @@ const TokensList = ({ accountId }: { accountId: string }) => {
           />
         </div>
         {tokens?.length > 0 && tokens?.filter((token:keyable) => token?.symbol != null).map((token: keyable, i: number) => <div
-          onClick={() => history.push('/th/' + address + '/' + token.id)}
+          onClick={() => history.push('/th/' + accountId + '/' + token.id)}
           key={i}
           className={styles.listitem}>
           {token?.icon ? <img
@@ -450,7 +450,7 @@ const TokensGridflow = ({ accountId, setSelectedGridToken }: { accountId: string
       getSwiper={setSwiper}
       {...params}>
       <div
-        onClick={() => history.push(`/th/${address}`)}
+        onClick={() => history.push(`/th/${accountId}`)}
         className={styles.imagecont}>
         <img
           className={styles.imageIcon}
@@ -458,7 +458,7 @@ const TokensGridflow = ({ accountId, setSelectedGridToken }: { accountId: string
         </img>
       </div>
       {tokens?.length > 0 && tokens?.map((token: keyable, i: number) => <div
-        onClick={() => history.push('/th/' + address + '/' + token.id)}
+        onClick={() => history.push('/th/' + accountId + '/' + token.id)}
         key={i}
         className={styles.imagecont}>
         {token?.icon ? <img

@@ -4,10 +4,9 @@ import type { ITokensState } from './types';
 //import type { StoreInterface } from '~state/IStore';
 import { AppState } from '~state/store';
 import { keyable } from '~scripts/Background/types/IMainController';
-//import groupBy from 'lodash/groupBy';
 import { getTokenInfo, getLiveTokensByNetworkSymbol } from '~global/tokens';
 import { getInfoBySymbol } from '~global/constant';
-import millify from 'millify';
+//import millify from 'millify';
 
 const initialState: ITokensState = {
   loading: false,
@@ -86,43 +85,75 @@ export const selectTokenByTokenPair =
   };
 
 export const selectInfoBySymbolOrToken =
-  (symbolOrTokenId: string, address: string) => (state: AppState) => {
-    const info = getInfoBySymbol(symbolOrTokenId);
+  (symbolOrTokenId: string, accountId: string) => (state: AppState) => {
+    //const { address, symbol } = state.entities.accounts.byId[accountId];
 
+    const info = getInfoBySymbol(symbolOrTokenId);
+    const getTokenInfoFromStore = (address: string) =>
+      state.entities.tokensInfo?.byId[address];
+    const getTokenPrice = (contractAddress: string) =>
+      state.entities.prices.byId[contractAddress];
     if (info == undefined) {
       const tokenId = symbolOrTokenId;
-      const tokenPair = address + '_WITH_' + tokenId;
-      const tokenInfo = getTokenInfo(tokenId);
-      if (state.entities.tokens?.byId[tokenPair] != null) {
-        return { ...state.entities.tokens?.byId[tokenPair], ...tokenInfo };
+      const tokenPair = accountId + "_WITH_" + tokenId;
+      //const tokenInfo = getTokenInfo(tokenId);
+      const tokenObj = state.entities.tokens?.byId[tokenPair];
+
+      if (tokenObj != null) {
+        return tokenObj.network == "ICP"
+          ? {
+              ...tokenObj,
+              ...getTokenInfo(tokenObj.tokenId),
+            }
+          : {
+              ...tokenObj,
+              type: "token",
+              ...{
+                balance:
+                  tokenObj.tokenBalance /
+                  Math.pow(
+                    10,
+                    getTokenInfoFromStore(tokenObj.contractAddress)?.decimals ||
+                      0
+                  ),
+                balanceTxt: (
+                  tokenObj.tokenBalance /
+                  Math.pow(
+                    10,
+                    getTokenInfoFromStore(tokenObj.contractAddress)?.decimals ||
+                      0
+                  )
+                ).toFixed(3),
+                price: (
+                  (tokenObj.tokenBalance /
+                    Math.pow(
+                      10,
+                      getTokenInfoFromStore(tokenObj.contractAddress)
+                        ?.decimals || 0
+                    )) *
+                  getTokenPrice(tokenObj.contractAddress)?.usd
+                ).toFixed(3),
+              },
+              ...getTokenInfoFromStore(tokenObj.contractAddress),
+              ...getTokenPrice(tokenObj.contractAddress),
+            };
       } else {
         return {};
       }
     } else {
-      const currentBalance = state.entities.balances.byId[address];
+      const currentBalance = state.entities.balances.byId[accountId];
       const symbolStats = state.entities.prices.byId[info.coinGeckoId];
       return {
         ...info,
         ...{
-          type: 'symbol',
+          type: "symbol",
           balanceTxt: (
             (currentBalance?.value || 0) /
             Math.pow(10, currentBalance?.currency?.decimals || 0)
           ).toFixed(4),
           price: currentBalance?.balanceInUSD?.toFixed(3),
-          usd_market_cap:
-            symbolStats?.usd_market_cap &&
-            millify(symbolStats?.usd_market_cap, {
-              precision: 2,
-              lowercase: true,
-            }),
-          usd_24h_vol:
-            symbolStats?.usd_24h_vol &&
-            millify(symbolStats?.usd_24h_vol, {
-              precision: 2,
-              lowercase: true,
-            }),
         },
+        ...symbolStats,
       };
     }
   };
