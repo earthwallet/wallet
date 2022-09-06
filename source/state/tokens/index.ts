@@ -107,7 +107,7 @@ export const selectInfoBySymbolOrToken =
             }
           : {
               ...tokenObj,
-              type: "token",
+              format: "token",
               ...{
                 balance:
                   tokenObj.tokenBalance /

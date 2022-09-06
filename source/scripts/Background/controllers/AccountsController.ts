@@ -33,10 +33,7 @@ import {
 import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
-import {
-  ETH_MAINNET_ALCHEMY_URL,
-  POLY_ALCHEMY_URL,
-} from '~global/config';
+import { ETH_MAINNET_ALCHEMY_URL, POLY_ALCHEMY_URL } from '~global/config';
 
 interface keyable {
   [key: string]: any;
@@ -187,7 +184,6 @@ export default class AccountsController implements IAccountsController {
     return resp.hash;
   };
 
-
   sendERC20_ETH = async (
     selectedRecp: string,
     selectedAmount: number,
@@ -202,10 +198,10 @@ export default class AccountsController implements IAccountsController {
       selectedRecp,
       selectedAmount.toString(),
       mnemonic,
-      symbol, 
+      symbol,
       feesArr[feesOptionSelected]?.suggestedMaxPriorityFeePerGas,
       feesArr[feesOptionSelected]?.suggestedMaxFeePerGas,
-      selectedAssetObj?.decimals,
+      selectedAssetObj?.decimals
     );
 
     return resp.hash;
@@ -528,6 +524,8 @@ export default class AccountsController implements IAccountsController {
         }
       }
     }
+    const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+    await delay(500);
 
     callback && callback(forwardAddress);
   };

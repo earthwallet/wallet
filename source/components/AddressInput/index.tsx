@@ -133,7 +133,7 @@ export default function AddressInput({
             }
             else {
                 setValid(false);
-                setRecpError('Not a valid EVM address');
+                setRecpError('Not a valid ethereum address');
             }
         }
     };
@@ -168,7 +168,7 @@ export default function AddressInput({
                     required
                     value={selectedRecp}
                 />}
-            {(inputType == 'ETH' || inputType == 'MATIC') ? <div className={styles.type}>Ox</div> : inputType == 'BTC' ? <div className={styles.type}>BTC</div> : inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : <div className={styles.type}>AID</div>}
+            {(inputType == 'ETH' || inputType == 'MATIC') ? <></> : inputType == 'BTC' ? <div className={styles.type}>BTC</div> : inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : <div className={styles.type}>AID</div>}
         </div>
         {recpError !== '' && <Warning
             isBelowInput

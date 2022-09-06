@@ -63,7 +63,6 @@ const WalletSendTokens = ({
     selectActiveTokensAndAssetsByAccountId(accountId)
   );
 
-  console.log(assets, selectedAccount, currentBalance, accountId, 'assets');
 
   const [selectedRecp, setSelectedRecp] = useState<string>('');
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
@@ -131,7 +130,7 @@ const WalletSendTokens = ({
 
 
     let gasLimit = 21000;
-    if (getSelectedAsset(selectedAsset)?.type == "token") {
+    if (getSelectedAsset(selectedAsset)?.format == "token") {
       gasLimit = await getERC20TransferGasLimit(
         getSelectedAsset(selectedAsset)?.contractAddress,
         selectedAccount.address,
@@ -176,7 +175,7 @@ const WalletSendTokens = ({
   }, 500);
 
   React.useEffect(() => {
-    if (getSelectedAsset(selectedAsset)?.type == "token") {
+    if (getSelectedAsset(selectedAsset)?.format == "token" && (selectedAccount.symbol == "MATIC" || selectedAccount.symbol == "ETH")) {
       debouncedFetchData(selectedAmount, (res: any) => {
         console.log(res, "debounced");
       });
@@ -575,7 +574,6 @@ const WalletSendTokens = ({
               </div>
               {selectedAsset === selectedAccount?.symbol && (
                 <AmountInput
-                  selectedAssetObj={getSelectedAsset(selectedAsset)}
                   initialValue={selectedAmount.toString()}
                   accountId={accountId}
                   fees={fees}
@@ -586,11 +584,10 @@ const WalletSendTokens = ({
               {getSelectedAsset(selectedAsset) &&
                 getSelectedAsset(selectedAsset).format != 'nft' && (
                   <AmountInput
-                    selectedAssetObj={getSelectedAsset(selectedAsset)}
                     initialValue={selectedAmount.toString()}
                     accountId={accountId}
                     fees={fees}
-                    tokenId={getSelectedAsset(selectedAsset)?.tokenId}
+                    tokenId={getSelectedAsset(selectedAsset)?.id}
                     amountCallback={setSelectedAmount}
                     errorCallback={setError}
                   />
@@ -650,8 +647,8 @@ const WalletSendTokens = ({
                     </div>
                   </div>
                 </div>
-              ) : getSelectedAsset(selectedAsset)?.type == 'DIP20' ||
-                getSelectedAsset(selectedAsset)?.type == 'ERC20' ? (
+              ) : (getSelectedAsset(selectedAsset)?.type == 'DIP20' ||
+                getSelectedAsset(selectedAsset)?.type == 'ERC20' || getSelectedAsset(selectedAsset)?.format == 'token') ? (
                 <div className={styles.confirmAmountCont}>
                   <img
                     className={clsx(styles.tokenLogo, styles.tokenLogoConfirm)}
@@ -663,18 +660,18 @@ const WalletSendTokens = ({
                   />
                   <div>
                     <div className={styles.tokenText}>
-                      {getTokenInfo(selectedAsset)?.name}
+                      {getTokenInfo(selectedAsset)?.name || getSelectedAsset(selectedAsset)?.name}
                     </div>
                     <div className={styles.tokenAmount}>
                       {selectedAmount.toFixed(5)}{' '}
-                      {getTokenInfo(selectedAsset)?.symbol}
+                      {getTokenInfo(selectedAsset)?.symbol || getSelectedAsset(selectedAsset)?.symbol}
                     </div>
-                    <div className={styles.tokenValue}>
+                   {!isNaN(getSelectedAsset(selectedAsset)?.usd) && <div className={styles.tokenValue}>
                       $
                       {(
                         selectedAmount * getSelectedAsset(selectedAsset)?.usd
                       ).toFixed(3)}
-                    </div>
+                    </div>}
                   </div>
                 </div>
               ) : (
@@ -696,26 +693,45 @@ const WalletSendTokens = ({
                 </div>
               )}
               {(getSelectedAsset(selectedAsset)?.type == 'DIP20' ||
-                getSelectedAsset(selectedAsset)?.type == 'ERC20') && (
+                getSelectedAsset(selectedAsset)?.type == 'ERC20' || getSelectedAsset(selectedAsset)?.format == 'token') && (
                   <div className={styles.feeCont}>
                     <div className={styles.feeRow}>
                       <div className={styles.feeTitle}>Transaction Fee</div>
-                      <div>
-                        <div className={styles.feeAmount}>
-                          {fees} {getTokenInfo(selectedAsset)?.symbol}
+                      {(selectedAccount.symbol == "MATIC" || selectedAccount.symbol == "ETH") ?
+                        <div>
+                          <div className={styles.feeAmount}>
+                            {fees} {selectedAccount.symbol}
+                          </div>
+                          <div className={styles.feeValue}>
+                            $
+                            {(fees * currentUSDValue?.usd).toFixed(
+                              3
+                            )}
+                          </div>
                         </div>
-                        <div className={styles.feeValue}>
-                          $
-                          {(fees * getSelectedAsset(selectedAsset)?.usd).toFixed(
-                            3
-                          )}
-                        </div>
-                      </div>
+                        : <div>
+                          <div className={styles.feeAmount}>
+                            {fees} {getTokenInfo(selectedAsset)?.symbol}
+                          </div>
+                          <div className={styles.feeValue}>
+                            $
+                            {(fees * getSelectedAsset(selectedAsset)?.usd).toFixed(
+                              3
+                            )}
+                          </div>
+                        </div>}
                     </div>
 
                     <div className={styles.feeRow}>
                       <div className={styles.feeTotal}>Total</div>
-                      <div>
+                      {(selectedAccount.symbol == "MATIC" || selectedAccount.symbol == "ETH") ? <div>
+                        <div className={styles.feeAmount}>
+                          {selectedAmount} {getSelectedAsset(selectedAsset)?.symbol}
+                        </div>
+                        <div className={styles.feeValue}>
+                          {fees} {selectedAccount.symbol}
+                        </div>
+                      </div> : <div>
                         <div className={styles.feeAmount}>
                           {(selectedAmount + fees).toFixed(
                             getTokenInfo(selectedAsset)?.decimals
@@ -728,7 +744,7 @@ const WalletSendTokens = ({
                             getSelectedAsset(selectedAsset)?.usd
                           ).toFixed(3)}
                         </div>
-                      </div>
+                      </div>}
                     </div>
                   </div>
                 )}
@@ -936,7 +952,6 @@ const AmountInput = ({
   amountCallback,
   errorCallback,
   tokenId,
-  selectedAssetObj
 }: {
   accountId: string;
   fees: any;
@@ -944,7 +959,6 @@ const AmountInput = ({
   amountCallback: (amount: number) => void;
   errorCallback: (error: string) => void;
   tokenId?: string;
-  selectedAssetObj?: keyable
 }) => {
   const selectedAccount = useSelector(selectAccountById(accountId));
 
@@ -960,7 +974,7 @@ const AmountInput = ({
   );
 
   const price =
-    tokenInfo?.type == 'DIP20' || tokenInfo?.type == 'ERC20'
+    (tokenInfo?.type == 'DIP20' || tokenInfo?.type == 'ERC20' || tokenInfo?.format == "token")
       ? tokenInfo?.usd
       : currentUSDValue?.usd;
 
@@ -998,11 +1012,9 @@ const AmountInput = ({
     if (tokenInfo?.type == "DIP20") {
       maxAmount = tokenInfo.balance / Math.pow(10, tokenInfo.decimals) - fees;
       maxAmount = parseFloat(maxAmount.toFixed(8));
-    } else if (tokenInfo?.type == "token" || tokenInfo?.type == "ERC20") {
+    } else if (tokenInfo?.format == "token" || tokenInfo?.type == "ERC20") {
       maxAmount = tokenInfo.balance;
       maxAmount = parseFloat(maxAmount.toFixed(8));
-    } else if (selectedAssetObj?.format == "nft") {
-      maxAmount = 1;
     }
     else {
       maxAmount =
@@ -1060,7 +1072,7 @@ const AmountInput = ({
         type="number"
         value={selectedAmount}
       />
-      {!(error != '') && initialized && (
+      {!(error != '') && initialized && !isNaN(price) && (
         <div className={styles.priceInput}>
           ${((selectedAmount + fees) * price).toFixed(2)}
         </div>
