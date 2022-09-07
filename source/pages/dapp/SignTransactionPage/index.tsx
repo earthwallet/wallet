@@ -137,13 +137,14 @@ const SignTransactionPage = () => {
       className={clsx(
         styles.page,
         !(requestStatus?.loading || requestStatus?.complete) &&
-          styles.page_extra
+        styles.page_extra
       )}
     >
       <div id={'response'} className={styles.title}>
         {request?.type === 'createSession'
           ? 'Create Session'
           : 'Signature Request'}
+
       </div>
       {requestStatus?.response && (
         <div
@@ -151,7 +152,7 @@ const SignTransactionPage = () => {
             styles.accountInfo,
             styles.response,
             safeParseJSON(requestStatus?.response)?.type == 'error' &&
-              styles.errorResponse
+            styles.errorResponse
           )}
         >
           <div className={styles.label}>Response</div>
@@ -221,9 +222,9 @@ const SignTransactionPage = () => {
                 {singleReq?.args === undefined
                   ? 'undefined'
                   : stringifyWithBigInt(singleReq?.args)?.length > 1000
-                  ? stringifyWithBigInt(singleReq?.args)?.substring(0, 1000) +
+                    ? stringifyWithBigInt(singleReq?.args)?.substring(0, 1000) +
                     '...'
-                  : stringifyWithBigInt(singleReq?.args)}
+                    : stringifyWithBigInt(singleReq?.args)}
               </div>
             </div>
           ))
@@ -252,8 +253,8 @@ const SignTransactionPage = () => {
             {request?.args === undefined
               ? 'undefined'
               : stringifyWithBigInt(request?.args)?.length > 1000
-              ? stringifyWithBigInt(request?.args)?.substring(0, 1000) + '...'
-              : stringifyWithBigInt(request?.args)}
+                ? stringifyWithBigInt(request?.args)?.substring(0, 1000) + '...'
+                : stringifyWithBigInt(request?.args)}
           </div>
         </div>
       )}

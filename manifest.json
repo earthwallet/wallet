@@ -2,7 +2,6 @@
   "manifest_version": 2,
   "name": "Earth Wallet",
   "version": "0.8.2",
-
   "icons": {
     "16": "assets/images/icon-16.png",
     "32": "assets/images/icon-32.png",
@@ -10,11 +9,17 @@
     "64": "assets/images/icon-64.png",
     "128": "assets/images/icon-128.png"
   },
-  "description": "Bring your crypto back to Earth.",
+  "description": "The Wallet for Earth.",
   "homepage_url": "https://github.com/earthdao/wallet",
   "short_name": "Earth Wallet",
 
-  "permissions": ["activeTab", "storage", "http://*/*", "https://*/*", "chrome://favicon/"],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "http://*/*",
+    "https://*/*",
+    "chrome://favicon/"
+  ],
 
   "content_security_policy": "script-src 'self' blob: 'unsafe-eval' 'wasm-eval'; object-src 'self'; script-src-elem 'self' data:;",
 

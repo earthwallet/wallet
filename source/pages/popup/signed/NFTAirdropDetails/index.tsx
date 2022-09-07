@@ -16,6 +16,7 @@ import Confetti from 'react-confetti'
 import { selectAccountById } from '~state/wallet';
 
 interface Props extends RouteComponentProps<{ assetId: string, accountId: string }> {
+
     className?: string;
 }
 
@@ -24,13 +25,15 @@ const NFTAirdropDetails = ({
         params: {
             assetId,
             accountId
+
         },
     },
 }: Props) => {
     // const history = useHistory();
     const selectedAccount = useSelector(selectAccountById(accountId));
     const { address } = selectedAccount;
-    
+
+
     const asset: keyable = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(asset.id));
 

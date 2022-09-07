@@ -146,8 +146,8 @@ export const ICP_NFT_LIST = [
     isLive: true,
     type: 'EXT',
     order: 6,
-    description: `Internet Astronauts is a collection of 10,000 unique digital NFT collectibles only found on the Internet Computer! Internet Astronauts can have 
-    advantages for various dapps on the Internet Computer Protocol(ICP) since all dapps on-chain. 
+    description: `Internet Astronauts is a collection of 10,000 unique digital NFT collectibles only found on the Internet Computer! Internet Astronauts can have
+    advantages for various dapps on the Internet Computer Protocol(ICP) since all dapps on-chain.
     Holders will receive the Space Center membership where they can have fun.`,
     icon: 'https://sr4qi-vaaaa-aaaah-qcaaq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=6roeh-nykor-uwiaa-aaaaa-b4aqa-eaqca-aaaaa-a',
   },
@@ -231,7 +231,7 @@ export const ICP_NFT_LIST = [
     isLive: true,
     isAirdrop: false,
     description:
-      'Earth DAO - Guardians NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
+      'Earth Art - Earth NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
     icon: ICON_EARTH,
     order: 1,
   },
@@ -293,18 +293,20 @@ export default LIVE_ICP_NFT_LIST_CANISTER_IDS;
 export const getAirDropNFTInfo = () => ({
   id: 'earth-day', //slug
   type: 'EarthArt',
+  standard: 'EarthArt',
   isLive: true,
   isAirdrop: true,
-  name: 'Earth day NFT', //can be changed
+  name: 'Earth Day 2022', //can be changed
   //can be changed
   description:
-    'Earthday NFT is an airdrop of 77k Earth NFTs. The earth has its music for those who listen.',
+    'Happy Earth Day! Something new is coming to Earth and this NFT gets you early access...',
   icon: NFT_EARTH_DAY, //can be changed
-  claimedTxt: 'Claimed! You will shortly receive Earth day NFT to ',
+  claimedTxt:
+    'Congratulations! Your Earth Day NFT is registered and will be sent to account ',
   //can be changed
   twitterButtonCTA: 'Tweet to claim NFT',
   disclaimer:
-    'disclaimer: 🛎️ Only one earth nft can be claimed per extension. Please allow 5 minutes for us to verify your tweet.',
+    'disclaimer: Only one NFT can be claimed per extension. Please wait 5 minutes for tweet verification.',
 });
 
 export const MARKETPLACE_ENABLED = true;

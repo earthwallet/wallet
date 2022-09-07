@@ -35,6 +35,7 @@ import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
 import { ETH_MAINNET_ALCHEMY_URL, POLY_ALCHEMY_URL } from '~global/config';
 
+
 interface keyable {
   [key: string]: any;
 }
@@ -108,6 +109,7 @@ export default class AccountsController implements IAccountsController {
 
     return index;
   };
+
   sendETH = async (
     selectedRecp: string,
     selectedAmount: number,
@@ -206,6 +208,7 @@ export default class AccountsController implements IAccountsController {
 
     return resp.hash;
   };
+
 
   sendBTC = async (
     selectedRecp: string,
@@ -486,6 +489,7 @@ export default class AccountsController implements IAccountsController {
         const selectedETHAccount = existingAllAccounts.filter(
           (a) => a.symbol === 'ETH'
         )[0];
+
         //https://en.bitcoin.it/wiki/BIP_0021
         // BIP_0021 uri format example MATIC:xyzzyxxxxxx
         const address_uri = symbol + ':' + selectedETHAccount.id;

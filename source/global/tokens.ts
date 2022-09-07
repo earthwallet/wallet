@@ -2,6 +2,7 @@ import ICON_SDR from '~assets/images/icon_SDR.png';
 import ICON_BNB from '~assets/images/icon_mini_bnb.png';
 import ICON_AVAX from '~assets/images/icon_avalanche.svg';
 
+
 const TOKENS_LIST = [
   {
     networkSymbol: 'ICP',
@@ -10,7 +11,7 @@ const TOKENS_LIST = [
     isLive: true,
     decimals: 12,
     id: 'cyiep-riaaa-aaaam-qadnq-cai',
-    name: 'Earth SDR',
+    name: 'SDR',
     symbol: 'SDR',
     wrappedSymbol: 'XDR',
     tokenCanisterId: 'cyiep-riaaa-aaaam-qadnq-cai',

@@ -196,7 +196,7 @@ async function handleRequest (req) {
 
 window.earth = {
   evtRegMap: {},
-  version: '6.1',
+  version: '0.8.2',
   isConnected: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.isConnected')()

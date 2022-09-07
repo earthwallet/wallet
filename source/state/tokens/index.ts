@@ -202,7 +202,7 @@ export const selectActiveTokensByAddressWithInfo =
                 ...getTokenInfoFromStore(tokenObj.contractAddress),
               }
         )
-        .filter((token: keyable) => token.balance != 0);
+        .filter((token: keyable) => token.network == "ICP" ? token : token.balance != 0);
     }
   };
 

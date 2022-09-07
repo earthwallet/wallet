@@ -22,12 +22,15 @@ export const TEST_NETWORKS = [
 
 /* Attribution: API provided by https://www.coingecko.com/en/api/documentation */
 
+/* Attribution: API provided by https://www.coingecko.com/en/api/documentation */
+
 export const CGECKO_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
 
 export const DEFAULT_GROUP_SYMBOL = 'BTC';
 
 // once a symbol is marked isLive true, it shouldnt be marked as isLive false
 // isActive networks will be marked active for user on create or import
+
 export const DEFAULT_SYMBOLS = [
   {
     name: 'Bitcoin',

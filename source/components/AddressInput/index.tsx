@@ -13,6 +13,7 @@ import { useLocation } from 'react-router-dom';
 import { validate } from 'bitcoin-address-validation';
 var web3 = require('web3');
 
+
 const PRINCIPAL_NOT_ACCEPTED = 'Principal id is not accepted!';
 
 
@@ -136,6 +137,7 @@ export default function AddressInput({
                 setRecpError('Not a valid ethereum address');
             }
         }
+
     };
 
     const togglePrincipal = () => {

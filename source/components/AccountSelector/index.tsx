@@ -28,6 +28,7 @@ const AccountSelector = ({
   const controller = useController();
   const { activeNetwork } = useSelector((state: AppState) => state.wallet);
 
+
   const [selectedAccountText, setSelectedAccountText] = useState<string>();
   const _onChangePrefix = (account: keyable) => {
     setSelectedAccountText(account.id);
@@ -50,6 +51,7 @@ const AccountSelector = ({
   useEffect(() => {
     setSelectedAccountText(selectedAccount?.address);
   }, [selectedAccount]);
+
 
   return (
     <div className={styles.page} ref={dropDownRef}>
@@ -104,6 +106,7 @@ const AccountSelector = ({
       )}
     </div>
   );
+
 };
 
 export default AccountSelector;
