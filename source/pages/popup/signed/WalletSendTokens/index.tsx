@@ -52,6 +52,7 @@ const WalletSendTokens = ({
   const [step1, setStep1] = useState(true);
   const selectedAccount = useSelector(selectAccountById(accountId));
   const { address } = selectedAccount;
+  const [done, setDone] = useState(false);
 
   const controller = useController();
   const currentBalance: keyable = useSelector(selectBalanceById(accountId));
@@ -149,10 +150,8 @@ const WalletSendTokens = ({
         getSelectedAsset(selectedAsset).tokenID,
       );
     }
-    console.log(gasLimit, 'gasLimit')
     getFeesExtended(selectedAccount?.symbol, gasLimit).then(
       (_feesArr: keyable[]) => {
-        console.log(_feesArr);
         setFeesOptionSelected(DEFAULT_FEE_INDEX);
         _feesArr[DEFAULT_FEE_INDEX] &&
           setFees(_feesArr[DEFAULT_FEE_INDEX]?.gas);
@@ -297,6 +296,7 @@ const WalletSendTokens = ({
       setTxCompleteTxt(
         'Payment Done! Check transactions for more details.' || hash || ''
       );
+      setDone(true);
       setIsBusy(false);
     } catch (error) {
       console.log(error);
@@ -347,6 +347,7 @@ const WalletSendTokens = ({
                 setTxCompleteTxt(
                   'Payment Done! Check transactions for more details.'
                 );
+                setDone(true);
                 setIsBusy(false);
               }
             });
@@ -376,6 +377,7 @@ const WalletSendTokens = ({
                 'Successfully transferred to ' +
                 getShortAddress(selectedRecp, 3)
               );
+              setDone(true);
               setLoadingSend(false);
               setIsBusy(false);
             });
@@ -395,6 +397,7 @@ const WalletSendTokens = ({
                 'Successfully transferred to ' +
                 getShortAddress(selectedRecp, 3)
               );
+              setDone(true);
               setLoadingSend(false);
               setIsBusy(false);
             });
@@ -427,6 +430,7 @@ const WalletSendTokens = ({
               'Successfully transferred NFT to ' +
               getShortAddress(selectedRecp, 3)
             );
+            setDone(true);
             setLoadingSend(false);
             setIsBusy(false);
             //update asset balances after tx
@@ -485,7 +489,7 @@ const WalletSendTokens = ({
       <>
         <Header
           backOverride={
-            step1 ? undefined : txCompleteTxt === '' ? onBackClick : undefined
+            step1 ? undefined : txCompleteTxt === '' ? onBackClick : done ? () => history.push('/account/details/' + accountId) : undefined
           }
           centerText
           showMenu
@@ -666,7 +670,7 @@ const WalletSendTokens = ({
                       {selectedAmount.toFixed(5)}{' '}
                       {getTokenInfo(selectedAsset)?.symbol || getSelectedAsset(selectedAsset)?.symbol}
                     </div>
-                   {!isNaN(getSelectedAsset(selectedAsset)?.usd) && <div className={styles.tokenValue}>
+                    {!isNaN(getSelectedAsset(selectedAsset)?.usd) && <div className={styles.tokenValue}>
                       $
                       {(
                         selectedAmount * getSelectedAsset(selectedAsset)?.usd

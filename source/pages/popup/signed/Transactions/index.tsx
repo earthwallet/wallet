@@ -48,7 +48,7 @@ const Transactions = ({
   const getTransactionTime = (transaction: any): any => {
     const timestamp: number = transaction.transaction?.metadata?.timestamp;
 
-    return moment(timestamp / 1000000).format('MMM DD');
+    return moment(timestamp / 1000000).format('MMM DD YYYY');
   };
   const getTransactionTimestamp = (transaction: any): any => {
     const timestamp: number = transaction.transaction?.metadata?.timestamp;
@@ -128,7 +128,7 @@ const Transactions = ({
               : 'Send'}
           </div>
           <div className={styles.transSubColTime}>
-            <div className={styles.transDate}>{moment(transaction?.date).format('MMM DD')}</div>
+            <div className={styles.transDate}>{moment(transaction?.date).format('MMM DD YYYY')}</div>
             <div className={styles.transSubColDot}></div>
             <div className={styles.transAddress}>
               {getAmount(transaction) > 0 ? 'from ' + getShortAddress(transaction.from[0].from, 3) : 'to ' + getShortAddress(transaction.to[0].to, 3)}

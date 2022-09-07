@@ -35,7 +35,6 @@ const NFTCollection = ({
     const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
     const accountId: string = queryParams.get('accountId') || '';
     const nftObj = useSelector(selectStatsOfCollection(collectionId));
-    console.log(nftCollObj, collectionId, 'NFTCollection');
 
     useEffect(() => {
         const fetchNfts = async () => {

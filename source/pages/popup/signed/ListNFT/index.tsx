@@ -58,7 +58,6 @@ const ListNFT = ({
 
     const controller = useController();
 
-    console.log(selectedAssetObj, 'selectedAssetObj');
     useEffect(() => {
         if (queryParams.get('assetId') === null) {
             setSelectedAsset(selectedAccount?.symbol)

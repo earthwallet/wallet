@@ -30,7 +30,6 @@ const AddNetwork = ({
   const accounts = useSelector(selectActiveAccountsByGroupId(groupId));
   const [existingActive, setExistingActive] = useState<string[]>([]);
 
-  console.log(accounts, 'Add Network');
 
   const _UpdateNetworks = useCallback(() => {
 
@@ -39,12 +38,10 @@ const AddNetwork = ({
       const removeArr = existingActive.filter(x => !checkedArr.includes(x));
       const callback = () => history.replace(`/account/details/${accounts[0].address}`);
       controller.accounts.updateActiveAccountsOfGroup(groupId, removeArr, false, callback);
-      console.log(accounts[0].address, '_UpdateNetworks');
     }
     else {
       //add accounts
       const callback = (address: string | undefined) => {
-        console.log(address, '_UpdateNetworks');
         return history.replace(`/account/details/${address}`)
       };
       controller.accounts.updateActiveAccountsOfGroup(groupId, checkedArr, true, callback);

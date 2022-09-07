@@ -226,12 +226,16 @@ export const selectGroupCountByGroupId =
         state.entities.assets?.byId &&
         Object.keys(state.entities.assets?.byId)
           ?.map((id) => state.entities.assets.byId[id])
-          .filter((assets) => assets.address === account.address);
+          .filter(
+            (assets) =>
+              assets.address === account.address &&
+              assets.symbol == account.symbol
+          );
       count = count + assetsByAddress.length;
     });
     return count;
   };
-  export const selectActiveTokensAndAssetsByAccountId =
+export const selectActiveTokensAndAssetsByAccountId =
   (accountId: string) => (state: AppState) => {
     const { address, symbol } = state.entities.accounts.byId[accountId];
 
@@ -241,9 +245,9 @@ export const selectGroupCountByGroupId =
           ?.map((id) => ({
             ...state.entities.assets.byId[id],
             ...{
-              format: "nft",
+              format: 'nft',
               id: state.entities.assets.byId[id]?.tokenIdentifier || id,
-              balanceTxt: "1 NFT",
+              balanceTxt: '1 NFT',
               label: state.entities.assets.byId[id]?.tokenIndex,
               icon: getTokenImageURL(state.entities.assets.byId[id]),
             },
@@ -262,11 +266,11 @@ export const selectGroupCountByGroupId =
             const getTokenInfoFromStore = (contractAddress: string) =>
               state.entities.tokensInfo?.byId[contractAddress];
             const tokenObj = state.entities.tokens.byId[id];
-            if (tokenObj?.network == "ETH" || tokenObj?.network == "MATIC") {
+            if (tokenObj?.network == 'ETH' || tokenObj?.network == 'MATIC') {
               return {
                 ...state.entities.tokens.byId[id],
                 ...{
-                  format: "token",
+                  format: 'token',
                   label: tokenInfo.symbol,
                   id: state.entities.tokens.byId[id]?.tokenId,
                 },
@@ -287,7 +291,7 @@ export const selectGroupCountByGroupId =
                           ?.decimals || 0
                       )
                     ).toFixed(3) +
-                    " " +
+                    ' ' +
                     getTokenInfoFromStore(tokenObj?.contractAddress).symbol,
                 },
                 ...getTokenInfoFromStore(tokenObj?.contractAddress),
@@ -296,19 +300,25 @@ export const selectGroupCountByGroupId =
               return {
                 ...state.entities.tokens.byId[id],
                 ...{
-                  format: "token",
+                  format: 'token',
                   type: tokenInfo.type,
                   label: tokenInfo.symbol,
                   id: state.entities.tokens.byId[id]?.tokenId,
                   balanceTxt:
                     state.entities.tokens.byId[id]?.balanceTxt +
-                    " " +
+                    ' ' +
                     tokenInfo.symbol,
                 },
               };
             }
           })
-          .filter((token) => token.address == address && token.network == symbol && token.active && token.balance != 0)) ||
+          .filter(
+            (token) =>
+              token.address == address &&
+              token.network == symbol &&
+              token.active &&
+              token.balance != 0
+          )) ||
       [];
     return [...activeTokens, ...assets];
   };

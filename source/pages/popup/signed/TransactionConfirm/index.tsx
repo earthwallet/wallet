@@ -33,7 +33,6 @@ const TransactionConfirm = ({
 }: Props) => {
   const txnStatusObj: keyable = useSelector(getPopupTxn(txnId));
 
-  console.log(txnStatusObj, 'txnStatusObj')
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');

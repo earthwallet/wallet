@@ -89,7 +89,6 @@ const Wallet = ({
         setWalletTransactions(transactions);
       } else {
         const response = await getTransactions_ETH_MATIC(address, selectedAccount?.symbol);
-        console.log("getTransactions_ETH_MATIC", address, selectedAccount?.symbol, response)
         const wallet = { txs: response, total: response?.length };
         setWalletTransactions(wallet);
       }
@@ -246,7 +245,6 @@ const TokensList = ({ accountId }: { accountId: string }) => {
   const selectedAccount = useSelector(selectAccountById(accountId));
 
   const { address, symbol } = selectedAccount;
-  console.log(address, symbol, 'TokensList');
   const tokens = useSelector(selectActiveTokensByAddressWithInfo(address, symbol));
 
   const activeTokenAndAddressBalance = useSelector(

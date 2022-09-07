@@ -59,7 +59,6 @@ const PopupRouter = () => {
         controller.migrateLocalStorage();
         controller.assets.registerExtensionForAirdrop();
         controller.accounts.restoreOnceInactiveAccountsActive_ETH();
-
       } catch (error) {
         console.log(error);
       }
@@ -140,19 +139,11 @@ const PopupRouter = () => {
               {/*  /account/send/:accountId ?tokenId or ?assetId */}
               <Route path="/account/confirmsend/:accountId">
                 {wrapWithErrorBoundary(
-                  <WalletAddressBook />,
-                  'wallet-send-token'
-                )}
-              </Route>
-              {/*  /account/send/:address ?tokenId or ?assetId */}
-              <Route path="/account/confirmsend/:address">
-                {wrapWithErrorBoundary(
                   <WalletSendTokens />,
                   'wallet-send-token'
                 )}
               </Route>
               <Route path="/account/receive/:accountId/:symbolOrTokenId?">
-
                 {wrapWithErrorBoundary(
                   <WalletReceiveTokens />,
                   'wallet-receive-token'
@@ -173,12 +164,10 @@ const PopupRouter = () => {
               <Route path="/nftdetails/:assetId">
                 {wrapWithErrorBoundary(<NFTDetails />, 'accounts')}
               </Route>
-
               <Route path="/nftairdropdetails/:assetId/:accountId?">
                 {wrapWithErrorBoundary(<NFTAirdropDetails />, 'accounts')}
               </Route>
               <Route path="/createnft/:accountId">
-
                 {wrapWithErrorBoundary(<CreateNFT />, 'accounts')}
               </Route>
               <Route path="/walletsettings">
@@ -194,7 +183,6 @@ const PopupRouter = () => {
                 {wrapWithErrorBoundary(<Swap />, 'Swap')}
               </Route>
               <Route path="/th/:accountId/:symbolOrTokenId">
-
                 {wrapWithErrorBoundary(<TokenDetailsWithInfo />, 'TokenDetailsWithInfo')}
               </Route>
               <Route path="/account/details/:accountId">

@@ -41,6 +41,7 @@ export const DEFAULT_SYMBOLS = [
     preGenerate: true,
     primary: true,
     order: 1,
+    isActive: true,
   },
   {
     name: 'Internet Computer',
