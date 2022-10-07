@@ -14,7 +14,6 @@ import { hexToNumber, hexToNumberString } from 'web3-utils';
 //@ts-ignore
 import IERC721 from './abi/IERC721';
 //@ts-ignore
-
 import IERC20 from './abi/IERC20';
 
 import { Interface } from 'ethers/lib/utils';
@@ -385,11 +384,11 @@ export const transferERC721 = async (
     'safeTransferFrom(address,address,uint256)'
   ](fromAddress, recipientAddress, BigNumber.from(tokenId), {
     maxPriorityFeePerGas: ethers.utils.parseUnits(
-      (parseFloat(maxPriorityFeePerGas)).toString(),
+      parseFloat(maxPriorityFeePerGas).toString(),
       'gwei'
     ),
     maxFeePerGas: ethers.utils.parseUnits(
-      (parseFloat(maxFeePerGas)).toString(),
+      parseFloat(maxFeePerGas).toString(),
       'gwei'
     ),
   });
@@ -468,10 +467,10 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
   let serverRes;
   let fees: keyable[] = [];
 
-  if (symbol == "ETH") {
+  if (symbol == 'ETH') {
     const config: AxiosRequestConfig = {
-      method: "get",
-      url: "https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees",
+      method: 'get',
+      url: 'https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees',
       headers: {},
     };
 
@@ -491,11 +490,11 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
         estimateGas *
         (parseFloat(serverRes?.estimatedBaseFee) +
           parseFloat(serverRes?.high?.suggestedMaxPriorityFeePerGas));
-      console.log(response, config, "getFeesExtended");
+      console.log(response, config, 'getFeesExtended');
       console.log(
         totalSafeLowGas,
         serverRes?.low?.suggestedMaxPriorityFeePerGas,
-        "getFeesExtended"
+        'getFeesExtended'
       );
 
       ////Total transaction fee = gas units (limit) x (base fee + tip)
@@ -503,7 +502,7 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
       // maxFeePerGas = web3.utils.fromWei(priorityFees['fast']['maxFee'], 'gwei') * estimateGas
       fees = [
         {
-          label: "Low",
+          label: 'Low',
           ...serverRes?.low,
           gas: totalSafeLowGas / Math.pow(10, 9),
           estimateGas,
@@ -512,7 +511,7 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
             Math.pow(10, 9),
         },
         {
-          label: "Standard",
+          label: 'Standard',
           ...serverRes?.medium,
           estimateGas,
           gas: totalStandardGas / Math.pow(10, 9),
@@ -522,7 +521,7 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
             Math.pow(10, 9),
         },
         {
-          label: "Fast",
+          label: 'Fast',
           ...serverRes?.high,
           estimateGas,
           gas: totalFastGas / Math.pow(10, 9),
@@ -533,12 +532,12 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
       ];
     } catch (error) {
       serverRes = error;
-      console.log(error, "getFeesExtended");
+      console.log(error, 'getFeesExtended');
     }
-  } else if (symbol == "MATIC") {
+  } else if (symbol == 'MATIC') {
     const config: AxiosRequestConfig = {
-      method: "get",
-      url: "https://gasstation-mainnet.matic.network/v2",
+      method: 'get',
+      url: 'https://gasstation-mainnet.matic.network/v2',
       headers: {},
     };
 
@@ -557,7 +556,7 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
 
       fees = [
         {
-          label: "Low",
+          label: 'Low',
           ...serverRes?.safeLow,
           estimateGas,
           gas: totalSafeLowGas / Math.pow(10, 9),
@@ -566,7 +565,7 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
             serverRes?.safeLow?.maxPriorityFee.toFixed(5),
         },
         {
-          label: "Standard",
+          label: 'Standard',
           ...serverRes?.standard,
           estimateGas,
           gas: totalStandardGas / Math.pow(10, 9),
@@ -575,7 +574,7 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
             serverRes?.standard?.maxPriorityFee.toFixed(5),
         },
         {
-          label: "Fast",
+          label: 'Fast',
           ...serverRes?.fast,
           estimateGas,
           gas: totalFastGas / Math.pow(10, 9),
@@ -614,7 +613,10 @@ export const getFeesExtended_MATIC = async () => {
   return serverRes;
 };
 
-export const getTransactions_ETH_MATIC = async (address: string, symbol: string) => {
+export const getTransactions_ETH_MATIC = async (
+  address: string,
+  symbol: string
+) => {
   const data = JSON.stringify({
     jsonrpc: '2.0',
     id: 0,
@@ -670,12 +672,13 @@ export const getTransactions_ETH_MATIC = async (address: string, symbol: string)
     serverRes = error;
     return;
   }
-  const txns = serverRes?.map((tx: { blockNum: any }) => ({
+  const txns = serverRes
+    ?.map((tx: { blockNum: any }) => ({
       ...tx,
       block: web3.utils.hexToNumberString(tx.blockNum),
     }))
     .sort((a: { block: number }, b: { block: number }) => b.block - a.block);
-  console.log(serverRes,  POLY_ALCHEMY_URL, 'getTransactions');
+  console.log(serverRes, POLY_ALCHEMY_URL, 'getTransactions');
   return txns;
 };
 
@@ -703,9 +706,9 @@ export const getERC721 = async (address: string, symbol?: string) => {
 //https://docs.opensea.io/reference/retrieving-a-single-asset
 export const getETHAssetInfo = async (asset: keyable) => {
   const config: AxiosRequestConfig = {
-    method: "GET",
+    method: 'GET',
     url: `https://api.opensea.io/api/v1/asset/${asset.contractAddress}/${asset.tokenIndex}/`,
-    params: { include_orders: "false" },
+    params: { include_orders: 'false' },
   };
 
   let serverRes;
@@ -714,7 +717,7 @@ export const getETHAssetInfo = async (asset: keyable) => {
     serverRes = response.data;
   } catch (error) {
     const configAlch: AxiosRequestConfig = {
-      method: "GET",
+      method: 'GET',
       url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ETH_API_KEY}/getNFTMetadata?contractAddress=${asset.contractAddress}&tokenId=${asset.tokenIndex}`,
       headers: {},
     };
@@ -732,7 +735,7 @@ export const getETHAssetInfo = async (asset: keyable) => {
 export const getETHAssetInfo_MATIC = async (asset: keyable) => {
   //alert(ALCHEMY_ETH_API_KEY + ' getETHAssetInfo_MATIC');
   const config: AxiosRequestConfig = {
-    method: "GET",
+    method: 'GET',
     url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_POLYGON_API_KEY}/getNFTMetadata?contractAddress=${asset.contractAddress}&tokenId=${asset.tokenIndex}`,
     headers: {},
   };
@@ -808,7 +811,6 @@ export const getERC20TransferGasLimit = async (
   return gasLimit;
 };
 
-
 //https://github.com/ethers-io/ethers.js/issues/478
 //https://abi.hashex.org/
 //remove multiple name
@@ -827,20 +829,20 @@ export const getERC721TransferGasLimit = async (
     toAddress,
     symbol,
     tokenId,
-    "getERC721TransferGasLimit"
+    'getERC721TransferGasLimit'
   );
   const erc721Interface = new Interface(IERC721.abi);
   const hexData = erc721Interface.encodeFunctionData(
-    "safeTransferFrom(address,address,uint256)",
+    'safeTransferFrom(address,address,uint256)',
     [
       fromAddress,
-      toAddress || "0x0000000000000000000000000000000000000000",
+      toAddress || '0x0000000000000000000000000000000000000000',
       BigNumber.from(tokenId),
     ]
   );
   const data = JSON.stringify({
-    jsonrpc: "2.0",
-    method: "eth_estimateGas",
+    jsonrpc: '2.0',
+    method: 'eth_estimateGas',
     params: [
       {
         from: fromAddress,
@@ -852,10 +854,10 @@ export const getERC721TransferGasLimit = async (
   });
 
   const config: AxiosRequestConfig = {
-    method: "post",
-    url: symbol == "MATIC" ? POLY_ALCHEMY_URL : ETH_MAINNET_ALCHEMY_URL,
+    method: 'post',
+    url: symbol == 'MATIC' ? POLY_ALCHEMY_URL : ETH_MAINNET_ALCHEMY_URL,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     data: data,
   };
@@ -865,11 +867,127 @@ export const getERC721TransferGasLimit = async (
     const response = await axios(config);
     serverRes = response.data;
   } catch (error) {
-    console.log(error, "getERC721TransferGasLimit error");
+    console.log(error, 'getERC721TransferGasLimit error');
     serverRes = error;
   }
   const gasLimit =
     serverRes.result == undefined ? 85000 : hexToNumber(serverRes.result);
-  console.log("gasLimit:", hexData, serverRes, serverRes.result, gasLimit);
+  console.log('gasLimit:', hexData, serverRes, serverRes.result, gasLimit);
   return gasLimit;
+};
+
+export const transferUniswap = async (
+  uniswap: keyable,
+  myAddress: string,
+  mnemonic: string,
+  symbol: string
+) => {
+  const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45';
+
+  const provider = new ethers.providers.AlchemyProvider(
+    symbol == 'MATIC' ? 'matic' : 'homestead',
+    symbol == 'MATIC' ? ALCHEMY_POLYGON_API_KEY : ALCHEMY_ETH_API_KEY
+  );
+
+  const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+  const sendingWallet = new ethers.Wallet(wallet.privateKey, provider);
+  const eth_value_to_swap = ethers.utils.parseUnits(uniswap.inputAmount, 18);
+  let transaction;
+  // notes: gasLimit is multiplied by 1.5 factor. Otherwise, contract execution may get cancelled
+
+  if (uniswap?.outputToken == 'ETH') {
+    //    gasPrice: BigNumber.from(route.gasPriceWei).add(1),
+
+    transaction = {
+      data: uniswap.methodParameters.calldata,
+      to: V3_SWAP_ROUTER_ADDRESS,
+      value: BigNumber.from(uniswap.methodParameters.value),
+      from: myAddress,
+      gasPrice: BigNumber.from(uniswap.gasPriceWeiTxt).add(1),
+      gasLimit: ethers.utils.hexlify(
+        Math.ceil(uniswap.estimatedGasUsedTxt * 1.5 || 150000)
+      ),
+    };
+
+    const approvalAmount = eth_value_to_swap.toString();
+    const rETHAddress = '0xae78736Cd615f374D3085123A210448E74Fc6393';
+    const rETHContract = new ethers.Contract(rETHAddress, IERC20.abi, provider);
+
+    await rETHContract
+      .connect(sendingWallet)
+      .approve(V3_SWAP_ROUTER_ADDRESS, approvalAmount, {
+        gasPrice: BigNumber.from(uniswap.gasPriceWeiTxt),
+      });
+
+    //toastCallback && toastCallback("Approve done! Submitting transaction..")
+    //await res.wait();
+  } else {
+    transaction = {
+      data: uniswap.methodParameters.calldata,
+      to: V3_SWAP_ROUTER_ADDRESS,
+      value: BigNumber.from(eth_value_to_swap),
+      from: myAddress,
+      gasPrice: BigNumber.from(uniswap.gasPriceWeiTxt),
+      gasLimit: ethers.utils.hexlify(
+        Math.ceil(uniswap.estimatedGasUsedTxt * 1.5 || 150000)
+      ),
+    };
+  }
+  const result = await sendingWallet.sendTransaction(transaction);
+  console.log(transaction, uniswap);
+
+  return result;
+};
+
+export const rocketPoolInfo = async () => {
+  const STATS_URL = 'https://api.rocketpool.net/api/mainnet/network/stats';
+  const APR_URL = 'https://api.rocketpool.net/api/mainnet/apr';
+
+  const config: AxiosRequestConfig = {
+    method: 'get',
+    url: STATS_URL,
+    headers: {},
+  };
+  const aprconfig: AxiosRequestConfig = {
+    method: 'get',
+    url: APR_URL,
+    headers: {},
+  };
+  let serverRes;
+  try {
+    const response = await axios(config);
+    const aprResponse = await axios(aprconfig);
+
+    serverRes = response.data;
+    serverRes = { ...serverRes, ...aprResponse.data };
+  } catch (error) {
+    serverRes = error;
+  }
+
+  return serverRes;
+};
+
+export const getMaxAmount_ETH = (ethAmount: string, feeObj: keyable) => {
+  const gasFeesInETH: string = feeObj?.totalGas.toString();
+
+  const maxAmountThatCanBeSent: number =
+    Number(ethAmount) - Number(gasFeesInETH);
+  console.log(maxAmountThatCanBeSent, ethAmount, feeObj, 'getMaxAmount_ETH');
+  return maxAmountThatCanBeSent;
+};
+
+export const getAddressFromENSName = async (ens: string) => {
+  const web3Provider = new ethers.providers.AlchemyProvider(
+    'homestead',
+    ALCHEMY_ETH_API_KEY
+  );
+  var address = null;
+  try {
+    address = await web3Provider.resolveName(ens);
+  } catch (error) {
+    address = null;
+  }
+
+  //console.log(address);
+  return { address, ens };
 };
