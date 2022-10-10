@@ -95,19 +95,19 @@ export const selectInfoBySymbolOrToken =
       state.entities.prices.byId[contractAddress];
     if (info == undefined) {
       const tokenId = symbolOrTokenId;
-      const tokenPair = accountId + "_WITH_" + tokenId;
+      const tokenPair = accountId + '_WITH_' + tokenId;
       //const tokenInfo = getTokenInfo(tokenId);
       const tokenObj = state.entities.tokens?.byId[tokenPair];
 
       if (tokenObj != null) {
-        return tokenObj.network == "ICP"
+        return tokenObj.network == 'ICP'
           ? {
               ...tokenObj,
               ...getTokenInfo(tokenObj.tokenId),
             }
           : {
               ...tokenObj,
-              format: "token",
+              format: 'token',
               ...{
                 balance:
                   tokenObj.tokenBalance /
@@ -146,7 +146,7 @@ export const selectInfoBySymbolOrToken =
       return {
         ...info,
         ...{
-          type: "symbol",
+          type: 'symbol',
           balanceTxt: (
             (currentBalance?.value || 0) /
             Math.pow(10, currentBalance?.currency?.decimals || 0)
@@ -202,7 +202,9 @@ export const selectActiveTokensByAddressWithInfo =
                 ...getTokenInfoFromStore(tokenObj.contractAddress),
               }
         )
-        .filter((token: keyable) => token.network == "ICP" ? token : token.balance != 0);
+        .filter((token: keyable) =>
+          token.network == 'ICP' ? token : token.balance != 0
+        );
     }
   };
 
@@ -230,5 +232,9 @@ export const selectActiveTokenAndAddressBalanceByAccountId =
 
     return Number(currentBalanceInUSD) + Number(tokenBalanceSumInUsd);
   };
+
+export const selectTokenInfoByContract =
+  (contractAddress: string) => (state: AppState) =>
+    state.entities.tokensInfo?.byId[contractAddress];
 
 export default TokenState.reducer;

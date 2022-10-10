@@ -24,6 +24,8 @@ import DappDetails from '~pages/popup/signed/DappDetails';
 import TokenDetails from '~pages/popup/signed/TokenDetails';
 import TokenDetailsWithInfo from '~pages/popup/signed/TokenDetailsWithInfo';
 import Stake from '~pages/popup/signed/Stake';
+import StakeEth from '~pages/popup/signed/StakeEth';
+
 import Swap from '~pages/popup/signed/Swap';
 import SelectTokens from '~pages/popup/signed/SelectTokens';
 import NFTMarketplace from '~pages/popup/signed/NFTMarketplace';
@@ -81,8 +83,7 @@ const PopupRouter = () => {
             <Switch location={item}>
               <Route path="/popup.html">
                 <Redirect to="/accounts" />
-
-                {/*                 <Redirect to="/account/confirmsend/0x115c11f14fabb8b4fbdee2239c0686b42b3b62eb?tokenId=137&recipient=0x12e20a120b7c905dcab2199c555f9d3ea5cb29b6" />
+                {/*                 <Redirect to="/stake_eth/0x115c11f14fabb8b4fbdee2239c0686b42b3b62eb" />
  */}
               </Route>
               <Route path="/home">
@@ -178,6 +179,9 @@ const PopupRouter = () => {
               </Route>
               <Route path="/stake/:accountId/:tokenId">
                 {wrapWithErrorBoundary(<Stake />, 'Stake')}
+              </Route>
+              <Route path="/stake_eth/:accountId">
+                {wrapWithErrorBoundary(<StakeEth />, 'Stake')}
               </Route>
               <Route path="/swap/:accountId/:tokenId">
                 {wrapWithErrorBoundary(<Swap />, 'Swap')}

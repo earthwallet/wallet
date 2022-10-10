@@ -4,6 +4,10 @@ import { keyable } from './IAssetsController';
 
 export interface ITokensController {
   getTokenBalances: (address: string) => Promise<void>;
+  updateERC20PriceAndMeta: (
+    contractAddress: string,
+    symbol: string
+  ) => Promise<void>;
   updateTokensOfNetwork: (
     groupId: string,
     symbols: string[],

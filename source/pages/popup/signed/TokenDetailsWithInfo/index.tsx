@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './index.scss';
 
 import Header from '~components/Header';
@@ -9,11 +9,15 @@ import ICON_MINT from '~assets/images/icon_mint.svg';
 import ICON_STAKE from '~assets/images/th/stake.svg';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
-import { selectInfoBySymbolOrToken } from '~state/tokens';
+import { selectInfoBySymbolOrToken, selectTokenInfoByContract } from '~state/tokens';
 import { useSelector } from 'react-redux';
 import icon_rec from '~assets/images/icon_rec.svg';
 import icon_send from '~assets/images/icon_send.svg';
 import millify from 'millify';
+import { swapToReth } from '~utils/uniswap';
+import { ROCKETPOOL_CONTRACT_ADDR } from '~global/tokens';
+import { useController } from '~hooks/useController';
+import { selectAccountById } from '~state/wallet';
 
 interface Props extends RouteComponentProps<{ accountId: string, symbolOrTokenId: string }> {
 }
@@ -27,7 +31,20 @@ const TokenDetailsWithInfo = ({
 
   const history = useHistory();
   const symbolOrTokenInfo = useSelector(selectInfoBySymbolOrToken(symbolOrTokenId, accountId));
+  const rETHInfo = useSelector(selectInfoBySymbolOrToken(ROCKETPOOL_CONTRACT_ADDR, accountId));
+  const rETHTokenInfo = useSelector(selectTokenInfoByContract(ROCKETPOOL_CONTRACT_ADDR));
+  const controller = useController();
+  const selectedAccount = useSelector(selectAccountById(accountId));
 
+  const getSwapRatios = async () => {
+    const response = await swapToReth(accountId, '0.001', 'RETH');
+
+    console.log(response, 'getSwapRatios');
+  }
+  useEffect(() => {
+    getSwapRatios();
+    controller.tokens.updateERC20PriceAndMeta(ROCKETPOOL_CONTRACT_ADDR, 'ETH');
+  }, []);
 
   return (
     <div className={styles.page}>
@@ -55,12 +72,7 @@ const TokenDetailsWithInfo = ({
             <img src={ICON_MINT} className={styles.btnicon} />
             <div className={styles.btntxt}>Mint</div>
           </div>)}
-          {false && <div
-            onClick={() => history.push('/stake/' + accountId + "/" + symbolOrTokenId)}
-            className={clsx(styles.btnprimary, styles.btnsecondary)}>
-            <img src={ICON_STAKE} className={styles.btnicon} />
-            <div className={styles.btntxt}>Stake</div>
-          </div>}
+
           <div
             onClick={() => history.push("/account/receive/" + accountId + "/" + symbolOrTokenId)}
             className={styles.btnprimary}>
@@ -74,6 +86,14 @@ const TokenDetailsWithInfo = ({
             <div className={styles.btntxt}>Send</div>
           </div>
         </div>
+        {selectedAccount.symbol == 'ETH' && <div className={styles.cta}>
+          <div
+            onClick={() => history.push('/stake_eth/' + accountId + "/")}
+            className={clsx(styles.btnprimary, styles.btnsecondary)}>
+            <img src={ICON_STAKE} className={styles.btnicon} />
+            <div className={styles.btntxt}>Stake</div>
+          </div>
+        </div>}
         {/*  <div className={styles.graphcont}>
           <div className={styles.graph}></div>
 
@@ -117,6 +137,16 @@ const TokenDetailsWithInfo = ({
                 lowercase: true,
               })}</div>
             </div>
+          </div>}
+          {symbolOrTokenId == "ETH" && <div className={styles.row}>
+            <div className={styles.col}>
+              <div className={styles.key}>Your Stake</div>
+              <div className={styles.val}>{rETHInfo?.balanceTxt || '0.0'} {rETHInfo?.symbol}</div>
+            </div>
+            {symbolOrTokenInfo.usd_24h_vol && <div className={styles.col}>
+              <div className={styles.key}>Staking Rewards</div>
+              <div className={styles.val}>{parseFloat(rETHTokenInfo?.yearlyAPR || 3.6).toFixed(2)}% APR</div>
+            </div>}
           </div>}
         </div>
       </div>

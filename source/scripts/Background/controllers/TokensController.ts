@@ -32,6 +32,7 @@ import {
   getERC20Info_ETH,
   getERC20Meta,
   getERC20TokensListFromTxs,
+  rocketPoolInfo,
 } from '~utils/services';
 
 export default class TokensController implements ITokensController {
@@ -113,7 +114,7 @@ export default class TokensController implements ITokensController {
           usd,
           network: accountInfo.symbol,
         };
-        
+
         store.dispatch(
           storeEntities({
             entity: 'tokens',
@@ -123,10 +124,11 @@ export default class TokensController implements ITokensController {
       }
     } else if (accountInfo.symbol == 'ETH' || accountInfo.symbol == 'MATIC') {
       console.log('getTokenBalances', 'ETH');
-      let tokens = undefined;
-      if (accountInfo.symbol == 'MATIC') {
-        tokens = await getERC20TokensListFromTxs(accountInfo.address);
-      }
+      let tokens = await getERC20TokensListFromTxs(
+        accountInfo.address,
+        accountInfo.symbol
+      );
+      
       const balances: keyable[] = await getBalanceERC20(
         address,
         accountInfo.symbol,
@@ -191,6 +193,10 @@ export default class TokensController implements ITokensController {
       state.entities.prices.byId[contractAddress] == null
     ) {
       const tokenObj = await getERC20Meta(contractAddress, symbol);
+      let additionalMeta = {};
+      if (contractAddress == '0xae78736cd615f374d3085123a210448e74fc6393') {
+        additionalMeta = await rocketPoolInfo();
+      }
       const { icon } = getTokenInfo(contractAddress);
       const tokenInfo = {
         id: contractAddress,
@@ -199,6 +205,7 @@ export default class TokensController implements ITokensController {
         network: symbol,
         last_updated: new Date().getTime(),
         loading: false,
+        ...additionalMeta,
       };
       store.dispatch(
         storeEntities({

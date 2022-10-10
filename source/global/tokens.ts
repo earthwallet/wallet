@@ -89,3 +89,6 @@ export const LIVE_TOKENS_GECKOIDs = TOKENS_LIST.filter(
   (tokenObj) => tokenObj.isLive && tokenObj.coinGeckoId != undefined
 ).map((tokenObj) => tokenObj.coinGeckoId);
 export default LIVE_TOKENS;
+
+export const ROCKETPOOL_CONTRACT_ADDR =
+  "0xae78736Cd615f374D3085123A210448E74Fc6393".toLowerCase();
