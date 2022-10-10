@@ -36,6 +36,7 @@ import NFTPurchaseDetails from '~pages/popup/signed/NFTPurchaseDetails';
 import TransactionConfirm from '~pages/popup/signed/TransactionConfirm';
 import WalletAddressBook from '~pages/popup/signed/WalletAddressBook';
 import NFTAirdropDetails from '~pages/popup/signed/NFTAirdropDetails';
+import StakeEthConfirm from '~pages/popup/signed/StakeEthConfirm';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -83,7 +84,8 @@ const PopupRouter = () => {
             <Switch location={item}>
               <Route path="/popup.html">
                 <Redirect to="/accounts" />
-                {/*                 <Redirect to="/stake_eth/0x115c11f14fabb8b4fbdee2239c0686b42b3b62eb" />
+
+                {/*                 <Redirect to="/account/send/0x115c11f14fabb8b4fbdee2239c0686b42b3b62eb" />
  */}
               </Route>
               <Route path="/home">
@@ -182,6 +184,9 @@ const PopupRouter = () => {
               </Route>
               <Route path="/stake_eth/:accountId">
                 {wrapWithErrorBoundary(<StakeEth />, 'Stake')}
+              </Route>
+              <Route path="/stakeconfirm_eth/:accountId">
+                {wrapWithErrorBoundary(<StakeEthConfirm />, 'Stake')}
               </Route>
               <Route path="/swap/:accountId/:tokenId">
                 {wrapWithErrorBoundary(<Swap />, 'Swap')}

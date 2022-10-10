@@ -7,17 +7,17 @@ import Header from '~components/Header';
 import { RouteComponentProps, withRouter } from 'react-router';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { selectInfoBySymbolOrToken, selectTokenInfoByContract, selectTokensInfo } from '~state/tokens';
+import { selectInfoBySymbolOrToken, selectTokenInfoByContract } from '~state/tokens';
 import NextStepButton from '~components/NextStepButton';
 import { keyable } from '~scripts/Background/types/IMainController';
-import { useController } from '~hooks/useController';
-import useToast from '~hooks/useToast';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 // @ts-ignore
 import ICON_ROCKETPOOL from '~assets/images/icon_rocketpool.jpg';
 import millify from 'millify';
 import { ROCKETPOOL_CONTRACT_ADDR } from '~global/tokens';
 import { selectAccountById, selectBalanceByAccountId } from '~state/wallet';
+import { useHistory } from 'react-router-dom';
+import { debounce } from "lodash";
+import { swapFromReth, swapToReth } from '~utils/uniswap';
 
 const UNISWAP_MAX_ETH = 0.01;
 
@@ -30,17 +30,16 @@ const StakeEth = ({
     params: { accountId },
   },
 }: Props) => {
+  const history = useHistory();
 
   const [overSecond, setOverSecond] = React.useState(false);
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
 
   const [tab, setTab] = useState<number>(0);
-  const tokenInfos = useSelector(selectTokensInfo);
-  const controller = useController();
+  const [error, setError] = useState<any>("");
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [priceFetch, setPriceFetch] = useState<boolean>(false);
-  const { show } = useToast();
+  const [params, setParams] = useState<keyable>({});
   const rETHInfo = useSelector(selectInfoBySymbolOrToken(ROCKETPOOL_CONTRACT_ADDR, accountId));
   const rETHTokenInfo = useSelector(selectTokenInfoByContract(ROCKETPOOL_CONTRACT_ADDR));
 
@@ -69,9 +68,63 @@ const StakeEth = ({
   }
 
   const nextScreen = () => {
-    //navigation.push("StakeConfirmScreen", { selectedAmount, accountId, uniswap: activeHeading == "Stake" ? swapToRethReqData?.uniswap : swapFromRethReqData?.uniswap });
+    history.push(`/stakeconfirm_eth/${accountId}?params=${JSON.stringify(params)}`);
+
+    //navigation.push("StakeConfirmScreen", { selectedAmount, accountId, uniswap: tab == "Stake" ? swapToRethReqData?.uniswap : swapFromRethReqData?.uniswap });
   }
 
+  const fetchData = async (selectedAmount: number, _tab: number, cb: (arg0: { error: unknown; success: boolean; info: string; uniswap?: undefined; } | { success: boolean; error: string; info?: undefined; uniswap?: undefined; } | { uniswap: keyable; success: boolean; error?: undefined; info?: undefined; }) => void) => {
+
+    let res
+    if (_tab == 0) {
+      res = await swapToReth(address, selectedAmount.toString(), 'RETH');
+
+    } else {
+      res = await swapFromReth(address, selectedAmount.toString(), 'ETH');
+
+    }
+    cb(res);
+  };
+
+  const debouncedFetchData = debounce((selectedAmount, _tab, cb) => {
+    fetchData(selectedAmount, _tab, cb);
+  }, 500);
+
+  React.useEffect(() => {
+    if (!(selectedAmount == 0 || selectedAmount == NaN)) {
+      setLoading(true);
+      debouncedFetchData(selectedAmount, tab, (res: any) => {
+        console.log(res, "debounced");
+        setLoading(false);
+        if (tab == 0) {
+          if (res?.uniswap?.inputAmount > (currentBalance?.value || 0) /
+            Math.pow(10, currentBalance?.currency?.decimals || 0)
+          ) {
+            setError('Insufficient ETH Balance.')
+          } else {
+            setError('');
+          }
+        } else if (tab == 1) {
+          if (res?.uniswap?.inputAmount > (rETHInfo?.balance || 0)
+          ) {
+            setError('Insufficient rETH Balance.')
+          } else {
+            setError('');
+          }
+        }
+
+        setParams(res);
+      });
+    }
+  }, [selectedAmount, tab]);
+
+  const setTabWithAmount = (tab: number) => {
+    setTab(tab);
+    setSelectedAmount(0);
+    setError('');
+    setLoading(false);
+    
+}
   return (
     <div className={styles.page}>
       <Header
@@ -81,12 +134,12 @@ const StakeEth = ({
 
       <div className={styles.tabs}>
         <div
-          onClick={() => setTab(0)}
+          onClick={() => setTabWithAmount(0)}
           className={clsx(styles.tab, tab === 0 && styles.tab_active)}>
           Stake
         </div>
         <div
-          onClick={() => setTab(1)}
+          onClick={() => setTabWithAmount(1)}
           className={clsx(styles.tab, tab === 1 && styles.tab_active)}>
           Claim Rewards
         </div>
@@ -101,7 +154,7 @@ const StakeEth = ({
               Math.pow(10, currentBalance?.currency?.decimals || 0)
             ).toFixed(4)}{" "}
               {symbol}</div> : <div className={styles.tabStats}>{rETHInfo?.balance?.toFixed(5) || 0}{" "}
-              {rETHInfo?.symbol}{'rETH'}</div>}
+              {rETHInfo?.symbol}</div>}
           </div>
           <div
             onClick={() => maxAmountSpend()}
@@ -129,6 +182,7 @@ const StakeEth = ({
           </div>
         </div>
       </div>
+      {error == '' ? params?.success == true && <div className={styles.fees}>Fees: ${typeof params?.uniswap?.estimatedGasUsedUSDTxt == 'string' ? parseFloat(params?.uniswap?.estimatedGasUsedUSDTxt).toFixed(2) : params?.uniswap?.estimatedGasUsedUSDTxt.toFixed(2)}</div> : <div style={{opacity:0.8}} className={styles.fees}>{error}</div>}
       <div className={styles.stats}>
         <div className={styles.row}>
           <div className={styles.col}>
@@ -159,8 +213,8 @@ const StakeEth = ({
 
       <div className={styles.nextCont}>
         <NextStepButton
-          disabled={selectedAmount == 0}
-          loading={loading}
+          disabled={selectedAmount == NaN || selectedAmount == 0 || error != '' || params?.uniswap?.estimatedGasUsedUSDTxt == undefined || (params?.uniswap?.inputAmount != selectedAmount?.toString())}
+          loading={loading || ( (selectedAmount == NaN || selectedAmount == 0 )? false : params?.uniswap?.inputAmount != selectedAmount?.toString())}
           onClick={() => nextScreen()}
         >
           {tab === 0 ? 'Stake' : 'Unstake'}

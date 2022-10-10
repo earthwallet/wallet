@@ -11,6 +11,10 @@ import ICON_VALID_ADDRESS from '~assets/images/icon_valid_address.svg';
 import { useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { validate } from 'bitcoin-address-validation';
+import { keyable } from "~scripts/Background/types/IAssetsController";
+import { debounce } from "lodash";
+import { getAddressFromENSName } from "~utils/services";
+import { ClipLoader } from "react-spinners";
 var web3 = require('web3');
 
 const PRINCIPAL_NOT_ACCEPTED = 'Principal id is not accepted!';
@@ -25,7 +29,9 @@ interface Props {
     recpErrorCallback: (recipientError: string) => void,
     initialValue?: string,
     tokenId?: string | null,
-    search?: boolean
+    search?: boolean,
+    searchingCallback?: (searching: boolean) => void,
+    ensObjCallback?: (ensObj: keyable | null) => void
 }
 
 
@@ -37,7 +43,9 @@ export default function AddressInput({
     recpErrorCallback,
     initialValue,
     tokenId,
-    search = false
+    search = false,
+    searchingCallback,
+    ensObjCallback
 }: Props) {
 
 
@@ -48,7 +56,10 @@ export default function AddressInput({
     const tokenInfo = getTokenInfo(tokenId || '');
     const history = useHistory();
     const location = useLocation();
+    const [ensAddressObj, setEnsAddressObj] = useState<keyable | null>(null);
+    const [isSearching, setIsSearching] = useState(false);
 
+    const [isSearched, setIsSearched] = useState(false);
 
     useEffect(() => {
         if (initialValue != '' && initialValue != undefined) {
@@ -75,6 +86,23 @@ export default function AddressInput({
     useEffect(() => {
         recpErrorCallback(recpError);
     }, [recpErrorCallback, recpError]);
+
+    useEffect(() => {
+        ensObjCallback && ensObjCallback(ensAddressObj);
+    }, [ensObjCallback, ensAddressObj]);
+
+    useEffect(() => {
+        searchingCallback && searchingCallback(isSearching);
+    }, [searchingCallback, isSearching]);
+
+    const fetchData = async (text: string, cb: (arg0: { address: string | null; ens: string; }) => void) => {
+        const res = await getAddressFromENSName(text);
+        cb(res);
+    };
+
+    const debouncedFetchData = debounce((text, cb) => {
+        fetchData(text, cb);
+    }, 500);
 
     const parseRecipientAndSetAddress = (recipient: string) => {
         if (inputType === 'ICP') {
@@ -132,8 +160,20 @@ export default function AddressInput({
                 search && replaceQuery('recipient', recipient);
             }
             else {
-                setValid(false);
-                setRecpError('Not a valid ethereum address');
+                setIsSearching(true);
+                setIsSearched(true);
+                debouncedFetchData(recipient, (resolvedAddressObj: keyable) => {
+                    setEnsAddressObj(resolvedAddressObj);
+                    console.log(resolvedAddressObj, 'resolvedAddressObj')
+                    setIsSearching(false);
+                    if (resolvedAddressObj?.address == null) {
+                        setValid(false);
+                        setRecpError('Not a valid ethereum address');
+                    } else if (resolvedAddressObj?.address != null) {
+                        setValid(true);
+                        setRecpError('');
+                    }
+                });
             }
         }
     };
@@ -144,7 +184,7 @@ export default function AddressInput({
 
     return <>
         <div className={styles.cont}>
-            {search ? <img className={styles.info_search} src={ICON_SEARCH} /> : valid ? <img src={ICON_VALID_ADDRESS} className={styles.info_search} /> : <div className={styles.info}><ToolTipInfo title={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Principal Id is required' : "Account ID is required" : "Address is required"} /></div>}
+            {(isSearching || (isSearched == false ? false : selectedRecp == '' ? false : ensAddressObj?.ens != selectedRecp)) ? <div className={styles.info}><ClipLoader color={'#fffff'} size={15} /></div> : search ? <img className={styles.info_search} src={ICON_SEARCH} /> : valid ? <img src={ICON_VALID_ADDRESS} className={styles.info_search} /> : <div className={styles.info}><ToolTipInfo title={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Principal Id is required' : "Account ID is required" : "Address is required"} /></div>}
             {search ?
                 <input
                     autoCapitalize='off'
