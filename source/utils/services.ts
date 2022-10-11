@@ -17,6 +17,7 @@ import IERC721 from './abi/IERC721';
 import IERC20 from './abi/IERC20';
 
 import { Interface } from 'ethers/lib/utils';
+import { resolveUNS, unsResolveName } from './unstoppable';
 
 var web3 = require('web3');
 
@@ -987,7 +988,19 @@ export const getAddressFromENSName = async (ens: string) => {
   } catch (error) {
     address = null;
   }
-
+  if (address == null) {
+    let respo = [];
+    try {
+      respo = await unsResolveName(ens);
+      if (respo[0] != '') {
+        address = respo[0];
+      } else {
+        address = null;
+      }
+    } catch (error) {
+      address = null;
+    }
+  }
   //console.log(address);
   return { address, ens };
 };
