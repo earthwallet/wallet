@@ -236,7 +236,7 @@ const WalletAddressBook = ({
     }}>
       {step1
         ? <NextStepButton
-          disabled={!selectedRecp || recpError !== ''}
+          disabled={!selectedRecp || recpError !== '' || isSearching}
           loading={false}
           onClick={onConfirm}>
           {'Next'}

@@ -17,7 +17,7 @@ import IERC721 from './abi/IERC721';
 import IERC20 from './abi/IERC20';
 
 import { Interface } from 'ethers/lib/utils';
-import { resolveUNS, unsResolveName } from './unstoppable';
+import { unsResolveName } from './unstoppable';
 
 var web3 = require('web3');
 

@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import { ALCHEMY_ETH_API_KEY, ALCHEMY_POLYGON_API_KEY } from '~global/config';
-import { keyable } from '~scripts/Background/types/IAssetsController';
 const keccak_256 = require('js-sha3').keccak256;
 
 const address = '0xfee4d4f0adff8d84c12170306507554bc7045878';
@@ -84,14 +83,6 @@ function arrayToHex(arr: any) {
 
 function isEmpty(msg: string) {
   return !msg || msg === '0x0000000000000000000000000000000000000000';
-}
-
-function combineKeysWithRecords(keys: any[], records: keyable) {
-  const combined: keyable = {};
-  keys.map((key, index) => {
-    combined[key] = records[index];
-  });
-  return combined;
 }
 
 async function resolveEthNetwork(tokenId: any, interestedKeys: any) {

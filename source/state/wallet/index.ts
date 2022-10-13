@@ -20,6 +20,7 @@ const initialState: IWalletState = {
     symbol: NetworkSymbol.ICP,
   },
   extensionId: '',
+  overrideEthereum: false,
   restoreInActiveAccounts_ETH: false,
 };
 
@@ -63,6 +64,12 @@ const WalletState = createSlice({
     ) {
       state.activeNetwork = action.payload;
     },
+    updateOverrideEthereum(
+      state: IWalletState,
+      action: PayloadAction<boolean>
+    ) {
+      state.overrideEthereum = action.payload;
+    },
     hydrateWallet(state: IWalletState, action: PayloadAction<IWalletState>) {
       Object.assign(state, action.payload);
     },
@@ -78,6 +85,7 @@ export const {
   updateError,
   updateLoading,
   hydrateWallet,
+  updateOverrideEthereum,
   updateRestoreInActiveAccounts_ETH,
 } = WalletState.actions;
 

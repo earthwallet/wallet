@@ -23,11 +23,10 @@ import clsx from 'clsx';
 import { getShortAddress } from '~utils/common';
 import { ethers } from 'ethers';
 import {
+  personalSign,
   signTypedData,
   SignTypedDataVersion,
-  TypedDataV1,
 } from '@metamask/eth-sig-util';
-import { ETH_MAINNET_ALCHEMY_URL } from '~global/config';
 // import ICON_ICP from '~assets/images/icon_icp_details.png';
 
 const MIN_LENGTH = 6;
@@ -46,6 +45,7 @@ const SignTransactionPage = () => {
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
+  const signatureType = controller.dapp.getSignatureType();
 
   console.log(request);
   const onPassChange = useCallback(
@@ -87,19 +87,42 @@ const SignTransactionPage = () => {
       pass
     );
 
+    let version = SignTypedDataVersion.V1;
+    switch (signatureType) {
+      case 'eth_signTypedData_v3':
+        version = SignTypedDataVersion.V3;
+        break;
+      case 'eth_signTypedData_v4':
+        version = SignTypedDataVersion.V4;
+        break;
+      default:
+    }
+
     const provider = new ethers.providers.JsonRpcProvider(
-      `https://eth-mainnet.g.alchemy.com/v2/${ETH_MAINNET_ALCHEMY_URL}`
+      'https://eth-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc'
     );
     const wallet = ethers.Wallet.fromMnemonic(mnemonic);
     const signer = new ethers.Wallet(wallet.privateKey, provider);
-    const encryptedHash = signTypedData({
-      privateKey: Buffer.from(signer.privateKey.substring(2), 'hex'),
-      data: request as TypedDataV1,
-      version: SignTypedDataVersion.V1,
-    });
-    controller.dapp.setApprovedIdentityJSON(encryptedHash);
+    if (signatureType !== 'personal_sign') {
+      const encryptedHash = signTypedData({
+        privateKey: Buffer.from(signer.privateKey.substring(2), 'hex'),
+        data:
+          signatureType === 'eth_signTypedData'
+            ? (request as any)
+            : JSON.parse(request as any),
+        version,
+      });
+      controller.dapp.setApprovedIdentityJSON(encryptedHash);
+    } else {
+      const encryptedHash = personalSign({
+        privateKey: Buffer.from(signer.privateKey.substring(2), 'hex'),
+        data: request as any,
+      });
+      controller.dapp.setApprovedIdentityJSON(encryptedHash);
+    }
 
     await approveEthSign();
+
     setIsBusy(false);
   };
 
@@ -137,14 +160,13 @@ const SignTransactionPage = () => {
       className={clsx(
         styles.page,
         !(requestStatus?.loading || requestStatus?.complete) &&
-        styles.page_extra
+          styles.page_extra
       )}
     >
       <div id={'response'} className={styles.title}>
         {request?.type === 'createSession'
           ? 'Create Session'
           : 'Signature Request'}
-
       </div>
       {requestStatus?.response && (
         <div
@@ -152,7 +174,7 @@ const SignTransactionPage = () => {
             styles.accountInfo,
             styles.response,
             safeParseJSON(requestStatus?.response)?.type == 'error' &&
-            styles.errorResponse
+              styles.errorResponse
           )}
         >
           <div className={styles.label}>Response</div>
@@ -222,9 +244,9 @@ const SignTransactionPage = () => {
                 {singleReq?.args === undefined
                   ? 'undefined'
                   : stringifyWithBigInt(singleReq?.args)?.length > 1000
-                    ? stringifyWithBigInt(singleReq?.args)?.substring(0, 1000) +
+                  ? stringifyWithBigInt(singleReq?.args)?.substring(0, 1000) +
                     '...'
-                    : stringifyWithBigInt(singleReq?.args)}
+                  : stringifyWithBigInt(singleReq?.args)}
               </div>
             </div>
           ))
@@ -240,6 +262,13 @@ const SignTransactionPage = () => {
             </div>
           ))
         )
+      ) : signatureType === 'eth_signTypedData_v3' ||
+        signatureType === 'eth_signTypedData_v4' ||
+        signatureType === 'personal_sign' ? (
+        <div className={styles.requestBody}>
+          <div className={styles.label}>Sign Data</div>
+          <div className={styles.value}>{request}</div>
+        </div>
       ) : (
         <div className={styles.requestBody}>
           <div className={styles.label}>CanisterId</div>
@@ -253,8 +282,8 @@ const SignTransactionPage = () => {
             {request?.args === undefined
               ? 'undefined'
               : stringifyWithBigInt(request?.args)?.length > 1000
-                ? stringifyWithBigInt(request?.args)?.substring(0, 1000) + '...'
-                : stringifyWithBigInt(request?.args)}
+              ? stringifyWithBigInt(request?.args)?.substring(0, 1000) + '...'
+              : stringifyWithBigInt(request?.args)}
           </div>
         </div>
       )}
