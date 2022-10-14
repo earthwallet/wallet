@@ -111,8 +111,8 @@ export const messagesHandler = (
         result = await provider.send(args[0], args[1]);
       } else if (method === 'wallet.sendTransaction') {
       } else if (method === 'wallet.signMessage') {
-        mainController.dapp.setSignatureType('personal_sign');
-        const signatureRequest = args[0];
+        mainController.dapp.setSignatureType(args[0].method);
+        const signatureRequest = args[0].method == 'person_sign' ? args[0].params[0] : args[0].params[1];
         const windowId = uuid();
         mainController.dapp.setSignatureRequest(signatureRequest, windowId);
         const popup = await mainController.createPopup(windowId, 'sign');

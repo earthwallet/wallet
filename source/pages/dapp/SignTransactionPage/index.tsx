@@ -103,7 +103,15 @@ const SignTransactionPage = () => {
     );
     const wallet = ethers.Wallet.fromMnemonic(mnemonic);
     const signer = new ethers.Wallet(wallet.privateKey, provider);
-    if (signatureType !== 'personal_sign') {
+    if (signatureType === 'eth_sign') {
+
+      if (wallet) {
+        const signingKey = new ethers.utils.SigningKey(wallet.privateKey);
+        const sigParams = await signingKey.signDigest(ethers.utils.arrayify(request as any));
+        const result = await ethers.utils.joinSignature(sigParams);
+        controller.dapp.setApprovedIdentityJSON(result);
+      }
+    } else if (signatureType !== 'personal_sign') {
       const encryptedHash = signTypedData({
         privateKey: Buffer.from(signer.privateKey.substring(2), 'hex'),
         data:
@@ -113,7 +121,8 @@ const SignTransactionPage = () => {
         version,
       });
       controller.dapp.setApprovedIdentityJSON(encryptedHash);
-    } else {
+    }
+    else {
       const encryptedHash = personalSign({
         privateKey: Buffer.from(signer.privateKey.substring(2), 'hex'),
         data: request as any,
@@ -160,7 +169,7 @@ const SignTransactionPage = () => {
       className={clsx(
         styles.page,
         !(requestStatus?.loading || requestStatus?.complete) &&
-          styles.page_extra
+        styles.page_extra
       )}
     >
       <div id={'response'} className={styles.title}>
@@ -174,7 +183,7 @@ const SignTransactionPage = () => {
             styles.accountInfo,
             styles.response,
             safeParseJSON(requestStatus?.response)?.type == 'error' &&
-              styles.errorResponse
+            styles.errorResponse
           )}
         >
           <div className={styles.label}>Response</div>
@@ -244,9 +253,9 @@ const SignTransactionPage = () => {
                 {singleReq?.args === undefined
                   ? 'undefined'
                   : stringifyWithBigInt(singleReq?.args)?.length > 1000
-                  ? stringifyWithBigInt(singleReq?.args)?.substring(0, 1000) +
+                    ? stringifyWithBigInt(singleReq?.args)?.substring(0, 1000) +
                     '...'
-                  : stringifyWithBigInt(singleReq?.args)}
+                    : stringifyWithBigInt(singleReq?.args)}
               </div>
             </div>
           ))
@@ -264,9 +273,12 @@ const SignTransactionPage = () => {
         )
       ) : signatureType === 'eth_signTypedData_v3' ||
         signatureType === 'eth_signTypedData_v4' ||
-        signatureType === 'personal_sign' ? (
+        signatureType === 'personal_sign' ||
+        signatureType === 'eth_sign' ? (
         <div className={styles.requestBody}>
-          <div className={styles.label}>Sign Data</div>
+          <div className={styles.label}>Sign Data {signatureType}</div>
+          {signatureType === 'eth_sign' && <div>Signing this message can be dangerous. This signature could potentially perform any operation on your account's behalf, including granting complete control of your account and all of its assets to the requesting site. Only sign this message if you know what you're doing or completely trust the requesting site.</div>
+          }
           <div className={styles.value}>{request}</div>
         </div>
       ) : (
@@ -282,8 +294,8 @@ const SignTransactionPage = () => {
             {request?.args === undefined
               ? 'undefined'
               : stringifyWithBigInt(request?.args)?.length > 1000
-              ? stringifyWithBigInt(request?.args)?.substring(0, 1000) + '...'
-              : stringifyWithBigInt(request?.args)}
+                ? stringifyWithBigInt(request?.args)?.substring(0, 1000) + '...'
+                : stringifyWithBigInt(request?.args)}
           </div>
         </div>
       )}
