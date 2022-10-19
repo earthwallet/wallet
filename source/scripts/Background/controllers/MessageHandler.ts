@@ -2,6 +2,7 @@ import { recoverPersonalSignature } from '@metamask/eth-sig-util';
 import { ethers } from 'ethers';
 import { v4 as uuid } from 'uuid';
 import { browser, Runtime } from 'webextension-polyfill-ts';
+import { ALCHEMY_ETH_API_KEY } from '~global/config';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import { NetworkSymbol } from '~global/types';
 import { IMainController } from '../types/IMainController';
@@ -99,20 +100,27 @@ export const messagesHandler = (
       return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
+      console.log(method, args, 'messageHandler')
       const params = args[0];
       //console.log('CAL_REQUEST.method', method, args);
       let result: any = undefined;
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed };
       } else if (method === 'eth_jsonrpc') {
-        const provider = new ethers.providers.JsonRpcProvider(
-          'https://eth-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc'
+        const provider = new ethers.providers.AlchemyProvider(
+          'homestead',
+          ALCHEMY_ETH_API_KEY
         );
         result = await provider.send(args[0], args[1]);
-      } else if (method === 'wallet.sendTransaction') {
-      } else if (method === 'wallet.signMessage') {
+      } else if (
+        method === 'wallet.signMessage' ||
+        method === 'wallet.sendTransaction'
+      ) {
         mainController.dapp.setSignatureType(args[0].method);
-        const signatureRequest = args[0].method == 'person_sign' ? args[0].params[0] : args[0].params[1];
+        const signatureRequest =
+          (args[0].method == 'person_sign' || args[0].method == 'eth_sendTransaction')
+            ? args[0].params[0]
+            : args[0].params[1];
         const windowId = uuid();
         mainController.dapp.setSignatureRequest(signatureRequest, windowId);
         const popup = await mainController.createPopup(windowId, 'sign');
@@ -147,6 +155,32 @@ export const messagesHandler = (
         });
 
         return Promise.resolve(null);
+      } else if (method === 'wallet.eth_chainId') {
+        console.log(method, args, 'messageHandler');
+        const provider = new ethers.providers.AlchemyProvider(
+          'homestead',
+          ALCHEMY_ETH_API_KEY
+        );
+        result = await provider.send('eth_chainId', []);
+      } else if (method === 'wallet.eth_getBlockByNumber') {
+        console.log(method, args, 'messageHandler');
+        const provider = new ethers.providers.AlchemyProvider(
+          'homestead',
+          ALCHEMY_ETH_API_KEY
+        );
+        result = await provider.send('eth_getBlockByNumber', args[0].params);
+        console.log(method, args, result, 'messageHandler');
+      } else if (method === 'wallet.net_version') {
+        console.log(method, args, 'messageHandler');
+
+        const provider = new ethers.providers.AlchemyProvider(
+          'homestead',
+          ALCHEMY_ETH_API_KEY
+        );
+        result = await provider.send('eth_chainId', []);
+        console.log(method, args, result, 'messageHandler');
+      } else if (method === 'wallet.anyMethod') {
+        console.log(method, args, 'messageHandler');
       } else if (method === 'wallet.ecRecover') {
         result = recoverPersonalSignature({
           data: args[0],

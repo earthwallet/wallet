@@ -1,3 +1,4 @@
+import { isHex } from 'web3-utils';
 import { DEFAULT_SYMBOLS } from '~global/constant';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 
@@ -136,5 +137,144 @@ export const parseBigIntToString = (data: keyable): keyable =>
 
 export default generateRandomColor;
 
-
 export const PASSWORD_MIN_LENGTH = 6;
+
+function hexToBn(hex: string) {
+  if (hex.length % 2) {
+    hex = '0' + hex;
+  }
+
+  var highbyte = parseInt(hex.slice(0, 2), 16);
+  var bn = BigInt('0x' + hex);
+
+  if (0x80 & highbyte) {
+    // bn = ~bn; WRONG in JS (would work in other languages)
+
+    // manually perform two's compliment (flip bits, add one)
+    // (because JS binary operators are incorrect for negatives)
+    bn =
+      BigInt(
+        '0b' +
+          bn
+            .toString(2)
+            .split('')
+            .map(function (i) {
+              return '0' === i ? 1 : 0;
+            })
+            .join('')
+      ) + BigInt(1);
+    // add the sign character to output string (bytes are unaffected)
+    bn = -bn;
+  }
+
+  return bn;
+}
+
+export function convertHexToNumberIfPossible(hex: string) {
+  try {
+    return isHex(hex)
+      ? hexToBn(hex.substring(2)).toString()
+      : hexToBn(hex).toString();
+  } catch (e) {
+    return hex;
+  }
+}
+
+function hexToUtf8(s: string) {
+  return decodeURIComponent(
+    s
+      .replace(/\s+/g, '') // remove spaces
+      .replace(/[0-9a-f]{2}/g, '%$&') // add '%' before each 2 characters
+  );
+}
+
+export function convertHexToUtf8IfPossible(hex: string) {
+  try {
+    return hexToUtf8(hex);
+  } catch (e) {
+    return hex;
+  }
+}
+export function renderEthereumRequests(
+  method: string,
+  request: keyable,
+  address: string
+) {
+  let params = [{ label: 'Method', value: method }];
+
+  switch (method) {
+    case 'eth_sendTransaction':
+    case 'eth_signTransaction':
+      params = [
+        ...params,
+        { label: 'From', value: request.from },
+        { label: 'To', value: request.to },
+        {
+          label: 'Gas Limit',
+          value: request.gas
+            ? convertHexToNumberIfPossible(request.gas)
+            : request.gasLimit
+            ? convertHexToNumberIfPossible(request.gasLimit)
+            : '',
+        },
+        ...(request.gasPrice
+          ? [
+              {
+                label: 'Gas Price',
+                value:
+                  (request.gasPrice &&
+                    convertHexToNumberIfPossible(request.gasPrice)) ||
+                  '?',
+              },
+            ]
+          : []),
+        ...(request.nonce
+          ? [
+              {
+                label: 'Nonce',
+                value: convertHexToNumberIfPossible(request.nonce),
+              },
+            ]
+          : []),
+        {
+          label: 'Value',
+          value: request.value
+            ? convertHexToNumberIfPossible(request.value)
+            : '',
+        },
+        { label: 'Data', value: request.data },
+      ];
+      break;
+
+    case 'eth_sign':
+      params = [
+        ...params,
+        { label: 'Address', value: address },
+        { label: 'Message', value: JSON.stringify(request) },
+      ];
+      break;
+    case 'personal_sign':
+      params = [
+        ...params,
+        { label: 'Address', value: address },
+        {
+          label: 'Message',
+          value:
+            typeof request == 'string'
+              ? convertHexToUtf8IfPossible(request)
+              : JSON.stringify(request),
+        },
+      ];
+      break;
+    default:
+      params = [
+        ...params,
+        {
+          label: 'params',
+          value: JSON.stringify(request, null, '\t'),
+        },
+      ];
+      break;
+  }
+  return params;
+}

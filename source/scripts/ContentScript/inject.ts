@@ -95,6 +95,18 @@ async function handleRequest (req) {
     const sig = await eth.getMethod('wallet.signMessage')(req)
     return sig
   }
+  if(req.method === 'eth_chainId') { 
+    const sig = await eth.getMethod('wallet.eth_chainId')(req)
+    return sig
+  }
+  if(req.method === 'eth_getBlockByNumber') { 
+    const sig = await eth.getMethod('wallet.eth_getBlockByNumber')(req)
+    return sig
+  }
+  if(req.method === 'net_version') { 
+    const sig = await eth.getMethod('wallet.net_version')(req)
+    return sig
+  }
 
   if (req.method === 'personal_ecRecover') {
     const sig = await eth.getMethod('wallet.ecRecover')(req.params[0], req.params[1])
@@ -109,14 +121,20 @@ async function handleRequest (req) {
   }
 
   if(req.method === 'eth_sendTransaction') {
-    const result = await eth.getMethod('wallet.sendTransaction')(req.params[0])
-    return '0x' + result.hash
+    const result = await eth.getMethod('wallet.sendTransaction')(req);
+    const resp = JSON.parse(result)
+    return '0x' + resp.hash;
   }
 
   if(req.method === 'eth_accounts') {
     return getAddresses()
   }
   return eth.getMethod('eth_jsonrpc')(req.method, req.params)
+
+  if(req.method != null)  {
+    const sig = await eth.getMethod('wallet.anyMethod')(req)
+    return sig;
+  }
 }
 
 window.${name} = {

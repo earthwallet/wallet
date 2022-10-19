@@ -11,7 +11,7 @@ import { useController } from '~hooks/useController';
 import { decryptString } from '~utils/vault';
 import { selectAccountById } from '~state/wallet';
 import { useSelector } from 'react-redux';
-import { getSymbol, isJsonString } from '~utils/common';
+import { getSymbol, isJsonString, renderEthereumRequests } from '~utils/common';
 import { validateMnemonic } from '@earthwallet/keyring';
 import InputWithLabel from '~components/InputWithLabel';
 import Warning from '~components/Warning';
@@ -27,6 +27,9 @@ import {
   signTypedData,
   SignTypedDataVersion,
 } from '@metamask/eth-sig-util';
+import { keyable } from '~scripts/Background/types/IMainController';
+import { ALCHEMY_ETH_API_KEY, ETH_GOERLI_TEST_ALCHEMY_URL } from '~global/config';
+//import { getFeesExtended } from '~utils/services';
 // import ICON_ICP from '~assets/images/icon_icp_details.png';
 
 const MIN_LENGTH = 6;
@@ -98,9 +101,11 @@ const SignTransactionPage = () => {
       default:
     }
 
-    const provider = new ethers.providers.JsonRpcProvider(
-      'https://eth-mainnet.g.alchemy.com/v2/WQY8CJqsPNCqhjPqPfnPApgc_hXpnzGc'
+    const provider = true ? new ethers.providers.JsonRpcProvider(ETH_GOERLI_TEST_ALCHEMY_URL) : new ethers.providers.AlchemyProvider(
+      "homestead",
+      ALCHEMY_ETH_API_KEY
     );
+
     const wallet = ethers.Wallet.fromMnemonic(mnemonic);
     const signer = new ethers.Wallet(wallet.privateKey, provider);
     if (signatureType === 'eth_sign') {
@@ -110,6 +115,60 @@ const SignTransactionPage = () => {
         const sigParams = await signingKey.signDigest(ethers.utils.arrayify(request as any));
         const result = await ethers.utils.joinSignature(sigParams);
         controller.dapp.setApprovedIdentityJSON(result);
+      }
+    } else if (signatureType === 'eth_sendTransaction') {
+
+      if (wallet) {
+
+        const transaction = JSON.parse(JSON.stringify(request));
+
+        if (wallet) {
+
+          if (
+            transaction.from &&
+            transaction.from.toLowerCase() !== wallet.address.toLowerCase()
+          ) {
+            console.error("Transaction request From doesn't match active account");
+          }
+
+          if (transaction.from) {
+            delete transaction.from;
+          }
+
+          // ethers.js expects gasLimit instead
+          if ("gas" in transaction) {
+            transaction.gasLimit = transaction.gas;
+            delete transaction.gas;
+          }
+
+          if (!("nonce" in transaction)) {
+            const nonce = await signer.getTransactionCount(wallet.address);
+            transaction.nonce = nonce;
+          }
+
+          /*  if (symbol == "MATIC") {
+             const feesArr = await getFeesExtended(symbol, transaction.gasLimit || 21000);
+             transaction.maxFeePerGas = ethers.utils.parseUnits(
+               feesArr[1]?.suggestedMaxFeePerGas,
+               "gwei"
+             );
+             transaction.maxPriorityFeePerGas = ethers.utils.parseUnits(
+               feesArr[1]?.suggestedMaxPriorityFeePerGas,
+               "gwei"
+             );
+
+           }
+*/
+          console.log(transaction, 'transaction');
+          const result = await signer.sendTransaction(transaction);
+          return controller.dapp.setApprovedIdentityJSON(JSON.stringify(result));
+
+        } else {
+          console.error("No Active Account");
+        }
+
+        //const signingKey = new ethers.utils.SigningKey(wallet.privateKey);
+        console.log('eth_sendTransaction')
       }
     } else if (signatureType !== 'personal_sign') {
       const encryptedHash = signTypedData({
@@ -274,13 +333,20 @@ const SignTransactionPage = () => {
       ) : signatureType === 'eth_signTypedData_v3' ||
         signatureType === 'eth_signTypedData_v4' ||
         signatureType === 'personal_sign' ||
-        signatureType === 'eth_sign' ? (
-        <div className={styles.requestBody}>
-          <div className={styles.label}>Sign Data {signatureType}</div>
-          {signatureType === 'eth_sign' && <div>Signing this message can be dangerous. This signature could potentially perform any operation on your account's behalf, including granting complete control of your account and all of its assets to the requesting site. Only sign this message if you know what you're doing or completely trust the requesting site.</div>
-          }
-          <div className={styles.value}>{request}</div>
-        </div>
+        signatureType === 'eth_sign' || signatureType === 'eth_sendTransaction' ? (
+        (signatureType === 'personal_sign' || signatureType == 'eth_sendTransaction' || signatureType === 'eth_sign')
+          ? <div className={styles.requestBody}>
+            {signatureType === 'eth_sign' && <div>Signing this message can be dangerous. This signature could potentially perform any operation on your account's behalf, including granting complete control of your account and all of its assets to the requesting site. Only sign this message if you know what you're doing or completely trust the requesting site.</div>
+            }
+            {renderEthereumRequests(signatureType, request, activeAccountAddress).map((obj: keyable, index: number) => obj.value == null ? <div></div> : <div key={index}>
+              <div className={styles.label}>{obj.label}</div>
+              <div className={styles.value}>{obj.value}</div>
+            </div>)}</div>
+          : <div className={styles.requestBody}>
+            <div className={styles.label}>Sign Data {signatureType}</div>
+
+            <div className={styles.value}>{request}</div>
+          </div>
       ) : (
         <div className={styles.requestBody}>
           <div className={styles.label}>CanisterId</div>
