@@ -13,6 +13,7 @@ type Message = {
   data: { asset: string; method: string; args: any[] };
 };
 
+//https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md
 export const messagesHandler = (
   port: Runtime.Port,
   mainController: IMainController
@@ -59,7 +60,12 @@ export const messagesHandler = (
       if (message.data && message.data.method) {
         //
       }
-    } else if (message.type === 'CONNECT_REQUEST') {
+    } else if (message.type === 'EARTH_ETH_MESSAGE') {
+      console.log(message, 'EARTH_ETH_MESSAGE')
+      if (message.data && message.data.method) {
+        //
+      }
+    }else if (message.type === 'CONNECT_REQUEST') {
       if (origin && allowed) {
         return Promise.resolve({ id: message.id, result: origin && allowed });
       }
@@ -131,6 +137,7 @@ export const messagesHandler = (
             if (ev.detail.substring(1) === windowId) {
               const result = mainController.dapp.getApprovedIdentityJSON();
               await mainController.provider.ethSign(windowId, result);
+              console.log(result, 'result signTypedData addEventListener')
               port.postMessage({
                 id: message.id,
                 data: { result },
@@ -170,7 +177,7 @@ export const messagesHandler = (
         );
         result = await provider.send('eth_getBlockByNumber', args[0].params);
         console.log(method, args, result, 'messageHandler');
-      } else if (method === 'wallet.net_version') {
+      } else if (method === 'wallet.net_version' || method == 'eth_chainId') {
         console.log(method, args, 'messageHandler');
 
         const provider = new ethers.providers.AlchemyProvider(

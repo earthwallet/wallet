@@ -59,7 +59,9 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["js/contentScript.bundle.js"]
+      "js": ["js/contentScript.bundle.js"],
+      "run_at": "document_start",
+      "all_frames": false
     }
   ]
 }

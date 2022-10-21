@@ -140,6 +140,7 @@ async function handleRequest (req) {
 window.${name} = {
   isMetaMask: true,
   isEarth: true,
+  version: '0.8.2',
   isEIP1193: true,
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
@@ -172,7 +173,7 @@ window.${name} = {
       }))
       .catch((err) => callback(err))
   },
-  on: (method, callback) => {}, // TODO
+  on: (method, callback) => {console.log('TODO_ON', method)}, // TODO
   autoRefreshOnNetworkChange: false
 }
 
@@ -220,7 +221,7 @@ async function handleRequest (req) {
 
 window.earth = {
   evtRegMap: {},
-  version: '6.1',
+  version: '0.8.2',
   isConnected: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.isConnected')()

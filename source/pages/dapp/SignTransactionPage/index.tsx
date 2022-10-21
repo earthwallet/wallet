@@ -50,7 +50,7 @@ const SignTransactionPage = () => {
   const [pass, setPass] = useState('');
   const signatureType = controller.dapp.getSignatureType();
 
-  console.log(request);
+  console.log(request, signatureType);
   const onPassChange = useCallback(
     (password: string) => {
       setPass(password);
@@ -142,7 +142,7 @@ const SignTransactionPage = () => {
           }
 
           if (!("nonce" in transaction)) {
-            const nonce = await signer.getTransactionCount(wallet.address);
+            const nonce = await signer.getTransactionCount('latest');
             transaction.nonce = nonce;
           }
 
@@ -161,6 +161,8 @@ const SignTransactionPage = () => {
 */
           console.log(transaction, 'transaction');
           const result = await signer.sendTransaction(transaction);
+          console.log(transaction, result, 'transaction');
+
           return controller.dapp.setApprovedIdentityJSON(JSON.stringify(result));
 
         } else {

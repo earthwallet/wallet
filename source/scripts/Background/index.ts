@@ -23,6 +23,8 @@ if (!window.controller) {
 }
 
 browser.runtime.onConnect.addListener((port: Runtime.Port) => {
+  console.emoji('🌎', 'earth extension onConnect');
+
   if (port.name === 'earth') {
     messagesHandler(port, window.controller);
   }
