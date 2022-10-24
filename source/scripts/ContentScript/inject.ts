@@ -122,10 +122,9 @@ async function handleRequest (req) {
 
   if(req.method === 'eth_sendTransaction') {
     const result = await eth.getMethod('wallet.sendTransaction')(req);
-    const resp = JSON.parse(result)
-    return '0x' + resp.hash;
+    return result;
   }
-
+ 
   if(req.method === 'eth_accounts') {
     return getAddresses()
   }

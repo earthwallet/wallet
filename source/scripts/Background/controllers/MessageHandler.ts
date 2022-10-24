@@ -2,7 +2,7 @@ import { recoverPersonalSignature } from '@metamask/eth-sig-util';
 import { ethers } from 'ethers';
 import { v4 as uuid } from 'uuid';
 import { browser, Runtime } from 'webextension-polyfill-ts';
-import { ALCHEMY_ETH_API_KEY } from '~global/config';
+import { ALCHEMY_ETH_API_KEY, ETH_GOERLI_TEST_ALCHEMY_URL } from '~global/config';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import { NetworkSymbol } from '~global/types';
 import { IMainController } from '../types/IMainController';
@@ -61,11 +61,11 @@ export const messagesHandler = (
         //
       }
     } else if (message.type === 'EARTH_ETH_MESSAGE') {
-      console.log(message, 'EARTH_ETH_MESSAGE')
+      console.log(message, 'EARTH_ETH_MESSAGE');
       if (message.data && message.data.method) {
         //
       }
-    }else if (message.type === 'CONNECT_REQUEST') {
+    } else if (message.type === 'CONNECT_REQUEST') {
       if (origin && allowed) {
         return Promise.resolve({ id: message.id, result: origin && allowed });
       }
@@ -106,7 +106,7 @@ export const messagesHandler = (
       return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
-      console.log(method, args, 'messageHandler')
+      console.log(method, args, 'messageHandler');
       const params = args[0];
       //console.log('CAL_REQUEST.method', method, args);
       let result: any = undefined;
@@ -118,13 +118,15 @@ export const messagesHandler = (
           ALCHEMY_ETH_API_KEY
         );
         result = await provider.send(args[0], args[1]);
+        //console.log(method, result, args[0], args[1], 'messageHandler');
       } else if (
         method === 'wallet.signMessage' ||
         method === 'wallet.sendTransaction'
       ) {
         mainController.dapp.setSignatureType(args[0].method);
         const signatureRequest =
-          (args[0].method == 'person_sign' || args[0].method == 'eth_sendTransaction')
+          args[0].method == 'person_sign' ||
+          args[0].method == 'eth_sendTransaction'
             ? args[0].params[0]
             : args[0].params[1];
         const windowId = uuid();
@@ -137,10 +139,15 @@ export const messagesHandler = (
             if (ev.detail.substring(1) === windowId) {
               const result = mainController.dapp.getApprovedIdentityJSON();
               await mainController.provider.ethSign(windowId, result);
-              console.log(result, 'result signTypedData addEventListener')
+              
               port.postMessage({
                 id: message.id,
-                data: { result },
+                data: {
+                  result:
+                    method === 'wallet.sendTransaction'
+                      ? JSON.parse(result).hash
+                      : result,
+                },
               });
               pendingWindow = false;
             }

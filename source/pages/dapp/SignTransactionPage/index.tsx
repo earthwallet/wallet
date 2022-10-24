@@ -28,7 +28,7 @@ import {
   SignTypedDataVersion,
 } from '@metamask/eth-sig-util';
 import { keyable } from '~scripts/Background/types/IMainController';
-import { ALCHEMY_ETH_API_KEY, ETH_GOERLI_TEST_ALCHEMY_URL } from '~global/config';
+import { ALCHEMY_ETH_API_KEY } from '~global/config';
 //import { getFeesExtended } from '~utils/services';
 // import ICON_ICP from '~assets/images/icon_icp_details.png';
 
@@ -101,7 +101,7 @@ const SignTransactionPage = () => {
       default:
     }
 
-    const provider = true ? new ethers.providers.JsonRpcProvider(ETH_GOERLI_TEST_ALCHEMY_URL) : new ethers.providers.AlchemyProvider(
+    const provider = new ethers.providers.AlchemyProvider(
       "homestead",
       ALCHEMY_ETH_API_KEY
     );
@@ -163,7 +163,7 @@ const SignTransactionPage = () => {
           const result = await signer.sendTransaction(transaction);
           console.log(transaction, result, 'transaction');
 
-          return controller.dapp.setApprovedIdentityJSON(JSON.stringify(result));
+          controller.dapp.setApprovedIdentityJSON(JSON.stringify(result));
 
         } else {
           console.error("No Active Account");
@@ -368,7 +368,7 @@ const SignTransactionPage = () => {
         </div>
       )}
 
-      {requestStatus?.loading ? (
+      {(requestStatus?.loading || isBusy) ? (
         <section className={styles.footerSuccess}>
           <ClipLoader color={'#fffff'} size={15} />
         </section>
