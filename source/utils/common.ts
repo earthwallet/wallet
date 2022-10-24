@@ -236,6 +236,24 @@ export function renderEthereumRequests(
               },
             ]
           : []),
+        ...(request.maxFeePerGas
+          ? [
+              {
+                label: 'Max Fee Per Gas',
+                value: convertHexToNumberIfPossible(request.maxFeePerGas),
+              },
+            ]
+          : []),
+        ...(request.maxPriorityFeePerGas
+          ? [
+              {
+                label: 'Max Priority Fee Per Gas',
+                value: convertHexToNumberIfPossible(
+                  request.maxPriorityFeePerGas
+                ),
+              },
+            ]
+          : []),
         {
           label: 'Value',
           value: request.value

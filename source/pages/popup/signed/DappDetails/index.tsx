@@ -19,6 +19,7 @@ import useToast from '~hooks/useToast';
 import { useHistory } from 'react-router-dom';
 import { useController } from '~hooks/useController';
 import ICON_TX_ERROR from '~assets/images/icon_tx_error.svg';
+import { selectAccountById } from '~state/wallet';
 
 interface Props extends RouteComponentProps<{ origin: string }> {
 }
@@ -32,6 +33,9 @@ const DappDetails = ({
   const parsedOrigin = decodeURIComponent(origin);
   const dapp = useSelector(selectDapp(parsedOrigin));
   const dappRequests = useSelector(selectDappRequests(parsedOrigin));
+  const selectedAccount = useSelector(selectAccountById(dapp.address || ''));
+  const { symbol } = selectedAccount;
+
   const { show } = useToast();
   const controller = useController();
 
@@ -101,26 +105,32 @@ const DappDetails = ({
               <div className={styles.value}>
                 {dappRequest.id}
               </div>
-              <div className={styles.label}>
+              {dappRequest?.completedAt && <><div className={styles.label}>
                 Completed on
               </div>
-              <div className={styles.value}>
-                {dappRequest.completedAt && moment(dappRequest.completedAt).format('MMMM Do YYYY, h:mm:ss a')}
-              </div>
-
-              <div className={styles.label}>
+                <div className={styles.value}>
+                  {dappRequest.completedAt && moment(dappRequest.completedAt).format('MMMM Do YYYY, h:mm:ss a')}
+                </div></>}
+              {dappRequest?.ethSignType && <>
+                <div className={styles.label}>
+                  Request Type
+                </div>
+                <div className={styles.value}>
+                  {dappRequest?.ethSignType}
+                </div></>}
+              {symbol == 'ICP' && <><div className={styles.label}>
                 Batch Request
               </div>
-              <div className={styles.value}>
-                {Array.isArray(dappRequest.request) ? 'True' : 'False'}
-              </div>
+                <div className={styles.value}>
+                  {Array.isArray(dappRequest.request) ? 'True' : 'False'}
+                </div></>}
               <div className={styles.label}>
                 Response{safeParseJSON(dappRequest?.response)?.type == 'error' && <img className={styles.errorIcon} src={ICON_TX_ERROR} />}
               </div>
               <div className={styles.value}>
                 {dappRequest.response}
               </div>
-              {dappRequest?.request?.type !== 'signRaw' ? <>
+              {symbol == 'ICP' && <>{dappRequest?.request?.type !== 'signRaw' ? <>
                 {Array.isArray(dappRequest.request) ? dappRequest.request.map((singleReq, index) => <div key={index} className={styles.requestBody}>
                   <div className={styles.label}>
                     CanisterId
@@ -169,7 +179,7 @@ const DappDetails = ({
                     {dappRequest.request?.message}
                   </div>
                 </div>
-              </>}
+              </>}</>}
             </div>)}
           </div>
         </div>

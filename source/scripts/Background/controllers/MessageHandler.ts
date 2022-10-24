@@ -2,7 +2,7 @@ import { recoverPersonalSignature } from '@metamask/eth-sig-util';
 import { ethers } from 'ethers';
 import { v4 as uuid } from 'uuid';
 import { browser, Runtime } from 'webextension-polyfill-ts';
-import { ALCHEMY_ETH_API_KEY, ETH_GOERLI_TEST_ALCHEMY_URL } from '~global/config';
+import { ALCHEMY_ETH_API_KEY } from '~global/config';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import { NetworkSymbol } from '~global/types';
 import { IMainController } from '../types/IMainController';

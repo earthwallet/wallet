@@ -32,7 +32,7 @@ import AddressInput from '~components/AddressInput';
 import { getTokenInfo } from '~global/tokens';
 import { selectInfoBySymbolOrToken } from '~state/tokens';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
-import { getERC20TransferGasLimit, getERC721TransferGasLimit, getFeesExtended } from '~utils/services';
+import { getERC20TransferGasLimit, getERC721TransferGasLimit, getFeesExtended, getMaxAmount_ETH } from '~utils/services';
 import { debounce } from 'lodash';
 
 const MIN_LENGTH = 6;
@@ -583,6 +583,8 @@ const WalletSendTokens = ({
                   fees={fees}
                   amountCallback={setSelectedAmount}
                   errorCallback={setError}
+                  feesArr={feesArr}
+                  feesOptionSelected={feesOptionSelected}
                 />
               )}
               {getSelectedAsset(selectedAsset) &&
@@ -594,6 +596,8 @@ const WalletSendTokens = ({
                     tokenId={getSelectedAsset(selectedAsset)?.id}
                     amountCallback={setSelectedAmount}
                     errorCallback={setError}
+                    feesArr={feesArr}
+                    feesOptionSelected={feesOptionSelected}
                   />
                 )}
               {(selectedAccount?.symbol == 'MATIC' ||
@@ -956,6 +960,8 @@ const AmountInput = ({
   amountCallback,
   errorCallback,
   tokenId,
+  feesArr,
+  feesOptionSelected
 }: {
   accountId: string;
   fees: any;
@@ -963,6 +969,8 @@ const AmountInput = ({
   amountCallback: (amount: number) => void;
   errorCallback: (error: string) => void;
   tokenId?: string;
+  feesArr: keyable,
+  feesOptionSelected: number
 }) => {
   const selectedAccount = useSelector(selectAccountById(accountId));
 
@@ -997,18 +1005,27 @@ const AmountInput = ({
 
   const loadMaxAmount = useCallback((): void => {
     let maxAmount;
-    if (tokenInfo?.type == 'DIP20' || tokenInfo?.type == 'ERC20') {
+    if (tokenInfo?.type == "DIP20") {
       maxAmount = tokenInfo.balance / Math.pow(10, tokenInfo.decimals) - fees;
       maxAmount = parseFloat(maxAmount.toFixed(8));
-    } else {
-      maxAmount =
-        currentBalance?.value /
-        Math.pow(10, currentBalance?.currency?.decimals) -
-        fees;
+    } else if (tokenInfo?.type == "token" || tokenInfo?.type == "ERC20") {
+      maxAmount = tokenInfo.balance;
       maxAmount = parseFloat(maxAmount.toFixed(8));
+    } else {
+      if (!(selectedAccount.symbol == "MATIC" || selectedAccount.symbol == "ETH")) {
+        maxAmount =
+          currentBalance?.value /
+          Math.pow(10, currentBalance?.currency?.decimals) -
+          fees;
+        maxAmount = parseFloat(maxAmount.toFixed(8));
+      } else {
+        maxAmount = getMaxAmount_ETH((currentBalance?.value /
+          Math.pow(10, currentBalance?.currency?.decimals)).toString(), feesArr[feesOptionSelected])
+      }
     }
-    changeAmount(maxAmount.toString());
-  }, [currentBalance, fees]);
+    const amount = maxAmount.toString();
+    changeAmount(amount);
+  }, [currentBalance, fees, feesArr, feesOptionSelected]);
 
   const changeAmount = (amount: string) => {
     setInitialized(true);
@@ -1055,11 +1072,11 @@ const AmountInput = ({
     <div>
       <div className={styles.earthInputLabel}>
         Amount{' '}{tokenInfo.symbol}
-        {selectedAccount?.symbol == 'ICP' && (
+        {
           <div onClick={() => loadMaxAmount()} className={styles.maxBtn}>
             Max
           </div>
-        )}
+        }
       </div>
       <input
         autoCapitalize="off"

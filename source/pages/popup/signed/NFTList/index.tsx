@@ -82,7 +82,7 @@ export const AssetsList = ({ accountId }: { accountId: string }) => {
     const { address, symbol } = selectedAccount;
     const loading: boolean = useSelector(selectAssetsICPCountLoadingByAddress(address));
     const airdropAsset = getAirDropNFTInfo();
-    const airdropAssetStatus = { airdropEnabled: true, accountIdVerified: null } || useSelector(selectAirdropStatus(airdropAsset.id));
+    const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
     const assets: keyable = useSelector(selectAssetsByAddressAndSymbol(address, symbol));
     const SHOW_MARKETPLACE = selectedAccount.symbol == "ICP" && MARKETPLACE_ENABLED;
 
@@ -218,7 +218,7 @@ export const AssetsCoverflow = ({ accountId }: { accountId: string }) => {
 
     const assets: keyable = useSelector(selectAssetsByAddressAndSymbol(address, symbol));
     const airdropAsset = getAirDropNFTInfo();
-    const airdropAssetStatus = { airdropEnabled: true, accountIdVerified: null } || useSelector(selectAirdropStatus(airdropAsset.id));
+    const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
 
     const history = useHistory();
 

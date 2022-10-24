@@ -283,14 +283,13 @@
   line-height: 44px;
   text-align: right;
   color: #fafbfb;
-  text-shadow: 0px 0px 11.4544px rgba(177, 204, 255, 0.89);
+  text-shadow: 0px 0px 11.4544px rgb(177 204 255 / 89%);
   margin-bottom: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* number of lines to show */
-  -webkit-box-orient: vertical;
+  max-width: 205px;
 }
+
 .confirmPage {
   padding: 0 24px;
   width: 100vw;

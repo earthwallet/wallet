@@ -294,8 +294,8 @@ export const getAirDropNFTInfo = () => ({
   id: 'earth-day', //slug
   type: 'EarthArt',
   standard: 'EarthArt',
-  isLive: true,
-  isAirdrop: true,
+  isLive: false,
+  isAirdrop: false,
   name: 'Earth Day 2022', //can be changed
   //can be changed
   description:

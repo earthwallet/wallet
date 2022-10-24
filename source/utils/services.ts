@@ -491,12 +491,6 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
         estimateGas *
         (parseFloat(serverRes?.estimatedBaseFee) +
           parseFloat(serverRes?.high?.suggestedMaxPriorityFeePerGas));
-      console.log(response, config, 'getFeesExtended');
-      console.log(
-        totalSafeLowGas,
-        serverRes?.low?.suggestedMaxPriorityFeePerGas,
-        'getFeesExtended'
-      );
 
       ////Total transaction fee = gas units (limit) x (base fee + tip)
       //totalGas for a txn = (maxPriorityFeePerGas + baseFee) * estimateGas
@@ -510,6 +504,9 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
           maxFee:
             (estimateGas * parseFloat(serverRes?.low.suggestedMaxFeePerGas)) /
             Math.pow(10, 9),
+          totalGas:
+            (estimateGas * parseFloat(serverRes?.low.suggestedMaxFeePerGas)) /
+            Math.pow(10, 9),
         },
         {
           label: 'Standard',
@@ -520,6 +517,10 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
             (estimateGas *
               parseFloat(serverRes?.medium.suggestedMaxFeePerGas)) /
             Math.pow(10, 9),
+          totalGas:
+            (estimateGas *
+              parseFloat(serverRes?.medium.suggestedMaxFeePerGas)) /
+            Math.pow(10, 9),
         },
         {
           label: 'Fast',
@@ -527,6 +528,9 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
           estimateGas,
           gas: totalFastGas / Math.pow(10, 9),
           maxFee:
+            (estimateGas * parseFloat(serverRes?.high.suggestedMaxFeePerGas)) /
+            Math.pow(10, 9),
+          totalGas:
             (estimateGas * parseFloat(serverRes?.high.suggestedMaxFeePerGas)) /
             Math.pow(10, 9),
         },
@@ -547,13 +551,16 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
       serverRes = response.data;
       const totalSafeLowGas =
         estimateGas *
-        (serverRes?.estimatedBaseFee + serverRes?.safeLow?.maxPriorityFee);
+        (serverRes?.estimatedBaseFee +
+          parseFloat(serverRes?.safeLow?.maxPriorityFee.toFixed(5)));
       const totalStandardGas =
         estimateGas *
-        (serverRes?.estimatedBaseFee + serverRes?.standard?.maxPriorityFee);
+        (serverRes?.estimatedBaseFee +
+          parseFloat(serverRes?.standard?.maxPriorityFee.toFixed(5)));
       const totalFastGas =
         estimateGas *
-        (serverRes?.estimatedBaseFee + serverRes?.fast?.maxPriorityFee);
+        (serverRes?.estimatedBaseFee +
+          parseFloat(serverRes?.fast?.maxPriorityFee.toFixed(5)));
 
       fees = [
         {
@@ -564,6 +571,7 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
           suggestedMaxFeePerGas: serverRes?.safeLow?.maxFee.toFixed(5),
           suggestedMaxPriorityFeePerGas:
             serverRes?.safeLow?.maxPriorityFee.toFixed(5),
+          totalGas: totalSafeLowGas / Math.pow(10, 9),
         },
         {
           label: 'Standard',
@@ -573,6 +581,7 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
           suggestedMaxFeePerGas: serverRes?.standard?.maxFee.toFixed(5),
           suggestedMaxPriorityFeePerGas:
             serverRes?.standard?.maxPriorityFee.toFixed(5),
+          totalGas: totalStandardGas / Math.pow(10, 9),
         },
         {
           label: 'Fast',
@@ -582,6 +591,7 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
           suggestedMaxFeePerGas: serverRes?.fast?.maxFee.toFixed(5),
           suggestedMaxPriorityFeePerGas:
             serverRes?.fast?.maxPriorityFee.toFixed(5),
+          totalGas: totalFastGas / Math.pow(10, 9),
         },
       ];
     } catch (error) {

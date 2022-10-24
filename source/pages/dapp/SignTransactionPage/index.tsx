@@ -47,6 +47,7 @@ const SignTransactionPage = () => {
   const approveEthSign = useEthSignApprove();
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState('');
+
   const [pass, setPass] = useState('');
   const signatureType = controller.dapp.getSignatureType();
 
@@ -140,6 +141,10 @@ const SignTransactionPage = () => {
             transaction.gasLimit = transaction.gas;
             delete transaction.gas;
           }
+          if (transaction.type == '0x0') {
+            //legacy
+            delete transaction.type;
+          }
 
           if (!("nonce" in transaction)) {
             const nonce = await signer.getTransactionCount('latest');
@@ -159,11 +164,18 @@ const SignTransactionPage = () => {
 
            }
 */
-          console.log(transaction, 'transaction');
-          const result = await signer.sendTransaction(transaction);
-          console.log(transaction, result, 'transaction');
+          let result;
 
-          controller.dapp.setApprovedIdentityJSON(JSON.stringify(result));
+          try {
+            result = await signer.sendTransaction(transaction);
+            console.log(transaction, result, 'transaction');
+            controller.dapp.setApprovedIdentityJSON(JSON.stringify(result));
+
+          } catch (error) {
+            controller.dapp.setApprovedIdentityJSON(JSON.stringify({ error: error, type: 'error' }));
+          }
+
+
 
         } else {
           console.error("No Active Account");
