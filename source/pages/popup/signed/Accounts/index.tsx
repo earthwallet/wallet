@@ -14,22 +14,17 @@ import useGetAccountGroupAssetBalances from '~hooks/useGetAccountGroupAssetBalan
 import ICON_SETTINGS from '~assets/images/icon_more_settings.svg';
 import useGetCollectionStats from '~hooks/useGetCollectionStats';
 import { AppState } from '~state/store';
-//import { useController } from '~hooks/useController';
+import { i18nT } from "~i18n/index";
 
 const Accounts = () => {
   const history = useHistory();
   const accountGroups = useSelector(selectActiveAccountGroups);
   const loading = useGetAccountGroupBalances(accountGroups);
   const { activeNetwork } = useSelector((state: AppState) => state.wallet);
-  //const controller = useController();
 
   useGetAccountGroupAssetBalances(accountGroups);
   useGetCollectionStats();
-  /* 
-  highlight connected Address
-  chrome.tabs.query({active:true,currentWindow:true},function(tab){
-    console.log(tab[0].url);
-  }); */
+
 
   const goToActiveNetworkAddressOrDefaultAddress = (accounts: keyable) => {
     const filtered = accounts.filter(
@@ -47,17 +42,17 @@ const Accounts = () => {
     <div className={styles.page}>
       {accountGroups.length === 0 ? (
         <div>
-          <div className={styles.subtitle}>bringing crypto back to earth</div>
+          <div className={styles.subtitle}>{i18nT('accounts.paraText')}</div>
           <div className={styles.noAccountsActions}>
             <div className={styles.earthButtonCont}>
               <Link className={styles.link} to={'/account/create'}>
-                <div className={styles.earthButton}>Create an Account</div>
+                <div className={styles.earthButton}>{i18nT('accounts.createAccount')}</div>
               </Link>
             </div>
             <div className={styles.footerCont}>
               <div className={styles.orSep}>or</div>
               <Link className={styles.link} to={'/account/import'}>
-                <div className={styles.earthLink}>import seed phrase</div>
+                <div className={styles.earthLink}>{i18nT('accounts.importSeed')}</div>
               </Link>
             </div>
           </div>
@@ -74,7 +69,7 @@ const Accounts = () => {
                 </div>
               </div>
             </div>
-            <div className={styles.accountTitle}>Select Account</div>
+            <div className={styles.accountTitle}>{i18nT('accounts.selectAccount')}</div>
             <div className={styles.accountsCont}>
               {accountGroups.map((accountGroup: any) => (
                 <div key={accountGroup[0].id}>
@@ -111,7 +106,7 @@ const Accounts = () => {
                     styles.earthButtonTable
                   )}
                 >
-                  <div>Create an Account </div>
+                  <div>{i18nT('accounts.createAccount')}</div>
                   <img className={styles.iconCopy} src={ICON_ADD} />
                 </div>
               </Link>
@@ -120,7 +115,7 @@ const Accounts = () => {
           <div className={styles.footerCont}>
             <div className={styles.orSep}>or</div>
             <Link className={styles.link} to={'/account/import'}>
-              <div className={styles.earthLink}>import seed phrase</div>
+              <div className={styles.earthLink}>{i18nT('accounts.importSeed')}</div>
             </Link>
           </div>
         </>

@@ -10,7 +10,6 @@ import Transactions from '~pages/popup/signed/Transactions';
 import Wallet from '~pages/popup/signed/Wallet';
 import WalletSendTokens from '~pages/popup/signed/WalletSendTokens';
 import WalletReceiveTokens from '~pages/popup/signed/WalletReceiveTokens';
-import Portfolio from '~pages/popup/signed/Portfolio';
 import ErrorBoundary from '~components/ErrorBoundary';
 import { useController } from '~hooks/useController';
 import NFTDetails from '~pages/popup/signed/NFTDetails';
@@ -37,6 +36,7 @@ import TransactionConfirm from '~pages/popup/signed/TransactionConfirm';
 import WalletAddressBook from '~pages/popup/signed/WalletAddressBook';
 import NFTAirdropDetails from '~pages/popup/signed/NFTAirdropDetails';
 import StakeEthConfirm from '~pages/popup/signed/StakeEthConfirm';
+import "~i18n/index"
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -108,9 +108,6 @@ const PopupRouter = () => {
               </Route>
               <Route path="/nft/settle/:nftId">
                 {wrapWithErrorBoundary(<NFTSettle />, 'accounts')}
-              </Route>
-              <Route path="/portfolio">
-                {wrapWithErrorBoundary(<Portfolio />, 'portfolio')}
               </Route>
               <Route path="/account/create">
                 {wrapWithErrorBoundary(<CreateAccount />, 'account-creation')}

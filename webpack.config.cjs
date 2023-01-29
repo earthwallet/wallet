@@ -94,6 +94,7 @@ module.exports = {
       '~components': path.resolve(__dirname, 'source/components'),
       '~scripts': path.resolve(__dirname, 'source/scripts'),
       '~pages': path.resolve(__dirname, 'source/pages'),
+      '~i18n': path.resolve(__dirname, 'source/i18n'),
       '~state': path.resolve(__dirname, 'source/state'),
       '~utils': path.resolve(__dirname, 'source/utils'),
       '~hooks': path.resolve(__dirname, 'source/hooks'),

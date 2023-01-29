@@ -91,7 +91,7 @@ const StakeEth = ({
   }, 500);
 
   React.useEffect(() => {
-    if (!(selectedAmount == 0 || selectedAmount == NaN)) {
+    if (!(selectedAmount == 0 || Number.isNaN(selectedAmount))) {
       setLoading(true);
       debouncedFetchData(selectedAmount, tab, (res: any) => {
         console.log(res, "debounced");
@@ -213,8 +213,8 @@ const StakeEth = ({
 
       <div className={styles.nextCont}>
         <NextStepButton
-          disabled={selectedAmount == NaN || selectedAmount == 0 || error != '' || params?.uniswap?.estimatedGasUsedUSDTxt == undefined || (params?.uniswap?.inputAmount != selectedAmount?.toString())}
-          loading={loading || ( (selectedAmount == NaN || selectedAmount == 0 )? false : params?.uniswap?.inputAmount != selectedAmount?.toString())}
+          disabled={Number.isNaN(selectedAmount) || selectedAmount == 0 || error != '' || params?.uniswap?.estimatedGasUsedUSDTxt == undefined || (params?.uniswap?.inputAmount != selectedAmount?.toString())}
+          loading={loading || ( (Number.isNaN(selectedAmount) || selectedAmount == 0 )? false : params?.uniswap?.inputAmount != selectedAmount?.toString())}
           onClick={() => nextScreen()}
         >
           {tab === 0 ? 'Stake' : 'Unstake'}
