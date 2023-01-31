@@ -16,6 +16,7 @@ import Confetti from 'react-confetti'
 import { ClipLoader } from 'react-spinners';
 import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
 
 
 interface Props extends RouteComponentProps<{ nftId: string }> {
@@ -30,15 +31,13 @@ const NFTBuyDetails = ({
     },
 }: Props) => {
     const queryParams = useQuery();
-    const price: number = parseInt(queryParams.get('price') || '');
     const accountId: string = queryParams.get('accountId') || '';
     const selectedAccount = useSelector(selectAccountById(accountId));
     const { address } = selectedAccount;
-    
+
     const history = useHistory();
     const [loading, setLoading] = useState<boolean>(false);
     const controller = useController();
-    console.log(nftId, price);
 
     const canisterId = decodeTokenId(nftId).canister;
     const index = decodeTokenId(nftId).index;
@@ -64,8 +63,7 @@ const NFTBuyDetails = ({
             </div>
             <div className={styles.fullImage}
                 style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
-
-                <div className={styles.congrats}>Congrats on your new NFT! 🎉</div>
+                <div className={styles.congrats}>{i18nT("nftPurchaseDetails.congratsTxt")}</div>
                 <Confetti
                     width={375}
                     height={600}

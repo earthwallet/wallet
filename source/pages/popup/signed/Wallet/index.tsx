@@ -180,7 +180,7 @@ const Wallet = ({
                 styles.selectedTabView
               )}
             >
-              Transactions {walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
+              Transactions{" "}{walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
             </div>
           </div>
         </div>

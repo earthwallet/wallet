@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./index.scss";
-//import img from "~assets/images/marketplaceImg.svg";
 import Header from '~components/Header';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
 import {
     canisterAgentApi,
-    //decodeTokenId,
     getTokenIdentifier,
 } from "@earthwallet/assets";
-//import { ClipLoader } from 'react-spinners';
 import NFTCard from '~components/NFTCard';
 import { useSelector } from 'react-redux';
 import { selectAssetBySymbol, selectCollectionInfo, selectStatsOfCollection } from '~state/assets';
@@ -17,6 +14,7 @@ import { getSymbol } from '~utils/common';
 import useQuery from '~hooks/useQuery';
 import millify from 'millify';
 import { Principal } from '@dfinity/principal';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ collectionId: string }> {
 }
@@ -54,8 +52,6 @@ const NFTCollection = ({
                         list[0]
                     )}`
                 })).filter((a: keyable) => !(a.locked)).sort((a: keyable, b: keyable) => (a.price - b.price));
-                //[0][1].price
-                console.log(listings, 'listings');
                 setListings(listings);
             }
             else {
@@ -74,7 +70,6 @@ const NFTCollection = ({
                         price,
                     }
                 });
-                console.log(listings, 'listings');
                 setListings(listings);
             }
             setLoading(false);
@@ -94,21 +89,21 @@ const NFTCollection = ({
                 <div className={styles.stats}>
                     <div className={styles.statrow}>
                         <div className={styles.statcol}>
-                            <div className={styles.key}>Listings</div>
+                            <div className={styles.key}>{i18nT("nftCollection.listings")}</div>
                             <div className={styles.val}>{nftObj?.listings ? millify(nftObj?.listings, {
                                 precision: 2,
                                 lowercase: true
                             }) : (listings.length || '-')}</div>
                         </div>
                         <div className={styles.statcol}>
-                            <div className={styles.key}>Collection Size</div>
+                            <div className={styles.key}>{i18nT("nftCollection.collectionSize")}</div>
                             <div className={styles.val}>{nftObj?.tokens ? millify(nftObj?.tokens, {
                                 precision: 2,
                                 lowercase: true
                             }) : '-'}</div>
                         </div>
                         <div className={styles.statcol}>
-                            <div className={styles.key}>Sales</div>
+                            <div className={styles.key}>{i18nT("nftCollection.sales")}</div>
                             <div className={styles.val}>{nftObj?.sales ? millify(nftObj?.sales, {
                                 precision: 2,
                                 lowercase: true
@@ -117,14 +112,14 @@ const NFTCollection = ({
                     </div>
                     <div className={styles.statrow}>
                         <div className={styles.statcol}>
-                            <div className={styles.key}>Volume</div>
+                            <div className={styles.key}>{i18nT("nftCollection.volume")}</div>
                             <div className={styles.val}>${nftObj?.total ? millify(nftObj?.total * currentUSDValue?.usd, {
                                 precision: 2,
                                 lowercase: true
                             }) : '-'}</div>
                         </div>
                         <div className={styles.statcol}>
-                            <div className={styles.key}>Floor</div>
+                            <div className={styles.key}>{i18nT("nftCollection.floor")}</div>
                             <div className={styles.val}>${nftObj?.floor ? millify(nftObj?.floor * currentUSDValue?.usd, {
                                 precision: 2,
                                 lowercase: true
@@ -139,8 +134,7 @@ const NFTCollection = ({
                     key={nftObj?.tokenId}
                     className={styles.nftcardcont}
                     onClick={() => history.push(`/nft/buy/${nftObj?.tokenId}?price=${nftObj?.price}&accountId=${accountId}&type=${nftCollObj.type}`)}
-                >
-                    <NFTCard
+                ><NFTCard
                         id={nftObj?.id}
                         img={nftObj?.icon}
                         text={nftObj?.price / Math.pow(10, 8)}

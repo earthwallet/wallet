@@ -136,7 +136,6 @@ const PopupRouter = () => {
                   'wallet-send-token'
                 )}
               </Route>
-              {/*  /account/send/:accountId ?tokenId or ?assetId */}
               <Route path="/account/confirmsend/:accountId">
                 {wrapWithErrorBoundary(
                   <WalletSendTokens />,

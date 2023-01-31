@@ -7,8 +7,6 @@ import { useHistory } from 'react-router-dom';
 import styles from './index.scss';
 import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
-
-//import BG_MNEMONIC from '~assets/images/bg_mnemonic.png';
 import ICON_CHECKED from '~assets/images/icon_checkbox_checked.svg';
 
 import ICON_UNCHECKED from '~assets/images/icon_checkbox_unchecked.svg';

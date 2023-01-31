@@ -1,6 +1,4 @@
 import React, { useCallback, useState } from 'react';
-
-//import { useHistory } from 'react-router-dom';
 import styles from './index.scss';
 import HeaderWithSteps from '~components/HeaderWithSteps';
 import SeedAndPath from './SeedAndPath';
@@ -20,7 +18,6 @@ import ICON_GREEN_TICK from '~assets/images/icon_green_tick.svg';
 
 
 const Page = () => {
-  //  const history = useHistory();
   const [seed, setSeed] = useState<string | null>(null);
   const [step, setStep] = useState<string>('1');
   const [balance, setBalance] = useState<number>(0);
@@ -145,7 +142,6 @@ const Page = () => {
                 <img src={getSymbol('ICP')?.icon} className={styles.notAddrIcon}></img>
                 <div className={styles.notAddrText}>{addresses?.new}</div>
               </div>
-
             </div>
           </div>
           {txError && (

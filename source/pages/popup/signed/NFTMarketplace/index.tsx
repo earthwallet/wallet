@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { selectAllCollectionInfo, selectAssetBySymbol, selectStatsOfCollections } from '~state/assets';
 import { getSymbol } from '~utils/common';
 import millify from "millify";
+import { i18nT } from "~i18n/index";
 
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
@@ -32,7 +33,7 @@ const NFTMarketplace = ({
                 className={styles.header}
                 showMenu
                 type={'wallet'}
-                text={'💎  Explore NFTs'}
+                text={i18nT("nftMarketplace.header")}
             ><div className={styles.empty} /></Header>
             <div className={styles.mainContainer}>
                 {LIVE_NFTS_WITH_STATS

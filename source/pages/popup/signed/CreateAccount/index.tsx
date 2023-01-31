@@ -1,24 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react/jsx-key */
-/* eslint-disable camelcase */
-
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from './index.scss';
-//import { saveAs } from 'file-saver';
-//import { useHistory } from 'react-router-dom';
-//import BG_MNEMONIC from '~assets/images/bg_mnemonic.png';
 import ICON_CHECKED from '~assets/images/icon_checkbox_checked.svg';
 import ICON_UNCHECKED from '~assets/images/icon_checkbox_unchecked.svg';
 import ICON_COPY from '~assets/images/icon_copy.svg';
 import ICON_DOWNLOAD from '~assets/images/icon_download.svg';
 import CopyToClipboard from 'react-copy-to-clipboard';
-//import Loading from '~components/Loading';
 import NextStepButton from '~components/NextStepButton';
 import HeaderWithSteps from '~components/HeaderWithSteps';
 import Password from '~components/Password';
@@ -127,7 +113,6 @@ const Page = () => {
                         <div>COPY</div>
                       </div>
                     </CopyToClipboard>
-
                     <div
                       className={styles.mnemonicAction}
                       onClick={() => backupKeystore()}
@@ -144,11 +129,6 @@ const Page = () => {
                   <div className={styles.mnemonicHelpTitle}>
                     This is a generated 12-word
                     mnemonic seed.
-                    {/* <small>
-                      Please write down your wallet’s mnemonic seed and keep it
-                      in a safe place. The mnemonic can be used to restore your
-                      wallet.
-                    </small> */}
                   </div>
                 </div>
               </div>
