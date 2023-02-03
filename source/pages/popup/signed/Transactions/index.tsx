@@ -19,6 +19,7 @@ import clsx from 'clsx';
 import { getTokenImageUrlFromnftId } from '~global/nfts';
 import { getTokenInfo } from '~global/tokens';
 import { getTransactions_ETH_MATIC } from '~utils/services';
+import { getTransactions_BTC_DOGE } from '~utils/btc';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
   className?: string;
@@ -38,13 +39,14 @@ const Transactions = ({
   const { address } = selectedAccount;
 
   const history = useHistory();
-  const [walletTransactions, setWalletTransactions] = useState<any>();
+  const [walletTransactions, setWalletTransactions] = useState<any>({ txs: [], total: 0 });
   const [loading, setLoading] = useState<boolean>(false);
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
   const usdValue = currentUSDValue?.usd;
   const txnReqs = useSelector(selectTxnRequestsByAddress(address));
 
 
+  console.log(walletTransactions, "walletTransactions")
   const getTransactionTime = (transaction: any): any => {
     const timestamp: number = transaction.transaction?.metadata?.timestamp;
 
@@ -57,11 +59,18 @@ const Transactions = ({
   };
 
   const loadTransactions = async (address: string) => {
-    if (selectedAccount?.symbol == 'ICP' || selectedAccount?.symbol == 'BTC') {
+    if (selectedAccount?.symbol == 'ICP') {
       setLoading(true);
       const transactions = await getTransactions(address, selectedAccount?.symbol);
       setLoading(false);
       setWalletTransactions(transactions);
+    } else if (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'DOGE') {
+      setLoading(true);
+      const response = await getTransactions_BTC_DOGE(address, selectedAccount?.symbol);
+      console.log(response, address, selectedAccount?.symbol)
+      const wallet = { txs: response, total: response?.length };
+      setWalletTransactions(wallet);
+      setLoading(false);
     } else {
       setLoading(true);
       const response = await getTransactions_ETH_MATIC(address, selectedAccount?.symbol);
@@ -100,14 +109,11 @@ const Transactions = ({
       return operations[0];
     };
 
-    if (symbol === 'BTC' || symbol === 'LTC' || symbol === 'BCH') {
-      const BTC_DECIMAL = 8;
-      const getAmount = (transaction: any): any => {
-        let amount = 0;
-        amount = address === transaction.from[0].from ? -1 * (transaction.to[0].amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber()) : (transaction.to[0].amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber());
-        return amount;
-      };
+    if (symbol === 'BTC' || symbol === 'LTC' || symbol === 'BCH' || symbol == "DOGE") {
 
+      const getAmount = (transaction: any): any => {
+        return transaction.balance_change;
+      };
 
       return <div
         className={styles.transItem}
@@ -129,16 +135,12 @@ const Transactions = ({
           </div>
           <div className={styles.transSubColTime}>
             <div className={styles.transDate}>{moment(transaction?.date).format('MMM DD YYYY')}</div>
-            <div className={styles.transSubColDot}></div>
-            <div className={styles.transAddress}>
-              {getAmount(transaction) > 0 ? 'from ' + getShortAddress(transaction.from[0].from, 3) : 'to ' + getShortAddress(transaction.to[0].to, 3)}
-            </div>
           </div>
         </div>
 
         <div className={styles.transColValue}>
           <div>
-            {getAmount(transaction).toFixed(BTC_DECIMAL)}
+            {getAmount(transaction)}
             {symbol}
           </div>
           <div className={styles.transSubColPrice}>

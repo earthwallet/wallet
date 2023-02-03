@@ -30,6 +30,7 @@ import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance
 import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
 import { getTransactions_ETH_MATIC } from '~utils/services';
+import { getTransactions_BTC_DOGE } from '~utils/btc';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
 }
@@ -84,8 +85,11 @@ const Wallet = ({
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
-      if (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'ICP') {
+      if (selectedAccount?.symbol == 'ICP') {
         const transactions = await getTransactions(address, selectedAccount?.symbol);
+        setWalletTransactions(transactions);
+      } else if (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'DOGE') {
+        const transactions = await getTransactions_BTC_DOGE(address, selectedAccount?.symbol);
         setWalletTransactions(transactions);
       } else {
         const response = await getTransactions_ETH_MATIC(address, selectedAccount?.symbol);

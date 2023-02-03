@@ -4,6 +4,7 @@ export const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
 
 export const ALCHEMY_ETH_API_KEY = process.env.ALCHEMY_ETH_API_KEY;
 export const ALCHEMY_POLYGON_API_KEY = process.env.ALCHEMY_POLYGON_API_KEY;
+export const BTC_DOGE_MAINNET_KEY = process.env.BTC_DOGE_SOHO_API || '';
 
 export const AIRDROP_FIREBASE_URL =
   'https://us-central1-test-earth-art.cloudfunctions.net';

@@ -34,7 +34,7 @@ import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
 import { ETH_MAINNET_ALCHEMY_URL, POLY_ALCHEMY_URL } from '~global/config';
-
+import { getBalance_BTC_DOGE } from '~utils/btc';
 
 interface keyable {
   [key: string]: any;
@@ -209,7 +209,6 @@ export default class AccountsController implements IAccountsController {
     return resp.hash;
   };
 
-
   sendBTC = async (
     selectedRecp: string,
     selectedAmount: number,
@@ -245,7 +244,6 @@ export default class AccountsController implements IAccountsController {
   };
   getBalancesOfAccount = async (account: keyable) => {
     const fetchBalance = async (account: keyable) => {
-      console.log(account, 'fetchBalance');
       store.dispatch(
         storeEntities({
           entity: 'balances',
@@ -265,6 +263,9 @@ export default class AccountsController implements IAccountsController {
       } else if (account.symbol == 'MATIC') {
         const value = await getBalanceMatic(account.address);
         balance = { currency: { decimals: 18, symbol: 'MATIC' }, value: value };
+      } else if (account.symbol == 'BTC' || account.symbol == 'DOGE') {
+        const resp = await getBalance_BTC_DOGE(account.address, account.symbol);
+        balance = { ...resp };
       } else {
         balance = await _getBalance(
           account.address,
@@ -367,9 +368,6 @@ export default class AccountsController implements IAccountsController {
     }
   };
 
-  getTransactions = async (address: string, symbol = 'ICP') => {
-    await _getTransactions(address, symbol);
-  };
 
   createOrUpdateAccounts = async (
     mnemonic: string,
