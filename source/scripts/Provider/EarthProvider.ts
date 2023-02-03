@@ -184,7 +184,6 @@ export class EarthProvider {
   }
   //closes any active session
   closeSession(origin: string) {
-    console.log('closeSession', origin);
 
     const state = store.getState();
     const sessionState = Object.keys(state.entities.dappSessions?.byId)
@@ -239,7 +238,6 @@ export class EarthProvider {
   async sessionSign(request: keyable, origin: string) {
     console.log('sessionSign', request, origin);
     //close expiredSessions
-    //todo create new txn request for array and single
     //limit txn log to 100 entries
     const state = store.getState();
     const sessionState = Object.keys(state.entities.dappSessions?.byId)
@@ -289,7 +287,6 @@ export class EarthProvider {
   }
   async updateSession(request: keyable, origin: string) {
     //updated active session
-    console.log('updateSession', request, origin);
 
     const state = store.getState();
     const sessionState = Object.keys(state.entities.dappSessions?.byId)
@@ -343,11 +340,8 @@ export class EarthProvider {
     const requestState = state.entities.dappRequests.byId[requestId];
     const { origin, address } = requestState;
 
-    console.log('createSession', origin, address, request, requestId);
     let response: any;
-
-    //approvedIdentityJSON store with sessionId as password
-
+    
     store.dispatch(
       updateEntities({
         entity: 'dappRequests',

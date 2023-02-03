@@ -1,6 +1,13 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { BTC_DOGE_MAINNET_KEY } from '~global/config';
 import { keyable } from '~scripts/Background/types/IMainController';
+import BigNumber from 'bignumber.js';
+
+import * as Bitcoin from 'bitcoinjs-lib';
+import { mnemonicToSeedSync } from 'bip39';
+// @ts-ignore
+import accumulative from 'coinselect/accumulative';
+import { DOGE_SLIP_PATH, dogeNetwork } from './doge';
 
 const BTC_DECIMAL = 8;
 const DOGE_DECIMAL = 8;
@@ -71,7 +78,6 @@ export const getTransactions_BTC_DOGE = async (
       console.log(error, 'getTransactions_BTC');
       return;
     });
-  console.log(serverRes, 'serverRes');
   return serverRes;
 };
 
@@ -128,7 +134,9 @@ export const getAllUnspentTransactions = async (
   return await getUnspentTransactions(address, 1);
 };
 
-export const getFeeRateAndFees_BTC_DOGE = async (symbol: string) => {
+export const getFeeRateAndFees_BTC_DOGE = async (
+  symbol: string
+): Promise<keyable> => {
   const BYTES_FOR_ONE_INPUT_TWO_OUTPUTS = 400;
   const offlineFeeRate = symbol == 'BTC' ? 7 : 1000;
   try {
@@ -184,10 +192,190 @@ export const broadcastTxn_BTC_DOGE = async (txHex: string, symbol: string) => {
     .catch(function (error) {
       serverRes.error = true;
       if (error.response) {
-        console.log(error.response, 'broadcastTxn_BTC_DOGE');
+        console.log('Error: broadcastTxn_BTC_DOGE', error.response);
         serverRes.errorMessage = error.response.data.data?.error_message;
       }
       return serverRes;
     });
   return serverRes;
+};
+
+export const getKeypairAndNetwork_BTC_DOGE = async (
+  mnemonic: string,
+  symbol: string
+) => {
+  const seed = mnemonicToSeedSync(mnemonic);
+  const btcNetwork = Bitcoin.networks.bitcoin;
+
+  const network: Bitcoin.Network = symbol == 'BTC' ? btcNetwork : dogeNetwork;
+  const derivePath = symbol == 'BTC' ? `84'/0'/0'/0/0` : DOGE_SLIP_PATH;
+  const master = Bitcoin.bip32.fromSeed(seed, network).derivePath(derivePath);
+  // @ts-ignore
+  const keyPair = Bitcoin.ECPair.fromPrivateKey(master.privateKey, {
+    network: network,
+  });
+  const { address } =
+    symbol == 'DOGE'
+      ? Bitcoin.payments.p2pkh({
+          pubkey: keyPair.publicKey,
+          network: network,
+        })
+      : Bitcoin.payments.p2wpkh({
+          pubkey: keyPair.publicKey,
+          network: network,
+        });
+  return { keyPair, network, address };
+};
+export const createTransaction_BTC_DOGE = async (
+  mnemonic: string,
+  toAddress: string,
+  fromAddress: string,
+  amount: string,
+  feeRate: number,
+  utxos: keyable[],
+  symbol: string
+) => {
+  const { keyPair, network, address } = await getKeypairAndNetwork_BTC_DOGE(
+    mnemonic,
+    symbol
+  );
+  if (
+    address &&
+    address.toLocaleLowerCase() != fromAddress.toLocaleLowerCase()
+  ) {
+    return;
+  }
+  try {
+    const targetOutputs = [];
+    targetOutputs.push({
+      address: toAddress,
+      value: new BigNumber(amount).shiftedBy(BTC_DECIMAL).toNumber(),
+    });
+
+    let parsedUtxos:
+      | {
+          hash: any;
+          index: any;
+          value: number;
+          witnessUtxo: { value: number; script: Buffer };
+        }[]
+      | { hash: any; index: any; value: number; nonWitnessUtxo: Buffer }[] = [];
+
+    if (symbol == 'BTC') {
+      parsedUtxos = utxos.map((utxo) => ({
+        hash: utxo.hash,
+        index: utxo.index,
+        value: new BigNumber(utxo.value).shiftedBy(BTC_DECIMAL).toNumber(),
+        witnessUtxo: {
+          value: new BigNumber(utxo.value).shiftedBy(BTC_DECIMAL).toNumber(),
+          script: Buffer.from(utxo.script, 'hex'),
+        },
+      }));
+    } else if (symbol == 'DOGE') {
+      parsedUtxos = utxos.map((utxo) => ({
+        hash: utxo.hash,
+        index: utxo.index,
+        value: new BigNumber(utxo.value).shiftedBy(BTC_DECIMAL).toNumber(),
+        nonWitnessUtxo: Buffer.from(utxo.tx_hex, 'hex'),
+      }));
+    }
+    const { inputs, outputs, fee } = accumulative(
+      parsedUtxos,
+      targetOutputs,
+      feeRate
+    );
+
+    if (!inputs || !outputs) {
+      console.log('Error: Not enough funds to complete the transaction' + fee);
+      return {
+        error: true,
+        errorMessage:
+          'Not enough funds as there are many UTXOs. Required fee: ' +
+          fee / Math.pow(10, 8),
+      };
+    }
+
+    const psbt = new Bitcoin.Psbt({ network: network }); // Network-specific
+    // psbt add input from accumulative inputs
+    if (symbol == 'BTC') {
+      inputs.forEach((utxo: { hash: any; index: any; witnessUtxo: any }) =>
+        psbt.addInput({
+          hash: utxo.hash,
+          index: utxo.index,
+          witnessUtxo: utxo.witnessUtxo,
+        })
+      );
+    } else {
+      // doge
+      // for doge setMaximumFeeRate
+      // for doge nonWitnessUtxo
+      psbt.setMaximumFeeRate(7500000);
+      inputs.forEach((utxo: { hash: any; index: any; nonWitnessUtxo: any }) =>
+        psbt.addInput({
+          hash: utxo.hash,
+          index: utxo.index,
+          nonWitnessUtxo: utxo.nonWitnessUtxo,
+        })
+      );
+    }
+    outputs.forEach((output: Bitcoin.PsbtTxOutput) => {
+      if (!output.address) {
+        //an empty address means this is the  change address
+        output.address = fromAddress;
+      }
+      if (!output.script) {
+        psbt.addOutput(output);
+      }
+    });
+    psbt.signAllInputs(keyPair); // Sign all inputs
+    psbt.finalizeAllInputs(); // Finalise inputs
+    const txHex = psbt.extractTransaction().toHex(); // TX extracted and formatted to hex
+
+    return {
+      error: false,
+      txHex,
+    };
+  } catch (error) {
+    console.log('Error while creating transaction:', error);
+    return {
+      error: true,
+      errorMessage: 'Error while creating transaction:' + JSON.stringify(error),
+    };
+  }
+};
+
+export const getMaxAmount_BTC_DOGE = (
+  address: string,
+  utxos: keyable[],
+  feeRate: any
+) => {
+  try {
+    const { outputs, fee } = accumulative(
+      utxos,
+      [
+        {
+          address: address,
+          value: 0,
+        },
+      ],
+      feeRate
+    );
+
+    if (!outputs) {
+      console.log('Error: Not enough funds.');
+      return;
+    }
+
+    const maxAmount = outputs.reduce(
+      (sum: any, output: { address: string; value: any }) => {
+        return output.address === address ? sum + output.value : sum;
+      },
+      0
+    );
+
+    return maxAmount - fee;
+  } catch (error) {
+    console.log('Error: ', error);
+    return;
+  }
 };

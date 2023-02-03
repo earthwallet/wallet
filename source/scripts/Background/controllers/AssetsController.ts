@@ -46,7 +46,6 @@ export default class AssetsController implements IAssetsController {
           `${CGECKO_PRICE_API}?ids=${activeAssetIds}&vs_currencies=${currency}&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`
         )
       ).json();
-      console.log(data, 'fetchFiatPrices');
       store.dispatch(
         storeEntities({
           entity: 'prices',
@@ -88,8 +87,6 @@ export default class AssetsController implements IAssetsController {
   };
 
   fetchEarthArtCollection = async (collectionId: string) => {
-    console.log('fetchEarthArtCollection');
-    //const state = store.getState();
 
     let response;
     let responseListing;
@@ -118,12 +115,7 @@ export default class AssetsController implements IAssetsController {
       )
     );
 
-    /*   store.dispatch(
-      storeEntities({
-        entity: 'collections',
-        data: [{ id: collectionId, loading: true }],
-      })
-    ); */
+
     responseListing = await canisterAgentApi(collectionId, 'listings');
 
     responseListing.map((item: keyable) =>
@@ -138,12 +130,7 @@ export default class AssetsController implements IAssetsController {
         })
       )
     );
-    /*     store.dispatch(
-      storeEntities({
-        entity: 'collections',
-        data: [{ id: collectionId, loading: false }],
-      })
-    ); */
+   
   };
 
   fetchListingsByUser = async (
@@ -155,7 +142,6 @@ export default class AssetsController implements IAssetsController {
       method: 'getNFTsListingsByUser',
       args: { address: address },
     });
-    console.log(response, 'fetchListingsByUser', address);
 
     if (response != null) {
       response.map((token: keyable) => {
@@ -460,7 +446,6 @@ export default class AssetsController implements IAssetsController {
   };
 
   getETHAssetsOfAccount = async (account: keyable) => {
-    console.log('getETHAssetsOfAccount');
     const state = store.getState();
     let allTokens: keyable = [];
     store.dispatch(
@@ -592,10 +577,8 @@ export default class AssetsController implements IAssetsController {
   };
 
   getAssetsOfAccountsGroup = async (accountsGroup: keyable[][]) => {
-    console.log('getAssetsOfAccountsGroup', accountsGroup);
     for (const accounts of accountsGroup) {
       for (const account of accounts) {
-        console.log('getAssetsOfAccountsGroup', account.symbol);
 
         if (account.symbol === 'ICP') {
           this.getICPAssetsOfAccount(account);
@@ -950,7 +933,6 @@ export default class AssetsController implements IAssetsController {
         response = await getETHAssetInfo(asset);
       } else if (asset?.symbol == 'MATIC') {
         response = await getETHAssetInfo_MATIC(asset);
-        console.log(response, 'getETHAssetInfo_MATIC', asset);
       }
     } catch (error) {}
     store.dispatch(
@@ -974,7 +956,6 @@ export default class AssetsController implements IAssetsController {
 
   registerExtensionForAirdrop = async () => {
     const fingerprint = getBrowserFingerprint();
-    console.log(fingerprint, 'registerExtensionForAirdrop');
 
     const state = store.getState();
     let extensionId;
@@ -1000,16 +981,6 @@ export default class AssetsController implements IAssetsController {
       store.dispatch(createEntity({ entity: 'airdrops' }));
     }
 
-    /*     store.dispatch(
-      updateEntities({
-        entity: 'airdrops',
-        key: earthdayAirdrop.id,
-        data: {
-          airdropEnabled: earthdayAirdrop.isLive,
-          loading: false,
-        },
-      })
-    ); */
 
     store.dispatch(
       updateEntities({
@@ -1034,7 +1005,6 @@ export default class AssetsController implements IAssetsController {
       return;
     }
     const status = await statusExtension(extensionId);
-    console.log(status, 'airdropEnabled', extensionId);
     if (!status?.airdropEnabled) {
       store.dispatch(
         updateEntities({

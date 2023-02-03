@@ -32,7 +32,6 @@ export const registerExtensionAndAccounts = async (
     return 'Not enough accounts';
   }
 
-  console.log(accounts.join('&accounts='), 'registerExtensionForAirdrop');
   const config: AxiosRequestConfig = {
     method: 'get',
     url: `${AIRDROP_FIREBASE_URL}/register?extensionId=${extensionId}&accounts=${accounts.join(
@@ -211,11 +210,6 @@ export const getDefaultTokensErc20_ETH = async () => {
       ...metadata,
     };
     i++;
-    // Print name, balance, and symbol of token
-    console.log(
-      `${i}. ${metadata['name']}: ${metadata['symbol']}`,
-      'getDefaultTokensErc20_ETH'
-    );
   }
   return serverRes;
 };
@@ -365,18 +359,7 @@ export const transferERC721 = async (
   );
   let transaction;
   // //Estimate gas limit
-  // const gasPrice = await provider.getGasPrice();
-  // console.log(gasPrice, 'transferERC721 gasPrice')
-  // console.log(["safeTransferFrom(address,address,uint256)"],fromAddress, recipientAddress, BigNumber.from(tokenId), { gasPrice }, 'transferERC721 gasPrice');
-
-  // const gasLimit = await erc721Contract.estimateGas["safeTransferFrom(address,address,uint256)"](fromAddress, recipientAddress, BigNumber.from(tokenId), { gasPrice });
-  //   console.log(gasLimit, gasPrice, 'transferERC721')
-  // //Call the safetransfer method
-  // transaction = await erc721Contract["safeTransferFrom(address,address,uint256)"](fromAddress, recipientAddress, BigNumber.from(tokenId), { gasLimit });
-  // //Wait for the transaction to complete
-  // await transaction.wait();
-
-  // console.log("Transaction Hash: ", transaction.hash);
+ 
   const gasLimit = await erc721Contract.estimateGas[
     'safeTransferFrom(address,address,uint256)'
   ](fromAddress, recipientAddress, BigNumber.from(tokenId));
@@ -599,7 +582,6 @@ export const getFeesExtended = async (symbol: string, estimateGas = 21000) => {
     }
   }
 
-  console.log(serverRes);
   //Calculating the total transaction fee works as follows: Gas units (limit) * (Base fee + Tip)
 
   return fees;
@@ -689,7 +671,6 @@ export const getTransactions_ETH_MATIC = async (
       block: web3.utils.hexToNumberString(tx.blockNum),
     }))
     .sort((a: { block: number }, b: { block: number }) => b.block - a.block);
-  console.log(serverRes, POLY_ALCHEMY_URL, 'getTransactions');
   return txns;
 };
 
@@ -834,14 +815,6 @@ export const getERC721TransferGasLimit = async (
   symbol: string,
   tokenId: number
 ) => {
-  console.log(
-    contractAddress,
-    fromAddress,
-    toAddress,
-    symbol,
-    tokenId,
-    'getERC721TransferGasLimit'
-  );
   const erc721Interface = new Interface(IERC721.abi);
   const hexData = erc721Interface.encodeFunctionData(
     'safeTransferFrom(address,address,uint256)',
@@ -883,7 +856,6 @@ export const getERC721TransferGasLimit = async (
   }
   const gasLimit =
     serverRes.result == undefined ? 85000 : hexToNumber(serverRes.result);
-  console.log('gasLimit:', hexData, serverRes, serverRes.result, gasLimit);
   return gasLimit;
 };
 
@@ -945,7 +917,6 @@ export const transferUniswap = async (
     };
   }
   const result = await sendingWallet.sendTransaction(transaction);
-  console.log(transaction, uniswap);
 
   return result;
 };
@@ -983,11 +954,10 @@ export const getMaxAmount_ETH = (ethAmount: string, feeObj: keyable) => {
 
   const maxAmountThatCanBeSent: number =
     Number(ethAmount) - Number(gasFeesInETH);
-  console.log(maxAmountThatCanBeSent, ethAmount, feeObj, 'getMaxAmount_ETH');
   return maxAmountThatCanBeSent;
 };
 
-export const getAddressFromENSName = async (ens: string) => {
+export const getAddressFromENSName = async (ens: string, symbol:string, type: string) => {
   const web3Provider = new ethers.providers.AlchemyProvider(
     'homestead',
     ALCHEMY_ETH_API_KEY
@@ -1001,7 +971,7 @@ export const getAddressFromENSName = async (ens: string) => {
   if (address == null) {
     let respo = [];
     try {
-      respo = await unsResolveName(ens);
+      respo = await unsResolveName(ens, symbol, type);
       if (respo[0] != '') {
         address = respo[0];
       } else {
@@ -1011,6 +981,5 @@ export const getAddressFromENSName = async (ens: string) => {
       address = null;
     }
   }
-  //console.log(address);
   return { address, ens };
 };

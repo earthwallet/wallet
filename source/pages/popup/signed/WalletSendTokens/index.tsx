@@ -15,7 +15,7 @@ import { principal_to_address } from '@earthwallet/keyring/build/main/util/icp';
 import { getSymbol } from '~utils/common';
 
 import { decryptString } from '~utils/vault';
-import { validateMnemonic, getFees } from '@earthwallet/keyring';
+import { validateMnemonic } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
 import { selectBalanceById } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
@@ -34,6 +34,7 @@ import { selectInfoBySymbolOrToken } from '~state/tokens';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import { getERC20TransferGasLimit, getERC721TransferGasLimit, getFeesExtended, getMaxAmount_ETH } from '~utils/services';
 import { debounce } from 'lodash';
+import { getFeeRateAndFees_BTC_DOGE } from '~utils/btc';
 
 const MIN_LENGTH = 6;
 const DEFAULT_FEE_INDEX = 1;
@@ -185,18 +186,15 @@ const WalletSendTokens = ({
     controller.accounts.getBalancesOfAccount(selectedAccount).then(() => { });
     tokenId !== null && controller.tokens.getTokenBalances(accountId);
 
-    if (selectedAccount?.symbol === 'BTC') {
+    if (selectedAccount?.symbol === 'BTC' || selectedAccount?.symbol === 'DOGE') {
       setIsBusy(true);
 
-      getFees(selectedAccount?.symbol).then((fees) => {
+      getFeeRateAndFees_BTC_DOGE(selectedAccount?.symbol).then((resp) => {
         setIsBusy(false);
-        const BTC_DECIMAL = 8;
         setFees(
-          fees.fast
-            .amount()
-            .shiftedBy(-1 * BTC_DECIMAL)
-            .toNumber()
+          resp.fees
         );
+        setFeesArr([resp]);
       });
     } else if (selectedAccount?.symbol === 'ICP') {
       if (tokenId == null) {
@@ -235,6 +233,7 @@ const WalletSendTokens = ({
   const onBackClick = useCallback(() => {
     setStep1(true);
   }, []);
+
   const transferForAll = async () => {
     setIsBusy(true);
     setTxError('');
@@ -251,16 +250,18 @@ const WalletSendTokens = ({
           alert('Amount cannot be 0');
       }
       let hash: any;
-      if (selectedAccount?.symbol == 'BTC') {
-        hash = await controller.accounts.sendBTC(
+      if (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'DOGE') {
+        hash = await controller.accounts.send_BTC_DOGE(
           selectedRecp,
           selectedAmount,
           mnemonic,
-          address
+          address,
+          selectedAccount?.symbol,
+          feesArr[0]?.feeRate
         );
       } else if (selectedAccount?.symbol == 'ETH' || selectedAccount?.symbol == 'MATIC') {
         if (selectedAsset === selectedAccount?.symbol) {
-          hash = await controller.accounts.sendETH(
+          const resp = await controller.accounts.sendETH(
             selectedRecp,
             selectedAmount,
             mnemonic,
@@ -268,6 +269,7 @@ const WalletSendTokens = ({
             feesOptionSelected,
             selectedAccount?.symbol
           );
+          hash = resp;
         } else if (getSelectedAsset(selectedAsset)?.format == 'nft') {
           hash = await controller.accounts.sendERC721_ETH(
             selectedRecp,
@@ -299,8 +301,8 @@ const WalletSendTokens = ({
       setDone(true);
       setIsBusy(false);
     } catch (error) {
-      console.log(error);
-      setTxError('Unable to send! Please try again later');
+      console.log(error, typeof error);
+      setTxError(typeof error == "string" ? error : 'Unable to send! Please try again later');
       setLoadingSend(false);
       setIsBusy(false);
     }

@@ -123,12 +123,11 @@ export default class TokensController implements ITokensController {
         );
       }
     } else if (accountInfo.symbol == 'ETH' || accountInfo.symbol == 'MATIC') {
-      console.log('getTokenBalances', 'ETH');
       let tokens = await getERC20TokensListFromTxs(
         accountInfo.address,
         accountInfo.symbol
       );
-      
+
       const balances: keyable[] = await getBalanceERC20(
         address,
         accountInfo.symbol,
@@ -178,7 +177,6 @@ export default class TokensController implements ITokensController {
   };
 
   updateERC20PriceAndMeta = async (contractAddress: string, symbol: string) => {
-    console.log('contractAddress', contractAddress);
     const state = store.getState();
     // updates if price is last updated 15mins back
     if (
@@ -264,7 +262,6 @@ export default class TokensController implements ITokensController {
         });
         TRILLION_SDR_PER_ICP =
           usd?.data?.xdr_permyriad_per_icp.toString() / 10000;
-        console.log('TRILLION_SDR_PER_ICP', TRILLION_SDR_PER_ICP);
 
         ratio = TRILLION_SDR_PER_ICP == undefined ? 0 : TRILLION_SDR_PER_ICP;
       } else if (
@@ -284,54 +281,8 @@ export default class TokensController implements ITokensController {
   };
 
   swap = async (token1: string, token2: string, amount: number) => {
-    console.log(token1, token2, amount, 'swap');
-    /* let response = await pairFactoryAPI('get_pair', [
-      Principal.fromText(token1),
-      Principal.fromText(token2),
-    ]);
-    if (response == undefined || response.length == 0) {
-      response = await pairFactoryAPI('create_pair', [
-        Principal.fromText(token1),
-        Principal.fromText(token2),
-      ]);
-    }
-    const pairCanisterId = response[0].toText();
-    const stats: keyable = await pairAPI(pairCanisterId, 'stats');
-
-    const price1 = stats.token0_price;
-    const price2 = stats.token1_price;
-    const ratio = isNaN(price2) ? 1 : price2;
-    const seedPhrase =
-      'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano';
-
-    const walletObj = await createWallet(seedPhrase, 'ICP');
-    const identity = walletObj.identity;
-    const get_transit = await pairAPI(
-      pairCanisterId,
-      'get_transit',
-      undefined,
-      identity
-    );
-    if (get_transit[1] > 0n && get_transit[0] > 0n) {
-      const refund_transfer = await pairAPI(
-        pairCanisterId,
-        'refund_transfer',
-        undefined,
-        identity
-      );
-      console.log(refund_transfer, 'refund_transfer');
-    }
-    const _approve1 = await approve(identity, token1, pairCanisterId, amount);
-    const _transfer_from1 = await transfer_from(
-      token1,
-      amount,
-      identity,
-      pairCanisterId
-    );
-
-    console.log(_approve1, _transfer_from1, get_transit);
-    const swap = await pairAPI(pairCanisterId, 'swap', undefined, identity); */
-    await this.delay(5000);
+    // mock
+    console.log(amount);
     return {
       token1,
       token2,
@@ -352,7 +303,6 @@ export default class TokensController implements ITokensController {
     address: string;
     pairRatio: string;
   }) => {
-    console.log(from, to, fromAmount);
     const state = store.getState();
 
     const txnId = uuid();
@@ -467,7 +417,6 @@ export default class TokensController implements ITokensController {
         selectedAmount,
         'ICP'
       );
-      console.log(index, 'amount');
     } catch (error: any) {
       store.dispatch(
         storeEntities({
@@ -601,68 +550,8 @@ export default class TokensController implements ITokensController {
   };
 
   stake = async (token1: string, token2: string, amount: number) => {
-    console.log(token1, token2, amount, 'stake');
+    console.log(amount, 'mock');
     await this.delay(5000);
-
-    /*  let response = await pairFactoryAPI('get_pair', [
-      Principal.fromText(token1),
-      Principal.fromText(token2),
-    ]);
-    if (response == undefined || response.length == 0) {
-      response = await pairFactoryAPI('create_pair', [
-        Principal.fromText(token1),
-        Principal.fromText(token2),
-      ]);
-    }
-    const pairCanisterId = response[0].toText();
-    const stats: keyable = await pairAPI(pairCanisterId, 'stats');
-
-    const price1 = stats.token0_price;
-    const price2 = stats.token1_price;
-    const ratio = isNaN(price2) ? 1 : price2;
-    const seedPhrase =
-      'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano';
-
-    const walletObj = await createWallet(seedPhrase, 'ICP');
-    const identity = walletObj.identity;
-    const _approve1 = await approve(identity, token1, pairCanisterId, amount);
-    const _transfer_from1 = await transfer_from(
-      token1,
-      amount,
-      identity,
-      pairCanisterId
-    );
-    const _approve2 = await approve(
-      identity,
-      token2,
-      pairCanisterId,
-      Math.floor(amount * ratio)
-    );
-    const _transfer_from2 = await transfer_from(
-      token2,
-      Math.floor(amount * ratio),
-      identity,
-      pairCanisterId
-    );
-
-    const get_transit = await pairAPI(
-      pairCanisterId,
-      'get_transit',
-      undefined,
-      identity
-    );
-
-    const stake = await pairAPI(pairCanisterId, 'mint', undefined, identity);
-
-    console.log(
-      get_transit,
-      stake,
-      _approve1,
-      _transfer_from1,
-      _approve2,
-      _transfer_from2,
-      'stake'
-    ); */
     return {
       token1,
       token2,
@@ -676,13 +565,7 @@ export default class TokensController implements ITokensController {
     status: boolean,
     callback?: (address?: string) => void
   ) => {
-    //const state = store.getState();
-
-    /*     const existingAllTokens = Object.keys(state.entities.tokens.byId)
-      .map((id) => state.entities.tokens.byId[id])
-      .filter((token) => token.address === address)
-      .sort((a, b) => a.order - b.order);
- */
+   
     let forwardAddress = '';
     for (const tokenPair of tokens) {
       const tokenId = tokenPair.split('_WITH_', 2)[1];

@@ -28,21 +28,18 @@ export class Script {
 
         if (type === 'EARTH_EVENT_MESSAGE') {
           this.emitter.on(id, (result) => {
-            //console.log('Script - emitter', id, result);
             window.dispatchEvent(
               new CustomEvent(id, { detail: stringifyWithBigInt(result) })
             );
           });
         } else {
           this.emitter.once(id, (result) => {
-            //console.log('Script - emitter.once', id, result);
             window.dispatchEvent(
               new CustomEvent(id, { detail: stringifyWithBigInt(result) })
             );
           });
         }
 
-        //console.log('Script - ', id, type, parseObjWithOutBigInt(data));
         this.backgroundPort.postMessage({
           id,
           type,
@@ -54,7 +51,6 @@ export class Script {
   }
 
   onMessage({ id, data }: { id: string; data: string }) {
-    //console.log('Script - onMessage', id, data);
     this.emitter.emit(id, data);
   }
 }

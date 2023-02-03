@@ -1,5 +1,7 @@
+import axios, { AxiosRequestConfig } from 'axios';
 import { ethers } from 'ethers';
-import { ALCHEMY_ETH_API_KEY, ALCHEMY_POLYGON_API_KEY } from '~global/config';
+import { ALCHEMY_ETH_API_KEY, ALCHEMY_POLYGON_API_KEY, UNSTOPPABLE_DOMAIN_API } from '~global/config';
+import { keyable } from '~scripts/Background/types/IMainController';
 const keccak_256 = require('js-sha3').keccak256;
 
 const address = '0xfee4d4f0adff8d84c12170306507554bc7045878';
@@ -117,45 +119,69 @@ export const resolveUNS = (userInput: string) => {
 
   return resolveBothChains(tokenId, interestedKeys);
 
-  /* fetchContractData(interestedKeys, tokenId).then((data) => {
-    if (isEmpty(data.owner)) {
-      return { errorMessage: 'Domain is not registered', error: true };
-    }
-
-    if (isEmpty(data.resolver)) {
-      return { errorMessage: 'Domain is not registered', error: true };
-    }
-
-    return {
-      ownerAddress: data.owner,
-      resolverAddress: data.resolver,
-      records: combineKeysWithRecords(interestedKeys, data[2]),
-    };
-  }); */
 };
 
-export const unsResolveName = async (domain: string) => {
-  const proxyReaderAddress = '0xfEe4D4F0aDFF8D84c12170306507554bC7045878';
+export const unsResolveName = async (
+  domain: string,
+  symbol: string,
+  type?: string
+) => {
+  const proxyReaderAddress = '0x1BDc0fD4fbABeed3E611fd6195fCd5d41dcEF393';
+  const maticProxyReaderAddress = '0x3E67b8c702a1292d1CEb025494C84367fcb12b45';
+
   // Partial ABI, just for the getMany function.
   const proxyReaderAbi = [
     'function getMany(string[] calldata keys, uint256 tokenId) external view returns (string[] memory)',
   ];
 
-  const provider = (symbol: string) =>
+  const provider = (_symbol: string) =>
     new ethers.providers.AlchemyProvider(
-      symbol == 'MATIC' ? 'matic' : 'homestead',
-      symbol == 'MATIC' ? ALCHEMY_POLYGON_API_KEY : ALCHEMY_ETH_API_KEY
+      _symbol == 'MATIC' ? 'matic' : 'homestead',
+      _symbol == 'MATIC' ? ALCHEMY_POLYGON_API_KEY : ALCHEMY_ETH_API_KEY
     );
-  const proxyReaderContract = new ethers.Contract(
-    proxyReaderAddress,
-    proxyReaderAbi,
-    provider('ETH')
-  );
+  const proxyReaderContract = (_symbol: string) =>
+    new ethers.Contract(
+      _symbol == 'ETH' ? proxyReaderAddress : maticProxyReaderAddress,
+      proxyReaderAbi,
+      provider(_symbol)
+    );
 
   const tokenId = namehash(domain);
-  const keys = ['crypto.ETH.address'];
+  const keys = [
+    symbol == 'MATIC'
+      ? type == 'ERC20' || type == 'token'
+        ? 'crypto.MATIC.version.ERC20.address'
+        : 'crypto.MATIC.version.MATIC.address'
+      : `crypto.${symbol}.address`,
+  ];
 
-  const values = await proxyReaderContract.getMany(keys, tokenId);
+  const values = await proxyReaderContract('ETH').getMany(keys, tokenId);
+  const maticValues = await proxyReaderContract('MATIC').getMany(keys, tokenId);
 
-  return values;
+  return [...values, ...maticValues].filter((a) => a);
+};
+
+export const unsResolveAddress = async (address: string, symbol: string) => {
+  const config: AxiosRequestConfig = {
+    method: 'get',
+    url:
+      symbol == 'MATIC'
+        ? `https://resolve.unstoppabledomains.com/domains?resolution%5Bcrypto.MATIC.version.MATIC.address%5D=${address?.toLowerCase()}`
+        : `https://resolve.unstoppabledomains.com/domains?resolution%5Bcrypto.${symbol}.address%5D=${address?.toLowerCase()}`,
+    headers: {
+      Authorization: `Bearer ${UNSTOPPABLE_DOMAIN_API}`,
+    },
+  };
+
+  let serverRes;
+  try {
+    const response = await axios(config);
+    serverRes = response.data;
+  } catch (error) {
+    serverRes = error;
+    console.log(error, 'unsResolveAddress');
+    return [];
+  }
+
+  return serverRes?.data?.map((a:keyable) => a?.attributes?.meta?.domain);
 };

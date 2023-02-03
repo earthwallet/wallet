@@ -2,7 +2,6 @@ import {
   createWallet,
   newMnemonic,
   send,
-  transfer,
 } from '@earthwallet/keyring';
 import store from '~state/store';
 import {
@@ -34,7 +33,12 @@ import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { ethers } from 'ethers';
 import { ETH_MAINNET_ALCHEMY_URL, POLY_ALCHEMY_URL } from '~global/config';
-import { getBalance_BTC_DOGE } from '~utils/btc';
+import {
+  broadcastTxn_BTC_DOGE,
+  createTransaction_BTC_DOGE,
+  getAllUnspentTransactions,
+  getBalance_BTC_DOGE,
+} from '~utils/btc';
 
 interface keyable {
   [key: string]: any;
@@ -209,12 +213,32 @@ export default class AccountsController implements IAccountsController {
     return resp.hash;
   };
 
-  sendBTC = async (
+  send_BTC_DOGE = async (
     selectedRecp: string,
     selectedAmount: number,
     mnemonic: string,
-    address: string
+    address: string,
+    symbol: string,
+    feeRate: number
   ) => {
+    
+    const utxos = await getAllUnspentTransactions(address, symbol);
+    const resp = await createTransaction_BTC_DOGE(
+      mnemonic,
+      selectedRecp,
+      address,
+      typeof selectedAmount == 'number'
+        ? selectedAmount?.toString()
+        : selectedAmount,
+      feeRate,
+      utxos,
+      symbol
+    );
+    if (resp?.error) {
+      throw resp?.errorMessage;
+    } else if (resp?.txHex == undefined) {
+      throw { error: true };
+    }
     const state = store.getState();
 
     if (state.entities.recents == null) {
@@ -233,14 +257,12 @@ export default class AccountsController implements IAccountsController {
       })
     );
 
-    const hash: any = await transfer(
-      selectedRecp,
-      selectedAmount.toString(),
-      mnemonic,
-      'BTC',
-      { network: 'mainnet' }
-    );
-    return hash;
+    const respBroad: any = await broadcastTxn_BTC_DOGE(resp?.txHex, symbol);
+
+    if (respBroad?.error) {
+      throw respBroad?.errorMessage;
+    }
+    return respBroad?.hash;
   };
   getBalancesOfAccount = async (account: keyable) => {
     const fetchBalance = async (account: keyable) => {
@@ -367,7 +389,6 @@ export default class AccountsController implements IAccountsController {
       }
     }
   };
-
 
   createOrUpdateAccounts = async (
     mnemonic: string,

@@ -125,7 +125,7 @@ const StakeEthConfirm = ({
       ><div className={styles.empty} /></Header>
 
       <div className={styles.ethWrapContainer}>
-        <span style={{textAlign: 'right'}} className={styles.ethWrapText}>{uniswap?.inputAmount}</span>
+        <span style={{ textAlign: 'right' }} className={styles.ethWrapText}>{uniswap?.inputAmount}</span>
         <img src={uniswap?.outputToken == "ETH" ? ICON_ROCKETPOOL : ICON_ETH} className={styles.logo} />
         <span className={styles.ethWrapText}>{uniswap?.outputToken == "ETH" ? "rETH" : "ETH"}</span>
       </div>
@@ -144,20 +144,12 @@ const StakeEthConfirm = ({
         <div className={styles.gasFeeContainer}>
           <div className={styles.leftSideContainer}>
             <span className={styles.gasFeeText}>Estimated Gas Fee</span>
-            {/*             <button className={styles.editButton}>Edit</button>
- */}          </div>
+          </div>
           <div className={styles.rightSideContainer}>
             <span className={styles.earthText}>{gas?.toFixed(5)} ETH</span>
             <span className={styles.convertedVal}>${uniswap?.estimatedGasUsedUSDTxt}</span>
           </div>
         </div>
-        {/*   <div className={styles.earthFeeContainer}>
-          <span className={styles.earthFeeText}>EARTH Fee</span>
-          <div className={styles.earthFeeRightSideContainer}>
-            <span className={styles.earthVal}>0.0005 EARTH</span>
-            <span className={styles.convertedVal}>$10.52</span>
-          </div>
-        </div> */}
         <div className={styles.totalContainer}>
           <span className={styles.totalText}>Total</span>
           <div className={styles.rightSideTotalContainer}>

@@ -29,8 +29,6 @@ export const messagesHandler = (
         port.postMessage({ id, data: { result } });
       }
     } catch (e: any) {
-      //console.log('messagesHandler.ERROR', e.type, e.message, e.detail);
-      //console.log(JSON.stringify(e, null, 2));
       port.postMessage({ id: e.type, data: { error: e.detail } });
     }
   };
@@ -61,7 +59,6 @@ export const messagesHandler = (
         //
       }
     } else if (message.type === 'EARTH_ETH_MESSAGE') {
-      console.log(message, 'EARTH_ETH_MESSAGE');
       if (message.data && message.data.method) {
         //
       }
@@ -85,7 +82,6 @@ export const messagesHandler = (
         window.addEventListener(
           'connectWallet',
           (ev: any) => {
-            //console.log('Connect window addEventListener', ev.detail);
             if (ev.detail.substring(1) === windowId) {
               port.postMessage({ id: message.id, data: { result: true } });
               pendingWindow = false;
@@ -97,7 +93,6 @@ export const messagesHandler = (
         browser.windows.onRemoved.addListener((id) => {
           if (id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
-            //console.log('Connect window is closed');
             pendingWindow = false;
           }
         });
@@ -106,9 +101,7 @@ export const messagesHandler = (
       return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
-      console.log(method, args, 'messageHandler');
       const params = args[0];
-      //console.log('CAL_REQUEST.method', method, args);
       let result: any = undefined;
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed };
@@ -118,7 +111,6 @@ export const messagesHandler = (
           ALCHEMY_ETH_API_KEY
         );
         result = await provider.send(args[0], args[1]);
-        //console.log(method, result, args[0], args[1], 'messageHandler');
       } else if (
         method === 'wallet.signMessage' ||
         method === 'wallet.sendTransaction'
@@ -170,31 +162,26 @@ export const messagesHandler = (
 
         return Promise.resolve(null);
       } else if (method === 'wallet.eth_chainId') {
-        console.log(method, args, 'messageHandler');
         const provider = new ethers.providers.AlchemyProvider(
           'homestead',
           ALCHEMY_ETH_API_KEY
         );
         result = await provider.send('eth_chainId', []);
       } else if (method === 'wallet.eth_getBlockByNumber') {
-        console.log(method, args, 'messageHandler');
         const provider = new ethers.providers.AlchemyProvider(
           'homestead',
           ALCHEMY_ETH_API_KEY
         );
         result = await provider.send('eth_getBlockByNumber', args[0].params);
-        console.log(method, args, result, 'messageHandler');
       } else if (method === 'wallet.net_version' || method == 'eth_chainId') {
-        console.log(method, args, 'messageHandler');
 
         const provider = new ethers.providers.AlchemyProvider(
           'homestead',
           ALCHEMY_ETH_API_KEY
         );
         result = await provider.send('eth_chainId', []);
-        console.log(method, args, result, 'messageHandler');
       } else if (method === 'wallet.anyMethod') {
-        console.log(method, args, 'messageHandler');
+        return Promise.resolve(null);
       } else if (method === 'wallet.ecRecover') {
         result = recoverPersonalSignature({
           data: args[0],

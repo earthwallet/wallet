@@ -19,11 +19,14 @@ export interface IAccountsController {
     selectedRecp: string,
     selectedAmount: number
   ) => Promise<BigInt>;
-  sendBTC: (
+
+  send_BTC_DOGE: (
     selectedRecp: string,
     selectedAmount: number,
     mnemonic: string,
-    address: string
+    address: string,
+    symbol: string,
+    feeRate: number
   ) => Promise<any>;
   sendETH: (
     selectedRecp: string,

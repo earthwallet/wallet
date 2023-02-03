@@ -63,14 +63,12 @@ const SelectTokens = ({
 
     if (existingActive.length > checkedArr.length) {
       //remove tokens
-      console.log('remove tokens')
       const removeArr = existingActive.filter(x => !checkedArr.includes(x));
       const callback = () => history.replace(`/account/details/${address}`);
       controller.tokens.updateTokensOfNetwork(address, removeArr, false, callback);
     }
     else {
       //add tokens
-      console.log('add tokens')
 
       const callback = (address: string | undefined) => history.replace(`/account/details/${address}`);
       controller.tokens.updateTokensOfNetwork(address, checkedArr, true, callback);

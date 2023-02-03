@@ -142,7 +142,7 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_DOGE,
     symbol: 'DOGE',
     coinGeckoId: 'dogecoin',
-    isLive: false,
+    isLive: true,
     preGenerate: true,
     order: 12,
   },

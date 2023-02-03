@@ -58,7 +58,7 @@ const Wallet = ({
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
-      console.log("loadTransactions", address, selectedAccount);
+
       if (selectedAccount?.symbol == "ICP") {
         const transactions = await getTransactions(address, selectedAccount?.symbol);
         setWalletTransactions(transactions);
@@ -104,7 +104,7 @@ const Wallet = ({
           </SkeletonTheme>
         ) : (
           <div className={styles.primaryBalanceLabel}>{currentBalance &&
-            `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
+            `${(currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)).toFixed(6)} ${currentBalance?.currency?.symbol}`
           }</div>
 
         )}

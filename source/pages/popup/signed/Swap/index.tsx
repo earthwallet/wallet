@@ -121,7 +121,6 @@ const Swap = ({
   const swap = async () => {
     setLoading(true);
     const response = await controller.tokens.swap(selectedToken.id, selectedSecondToken.id, selectedAmount);
-    console.log(response);
     setPairRatio(response.ratio);
     setTotalSupply(response?.stats?.total_supply);
     show("Stake Complete! Updating Balances");
@@ -140,7 +139,6 @@ const Swap = ({
       pairRatio: pairRatio.toString()
     })
     history.push('/transaction/confirm/' + txnId);
-    console.log(txnId);
   }
   const swapSelectedTokens = () => {
     const _selectedToken = { ...selectedToken };

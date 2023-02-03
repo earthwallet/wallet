@@ -37,9 +37,7 @@ const TokenDetailsWithInfo = ({
   const selectedAccount = useSelector(selectAccountById(accountId));
 
   const getSwapRatios = async () => {
-    const response = await swapToReth(accountId, '0.001', 'RETH');
-
-    console.log(response, 'getSwapRatios');
+    await swapToReth(accountId, '0.001', 'RETH');
   }
   useEffect(() => {
     getSwapRatios();
@@ -94,18 +92,6 @@ const TokenDetailsWithInfo = ({
             <div className={styles.btntxt}>Stake</div>
           </div>
         </div>}
-        {/*  <div className={styles.graphcont}>
-          <div className={styles.graph}></div>
-
-        </div>
-        <div className={styles.tabs}>
-          {['24h', '7d', '14d', '30d', '90d', '1y', 'All'].map((tab, index) => <div
-            key={index}
-            className={clsx(styles.tab, index === 0 && styles.tab_active)}
-          >
-            {tab}
-          </ div>)}
-        </div> */}
         <div className={styles.stats}>
           {symbolOrTokenInfo.usd_market_cap && <div className={styles.row}>
             <div className={styles.col}>
@@ -123,12 +109,6 @@ const TokenDetailsWithInfo = ({
               })}</div>
             </div>}
           </div>}
-          {/*     <div className={styles.row}>
-            <div className={styles.col}>
-              <div className={styles.key}>Supply</div>
-              <div className={styles.val}>∞ Unlimited</div>
-            </div>
-          </div> */}
           {symbolOrTokenInfo?.totalSupply && <div className={styles.row}>
             <div className={styles.col}>
               <div className={styles.key}>Max Supply</div>

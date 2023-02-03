@@ -38,7 +38,7 @@ const ListNFT = ({
     const [selectedAmount, setSelectedAmount] = useState<number>(0);
     const selectedAccount = useSelector(selectAccountById(accountId));
     const { address, symbol } = selectedAccount;
-    
+
     const [selectedAsset, setSelectedAsset] = useState<string>('');
     const [selectedAssetObj, setSelectedAssetObj] = useState<keyable>({});
     const [cancelListing, setCancelListing] = useState<boolean>(false);
@@ -133,7 +133,6 @@ const ListNFT = ({
                             "price": selectedAmount === 0 ? [] : [BigInt(selectedAmount * Math.pow(10, 8))]
                         },
                         currentIdentity);
-                    console.log(resp)
                     if (resp.ok === 1) {
                         history.replace(`/nftdetails/${selectedAsset}`);
                         setTxCompleteTxt('Listed');
@@ -149,7 +148,7 @@ const ListNFT = ({
             }
             else if (selectedAssetObj?.type == 'EarthArt') {
                 try {
-                    const resp = await canisterAgent({
+                    await canisterAgent({
                         canisterId: selectedAssetObj?.canisterId,
                         method: 'setApprovalForAll',
                         fromIdentity: currentIdentity,
@@ -173,7 +172,6 @@ const ListNFT = ({
                             symbol: { icp: null },
                         },
                     });
-                    console.log(resp, status, 'listNFT')
                     await controller.assets.fetchListingsByUser(address)
                     if (status.ok != null) {
                         history.replace(`/nftdetails/${selectedAsset}`);

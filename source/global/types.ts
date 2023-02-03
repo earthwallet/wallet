@@ -45,7 +45,6 @@ export interface WalletAccounts {
 }
 
 export interface AccountTransactionState {
-  // TODO: Need to declare more properties
   amount: string;
   timestamp: number;
 }

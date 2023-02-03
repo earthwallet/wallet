@@ -45,7 +45,6 @@
   font-weight: normal;
   font-size: 14px;
   line-height: 15px;
-  /* identical to box height, or 107% */
 
   color: #fafbfb;
   margin-left: 12px;
@@ -63,7 +62,6 @@
   font-weight: normal;
   font-size: 12px;
   line-height: 12px;
-  /* identical to box height, or 100% */
 
   color: #fafbfb;
 
@@ -92,7 +90,6 @@
   cursor: pointer;
   background: rgba(90, 89, 126, 0.39);
   backdrop-filter: blur(7px);
-  /* Note: backdrop-filter has minimal browser support */
 
   border-radius: 14px;
   width: 327px;
@@ -114,7 +111,6 @@
 .mnemonicCont {
   background: rgba(36, 150, 255, 0.22);
   backdrop-filter: blur(8px);
-  /* Note: backdrop-filter has minimal browser support */
 
   border-radius: 14px;
   flex-wrap: wrap;
@@ -127,7 +123,6 @@
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
     rgba(36, 150, 255, 0.47);
   backdrop-filter: blur(5px);
-  /* Note: backdrop-filter has minimal browser support */
 
   border-radius: 14px;
 }
@@ -153,7 +148,6 @@
   font-weight: normal;
   font-size: 10px;
   line-height: 150%;
-  /* or 18px */
 
   text-align: center;
   letter-spacing: 0.02em;
@@ -184,7 +178,6 @@
   font-weight: 500;
   font-size: 13px;
   line-height: 12px;
-  /* identical to box height, or 92% */
 
   text-align: center;
   text-transform: uppercase;
@@ -208,7 +201,6 @@
   background: rgba(0, 0, 0, 0.31);
   border-radius: 5px;
 
-  /* Inside Auto Layout */
 
   flex: none;
   order: 0;
@@ -223,7 +215,6 @@
   font-weight: 700;
   font-size: 12px;
   line-height: 150%;
-  /* identical to box height, or 18px */
 
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -238,7 +229,6 @@
   font-weight: normal;
   font-size: 12px;
   line-height: 12px;
-  /* identical to box height, or 100% */
 
   text-align: center;
 
@@ -269,7 +259,6 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
-  /* identical to box height */
   letter-spacing: 0.025em;
   &:focus-visible {
     outline: none;

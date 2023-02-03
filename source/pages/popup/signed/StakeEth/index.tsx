@@ -94,7 +94,6 @@ const StakeEth = ({
     if (!(selectedAmount == 0 || Number.isNaN(selectedAmount))) {
       setLoading(true);
       debouncedFetchData(selectedAmount, tab, (res: any) => {
-        console.log(res, "debounced");
         setLoading(false);
         if (tab == 0) {
           if (res?.uniswap?.inputAmount > (currentBalance?.value || 0) /

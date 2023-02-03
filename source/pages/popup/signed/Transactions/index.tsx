@@ -46,14 +46,13 @@ const Transactions = ({
   const txnReqs = useSelector(selectTxnRequestsByAddress(address));
 
 
-  console.log(walletTransactions, "walletTransactions")
   const getTransactionTime = (transaction: any): any => {
     const timestamp: number = transaction.transaction?.metadata?.timestamp;
 
     return moment(timestamp / 1000000).format('MMM DD YYYY');
   };
   const getTransactionTimestamp = (transaction: any): any => {
-    const timestamp: number = transaction.transaction?.metadata?.timestamp;
+    const timestamp: number = (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'DOGE') ? transaction.time : transaction.transaction?.metadata?.timestamp;
 
     return timestamp;
   };
@@ -67,7 +66,6 @@ const Transactions = ({
     } else if (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'DOGE') {
       setLoading(true);
       const response = await getTransactions_BTC_DOGE(address, selectedAccount?.symbol);
-      console.log(response, address, selectedAccount?.symbol)
       const wallet = { txs: response, total: response?.length };
       setWalletTransactions(wallet);
       setLoading(false);
@@ -134,7 +132,7 @@ const Transactions = ({
               : 'Send'}
           </div>
           <div className={styles.transSubColTime}>
-            <div className={styles.transDate}>{moment(transaction?.date).format('MMM DD YYYY')}</div>
+            <div className={styles.transDate}>{`${moment.unix(transaction.time).format("MMM DD YY, h:mm:ss a")}`}</div>
           </div>
         </div>
 

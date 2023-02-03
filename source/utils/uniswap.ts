@@ -57,15 +57,7 @@ export const swapFromReth = async (
   route.outputToken = outputToken;
   route.typedValueParsed = typedValueParsed;
   route.myAddress = myAddress;
-  /*  const wallet = new ethers.Wallet(WALLET_SECRET);
-  const connectedWallet = wallet.connect(web3Provider);
-
-  const approvalAmount = ethers.utils.parseUnits("1", 18).toString();
-  const ERC20ABI = require("./abi.json");
-  const contract0 = new ethers.Contract(address0, ERC20ABI, web3Provider);
-   */ // await contract0
-  //   .connect(connectedWallet)
-  //   .approve(V3_SWAP_ROUTER_ADDRESS, approvalAmount);
+ 
   return { uniswap: route, success: true };
 };
 
@@ -109,19 +101,6 @@ export const swapToReth = async (
   } catch (error) {
     return { error, success: true, info: 'more info error' };
   }
-  /* 
-  console.log(`Quote Exact In: ${route.quote.toFixed(10)}`);
-
-  console.log(`Calldata: ${route.methodParameters.calldata}`);
-
-  const transaction = {
-    data: route.methodParameters.calldata,
-    to: V3_SWAP_ROUTER_ADDRESS,
-    value: BigNumber.from(route.methodParameters.value),
-    from: myAddress,
-    gasPrice: BigNumber.from(route.gasPriceWei),
-    gasLimit: ethers.utils.hexlify(1000000),
-  }; */
   if (route == null) {
     return { success: true, error: 'Route is undefined' };
   }
@@ -133,14 +112,6 @@ export const swapToReth = async (
   route.outputToken = outputToken;
   route.typedValueParsed = typedValueParsed;
   route.myAddress = myAddress;
-  /*  const wallet = new ethers.Wallet(WALLET_SECRET);
-  const connectedWallet = wallet.connect(web3Provider);
 
-  const approvalAmount = ethers.utils.parseUnits("1", 18).toString();
-  const ERC20ABI = require("./abi.json");
-  const contract0 = new ethers.Contract(address0, ERC20ABI, web3Provider);
-   */ // await contract0
-  //   .connect(connectedWallet)
-  //   .approve(V3_SWAP_ROUTER_ADDRESS, approvalAmount);
   return { uniswap: route, success: true };
 };

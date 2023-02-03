@@ -6,7 +6,6 @@ import { useController } from '~hooks/useController';
 import { useSelector } from 'react-redux';
 import { safeParseJSON, stringifyWithBigInt } from '~global/helpers';
 import { ClipLoader } from 'react-spinners';
-//import { keyable } from '~scripts/Background/types/IMainController';
 import { selectRequestStatusById } from '~state/dapp';
 import clsx from 'clsx';
 import { getShortAddress } from '~utils/common';

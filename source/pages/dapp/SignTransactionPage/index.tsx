@@ -51,7 +51,6 @@ const SignTransactionPage = () => {
   const [pass, setPass] = useState('');
   const signatureType = controller.dapp.getSignatureType();
 
-  console.log(request, signatureType);
   const onPassChange = useCallback(
     (password: string) => {
       setPass(password);
@@ -168,7 +167,6 @@ const SignTransactionPage = () => {
 
           try {
             result = await signer.sendTransaction(transaction);
-            console.log(transaction, result, 'transaction');
             controller.dapp.setApprovedIdentityJSON(JSON.stringify(result));
 
           } catch (error) {
@@ -180,9 +178,6 @@ const SignTransactionPage = () => {
         } else {
           console.error("No Active Account");
         }
-
-        //const signingKey = new ethers.utils.SigningKey(wallet.privateKey);
-        console.log('eth_sendTransaction')
       }
     } else if (signatureType !== 'personal_sign') {
       const encryptedHash = signTypedData({

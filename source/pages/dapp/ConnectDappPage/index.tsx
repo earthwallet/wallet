@@ -30,7 +30,6 @@ export default function ConnectDappPage() {
   const setDappConnectedAddress = async (address: string, origin: string) => {
     const useUpdateActiveAccounted = useUpdateActiveAccount(address, origin);
     useUpdateActiveAccounted().then(() => {
-      console.log(address);
     });
   };
   const { show } = useToast();
