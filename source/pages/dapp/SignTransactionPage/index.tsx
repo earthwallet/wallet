@@ -17,7 +17,6 @@ import InputWithLabel from '~components/InputWithLabel';
 import Warning from '~components/Warning';
 import { safeParseJSON, stringifyWithBigInt } from '~global/helpers';
 import { ClipLoader } from 'react-spinners';
-//import { keyable } from '~scripts/Background/types/IMainController';
 import { selectRequestStatusById } from '~state/dapp';
 import clsx from 'clsx';
 import { getShortAddress } from '~utils/common';
@@ -29,8 +28,6 @@ import {
 } from '@metamask/eth-sig-util';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { ALCHEMY_ETH_API_KEY } from '~global/config';
-//import { getFeesExtended } from '~utils/services';
-// import ICON_ICP from '~assets/images/icon_icp_details.png';
 
 const MIN_LENGTH = 6;
 
@@ -150,19 +147,6 @@ const SignTransactionPage = () => {
             transaction.nonce = nonce;
           }
 
-          /*  if (symbol == "MATIC") {
-             const feesArr = await getFeesExtended(symbol, transaction.gasLimit || 21000);
-             transaction.maxFeePerGas = ethers.utils.parseUnits(
-               feesArr[1]?.suggestedMaxFeePerGas,
-               "gwei"
-             );
-             transaction.maxPriorityFeePerGas = ethers.utils.parseUnits(
-               feesArr[1]?.suggestedMaxPriorityFeePerGas,
-               "gwei"
-             );
-
-           }
-*/
           let result;
 
           try {

@@ -1,28 +1,18 @@
-//import { createWallet, newMnemonic } from '@earthwallet/keyring';
 import store from '~state/store';
 
 import type { ITokensController } from '../types/ITokensController';
 import {
   storeEntities,
   updateEntities,
-  //updateEntities
 } from '~state/entities';
 import {
   canisterAgent,
   canisterAgentApi,
   principal_to_address,
-  //tokenAPI,
-  //pairFactoryAPI,
-  //approve,
-  //transfer_from,
-  //pairAPI,
 } from '@earthwallet/assets';
 import { createEntity } from '~state/entities';
 import { getTokenInfo } from '~global/tokens';
 import { Principal } from '@dfinity/principal';
-//import { keyable } from '../types/IAssetsController';
-//import { createWallet } from '@earthwallet/keyring';
-//import { parseBigIntToString } from '~utils/common';
 import { v4 as uuid } from 'uuid';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';

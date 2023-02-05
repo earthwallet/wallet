@@ -4,7 +4,6 @@ import React, { useCallback } from 'react';
 import styles from './index.scss';
 import ICON_DELETE from '~assets/images/icon_delete.svg';
 
-//import Loading from '~components/Loading';
 import Header from '~components/Header';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';

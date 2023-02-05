@@ -47,7 +47,6 @@ const en = {
   },
   export: {
     header: 'Export account',
-    wrongPass: 'Wrong password! Please try again',
     checkTitle:
       'I understand that I may lose access to digital assets if I disclose my private keys.',
     secretMnemonicLabel: 'Secret Mnemonic',
@@ -73,8 +72,23 @@ const en = {
     export: 'Export',
     txns: 'Transactions',
   },
-  transactions: {},
-  transactionDetails: {},
+  transactions: {
+    header: 'Transactions',
+    noTxns: 'No Transactions',
+  },
+  transactionDetails: {
+    header: 'Details',
+    pleaseCheck: 'Please check transaction Id',
+    from: 'From',
+    to: 'To',
+    transaction: 'Transaction',
+    amount: 'Amount',
+    value: 'Value',
+    txnFees: 'Transaction Fees',
+    total: 'Total',
+    activityLog: 'Activity Log',
+    txnNarrate: 'Transaction created with a value of',
+  },
   transactionConfirm: {},
   walletAddressBook: {},
   walletSendTokens: {},
@@ -97,6 +111,7 @@ const en = {
   common: {
     passwordForAc: 'password for this account',
     requiredPlaceholder: 'REQUIRED',
+    wrongPass: 'Wrong password! Please try again',
   },
 };
 

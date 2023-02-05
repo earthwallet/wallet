@@ -3,10 +3,6 @@
 import React from 'react';
 import styles from './index.scss';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
-
-//import Loading from '~components/Loading';
-//import Header from '~components/Header';
-//import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectConnectedDappsByAddress } from '~state/dapp';

@@ -32,7 +32,6 @@ const AccountSelector = ({
   const [selectedAccountText, setSelectedAccountText] = useState<string>();
   const _onChangePrefix = (account: keyable) => {
     setSelectedAccountText(account.id);
-    //setSelectedAccount(account);
     setShowDropDown(false);
     history.push('/account/details/' + account.id);
     controller.accounts.updateActiveNetwork(account.symbol);

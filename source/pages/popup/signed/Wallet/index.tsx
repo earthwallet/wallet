@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import Header from '~components/Header';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import CopyToClipboard from 'react-copy-to-clipboard';
-//import bg_wallet_details from '~assets/images/bg_wallet_details.png';
 import icon_copy from '~assets/images/icon_copy.svg';
 import icon_rec from '~assets/images/icon_rec.svg';
 import icon_send from '~assets/images/icon_send.svg';

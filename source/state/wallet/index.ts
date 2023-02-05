@@ -3,7 +3,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
 
 import type { IWalletState, NetworkInfo } from './types';
-//import type { StoreInterface } from '~state/IStore';
 import { AppState } from '~state/store';
 import groupBy from 'lodash/groupBy';
 import { getTokenInfo } from '~global/tokens';

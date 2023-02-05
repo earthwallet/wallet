@@ -4,7 +4,6 @@ import styles from './index.scss';
 import { Link } from 'react-router-dom';
 import Header from '~components/Header';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-//import bg_wallet_details from '~assets/images/bg_wallet_details.png';
 import icon_rec from '~assets/images/icon_rec.svg';
 import icon_send from '~assets/images/icon_send.svg';
 import { getSymbol } from '~utils/common';
@@ -58,7 +57,6 @@ const Wallet = ({
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [nav, setNav] = useState('list');
   const [mainNav, setMainNav] = useState('tokens');
-  //const [tokenBalanceLoading, setTokenBalanceLoading] = useState(false);
   const [selectedGridToken, setSelectedGridToken] = useState<string>('');
 
   useEffect(() => {

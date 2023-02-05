@@ -5,7 +5,6 @@ import styles from './index.scss';
 import ICON_CHECKED from '~assets/images/icon_checkbox_checked.svg';
 import ICON_UNCHECKED from '~assets/images/icon_checkbox_unchecked.svg';
 
-//import Loading from '~components/Loading';
 import NextStepButton from '~components/NextStepButton';
 import Header from '~components/Header';
 import clsx from 'clsx';

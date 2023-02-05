@@ -446,7 +446,6 @@ export default class AccountsController implements IAccountsController {
         data: newAccounts,
       })
     );
-    //clear new mnemonic
     store.dispatch(updateNewMnemonic(''));
     callback && callback(groupId);
   };

@@ -345,7 +345,6 @@ export default class AssetsController implements IAssetsController {
           allTokens[index] = response.map((_token: any[]) => {
             const canisterId = _token[1]?.toText();
             const id = getTokenIdentifier(_token[1]?.toText(), _token[0]);
-            //this.fetchEarthNFT(canisterId, _token[0]);
             const collectionInfo =
               state.entities?.collectionInfo?.byId[canisterId];
             if (collectionInfo == null) {
@@ -663,7 +662,6 @@ export default class AssetsController implements IAssetsController {
     if (state.entities.accounts.byId[recipient] != undefined) {
       this.getICPAssetsOfAccount({ recipient, symbol: 'ICP' });
     }
-    //await this.getTokenBalances(address);
     return;
   };
 
@@ -825,7 +823,6 @@ export default class AssetsController implements IAssetsController {
         ],
       })
     );
-    //show('Sending..');
     const selectedAmount = parseFloat((price / Math.pow(10, 8)).toFixed(8));
     let index: BigInt = 0n;
     try {
@@ -859,7 +856,6 @@ export default class AssetsController implements IAssetsController {
       return;
     }
 
-    //show('Settling..');
     store.dispatch(
       storeEntities({
         entity: 'txnRequests',
@@ -883,10 +879,8 @@ export default class AssetsController implements IAssetsController {
       currentIdentity
     );
 
-    //show('Purchase complete');
     this.getICPAssetsOfAccount({ address, symbol: 'ICP' });
     if (settle?.err?.Other == 'Insufficient funds sent') {
-      // setIsBusy(false);
       store.dispatch(
         storeEntities({
           entity: 'txnRequests',
@@ -922,7 +916,6 @@ export default class AssetsController implements IAssetsController {
         })
       );
       callback && callback(`/nft/bought/${nftId}?accountId=${accountId}`);
-      //setIsBusy(false);
     }
   };
 

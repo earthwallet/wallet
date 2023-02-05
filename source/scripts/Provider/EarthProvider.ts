@@ -1,5 +1,4 @@
 import { getBalance } from '@earthwallet/keyring';
-//import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import { IWalletState } from '~state/wallet/types';
 import store from '~state/store';
 import { canisterAgent } from '@earthwallet/assets';

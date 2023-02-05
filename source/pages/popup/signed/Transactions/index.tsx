@@ -20,6 +20,7 @@ import { getTokenImageUrlFromnftId } from '~global/nfts';
 import { getTokenInfo } from '~global/tokens';
 import { getTransactions_ETH_MATIC } from '~utils/services';
 import { getTransactions_BTC_DOGE } from '~utils/btc';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
   className?: string;
@@ -376,7 +377,7 @@ const Transactions = ({
           onClick={() => history.goBack()}
         >
           <img src={ICON_CARET} />
-          <div className={styles.transTitle}>Transactions</div>
+          <div className={styles.transTitle}>{i18nT('wallet.txns')}</div>
         </div>
         <div className={styles.pageloading}>
           <ClipLoader color={'#fffff'}

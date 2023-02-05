@@ -7,15 +7,10 @@ import clsx from 'clsx';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 
-//import bg_wallet_details from '~assets/images/bg_wallet_details.png';
-// import { ActionContext } from '../../components';
 import ICON_COPY from '~assets/images/icon_copy_details.svg';
 import ICON_ICP_DETAILS from '~assets/images/icon_icp_details.png';
 import ICON_OPEN from '~assets/images/icon_open_new.svg';
 import Header from '~components/Header';
-// import ICON_FAILED from '~assets/images/icon_failed.svg';
-// import ICON_FORWARD from '~assets/images/icon_forward.svg';
-// import ICON_RECV from '~assets/images/icon_receive.svg';
 import { getShortAddress } from '~utils/common';
 
 interface Props extends RouteComponentProps<{ txnId: string }> {
@@ -30,7 +25,6 @@ const Details = ({
     params: { txnId },
   },
 }: Props) => {
-  // const onAction = useContext(ActionContext);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [usdValue, setUsdValue] = useState<number>(0);

@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styles from './index.scss';
-//import { useHistory } from 'react-router-dom';
 import { RouteComponentProps, withRouter } from 'react-router';
 import Header from '~components/Header';
 import { useSelector } from 'react-redux';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { getAirDropNFTInfo, } from '~global/nfts';
-//import clsx from 'clsx';
 import { useController } from '~hooks/useController';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { shareTweetURL, shortenAddress } from '~global/helpers';
@@ -29,7 +27,6 @@ const NFTAirdropDetails = ({
         },
     },
 }: Props) => {
-    // const history = useHistory();
     const selectedAccount = useSelector(selectAccountById(accountId));
     const { address } = selectedAccount;
 

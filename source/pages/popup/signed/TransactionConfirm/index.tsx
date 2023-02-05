@@ -13,7 +13,6 @@ import { decryptString } from '~utils/vault';
 import { selectAccountById } from '~state/wallet';
 import { validateMnemonic } from '@earthwallet/keyring';
 import Warning from '~components/Warning';
-//import useToast from '~hooks/useToast';
 import { useController } from '~hooks/useController';
 import swapCircle from '~assets/images/swapLoadingCircle.svg';
 
@@ -36,12 +35,10 @@ const TransactionConfirm = ({
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
-  // const [loading, setLoading] = useState(false);
   const selectedAccount = useSelector(selectAccountById(txnStatusObj?.address));
 
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
   const usdValue = currentUSDValue?.usd;
-  //const { show } = useToast();
   const controller = useController();
   const history = useHistory();
 
@@ -71,7 +68,6 @@ const TransactionConfirm = ({
 
   const handleSign = async () => {
     setIsBusy(true);
-    //    setLoading(true);
     let secret = '';
 
     try {
@@ -118,14 +114,6 @@ const TransactionConfirm = ({
             </div>
           </div>
           <div className={styles.internetCompWrapContainer}>
-            {/*     <div className={styles.imgCont}>
-              <img src={getTokenImageURL(asset)} className={styles.ethIconContainer}></img>
-            </div>
-            <div className={styles.ethTextContainer}>
-              <span className={styles.ethereumText}>{index}</span>
-              <span className={styles.ethVal}>{price / Math.pow(10, 8)} ICP</span>
-              <span className={styles.usdText}>${(price * usdValue / Math.pow(10, 8)).toFixed(3)}</span>
-            </div> */}
             <div className={styles.earthFeeContainer}>
               <span className={styles.earthFeeText}>Network Fee</span>
               <div className={styles.earthFeeRightSideContainer}>

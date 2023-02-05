@@ -1,7 +1,6 @@
 import React from 'react';
 import MarketplaceCard from '~components/MarketplaceCard';
 import styles from "./index.scss";
-//import img from "~assets/images/marketplaceImg.svg";
 import Header from '~components/Header';
 import { LIVE_ICP_NFT_LIST } from '~global/nfts';
 import { keyable } from '~scripts/Background/types/IMainController';

@@ -4,7 +4,6 @@ import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import ICON_CHECKED from '~assets/images/icon_checkbox_checked.svg';
 import ICON_UNCHECKED from '~assets/images/icon_checkbox_unchecked.svg';
 
-//import Loading from '~components/Loading';
 import Header from '~components/Header';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';

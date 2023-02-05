@@ -5,10 +5,7 @@ import styles from './index.scss';
 import Header from '~components/Header';
 
 import { RouteComponentProps, useHistory, withRouter } from 'react-router';
-//import ICON_EARTH from '~assets/images/icon-512.png';
-//import ICON_CARET from '~assets/images/icon_caret.svg';
 import ICON_SWAP from '~assets/images/icon_swap.svg';
-//import clsx from 'clsx';
 import NextStepButton from '~components/NextStepButton';
 import { useSelector } from 'react-redux';
 import { selectTokensInfo, selectTokensInfoById } from '~state/tokens';

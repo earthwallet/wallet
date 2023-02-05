@@ -89,7 +89,6 @@ const Transactions = ({
     const loadBalance = async (address: string) => {
       setLoading(true);
       const balance: keyable = await getBalance(address, 'ICP');
-      // const balance: keyable = {};
       setLoading(false);
 
       if (balance && balance?.balances != null) {

@@ -44,7 +44,6 @@ const StakeEthConfirm = ({
   const gas = (uniswap?.estimatedGasUsedUSDTxt / usd);
   const earthFees = 0;
   const selectedAmount = uniswap?.inputAmount || 0;
-  // const [pass, setPass] = useState("");
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
   const [isBusy, setIsBusy] = useState(false);

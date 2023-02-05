@@ -1,12 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import type { ITokensState } from './types';
-//import type { StoreInterface } from '~state/IStore';
 import { AppState } from '~state/store';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { getTokenInfo, getLiveTokensByNetworkSymbol } from '~global/tokens';
 import { getInfoBySymbol } from '~global/constant';
-//import millify from 'millify';
 
 const initialState: ITokensState = {
   loading: false,
@@ -86,7 +84,6 @@ export const selectTokenByTokenPair =
 
 export const selectInfoBySymbolOrToken =
   (symbolOrTokenId: string, accountId: string) => (state: AppState) => {
-    //const { address, symbol } = state.entities.accounts.byId[accountId];
 
     const info = getInfoBySymbol(symbolOrTokenId);
     const getTokenInfoFromStore = (address: string) =>
@@ -96,7 +93,6 @@ export const selectInfoBySymbolOrToken =
     if (info == undefined) {
       const tokenId = symbolOrTokenId;
       const tokenPair = accountId + '_WITH_' + tokenId;
-      //const tokenInfo = getTokenInfo(tokenId);
       const tokenObj = state.entities.tokens?.byId[tokenPair];
 
       if (tokenObj != null) {

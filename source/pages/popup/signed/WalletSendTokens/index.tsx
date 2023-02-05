@@ -142,7 +142,6 @@ const WalletSendTokens = ({
         getSelectedAsset(selectedAsset)?.decimals
       );
     } else if (getSelectedAsset(selectedAsset)?.format == "nft") {
-      //alert('nft')
       gasLimit = await getERC721TransferGasLimit(
         getSelectedAsset(selectedAsset)?.contractAddress,
         selectedAccount.address,
@@ -435,7 +434,6 @@ const WalletSendTokens = ({
             setDone(true);
             setLoadingSend(false);
             setIsBusy(false);
-            //update asset balances after tx
             controller.assets.updateTokenDetails({
               id: selectedAsset,
               address: selectedRecp,

@@ -1,4 +1,3 @@
-//import { EarthKeyringPair } from '@earthwallet/keyring';
 
 import { keyable } from './IAssetsController';
 
