@@ -26,7 +26,7 @@ interface Props {
     key?: string,
     placeholder?: string,
     recpCallback: (recipient: string) => void,
-    recpErrorCallback: (recipientError: string) => void,
+    recpErrorCallback?: (recipientError: string) => void,
     initialValue?: string,
     tokenId?: string | null,
     search?: boolean,
@@ -84,7 +84,7 @@ export default function AddressInput({
     }, [recpCallback, selectedRecp]);
 
     useEffect(() => {
-        recpErrorCallback(recpError);
+        recpErrorCallback && recpErrorCallback(recpError);
     }, [recpErrorCallback, recpError]);
 
     useEffect(() => {
@@ -147,8 +147,10 @@ export default function AddressInput({
                         });
                     }
                     setValid(false);
+
                 }
             }
+
         }
         else if (inputType === 'BTC') {
             setSelectedRecp(recipient);

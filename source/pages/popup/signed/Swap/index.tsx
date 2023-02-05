@@ -32,7 +32,7 @@ const Swap = ({
 }: Props) => {
   const selectedAccount = useSelector(selectAccountById(accountId));
   const { address } = selectedAccount;
-  
+
   const queryParams = useQuery();
   const type: string = queryParams.get('type') || '';
 
@@ -226,8 +226,6 @@ const Swap = ({
           </div>
         </div>
       </div>
-      {false && <div className={styles.txnBtnCont}><div className={styles.txnBtn}>Transaction Settings</div></div>
-      }
       <div className={styles.nextCont}>
         <NextStepButton
           disabled={selectedAmount == 0 || selectedAmount < getTokenInfo(tokenId).fees || selectedAmount > maxAmount}

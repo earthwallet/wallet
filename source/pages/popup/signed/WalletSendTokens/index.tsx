@@ -627,8 +627,7 @@ const WalletSendTokens = ({
                         </div>
                       ))}
                     </div>
-                    {false && <div className={styles.customizeLink}>Advanced Options</div>
-                    }                </>
+                  </>
                 )}
             </div>
           ) : (

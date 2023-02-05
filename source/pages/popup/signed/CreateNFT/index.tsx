@@ -31,7 +31,7 @@ const Transactions = ({
   const selectedAccount = useSelector(selectAccountById(accountId));
   const { address } = selectedAccount;
 
-  
+
   const history = useHistory();
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -190,7 +190,7 @@ const Transactions = ({
                         : 'Send'}
                     </div>
                     <div className={styles.transSubColTime}>
-                      <div>{getTransactionTime(transaction) || 'Jun 7'}</div>
+                      <div>{getTransactionTime(transaction)}</div>
                       <div className={styles.transSubColDot}></div>
                       <div>
                         to{' '}

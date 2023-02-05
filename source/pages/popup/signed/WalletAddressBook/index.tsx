@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import styles from './index.scss';
-import NextStepButton from '~components/NextStepButton';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 import { selectAccountById, selectOtherAccountsOf, selectRecentsOf } from '~state/wallet';
@@ -44,13 +43,11 @@ const WalletAddressBook = ({
 
   const dropDownRef = useRef(null);
   const [selectedRecp, setSelectedRecp] = useState<string>('');
-  const [recpError, setRecpError] = useState('');
   const [selectedAsset, setSelectedAsset] = useState<string>('');
 
   const myAccounts: keyable = useSelector(selectOtherAccountsOf(address));
   const recents: keyable = useSelector(selectRecentsOf(address, tokenId));
   const [ensAddressObj, setEnsAddressObj] = useState<keyable | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
 
 
 
@@ -66,16 +63,6 @@ const WalletAddressBook = ({
       setSelectedAsset(tokenId || '');
     }
   }, [assetId !== null, tokenId !== null]);
-
-  const onConfirm = useCallback(() => {
-    if (selectedAsset !== selectedAccount?.symbol) {
-      setStep1(false);
-    }
-    else {
-      setStep1(false);
-    }
-
-  }, [selectedAccount, selectedAsset]);
 
   const onBackClick = useCallback(() => { setStep1(true); }, []);
   const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.id === assetId)[0]
@@ -125,13 +112,11 @@ const WalletAddressBook = ({
           <div className={styles.earthInputLabel}>Add recipient</div>
           <AddressInput
             initialValue={selectedRecp}
-            recpErrorCallback={setRecpError}
             recpCallback={setSelectedRecp}
             inputType={selectedAccount?.symbol}
             autoFocus={true}
             tokenId={getSelectedAsset(selectedAsset)?.tokenId}
             search={true}
-            searchingCallback={setIsSearching}
             ensObjCallback={setEnsAddressObj}
           />
         </div>
@@ -228,22 +213,6 @@ const WalletAddressBook = ({
         }
       </div>}
     </div>
-    {false && <div style={{
-      margin: '0 30px 30px 30px',
-      position: 'absolute',
-      bottom: 0,
-      left: 0
-    }}>
-      {step1
-        ? <NextStepButton
-          disabled={!selectedRecp || recpError !== '' || isSearching}
-          loading={false}
-          onClick={onConfirm}>
-          {'Next'}
-        </NextStepButton>
-
-        : <div />}
-    </div>}
   </></div>;
 };
 

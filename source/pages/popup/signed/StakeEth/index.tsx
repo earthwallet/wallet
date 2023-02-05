@@ -69,8 +69,6 @@ const StakeEth = ({
 
   const nextScreen = () => {
     history.push(`/stakeconfirm_eth/${accountId}?params=${JSON.stringify(params)}`);
-
-    //navigation.push("StakeConfirmScreen", { selectedAmount, accountId, uniswap: tab == "Stake" ? swapToRethReqData?.uniswap : swapFromRethReqData?.uniswap });
   }
 
   const fetchData = async (selectedAmount: number, _tab: number, cb: (arg0: { error: unknown; success: boolean; info: string; uniswap?: undefined; } | { success: boolean; error: string; info?: undefined; uniswap?: undefined; } | { uniswap: keyable; success: boolean; error?: undefined; info?: undefined; }) => void) => {
@@ -122,8 +120,8 @@ const StakeEth = ({
     setSelectedAmount(0);
     setError('');
     setLoading(false);
-    
-}
+
+  }
   return (
     <div className={styles.page}>
       <Header
@@ -181,7 +179,7 @@ const StakeEth = ({
           </div>
         </div>
       </div>
-      {error == '' ? params?.success == true && <div className={styles.fees}>Fees: ${typeof params?.uniswap?.estimatedGasUsedUSDTxt == 'string' ? parseFloat(params?.uniswap?.estimatedGasUsedUSDTxt).toFixed(2) : params?.uniswap?.estimatedGasUsedUSDTxt.toFixed(2)}</div> : <div style={{opacity:0.8}} className={styles.fees}>{error}</div>}
+      {error == '' ? params?.success == true && <div className={styles.fees}>Fees: ${typeof params?.uniswap?.estimatedGasUsedUSDTxt == 'string' ? parseFloat(params?.uniswap?.estimatedGasUsedUSDTxt).toFixed(2) : params?.uniswap?.estimatedGasUsedUSDTxt.toFixed(2)}</div> : <div style={{ opacity: 0.8 }} className={styles.fees}>{error}</div>}
       <div className={styles.stats}>
         <div className={styles.row}>
           <div className={styles.col}>
@@ -193,8 +191,6 @@ const StakeEth = ({
             <div className={styles.val}>{parseFloat(rETHTokenInfo?.yearlyAPR || 3.6).toFixed(2)}% APR</div>
           </div>}
         </div>
-
-
         {<div className={styles.row}>
           <div className={styles.col}>
             <div className={styles.key}>Total Staked</div>
@@ -213,7 +209,7 @@ const StakeEth = ({
       <div className={styles.nextCont}>
         <NextStepButton
           disabled={Number.isNaN(selectedAmount) || selectedAmount == 0 || error != '' || params?.uniswap?.estimatedGasUsedUSDTxt == undefined || (params?.uniswap?.inputAmount != selectedAmount?.toString())}
-          loading={loading || ( (Number.isNaN(selectedAmount) || selectedAmount == 0 )? false : params?.uniswap?.inputAmount != selectedAmount?.toString())}
+          loading={loading || ((Number.isNaN(selectedAmount) || selectedAmount == 0) ? false : params?.uniswap?.inputAmount != selectedAmount?.toString())}
           onClick={() => nextScreen()}
         >
           {tab === 0 ? 'Stake' : 'Unstake'}
