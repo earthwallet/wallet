@@ -11,7 +11,7 @@ import { getSymbol } from '~utils/common';
 import useGetAccountGroupBalances from '~hooks/useGetAccountGroupBalances';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import useGetAccountGroupAssetBalances from '~hooks/useGetAccountGroupAssetBalances';
-import ICON_SETTINGS from '~assets/images/icon_more_settings.svg';
+import ICON_MYAC from '~assets/images/icon_myac.svg';
 import useGetCollectionStats from '~hooks/useGetCollectionStats';
 import { AppState } from '~state/store';
 import { i18nT } from "~i18n/index";
@@ -65,7 +65,7 @@ const Accounts = () => {
                 onClick={() => history.push('/walletsettings')}
                 className={styles.backButtonCont}>
                 <div className={styles.backButtonIcon}>
-                  <img src={ICON_SETTINGS} />
+                  <img src={ICON_MYAC} />
                 </div>
               </div>
             </div>

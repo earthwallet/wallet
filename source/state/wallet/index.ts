@@ -21,6 +21,7 @@ const initialState: IWalletState = {
   extensionId: '',
   overrideEthereum: false,
   restoreInActiveAccounts_ETH: false,
+  lang: null,
 };
 
 const WalletState = createSlice({
@@ -69,6 +70,9 @@ const WalletState = createSlice({
     ) {
       state.overrideEthereum = action.payload;
     },
+    updateLanguage(state: IWalletState, action: PayloadAction<string>) {
+      state.lang = action.payload;
+    },
     hydrateWallet(state: IWalletState, action: PayloadAction<IWalletState>) {
       Object.assign(state, action.payload);
     },
@@ -86,6 +90,7 @@ export const {
   hydrateWallet,
   updateOverrideEthereum,
   updateRestoreInActiveAccounts_ETH,
+  updateLanguage
 } = WalletState.actions;
 
 export const selectAccounts = (state: AppState) =>

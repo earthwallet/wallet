@@ -16,7 +16,7 @@ export interface IMainController {
   dapp: Readonly<IDAppController>;
   tokens: Readonly<ITokensController>;
   provider: Readonly<EarthProvider>;
-  preloadState: () => Promise<void>;
+  preloadState: () => Promise<string|null>;
   isHydrated: () => boolean;
   migrateLocalStorage: () => Promise<keyable>;
   createPopup: (
@@ -25,4 +25,5 @@ export interface IMainController {
     asset?: NetworkSymbol
   ) => Promise<Windows.Window | null>;
   updateOverrideEthereum: (state: boolean) => void;
+  updateLanguage: (lang: string) => void;
 }

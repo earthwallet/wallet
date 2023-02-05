@@ -1,11 +1,13 @@
 import { I18n, Scope, TranslateOptions } from 'i18n-js';
 
 import en from './en';
+import te from './te';
 
 //https://github.com/ladjs/i18n-locales
 
 const translations = {
   en: en,
+  te: te,
 };
 
 export const translationsLabels = {

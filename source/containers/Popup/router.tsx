@@ -37,6 +37,9 @@ import WalletAddressBook from '~pages/popup/signed/WalletAddressBook';
 import NFTAirdropDetails from '~pages/popup/signed/NFTAirdropDetails';
 import StakeEthConfirm from '~pages/popup/signed/StakeEthConfirm';
 import "~i18n/index"
+import LangSettings from '~pages/popup/signed/LangSettings';
+import TrustedDapps from '~pages/popup/signed/TrustedDapps';
+import i18n from '~i18n/index';
 
 function wrapWithErrorBoundary(
   component: React.ReactElement,
@@ -57,7 +60,10 @@ const PopupRouter = () => {
   });
 
   useEffect(() => {
-    controller.preloadState().then(() => {
+    controller.preloadState().then((lang) => {
+      if (lang != undefined) {
+        i18n.locale = lang;
+      }
       try {
         controller.migrateLocalStorage();
         controller.assets.registerExtensionForAirdrop();
@@ -84,9 +90,6 @@ const PopupRouter = () => {
             <Switch location={item}>
               <Route path="/popup.html">
                 <Redirect to="/accounts" />
-
-                {/*                 <Redirect to="/account/send/0x115c11f14fabb8b4fbdee2239c0686b42b3b62eb" />
- */}
               </Route>
               <Route path="/home">
                 <Redirect to="/accounts" />
@@ -171,6 +174,12 @@ const PopupRouter = () => {
               </Route>
               <Route path="/walletsettings">
                 {wrapWithErrorBoundary(<WalletSettings />, 'walletsettings')}
+              </Route>
+              <Route path="/langsettings">
+                {wrapWithErrorBoundary(<LangSettings />, 'langsettings')}
+              </Route>
+              <Route path="/trusteddapps">
+                {wrapWithErrorBoundary(<TrustedDapps />, 'trusteddapps')}
               </Route>
               <Route path="/dappdetails/:origin">
                 {wrapWithErrorBoundary(<DappDetails />, 'dappdetails')}

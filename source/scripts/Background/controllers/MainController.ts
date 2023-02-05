@@ -12,7 +12,7 @@ import store from '~state/store';
 import { preloadStateAsync } from '~state/app';
 import { storeEntities } from '~state/entities';
 import { NetworkSymbol } from '~global/types';
-import { updateOverrideEthereum } from '~state/wallet';
+import { updateOverrideEthereum, updateLanguage } from '~state/wallet';
 
 export default class MainController {
   accounts: Readonly<IAccountsController>;
@@ -34,6 +34,7 @@ export default class MainController {
 
   async preloadState() {
     await store.dispatch(preloadStateAsync() as any);
+    return store.getState().wallet.lang;
   }
 
   async migrateLocalStorage() {
@@ -100,5 +101,8 @@ export default class MainController {
   }
   updateOverrideEthereum(state: boolean) {
     store.dispatch(updateOverrideEthereum(state));
+  }
+  updateLanguage(lang: string) {
+    store.dispatch(updateLanguage(lang));
   }
 }
