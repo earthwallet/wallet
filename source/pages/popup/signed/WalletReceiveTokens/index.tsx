@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './index.scss';
 import { getShortAddress } from '~utils/common';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -15,6 +15,8 @@ import { getInfoBySymbol } from '~global/constant';
 import ToolTipInfo from '~components/ToolTipInfo';
 import { selectInfoBySymbolOrToken } from '~state/tokens';
 import { i18nT } from '~i18n/index';
+import { keyable } from '~scripts/Background/types/IMainController';
+import { unsResolveAddress } from '~utils/unstoppable';
 
 interface Props extends RouteComponentProps<{ accountId: string, symbolOrTokenId?: string }> { }
 const WalletReceiveTokens = ({
@@ -24,11 +26,22 @@ const WalletReceiveTokens = ({
 }: Props) => {
   const history = useHistory();
   const selectedAccount = useSelector(selectAccountById(accountId));
-  const { address } = selectedAccount;
+  const { address, symbol } = selectedAccount;
   const symbolOrTokenInfo = symbolOrTokenId == undefined ? {} : useSelector(selectInfoBySymbolOrToken(symbolOrTokenId, address));
 
   const { show } = useToast();
   const _onCopy = useCallback((): void => show('Copied'), [show]);
+  const [domainAliases, setDomainAliases] = useState<keyable>([]);
+
+  const getDomainsOfAddress = async (address: string, symbol: string) => {
+    const resp = await unsResolveAddress(address, symbol);
+    setDomainAliases(resp);
+  }
+  useEffect(() => {
+    if (address == undefined) return;
+    getDomainsOfAddress(address, symbol)
+  }, [address, symbol]);
+
 
   return (
     <div className={styles.page}>
@@ -59,6 +72,23 @@ const WalletReceiveTokens = ({
             </div>
           </div>
         </div>}
+        {domainAliases?.length > 0 && domainAliases.map((alias: string, index: number) =>
+          <div
+            key={index}
+            className={styles.principalCont}>
+            <div className={styles.accountShareCont}>
+              <div className={styles.accountShare}>Address Alias</div>
+            </div>
+            <div className={styles.accountDetail}>
+              <div className={styles.addressDisplay}>
+                {alias}
+                <CopyToClipboard text={alias}>
+                  <img src={ICON_COPY} className={styles.copyIcon} onClick={_onCopy} />
+                </CopyToClipboard>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div
         style={{

@@ -166,6 +166,7 @@ const Swap = ({
               setSelectedToken={setSelectedToken}
               selectedToken={selectedToken}
               address={address}
+              noDropdown
             />
             <div
               onClick={() => type == 'mint' ? console.log() : swapSelectedTokens()}
@@ -181,6 +182,7 @@ const Swap = ({
             selectedToken={selectedSecondToken}
             address={address}
             hideMax
+            noDropdown
           />
         </div>
       </div>

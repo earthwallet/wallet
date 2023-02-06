@@ -18,7 +18,8 @@ export const TokenSelectorDropdown = ({
     selectedToken,
     address,
     loading,
-    hideMax
+    hideMax,
+    noDropdown
 }: {
     filterTokenId?: string,
     tokenInfos: keyable,
@@ -29,7 +30,8 @@ export const TokenSelectorDropdown = ({
     selectedToken: any,
     address: string,
     loading?: boolean,
-    hideMax?: boolean
+    hideMax?: boolean,
+    noDropdown?: boolean
 }) => {
     const [open, setOpen] = useState<boolean>(false);
     const [overSecond, setOverSecond] = React.useState(false);
@@ -55,11 +57,11 @@ export const TokenSelectorDropdown = ({
             </div>
             : <div className={clsx(styles.sinput, overSecond && styles.sinput_active)}>
                 <div
-                    onClick={() => setOpen(!open)}
+                    onClick={() => noDropdown ? console.log() : setOpen(!open)}
                     className={styles.econt}>
                     {selectedToken?.icon ? <img className={styles.eicon} src={selectedToken?.icon}></img> : <div className={styles.eicon}>{selectedToken?.symbol?.charAt(0)}</div>}
                     <div>{selectedToken?.symbol}</div>
-                    <img className={styles.careticon} src={ICON_CARET} />
+                    {!noDropdown && <img className={styles.careticon} src={ICON_CARET} />}
                 </div>
                 <div className={styles.econtinput}>
                     {!hideMax && <div

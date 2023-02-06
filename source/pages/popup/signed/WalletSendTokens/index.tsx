@@ -822,7 +822,7 @@ const WalletSendTokens = ({
           {step1 ? (
             <NextStepButton
               disabled={
-                (selectedAmount == 0 &&
+                (selectedAmount <= 0 &&
                   getSelectedAsset(selectedAsset)?.format != 'nft') ||
                 loadingSend ||
                 !selectedRecp ||
