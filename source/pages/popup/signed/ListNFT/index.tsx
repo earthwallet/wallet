@@ -222,16 +222,16 @@ const ListNFT = ({
         <Header
             showBackArrow
             text={selectedAssetObj?.forSale
-                ? cancelListing ? 'Cancel Public Sale'
-                    : 'Update Price for Public Sale'
-                : 'List NFT for Public sale'}
+                ? cancelListing ? i18nT('listNFT.cancel')
+                    : i18nT('listNFT.updatePrice')
+                : i18nT('listNFT.listNFT')}
             type={'wallet'}
         ><div style={{ width: 39 }} />
         </Header>
         {cancelListing ?
 
             <div>
-                <div className={clsx(styles.info, styles.cancelinfo)}>Cancel listing is free and will unlist your NFT from public sale.</div>
+                <div className={clsx(styles.info, styles.cancelinfo)}>{i18nT('listNFT.cancelInfo')}</div>
             </div> :
             <div>
                 <div className={styles.earthInputLabel}>Price in ICP</div>
@@ -244,14 +244,13 @@ const ListNFT = ({
                     max="1.00"
                     min="0.00"
                     onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
-                    placeholder="price up to 8 decimal places"
+                    placeholder={i18nT('listNFT.placeholder')}
                     required
                     step="0.001"
                     type="number"
                     value={selectedAmount}
                 />
-                <div className={styles.info}>Enter a price upto 8 decimal places for public sale. Listing is free and on sale of NFT, 2.0% of the amount will be deducted towards 1.0% Creators Royalty fee,
-                    and a 1% Network Marketplace fee</div>
+                <div className={styles.info}>{i18nT('listNFT.info')}</div>
             </div>}
 
         <div
@@ -295,9 +294,9 @@ const ListNFT = ({
                 {
                     selectedAssetObj?.forSale
                         ? cancelListing
-                            ? 'Cancel Public Sale'
-                            : 'Update Price'
-                        : 'List for Public Sale'
+                            ? i18nT('listNFT.cancel')
+                            : i18nT('listNFT.updateBtn')
+                        : i18nT('listNFT.listBtn')
                 }
             </NextStepButton>
         </div>

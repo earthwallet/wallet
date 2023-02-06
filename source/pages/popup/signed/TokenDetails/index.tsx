@@ -30,6 +30,7 @@ import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
 import { getTransactions_ETH_MATIC } from '~utils/services';
 import { getTransactions_BTC_DOGE } from '~utils/btc';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
 }
@@ -122,19 +123,19 @@ const Wallet = ({
             onClick={() => setMainNav('tokens')}
             className={clsx(styles.tabnav,
               mainNav === 'tokens' && styles.tabnav_active)}>
-            Tokens
+            {i18nT('tokenDetails.tokens')}
           </div>
           <div
             onClick={() => setMainNav('nfts')}
             className={clsx(styles.tabnav,
               mainNav === 'nfts' && styles.tabnav_active)}
           >
-            NFTs
+            {i18nT('tokenDetails.nfts')}
           </div>
           <div onClick={() => setMainNav('apps')}
             className={clsx(styles.tabnav,
               mainNav === 'apps' && styles.tabnav_active)}>
-            Apps
+            {i18nT('tokenDetails.apps')}
           </div>
           <div className={styles.layoutnav}>
             <img
@@ -187,7 +188,7 @@ const Wallet = ({
               <Link className={styles.transactionsCont} to={"/account/receive/" + selectedAccount?.id}>
                 <div className={styles.tokenActionButton}>
                   <img className={styles.iconActions} src={icon_rec} />
-                  <div className={styles.tokenActionLabel}>Receive</div>
+                  <div className={styles.tokenActionLabel}>{i18nT('tokenDetails.rec')}</div>
                 </div>
               </Link>
             </div>
@@ -195,7 +196,7 @@ const Wallet = ({
               <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
                 <div className={styles.tokenActionButton}>
                   <img className={styles.iconActions} src={icon_send} />
-                  <div className={styles.tokenActionLabel}>Send</div>
+                  <div className={styles.tokenActionLabel}>{i18nT('tokenDetails.send')}</div>
                 </div>
               </Link>
             </div>
@@ -210,7 +211,7 @@ const Wallet = ({
               <Link className={styles.transactionsCont} to={"/account/export/" + selectedAccount?.id}>
                 <div className={styles.tokenActionButton}>
                   <img className={clsx(styles.iconActions, styles.exportIcon)} src={icon_send} />
-                  <div className={styles.tokenActionLabel}>Export</div>
+                  <div className={styles.tokenActionLabel}>{i18nT('tokenDetails.export')}</div>
                 </div>
               </Link>
             </div>
@@ -231,7 +232,7 @@ const Wallet = ({
                 styles.selectedTabView
               )}
             >
-              Transactions {walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
+              {i18nT('wallet.txns')}{' '}{walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
             </div>
           </div>
         </div>
@@ -255,7 +256,7 @@ const TokensList = ({ accountId }: { accountId: string }) => {
   return (
     <div className={styles.tokensList}>
       <div className={styles.listHeader}>
-        <div className={styles.listHeaderTitle}>Total Balance</div>
+        <div className={styles.listHeaderTitle}>{i18nT('tokenDetails.totalBalance')}</div>
         <div className={styles.listHeaderSubtitle}>${isNaN(activeTokenAndAddressBalance) ? 0 : activeTokenAndAddressBalance?.toFixed(2) || 0}</div>
       </div>
       <div className={styles.listitemscont}>
@@ -276,7 +277,7 @@ const TokensList = ({ accountId }: { accountId: string }) => {
             src={ICON_FORWARD}
           />
         </div>
-        {tokens?.length > 0 && tokens?.filter((token:keyable) => token?.symbol != null).map((token: keyable, i: number) => <div
+        {tokens?.length > 0 && tokens?.filter((token: keyable) => token?.symbol != null).map((token: keyable, i: number) => <div
           onClick={() => history.push('/th/' + accountId + '/' + token.id)}
           key={i}
           className={styles.listitem}>
@@ -310,7 +311,7 @@ const TokensList = ({ accountId }: { accountId: string }) => {
             <div>💎</div>
           </div>
           <div className={styles.listinfo}>
-            <div className={styles.listtitle}>Select Tokens</div>
+            <div className={styles.listtitle}>{i18nT('tokenDetails.select')}</div>
           </div>
           <div className={styles.liststats}></div>
           <img
@@ -338,7 +339,7 @@ const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: stri
 const TokenPrice_ETH = ({ contractAddress, balance }: { contractAddress: string, balance: any }) => {
   const currentUSDValue: keyable = useSelector(selectPriceByContractAddress(contractAddress));
   if (currentUSDValue == undefined || currentUSDValue?.usd == undefined)
-  return <></>;
+    return <></>;
   return <div className={styles.listsubtitle}>${(currentUSDValue?.usd * balance)?.toFixed(2) || 0}   {
     currentUSDValue?.usd_24h_change && (currentUSDValue?.usd * balance) !== 0
     && <span className={currentUSDValue?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentUSDValue?.usd_24h_change?.toFixed(2)}%</span>

@@ -20,6 +20,7 @@ import clsx from 'clsx';
 import { getTokenInfo } from '~global/tokens';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
 import { selectAccountById, selectBalanceById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ accountId: string, tokenId: string }> {
 }
@@ -70,7 +71,7 @@ const Swap = ({
 
   const updateAmount = (amount: number) => {
     if (selectedSecondToken?.id == null) {
-      show("Select second token!");
+      show(i18nT('swap.selectSec'));
       return;
     }
     setSelectedAmount(amount);
@@ -90,7 +91,7 @@ const Swap = ({
       setSelectedSecondAmount(Number(amount - getTokenInfo(tokenId).fees));
     }
     if (selectedAmount > maxAmount) {
-      show('Insufficient Balance');
+      show(i18nT('swap.inSuf'));
     }
   }
   const updateSecondAmount = (amount: number) => {
@@ -99,7 +100,7 @@ const Swap = ({
       setSelectedAmount(Number(selectedAmount?.toFixed(5)));
       setSelectedSecondAmount(amount);
       if (selectedAmount > maxAmount) {
-        show('Insufficient Balance');
+        show(i18nT('swap.inSuf'));
       }
     }
     else if (pairRatio == 1) {
@@ -107,7 +108,7 @@ const Swap = ({
       setSelectedAmount(selectedAmount);
       setSelectedSecondAmount(amount);
       if (selectedAmount > maxAmount) {
-        show('Insufficient Balance');
+        show(i18nT('swap.inSuf'));
       }
     }
     else {
@@ -120,9 +121,9 @@ const Swap = ({
     const response = await controller.tokens.swap(selectedToken.id, selectedSecondToken.id, selectedAmount);
     setPairRatio(response.ratio);
     setTotalSupply(response?.stats?.total_supply);
-    show("Stake Complete! Updating Balances");
+    show(i18nT('swap.stakeCompl'));
     await controller.tokens.getTokenBalances(address);
-    show("Done!");
+    show(i18nT('swap.done'));
     setLoading(false);
 
   }
@@ -151,7 +152,7 @@ const Swap = ({
         text={type == 'mint' ? 'Mint' : 'Swap'}
       ><div className={styles.empty} /></Header>
       <div>
-        <div className={styles.etxt}>Earth DEX lets you swap your tokens with no central middleman. Fees are used to offset emissions.</div>
+        <div className={styles.etxt}>{i18nT('swap.info')}</div>
 
         <div className={styles.swapCont}>
           <div className={styles.firstInputCont}>
@@ -186,7 +187,7 @@ const Swap = ({
       <div className={styles.statsCont}>
         <div className={styles.statsCol}>
           <div className={styles.statKey}>
-            {type == "mint" ? "Mint Fees" : "Swap Fees"}
+            {type == "mint" ? i18nT('swap.mintFees') : i18nT('swap.swapFees')}
           </div>
           <div className={clsx(styles.statVal, styles.statVal_small)}>
             {type == "mint" ? tokenInfo.fees : "0.3%"}
@@ -194,7 +195,7 @@ const Swap = ({
         </div>
         <div className={styles.statsCol}>
           <div className={styles.statKey}>
-            Price
+            {i18nT('swap.price')}
           </div>
           <div className={styles.statVal}>
             {priceFetch
@@ -212,7 +213,7 @@ const Swap = ({
         </div>
         <div className={styles.statsCol}>
           <div className={styles.statKey}>
-            Total Supply
+            {i18nT('swap.totalSupply')}
           </div>
           <div className={styles.statVal}>
             {priceFetch
@@ -232,7 +233,7 @@ const Swap = ({
           loading={loading}
           onClick={() => type == 'mint' ? mint() : swap()}
         >
-          {type == 'mint' ? selectedAmount > maxAmount ? 'Insufficient Balance' : 'Next' : 'Swap'}
+          {type == 'mint' ? selectedAmount > maxAmount ? i18nT('swap.inSuf') : i18nT('swap.next') : i18nT('swap.swap')}
         </NextStepButton>
       </div>
     </div >

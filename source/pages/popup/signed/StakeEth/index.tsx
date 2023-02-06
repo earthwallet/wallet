@@ -18,6 +18,7 @@ import { selectAccountById, selectBalanceByAccountId } from '~state/wallet';
 import { useHistory } from 'react-router-dom';
 import { debounce } from "lodash";
 import { swapFromReth, swapToReth } from '~utils/uniswap';
+import { i18nT } from '~i18n/index';
 
 const UNISWAP_MAX_ETH = 0.01;
 
@@ -133,16 +134,16 @@ const StakeEth = ({
         <div
           onClick={() => setTabWithAmount(0)}
           className={clsx(styles.tab, tab === 0 && styles.tab_active)}>
-          Stake
+          {i18nT('stakeEth.stake')}
         </div>
         <div
           onClick={() => setTabWithAmount(1)}
           className={clsx(styles.tab, tab === 1 && styles.tab_active)}>
-          Claim Rewards
+          {i18nT('stakeEth.claimRewards')}
         </div>
       </div>
       <div className={styles.tabcont}>
-        <div className={styles.tabText}>The Ethereum network rewards stakers for helping secure the blockchain. By staking ETH, you can earn up to 5% APY risk free from your self custody wallet.</div>
+        <div className={styles.tabText}>{i18nT('stakeEth.info')}</div>
         <div className={styles.labelCont}>
           <div className={styles.tokenStats}>
             <div className={styles.tokenLabel}>Available to {tab === 0 ? 'Stake' : 'Unstake'}:</div>
@@ -155,7 +156,7 @@ const StakeEth = ({
           </div>
           <div
             onClick={() => maxAmountSpend()}
-            className={styles.maxBtn}>Max</div>
+            className={styles.maxBtn}>{i18nT('stakeEth.max')}</div>
         </div>
         <div className={clsx(styles.inputCont, overSecond && styles.inputCont_active)}>
           <input
@@ -183,24 +184,24 @@ const StakeEth = ({
       <div className={styles.stats}>
         <div className={styles.row}>
           <div className={styles.col}>
-            <div className={styles.key}>Your Stake</div>
+            <div className={styles.key}>{i18nT('stakeEth.yourStake')}</div>
             <div className={styles.val}>{rETHInfo?.balanceTxt || '0.0'} {rETHInfo?.symbol}</div>
           </div>
           {<div className={styles.col}>
-            <div className={styles.key}>Staking Rewards</div>
+            <div className={styles.key}>{i18nT('stakeEth.stakingRewards')}</div>
             <div className={styles.val}>{parseFloat(rETHTokenInfo?.yearlyAPR || 3.6).toFixed(2)}% APR</div>
           </div>}
         </div>
         {<div className={styles.row}>
           <div className={styles.col}>
-            <div className={styles.key}>Total Staked</div>
+            <div className={styles.key}>{i18nT('stakeEth.total')}</div>
             <div className={styles.val}> {millify(parseInt(rETHTokenInfo?.ethStakingTotal || '218656'), {
               precision: 2,
               lowercase: false,
             })} ETH</div>
           </div>
           {<div className={styles.col}>
-            <div className={styles.key}>Validator Fee</div>
+            <div className={styles.key}>{i18nT('stakeEth.validatorFee')}</div>
             <div className={styles.val}>15%</div>
           </div>}
         </div>}
@@ -212,7 +213,7 @@ const StakeEth = ({
           loading={loading || ((Number.isNaN(selectedAmount) || selectedAmount == 0) ? false : params?.uniswap?.inputAmount != selectedAmount?.toString())}
           onClick={() => nextScreen()}
         >
-          {tab === 0 ? 'Stake' : 'Unstake'}
+          {tab === 0 ? i18nT('stakeEth.stake') : i18nT('stakeEth.unstake')}
         </NextStepButton>
       </div>
     </div>

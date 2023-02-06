@@ -95,7 +95,7 @@ const StakeEthConfirm = ({
         const txn = await transferUniswap(uniswap, selectedAccount.address, mnemonic, selectedAccount.symbol)
 
         setHash(txn?.hash)
-        show("Unstake request submitted successfully!")
+        show(i18nT('stakeEthConfirm.unstakeSucc'))
 
       } catch (error) {
         setIsBusy(false);
@@ -106,7 +106,7 @@ const StakeEthConfirm = ({
         const txn = await transferUniswap(uniswap, selectedAccount.address, mnemonic, selectedAccount.symbol)
         setHash(txn?.hash)
 
-        show("Stake request submitted successfully!")
+        show(i18nT('stakeEthConfirm.stakeSucc'))
 
       } catch (error) {
         setIsBusy(false);
@@ -121,7 +121,7 @@ const StakeEthConfirm = ({
       <Header
         type={'wallet'}
         text={uniswap?.outputToken == "ETH"
-          ? "Unstake ETH" : "Stake ETH"}
+          ? i18nT('stakeEthConfirm.unstake') + " ETH" : i18nT('stakeEthConfirm.stake') + " ETH"}
       ><div className={styles.empty} /></Header>
 
       <div className={styles.ethWrapContainer}>
@@ -143,7 +143,7 @@ const StakeEthConfirm = ({
         </div>
         <div className={styles.gasFeeContainer}>
           <div className={styles.leftSideContainer}>
-            <span className={styles.gasFeeText}>Estimated Gas Fee</span>
+            <span className={styles.gasFeeText}>{i18nT('stakeEthConfirm.estGas')}</span>
           </div>
           <div className={styles.rightSideContainer}>
             <span className={styles.earthText}>{gas?.toFixed(5)} ETH</span>
@@ -151,7 +151,7 @@ const StakeEthConfirm = ({
           </div>
         </div>
         <div className={styles.totalContainer}>
-          <span className={styles.totalText}>Total</span>
+          <span className={styles.totalText}>{i18nT('stakeEthConfirm.total')}</span>
           <div className={styles.rightSideTotalContainer}>
             <span className={styles.totalEarthVal}>{((selectedAmount * 1 / ratio) + gas + earthFees).toFixed(5)} ETH</span>
             <span className={styles.totalUSDVal}>${((parseFloat(selectedAmount) + gas + earthFees) * usd).toFixed(2)}</span>
@@ -166,7 +166,7 @@ const StakeEthConfirm = ({
         <section className={styles.footerSuccess}>
           <ActionButton onClick={() => history.replace('/account/details/' + selectedAccount.id)
           }>
-            &nbsp;&nbsp;&nbsp;Transaction Complete!&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;{i18nT('stakeEthConfirm.txnComplete')}&nbsp;&nbsp;&nbsp;
           </ActionButton>
         </section>
       ) : (
@@ -187,7 +187,7 @@ const StakeEthConfirm = ({
           )}
           <div className={styles.actions}>
             <ActionButton actionType="secondary" onClick={handleCancel}>
-              Cancel
+              {i18nT('stakeEthConfirm.cancel')}
             </ActionButton>
             <ActionButton
               disabled={error != 'NO_ERROR'}
@@ -195,7 +195,7 @@ const StakeEthConfirm = ({
                 () => sign()
               }
             >
-              {uniswap?.outputToken == "ETH" ? "Unstake" : "Stake"}
+              {uniswap?.outputToken == "ETH" ? i18nT('stakeEthConfirm.unstake') : i18nT('stakeEthConfirm.stake')}
             </ActionButton>
           </div>
         </section>

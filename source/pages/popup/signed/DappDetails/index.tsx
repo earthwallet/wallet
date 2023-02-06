@@ -19,6 +19,7 @@ import { useHistory } from 'react-router-dom';
 import { useController } from '~hooks/useController';
 import ICON_TX_ERROR from '~assets/images/icon_tx_error.svg';
 import { selectAccountById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ origin: string }> {
 }
@@ -65,7 +66,7 @@ const DappDetails = ({
               <div>
                 <div className={styles.row}>
                   <div className={styles.checkboxTitle}>
-                    Dapp Origin
+                    {i18nT('dappDetails.dappOrigin')}
                   </div>
                   <div className={styles.checkboxSubTitle}>
                     {dapp?.origin}
@@ -73,7 +74,7 @@ const DappDetails = ({
                 </div>
                 <div className={styles.row}>
                   <div className={styles.checkboxTitle}>
-                    Connected Address
+                    {i18nT('dappDetails.connectAddr')}
                   </div>
                   <div className={styles.checkboxSubTitle}>
                     {dapp?.address && getShortAddress(dapp?.address)}
@@ -91,7 +92,7 @@ const DappDetails = ({
 
         <div className={styles.earthInputCont}>
           <div className={styles.labelText}>
-            Dapp Requests - {dappRequests?.length}
+            {i18nT('dappDetails.dappReqs')}{' '}{dappRequests?.length}
           </div>
           <div>
             {dappRequests?.length > 0 && dappRequests?.sort((a: keyable, b: keyable) => (b.completedAt || 0) - (a.completedAt || 0)).map((dappRequest: keyable) => <div
@@ -99,32 +100,32 @@ const DappDetails = ({
               className={styles.requestContainer}
             >
               <div className={styles.label}>
-                Request Id
+                {i18nT('dappDetails.reqId')}
               </div>
               <div className={styles.value}>
                 {dappRequest.id}
               </div>
               {dappRequest?.completedAt && <><div className={styles.label}>
-                Completed on
+                {i18nT('dappDetails.completedOn')}
               </div>
                 <div className={styles.value}>
                   {dappRequest.completedAt && moment(dappRequest.completedAt).format('MMMM Do YYYY, h:mm:ss a')}
                 </div></>}
               {dappRequest?.ethSignType && <>
                 <div className={styles.label}>
-                  Request Type
+                  {i18nT('dappDetails.reqType')}
                 </div>
                 <div className={styles.value}>
                   {dappRequest?.ethSignType}
                 </div></>}
               {symbol == 'ICP' && <><div className={styles.label}>
-                Batch Request
+                {i18nT('dappDetails.batchReq')}
               </div>
                 <div className={styles.value}>
                   {Array.isArray(dappRequest.request) ? 'True' : 'False'}
                 </div></>}
               <div className={styles.label}>
-                Response{safeParseJSON(dappRequest?.response)?.type == 'error' && <img className={styles.errorIcon} src={ICON_TX_ERROR} />}
+                {i18nT('dappDetails.response')}{' '}{safeParseJSON(dappRequest?.response)?.type == 'error' && <img className={styles.errorIcon} src={ICON_TX_ERROR} />}
               </div>
               <div className={styles.value}>
                 {dappRequest.response}

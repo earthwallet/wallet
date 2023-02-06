@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { selectActiveTokensByAddress, selectTokensInfo } from '~state/tokens';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 import { selectAccountById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
 interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 
@@ -30,7 +31,7 @@ const SelectTokens = ({
   const history = useHistory();
   const selectedAccount = useSelector(selectAccountById(accountId));
   const { address } = selectedAccount;
-  
+
   const tokenInfos = useSelector(selectTokensInfo(address));
   const tokens = useSelector(selectActiveTokensByAddress(address));
   const [checkedArr, setCheckedArr] = useState<string[]>([]);
@@ -75,12 +76,12 @@ const SelectTokens = ({
     <div className={styles.page}>
       <Header
         type={'wallet'}
-        text={'Select Tokens'}
+        text={i18nT('tokensListed.header')}
       ><div className={styles.empty} /></Header>
       <div className={styles.container}>
         <div className={styles.earthInputCont}>
           <div className={styles.labelText}>
-            Tokens Listed
+            {i18nT('tokensListed.cta')}
           </div>
         </div>
         <div
@@ -119,7 +120,7 @@ const SelectTokens = ({
           disabled={existingActive.length === checkedArr.length}
           onClick={() => updateTokens()}
         >
-          {'Update'}
+          {i18nT('addNetwork.cta')}
         </NextStepButton>
       </div>
     </div>

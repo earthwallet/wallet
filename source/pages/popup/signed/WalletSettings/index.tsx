@@ -13,7 +13,7 @@ import { AppState } from '~state/store';
 import { useController } from '~hooks/useController';
 import ICON_LANG from '~assets/images/icon_lang.svg';
 import ICON_DAPPS from '~assets/images/icon_dapps.svg';
-import i18n from '~i18n/index';
+import i18n, { i18nT } from '~i18n/index';
 
 const WalletSettings = () => {
   const history = useHistory();
@@ -38,7 +38,7 @@ const WalletSettings = () => {
         <div className={styles.empty} />
       </Header>
       <div className={styles.myAc}>
-        Account Settings
+        {i18nT('walletSettings.header')}
       </div>
       <div className={styles.container}>
         <div className={styles.earthInputCont}>
@@ -50,8 +50,7 @@ const WalletSettings = () => {
           >
             <div className={styles.checkOverride}>
               <div className={styles.overrideLabel}>
-                Use <b>Earth Wallet</b> as your default Web3 wallet
-                provider
+                {i18nT('walletSettings.checkbox')}
               </div>
               {overrideEthereum ? (
                 <img
@@ -82,7 +81,7 @@ const WalletSettings = () => {
               <img src={ICON_LANG} className={styles.networkIcon} />
               <div className={styles.midCont}>
                 <div className={styles.checkboxTitle}>
-                  Language
+                  {i18nT('walletSettings.language')}
                 </div>
                 <div className={styles.subinfo}>{i18n.locale?.toLocaleUpperCase()}</div>
               </div>
@@ -101,7 +100,7 @@ const WalletSettings = () => {
               <img src={ICON_DAPPS} className={styles.networkIcon} />
               <div className={styles.midCont}>
                 <div className={styles.checkboxTitle}>
-                  Trusted Dapps
+                  {i18nT('walletSettings.trustedDapps')}
                 </div>
                 <div className={styles.subinfo}>{dapps.length}</div>
               </div>
@@ -109,36 +108,6 @@ const WalletSettings = () => {
             <img src={ICON_FORWARD} />
           </div>
         </div>
-        {/*  <div className={styles.earthInputCont}>
-          <div className={styles.labelText}>Connected Dapps</div>
-        </div>
-        <div className={clsx(styles.earthInputCont, styles.mnemonicInputCont)}>
-          {dapps.length !== 0 &&
-            dapps?.map((dapp: keyable) => (
-              <div
-                onClick={() =>
-                  history.push(
-                    '/dappdetails/' + encodeURIComponent(dapp?.origin)
-                  )
-                }
-                key={dapp.origin}
-                className={styles.checkboxCont}
-              >
-                <div className={styles.checkboxContent}>
-                  <img src={dapp?.logo} className={styles.networkIcon} />
-                  <div>
-                    <div className={styles.checkboxTitle}>
-                      {dapp?.origin} {dapp?.title}
-                    </div>
-                    <div className={styles.checkboxSubTitle}>
-                      {dapp?.address && getShortAddress(dapp?.address)}
-                    </div>
-                  </div>
-                </div>
-                <img src={ICON_FORWARD} />
-              </div>
-            ))}
-        </div> */}
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import useToast from '~hooks/useToast';
 import { getInfoBySymbol } from '~global/constant';
 import ToolTipInfo from '~components/ToolTipInfo';
 import { selectInfoBySymbolOrToken } from '~state/tokens';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ accountId: string, symbolOrTokenId?: string }> { }
 const WalletReceiveTokens = ({
@@ -32,7 +33,7 @@ const WalletReceiveTokens = ({
   return (
     <div className={styles.page}>
       <Header
-        text={`Receive`}
+        text={i18nT('walletReceiveTokens.header')}
         showAccountsDropdown showMenu type="wallet" > <div className={styles.empty} /></Header>
       <div className={styles.container}>
         {symbolOrTokenInfo?.addressType == 'principal'
@@ -44,10 +45,10 @@ const WalletReceiveTokens = ({
             _onCopy={_onCopy} />}
         {symbolOrTokenInfo?.addressType != 'principal' && selectedAccount?.meta?.principalId && <div className={styles.principalCont}>
           <div className={styles.accountShareCont}>
-            <div className={styles.accountShare}>Your Principal Id</div>
+            <div className={styles.accountShare}>{i18nT('walletReceiveTokens.princLabel')}</div>
             <ToolTipInfo
               placement='left'
-              title={`With Principal IDs you can create canisters, and authenticate yourself on Internet Computer apps & services.`} />
+              title={i18nT('walletReceiveTokens.princTooltip')} />
           </div>
           <div className={styles.accountDetail}>
             <div className={styles.addressDisplay}>
@@ -73,7 +74,7 @@ const WalletReceiveTokens = ({
             history.push(`/account/export/${selectedAccount?.id || ''}`)
           }
         >
-          {'Export Account'}
+          {i18nT('walletReceiveTokens.cta')}
         </NextStepButton>
       </div>
     </div >
@@ -85,10 +86,10 @@ const IdCard = ({ id, symbol, _onCopy }: { id: string, symbol: string, _onCopy: 
     <div className={styles.accountShare}>Your {
       getInfoBySymbol(symbol)?.addressTitle != undefined
         ? getInfoBySymbol(symbol)?.addressTitle
-        : "Public Address"}</div>
+        : i18nT('walletReceiveTokens.pubAddr')}</div>
     <ToolTipInfo
       placement='left'
-      title={`Share this unique id to receive ${symbol}`} />
+      title={i18nT('walletReceiveTokens.tooltip') + ` ${symbol}`} />
   </div>
 
     <div className={styles.accountDetail}>

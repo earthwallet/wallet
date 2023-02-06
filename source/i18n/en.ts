@@ -125,8 +125,8 @@ const en = {
     total: 'Total',
     noZeroWith: 'Amount cannot be zero. Transaction fees is',
   },
-  //
   walletReceiveTokens: {
+    header: 'Receive',
     tooltip: 'Share this unique id to receive ',
     pubAddr: 'Public Address',
     cta: 'Export Account',
@@ -144,6 +144,7 @@ const en = {
     cta: 'Update',
     header: 'Select Tokens',
   },
+  //
   nftList: {
     noNFTs: 'No NFTs Found',
     free: 'Free',
@@ -156,8 +157,12 @@ const en = {
     cancel: 'Cancel Public Sale',
     updatePrice: 'Update Price for Public Sale',
     listNFT: 'List NFT for Public sale',
+    updateBtn: 'Update Price',
+    listBtn: 'List for Public Sale',
+    info: 'Enter a price upto 8 decimal places for public sale. Listing is free and on sale of NFT, 2.0% of the amount will be deducted towards 1.0% Creators Royalty fee, and a 1% Network Marketplace fee',
     cancelInfo:
       'Cancel listing is free and will unlist your NFT from public sale.',
+    placeholder: 'price up to 8 decimal places',
   },
   nftDetails: {
     transfer: 'Transfer',
@@ -168,27 +173,34 @@ const en = {
   nftAirdropDetails: {
     listed: 'Listed for sale',
     airdrop: 'Airdrop',
+    free: 'Free',
+    claimed: 'Claimed',
   },
   createNFT: {
     txns: 'Transactions',
   },
   walletSettings: {
+    header: 'Account Settings',
     web3: 'Default Web3 Provider',
-    checkbox:
-      'Check this box to use Earth Wallet as your default Web3 wallet provider',
+    checkbox: 'Use Earth Wallet as your default Web3 wallet provider',
     connectDapps: 'Connected Dapps',
+    language: 'Language',
+    trustedDapps: 'Trusted Dapps',
   },
   dappDetails: {
     dappOrigin: 'Dapp Origin',
     connectAddr: 'Connected Address',
-    dappReqs: ' Dapp Requests - ',
+    dappReqs: ' Dapp Requests -',
     reqId: 'Request Id',
     completedOn: 'Completed on',
     reqType: 'Request Type',
     batchReq: 'Batch Request',
+    response: 'Response',
   },
   stake: {
     cta: 'Add Stake To Liquidity Pool',
+    add: 'Add',
+    stake: 'Stakes',
     fees: 'LP Fees',
     price: 'Price',
     complete: 'Stake Complete! Updating Balances',
@@ -204,6 +216,7 @@ const en = {
     stakingRewards: 'Staking Rewards',
     total: 'Total Staked',
     validatorFee: 'Validator Fee',
+    max: 'Max',
     info: 'The Ethereum network rewards stakers for helping secure the blockchain. By staking ETH, you can earn up to 5% APY risk free from your self custody wallet.',
   },
   stakeEthConfirm: {
@@ -220,12 +233,14 @@ const en = {
     info: 'Earth DEX lets you swap your tokens with no central middleman. Fees are used to offset emissions.',
     mintFees: 'Mint Fees',
     swapFees: 'Swap Fees',
+    price: 'Price',
     totalSupply: 'Total Supply',
     inSuf: 'Insufficient Balance',
     next: 'Next',
     swap: 'Swap',
     stakeCompl: 'Stake Complete! Updating Balances',
     selectSec: 'Select second token!',
+    done: 'Done!',
   },
   tokenDetailsWithInfo: {
     mint: 'Mint',

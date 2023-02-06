@@ -18,6 +18,7 @@ import { swapToReth } from '~utils/uniswap';
 import { ROCKETPOOL_CONTRACT_ADDR } from '~global/tokens';
 import { useController } from '~hooks/useController';
 import { selectAccountById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ accountId: string, symbolOrTokenId: string }> {
 }
@@ -68,20 +69,20 @@ const TokenDetailsWithInfo = ({
             onClick={() => history.push('/swap/' + accountId + "/" + symbolOrTokenId + '?type=mint')}
             className={styles.btnprimary}>
             <img src={ICON_MINT} className={styles.btnicon} />
-            <div className={styles.btntxt}>Mint</div>
+            <div className={styles.btntxt}>{i18nT('tokenDetailsWithInfo.mint')}</div>
           </div>)}
 
           <div
             onClick={() => history.push("/account/receive/" + accountId + "/" + symbolOrTokenId)}
             className={styles.btnprimary}>
             <img className={styles.btnicon} src={icon_rec} />
-            <div className={styles.btntxt}>Receive</div>
+            <div className={styles.btntxt}>{i18nT('tokenDetailsWithInfo.recv')}</div>
           </div>
           <div
             onClick={() => history.push(symbolOrTokenInfo?.type == 'symbol' ? "/account/send/" + accountId : "/account/send/" + accountId + "?tokenId=" + symbolOrTokenId)}
             className={styles.btnprimary}>
             <img className={styles.btnicon} src={icon_send} />
-            <div className={styles.btntxt}>Send</div>
+            <div className={styles.btntxt}>{i18nT('tokenDetailsWithInfo.send')}</div>
           </div>
         </div>
         {selectedAccount.symbol == 'ETH' && <div className={styles.cta}>
@@ -89,20 +90,20 @@ const TokenDetailsWithInfo = ({
             onClick={() => history.push('/stake_eth/' + accountId + "/")}
             className={clsx(styles.btnprimary, styles.btnsecondary)}>
             <img src={ICON_STAKE} className={styles.btnicon} />
-            <div className={styles.btntxt}>Stake</div>
+            <div className={styles.btntxt}>{i18nT('tokenDetailsWithInfo.stake')}</div>
           </div>
         </div>}
         <div className={styles.stats}>
           {symbolOrTokenInfo.usd_market_cap && <div className={styles.row}>
             <div className={styles.col}>
-              <div className={styles.key}>Market Cap</div>
+              <div className={styles.key}>{i18nT('tokenDetailsWithInfo.marketCap')}</div>
               <div className={styles.val}>${millify(symbolOrTokenInfo?.usd_market_cap || 0, {
                 precision: 2,
                 lowercase: true,
               })}</div>
             </div>
             {symbolOrTokenInfo.usd_24h_vol && <div className={styles.col}>
-              <div className={styles.key}>24h Volume</div>
+              <div className={styles.key}>{i18nT('tokenDetailsWithInfo.vol')}</div>
               <div className={styles.val}>${millify(Math.abs(symbolOrTokenInfo?.usd_24h_vol || 0), {
                 precision: 2,
                 lowercase: true,
@@ -111,7 +112,7 @@ const TokenDetailsWithInfo = ({
           </div>}
           {symbolOrTokenInfo?.totalSupply && <div className={styles.row}>
             <div className={styles.col}>
-              <div className={styles.key}>Max Supply</div>
+              <div className={styles.key}>{i18nT('tokenDetailsWithInfo.maxSupply')}</div>
               <div className={styles.val}>{symbolOrTokenInfo?.totalSupply == 'Infinite' ? '∞ Unlimited' : millify(Math.abs(symbolOrTokenInfo?.totalSupply || 0), {
                 precision: 2,
                 lowercase: true,
@@ -120,11 +121,11 @@ const TokenDetailsWithInfo = ({
           </div>}
           {symbolOrTokenId == "ETH" && <div className={styles.row}>
             <div className={styles.col}>
-              <div className={styles.key}>Your Stake</div>
+              <div className={styles.key}>{i18nT('tokenDetailsWithInfo.yourStake')}</div>
               <div className={styles.val}>{rETHInfo?.balanceTxt || '0.0'} {rETHInfo?.symbol}</div>
             </div>
             {symbolOrTokenInfo.usd_24h_vol && <div className={styles.col}>
-              <div className={styles.key}>Staking Rewards</div>
+              <div className={styles.key}>{i18nT('tokenDetailsWithInfo.stakeRewards')}</div>
               <div className={styles.val}>{parseFloat(rETHTokenInfo?.yearlyAPR || 3.6).toFixed(2)}% APR</div>
             </div>}
           </div>}

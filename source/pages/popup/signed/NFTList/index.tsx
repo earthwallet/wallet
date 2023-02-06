@@ -16,6 +16,7 @@ import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { selectAirdropStatus, selectCollectionInfo } from '~state/assets';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
 }
@@ -133,7 +134,7 @@ export const AssetsList = ({ accountId }: { accountId: string }) => {
         if (airdropAssetStatus?.airdropEnabled) {
             return <div className={styles.listitemscont}><AirDropCampaign /></div>
         }
-        return <div className={styles.centerDiv}>No NFTs Found</div>
+        return <div className={styles.centerDiv}>{i18nT('nftList.noNFTs')}</div>
     } else {
         return <div className={styles.listitemscont}>
             {airdropAssetStatus?.airdropEnabled && <AirDropCampaign />}
@@ -179,8 +180,8 @@ export const AssetsList = ({ accountId }: { accountId: string }) => {
                     <div
                         className={styles.liststats}
                     ><div className={styles.listprice}>{asset?.forSale
-                        ? 'For sale'
-                        : 'Unlisted'}</div>
+                        ? i18nT('nftList.forSale')
+                        : i18nT('nftList.unlisted')}</div>
                         {asset?.forSale && <div className={styles.listsubtitle}>{(asset?.info?.price / 100000000)?.toFixed(2)} ICP</div>}
                     </div>
                     <img
@@ -202,7 +203,7 @@ const ExploreCollections = ({ address }: { address: string }) => {
             <div>💎</div>
         </div>
         <div className={styles.listinfo}>
-            <div className={styles.listtitle}>Explore Collections</div>
+            <div className={styles.listtitle}>{i18nT('nftList.explore')}</div>
         </div>
         <div className={styles.liststats}></div>
         <img
@@ -238,7 +239,7 @@ export const AssetsCoverflow = ({ accountId }: { accountId: string }) => {
         }
     }
     if (assets?.length == 0 && !(airdropAssetStatus?.airdropEnabled)) {
-        return <div className={styles.centerDivGrid}>No NFTs Found</div>
+        return <div className={styles.centerDivGrid}>{i18nT('nftList.noNFTs')}</div>
     } else {
         return (
             <Swiper
@@ -256,10 +257,10 @@ export const AssetsCoverflow = ({ accountId }: { accountId: string }) => {
                             className={styles.imagetitle}>{airdropAsset?.name}</div>
                         {airdropAssetStatus?.accountIdVerified == undefined
                             ? <div className={styles.imagepagin}>
-                                <span className={styles.freetxt}>Free</span>
+                                <span className={styles.freetxt}>{i18nT('nftList.free')}</span>
                             </div>
                             : <div className={styles.imagepagin}>
-                                Claimed
+                                {i18nT('nftList.claimed')}
                             </div>
                         }
                     </div>

@@ -14,6 +14,7 @@ import { getShortAddress } from '~utils/common';
 import { ClipLoader } from 'react-spinners';
 import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
   className?: string;
@@ -148,7 +149,7 @@ const Transactions = ({
         >
           <img src={ICON_CARET} />
 
-          <div className={styles.transTitle}>Transactions</div>
+          <div className={styles.transTitle}>{i18nT('nftAirdropDetails.txns')}</div>
         </div>
 
         <div className={styles.transItems}>

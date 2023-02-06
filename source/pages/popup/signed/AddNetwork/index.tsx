@@ -14,6 +14,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
 import { selectActiveAccountsByGroupId } from '~state/wallet';
 import { LIVE_SYMBOLS_OBJS } from '~global/constant';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ groupId: string }> {
 }
@@ -70,12 +71,12 @@ const AddNetwork = ({
     <div className={styles.page}>
       <Header
         type={'wallet'}
-        text={'Add a Network'}
+        text={i18nT('addNetwork.header')}
       ><div className={styles.empty} /></Header>
       <div className={styles.container}>
         <div className={styles.earthInputCont}>
           <div className={styles.labelText}>
-            Select Networks
+            {i18nT('addNetwork.selectNet')}
           </div>
         </div>
         <div
@@ -111,7 +112,7 @@ const AddNetwork = ({
           disabled={existingActive.length === checkedArr.length}
           onClick={_UpdateNetworks}
         >
-          {'Update'}
+          {i18nT('addNetwork.cta')}
         </NextStepButton>
       </div>
     </div>

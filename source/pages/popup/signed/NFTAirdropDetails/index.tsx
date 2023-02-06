@@ -12,6 +12,7 @@ import ICON_TWITTER from '~assets/images/icon_twitter.svg';
 import { selectAirdropStatus } from '~state/assets';
 import Confetti from 'react-confetti'
 import { selectAccountById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ assetId: string, accountId: string }> {
 
@@ -82,10 +83,10 @@ const NFTAirdropDetails = ({
                                 <Skeleton width={72} />
                             </SkeletonTheme>
                             : asset?.forSale
-                                ? 'Listed for sale'
-                                : 'Airdrop'}
+                                ? i18nT('nftAirdropDetails.listed')
+                                : i18nT('nftAirdropDetails.airdrop')}
                         </div>
-                        {airdropAssetStatus?.accountIdVerified == undefined ? <div className={styles.price}>Free</div> : <div className={styles.price}>Claimed</div>}
+                        {airdropAssetStatus?.accountIdVerified == undefined ? <div className={styles.price}>{i18nT('nftAirdropDetails.free')}</div> : <div className={styles.price}>{i18nT('nftAirdropDetails.claimed')}</div>}
                     </div>
                     <div className={styles.sep}></div>
                     <div className={styles.creatorCont}>

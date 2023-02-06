@@ -13,6 +13,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { selectCollectionInfo } from '~state/assets';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import { getTokenInfoFromTokenId } from '~utils/services';
+import { i18nT } from '~i18n/index';
 
 
 interface Props extends RouteComponentProps<{ assetId: string }> {
@@ -35,7 +36,7 @@ const NFTDetails = ({
     const [loading, setLoading] = useState(false);
     const controller = useController();
     const assetCollectionInfo: keyable = useSelector(selectCollectionInfo(canisterId || ''));
-    const accountId = asset.symbol == "MATIC" ?  `${asset.symbol}:${asset.address}` : asset.address;
+    const accountId = asset.symbol == "MATIC" ? `${asset.symbol}:${asset.address}` : asset.address;
 
     useEffect((): void => {
         setLoading(true);
@@ -62,13 +63,13 @@ const NFTDetails = ({
                 style={{ backgroundImage: `url(${getTokenImageURL(asset)})` }} >
                 <div className={styles.actions}>
                     <div onClick={() => history.push(`/account/send/${accountId}?assetId=${asset.id}`)}
-                        className={styles.action}>Transfer</div>
+                        className={styles.action}>{i18nT('nftDetails.transfer')}</div>
                     {(asset?.symbol == 'ICP') && <div
                         onClick={() => history.push(`/account/listnft/${accountId}?assetId=${asset.id}`)}
                         className={clsx(styles.action, styles.secAction)}>{asset?.forSale ? 'Update' : 'List for Sale'}</div>}
                     {asset?.forSale && <div
                         onClick={() => history.push(`/account/listnft/${accountId}?assetId=${asset.id}&cancel=true`)}
-                        className={clsx(styles.action, styles.secAction)}>Cancel</div>}
+                        className={clsx(styles.action, styles.secAction)}>{i18nT('nftDetails.cancel')}</div>}
                 </div>
             </div>
             <div className={styles.mainCont}>
@@ -80,8 +81,8 @@ const NFTDetails = ({
                                 <Skeleton width={72} />
                             </SkeletonTheme>
                             : asset?.forSale
-                                ? 'Listed for sale'
-                                : 'Unlisted'}
+                                ? i18nT('nftDetails.listed')
+                                : i18nT('nftDetails.unlisted')}
                         </div>
                         {asset?.forSale && <div className={styles.price}>{(asset?.info?.price / 100000000).toFixed(3)} ICP</div>}
                     </div>
