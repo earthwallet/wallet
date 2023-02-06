@@ -144,7 +144,6 @@ const en = {
     cta: 'Update',
     header: 'Select Tokens',
   },
-  //
   nftList: {
     noNFTs: 'No NFTs Found',
     free: 'Free',

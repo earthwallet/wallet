@@ -1,13 +1,41 @@
 import { I18n, Scope, TranslateOptions } from 'i18n-js';
 
+import ar from './ar';
+import bn from './bn';
+
 import en from './en';
+import es from './es';
+import fr from './fr';
+import hi from './hi';
+import mr from './mr';
+import ru from './ru';
+import sw from './sw';
 import te from './te';
+
+import ta from './ta';
+import th from './th';
+import ur from './ur';
+import vi from './vi';
+import zh from './zh';
 
 //https://github.com/ladjs/i18n-locales
 
 const translations = {
+  ar: ar,
+  bn: bn,
   en: en,
+  es: es,
+  fr: fr,
+  hi: hi,
+  mr: mr,
+  ru: ru,
+  sw: sw,
+  ta: ta,
   te: te,
+  th: th,
+  ur: ur,
+  vi: vi,
+  zh: zh,
 };
 
 export const translationsLabels = {
