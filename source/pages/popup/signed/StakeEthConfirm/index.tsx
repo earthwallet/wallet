@@ -21,6 +21,7 @@ import Warning from '~components/Warning';
 import { useHistory } from 'react-router-dom';
 import { transferUniswap } from '~utils/services';
 import useToast from '~hooks/useToast';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
 }
@@ -68,14 +69,14 @@ const StakeEthConfirm = ({
             ? decryptString(selectedAccount?.vault.encryptedMnemonic, password)
             : decryptString(selectedAccount?.vault.encryptedJson, password);
       } catch (error) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       }
       if (
         selectedAccount?.symbol === 'ICP'
           ? !isJsonString(secret)
           : !validateMnemonic(secret)
       ) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       } else {
         setError('NO_ERROR');
       }
@@ -174,9 +175,9 @@ const StakeEthConfirm = ({
             data-export-password
             disabled={isBusy}
             isError={pass.length < MIN_LENGTH || !!error}
-            label={'password for this account'}
+            label={i18nT('common.passwordForAc')}
             onChange={onPassChange}
-            placeholder="REQUIRED"
+            placeholder={i18nT('common.requiredPlaceholder')}
             type="password"
           />
           {error && error != 'NO_ERROR' && (

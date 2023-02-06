@@ -35,6 +35,7 @@ import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import { getERC20TransferGasLimit, getERC721TransferGasLimit, getFeesExtended, getMaxAmount_ETH } from '~utils/services';
 import { debounce } from 'lodash';
 import { getFeeRateAndFees_BTC_DOGE } from '~utils/btc';
+import { i18nT } from '~i18n/index';
 
 const MIN_LENGTH = 6;
 const DEFAULT_FEE_INDEX = 1;
@@ -240,13 +241,13 @@ const WalletSendTokens = ({
     try {
       mnemonic = decryptString(selectedAccount?.vault.encryptedMnemonic, pass);
     } catch (error) {
-      setError('Wrong password! Please try again');
+      setError(i18nT('common.wrongPass'));
       setIsBusy(false);
     }
     try {
       if (selectedAmount === 0) {
         getSelectedAsset(selectedAsset)?.format != 'nft' &&
-          alert('Amount cannot be 0');
+        alert(i18nT('walletSendTokens.noZeroAmount'));
       }
       let hash: any;
       if (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'DOGE') {
@@ -295,7 +296,7 @@ const WalletSendTokens = ({
         .then(() => { });
       setLoadingSend(false);
       setTxCompleteTxt(
-        'Payment Done! Check transactions for more details.' || hash || ''
+        i18nT('walletSendTokens.payDone') || hash || ''
       );
       setDone(true);
       setIsBusy(false);
@@ -316,7 +317,7 @@ const WalletSendTokens = ({
     try {
       secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
     } catch (error) {
-      setError('Wrong password! Please try again');
+      setError(i18nT('common.wrongPass'));
       setIsBusy(false);
     }
 
@@ -328,7 +329,7 @@ const WalletSendTokens = ({
       if (selectedAsset === selectedAccount?.symbol) {
         try {
           if (selectedAmount === 0) {
-            alert('Amount cannot be 0');
+            alert(i18nT('walletSendTokens.noZeroAmount'));
           }
           const index: BigInt = await controller.accounts.sendICP(
             secret,
@@ -345,16 +346,14 @@ const WalletSendTokens = ({
                 history.replace(`/account/transaction/${hash}`);
               } else {
                 setLoadingSend(false);
-                setTxCompleteTxt(
-                  'Payment Done! Check transactions for more details.'
-                );
+                setTxCompleteTxt(i18nT('walletSendTokens.payDone'));
                 setDone(true);
                 setIsBusy(false);
               }
             });
         } catch (error) {
           console.log(error);
-          setTxError('Please try again! Error: ' + JSON.stringify(error));
+          setTxError(i18nT('walletSendTokens.tryAgain') + JSON.stringify(error));
           setLoadingSend(false);
           setIsBusy(false);
         }
@@ -375,7 +374,7 @@ const WalletSendTokens = ({
             )
             .then(() => {
               setTxCompleteTxt(
-                'Successfully transferred to ' +
+                i18nT('walletSendTokens.successTxn') +
                 getShortAddress(selectedRecp, 3)
               );
               setDone(true);
@@ -395,7 +394,7 @@ const WalletSendTokens = ({
             )
             .then(() => {
               setTxCompleteTxt(
-                'Successfully transferred to ' +
+                i18nT('walletSendTokens.successTxn') +
                 getShortAddress(selectedRecp, 3)
               );
               setDone(true);
@@ -428,7 +427,7 @@ const WalletSendTokens = ({
             }
 
             setTxCompleteTxt(
-              'Successfully transferred NFT to ' +
+              i18nT('walletSendTokens.successNftTxn') +
               getShortAddress(selectedRecp, 3)
             );
             setDone(true);
@@ -445,14 +444,14 @@ const WalletSendTokens = ({
             });
           } catch (error) {
             console.log(error);
-            setTxError('Please try again! Error: ' + JSON.stringify(error));
+            setTxError(i18nT('walletSendTokens.tryAgain') + JSON.stringify(error));
             setLoadingSend(false);
             setIsBusy(false);
           }
         }
       }
     } else {
-      setError('Wrong password! Please try again');
+      setError(i18nT('common.wrongPass'));
       setIsBusy(false);
     }
 
@@ -471,14 +470,14 @@ const WalletSendTokens = ({
             ? decryptString(selectedAccount?.vault.encryptedMnemonic, password)
             : decryptString(selectedAccount?.vault.encryptedJson, password);
       } catch (error) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       }
       if (
         selectedAccount?.symbol === 'ICP'
           ? !isJsonString(secret)
           : !validateMnemonic(secret)
       ) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       }
     },
     [selectedAccount]
@@ -493,7 +492,7 @@ const WalletSendTokens = ({
           }
           centerText
           showMenu
-          text={'Send'}
+          text={i18nT('walletSendTokens.send')}
           type={'wallet'}
         />
         <div className={styles.pagecont}>
@@ -502,7 +501,7 @@ const WalletSendTokens = ({
           )}
           {step1 ? (
             <div className={styles.innercontainer}>
-              <div className={styles.earthInputLabel}>Add recipient</div>
+              <div className={styles.earthInputLabel}>{i18nT('walletSendTokens.addRecp')}</div>
               <AddressInput
                 initialValue={selectedRecp}
                 recpErrorCallback={setRecpError}
@@ -512,7 +511,7 @@ const WalletSendTokens = ({
                 tokenId={getSelectedAsset(selectedAsset)?.tokenId}
               />
               <div className={styles.assetSelectionDivCont}>
-                <div className={styles.earthInputLabel}>Selected Asset</div>
+                <div className={styles.earthInputLabel}>{i18nT('walletSendTokens.selectedAsset')}</div>
                 <div className={styles.tokenSelectionDiv}>
                   {selectedAsset === selectedAccount?.symbol && (
                     <SelectedAsset
@@ -525,8 +524,8 @@ const WalletSendTokens = ({
                       }
                       balanceTxt={
                         currentBalance === null
-                          ? `Balance: `
-                          : `Balance: ${(
+                          ? i18nT('walletSendTokens.balance')
+                          : i18nT('walletSendTokens.balance') + ` ${(
                             currentBalance?.value /
                             Math.pow(10, currentBalance?.currency?.decimals)
                           ).toFixed(7)} ${currentBalance?.currency?.symbol}`
@@ -555,8 +554,8 @@ const WalletSendTokens = ({
                         icon={getSymbol(selectedAccount?.symbol)?.icon || ''}
                         balanceTxt={
                           currentBalance === null
-                            ? `Balance: `
-                            : `Balance: ${currentBalance?.value /
+                            ? i18nT('walletSendTokens.balance')
+                            : i18nT('walletSendTokens.balance') + ` ${currentBalance?.value /
                             Math.pow(10, currentBalance?.currency?.decimals)
                             } ${currentBalance?.currency?.symbol}`
                         }
@@ -603,7 +602,7 @@ const WalletSendTokens = ({
               {(selectedAccount?.symbol == 'MATIC' ||
                 selectedAccount?.symbol == 'ETH') && (
                   <>
-                    <div className={styles.earthInputLabel}>Transaction Fee</div>
+                    <div className={styles.earthInputLabel}>{i18nT('walletSendTokens.txnFee')}</div>
                     <div className={styles.feeSelector}>
                       {feesArr.map((feeObj: keyable, index: number) => (
                         <div
@@ -703,7 +702,7 @@ const WalletSendTokens = ({
                 getSelectedAsset(selectedAsset)?.type == 'ERC20' || getSelectedAsset(selectedAsset)?.format == 'token') && (
                   <div className={styles.feeCont}>
                     <div className={styles.feeRow}>
-                      <div className={styles.feeTitle}>Transaction Fee</div>
+                      <div className={styles.feeTitle}>{i18nT('walletSendTokens.txnFee')}</div>
                       {(selectedAccount.symbol == "MATIC" || selectedAccount.symbol == "ETH") ?
                         <div>
                           <div className={styles.feeAmount}>
@@ -730,7 +729,7 @@ const WalletSendTokens = ({
                     </div>
 
                     <div className={styles.feeRow}>
-                      <div className={styles.feeTotal}>Total</div>
+                      <div className={styles.feeTotal}>{i18nT('walletSendTokens.total')}</div>
                       {(selectedAccount.symbol == "MATIC" || selectedAccount.symbol == "ETH") ? <div>
                         <div className={styles.feeAmount}>
                           {selectedAmount} {getSelectedAsset(selectedAsset)?.symbol}
@@ -758,7 +757,7 @@ const WalletSendTokens = ({
               {selectedAsset === selectedAccount?.symbol && (
                 <div className={styles.feeCont}>
                   <div className={styles.feeRow}>
-                    <div className={styles.feeTitle}>Transaction Fee</div>
+                    <div className={styles.feeTitle}>{i18nT('walletSendTokens.txnFee')}</div>
                     <div>
                       <div className={styles.feeAmount}>
                         {fees} {selectedAccount?.symbol}
@@ -770,7 +769,7 @@ const WalletSendTokens = ({
                   </div>
 
                   <div className={styles.feeRow}>
-                    <div className={styles.feeTotal}>Total</div>
+                    <div className={styles.feeTotal}>{i18nT('walletSendTokens.total')}</div>
                     <div>
                       <div className={styles.feeAmount}>
                         {(selectedAmount + fees).toFixed(
@@ -792,9 +791,9 @@ const WalletSendTokens = ({
                 data-export-password
                 disabled={isBusy}
                 isError={pass.length < MIN_LENGTH || !!error}
-                label={'password for this account'}
+                label={i18nT('common.passwordForAc')}
                 onChange={onPassChange}
-                placeholder="REQUIRED"
+                placeholder={i18nT('common.requiredPlaceholder')}
                 type="password"
               />
               {error && (
@@ -833,7 +832,7 @@ const WalletSendTokens = ({
               loading={isBusy}
               onClick={onConfirm}
             >
-              {'Next'}
+              {i18nT('walletSendTokens.next')}
             </NextStepButton>
           ) : (
             <NextStepButton
@@ -850,7 +849,7 @@ const WalletSendTokens = ({
                   : transferForAll()
               }
             >
-              {'Send'}
+              {i18nT('walletSendTokens.send')}
             </NextStepButton>
           )}
         </div>
@@ -1048,32 +1047,32 @@ const AmountInput = ({
 
     if (isNaN(_amount)) {
       setSelectedAmount(_amount);
-      setError(`Amount cannot be empty.`);
+      setError(i18nT('walletSendTokens.noEmpty'));
     } else if (_amount !== 0 && _amount <= maxAmount) {
       setSelectedAmount(_amount);
       setError('');
     } else if (_amount == 0) {
       if (fees == 0) {
         setSelectedAmount(_amount);
-        setError(`Amount cannot be zero.`);
+        setError(i18nT('walletSendTokens.noZero'));
       } else {
         setSelectedAmount(_amount);
         setError(
-          `Amount cannot be zero. Transaction fees is ${fees} ${selectedAccount?.symbol}`
+          i18nT('walletSendTokens.noZeroWith') + ` ${fees} ${selectedAccount?.symbol}`
         );
       }
     } else if (_amount > maxAmount) {
       setSelectedAmount(_amount);
-      setError(`Insufficient balance.`);
+      setError(i18nT('walletSendTokens.inSuf'));
     }
   };
   return (
     <div>
       <div className={styles.earthInputLabel}>
-        Amount{' '}{tokenInfo.symbol}
+        {i18nT('walletSendTokens.amount')}{' '}{tokenInfo.symbol}
         {
           <div onClick={() => loadMaxAmount()} className={styles.maxBtn}>
-            Max
+            {i18nT('walletSendTokens.max')}
           </div>
         }
       </div>
@@ -1086,7 +1085,7 @@ const AmountInput = ({
         max="1.00"
         min="0.00"
         onChange={(e) => changeAmount(e.target.value)}
-        placeholder="amount up to 8 decimal places"
+        placeholder={i18nT('walletSendTokens.amountPlace')}
         required
         step="0.001"
         type="number"

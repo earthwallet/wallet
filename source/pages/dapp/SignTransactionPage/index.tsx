@@ -28,6 +28,7 @@ import {
 } from '@metamask/eth-sig-util';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { ALCHEMY_ETH_API_KEY } from '~global/config';
+import { i18nT } from '~i18n/index';
 
 const MIN_LENGTH = 6;
 
@@ -60,14 +61,14 @@ const SignTransactionPage = () => {
             ? decryptString(selectedAccount?.vault.encryptedMnemonic, password)
             : decryptString(selectedAccount?.vault.encryptedJson, password);
       } catch (error) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       }
       if (
         selectedAccount?.symbol === 'ICP'
           ? !isJsonString(secret)
           : !validateMnemonic(secret)
       ) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       } else {
         setError('NO_ERROR');
       }
@@ -195,7 +196,7 @@ const SignTransactionPage = () => {
     try {
       secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
     } catch (error) {
-      setError('Wrong password! Please try again');
+      setError(i18nT('common.wrongPass'));
       setIsBusy(false);
     }
 
@@ -375,9 +376,9 @@ const SignTransactionPage = () => {
             data-export-password
             disabled={isBusy}
             isError={pass.length < MIN_LENGTH || !!error}
-            label={'password for this account'}
+            label={i18nT('common.passwordForAc')}
             onChange={onPassChange}
-            placeholder="REQUIRED"
+            placeholder={i18nT('common.requiredPlaceholder')}
             type="password"
           />
           {false && error && error != 'NO_ERROR' && (

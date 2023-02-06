@@ -62,10 +62,10 @@ const NFTSettle = ({
           : decryptString(selectedAccount?.vault.encryptedJson, password);
       }
       catch (error) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       }
       if (selectedAccount?.symbol === 'ICP' ? !isJsonString(secret) : !validateMnemonic(secret)) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       }
       else {
         setError('NO_ERROR');
@@ -81,7 +81,7 @@ const NFTSettle = ({
     try {
       secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
     } catch (error) {
-      setError('Wrong password! Please try again');
+      setError(i18nT('common.wrongPass'));
       setIsBusy(false);
     }
 

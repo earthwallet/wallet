@@ -19,6 +19,7 @@ import swapCircle from '~assets/images/swapLoadingCircle.svg';
 
 import ICON_DOWN from '~assets/images/icon_down.svg';
 import { getTokenInfo } from '~global/tokens';
+import { i18nT } from '~i18n/index';
 
 
 
@@ -54,10 +55,10 @@ const TransactionConfirm = ({
           : decryptString(selectedAccount?.vault.encryptedJson, password);
       }
       catch (error) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       }
       if (selectedAccount?.symbol === 'ICP' ? !isJsonString(secret) : !validateMnemonic(secret)) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       }
       else {
         setError('NO_ERROR');
@@ -73,7 +74,7 @@ const TransactionConfirm = ({
     try {
       secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
     } catch (error) {
-      setError('Wrong password! Please try again');
+      setError(i18nT('common.wrongPass'));
       setIsBusy(false);
     }
 
@@ -115,7 +116,7 @@ const TransactionConfirm = ({
           </div>
           <div className={styles.internetCompWrapContainer}>
             <div className={styles.earthFeeContainer}>
-              <span className={styles.earthFeeText}>Network Fee</span>
+              <span className={styles.earthFeeText}>{i18nT('transactionConfirm.networkFee')}</span>
               <div className={styles.earthFeeRightSideContainer}>
                 <span className={styles.earthVal}>{getTokenInfo(txnStatusObj?.params?.to).fees} ICP</span>
                 <span className={styles.convertedVal}>${(getTokenInfo(txnStatusObj?.params?.to).fees * usdValue).toFixed(3)}</span>
@@ -123,16 +124,16 @@ const TransactionConfirm = ({
             </div>
             <div className={styles.gasFeeContainer}>
               <div className={styles.leftSideContainer}>
-                <span className={styles.gasFeeText}>DEX Fee</span>
+                <span className={styles.gasFeeText}>{i18nT('transactionConfirm.dexFee')}</span>
               </div>
               <div className={styles.rightSideContainer}>
-                <span className={styles.earthText}>Free</span>
+                <span className={styles.earthText}>{i18nT('transactionConfirm.free')}</span>
                 <span className={styles.convertedVal}>$0.00</span>
               </div>
             </div>
 
             <div className={styles.totalContainer}>
-              <span className={styles.totalText}>Total</span>
+              <span className={styles.totalText}>{i18nT('transactionConfirm.total')}</span>
               <div className={styles.rightSideTotalContainer}>
                 <span className={styles.totalEarthVal}>{txnStatusObj?.params?.fromAmount} ICP</span>
                 <span className={styles.totalUSDVal}>${(txnStatusObj?.params?.fromAmount * usdValue).toFixed(3)}</span>
@@ -147,9 +148,9 @@ const TransactionConfirm = ({
           disabled={isBusy}
           isError={pass.length < PASSWORD_MIN_LENGTH
             || !!error}
-          label={'password for this account'}
+          label={i18nT('common.passwordForAc')}
           onChange={onPassChange}
-          placeholder='REQUIRED'
+          placeholder={i18nT('common.requiredPlaceholder')}
           type='password'
         />
         {false && error && error != 'NO_ERROR' && (
@@ -165,7 +166,7 @@ const TransactionConfirm = ({
             loading={isBusy}
             disabled={error != 'NO_ERROR'}
             onClick={() => handleSign()}>
-            {txnStatusObj?.type == 'mint' ? 'Mint' : txnStatusObj?.type}
+            {txnStatusObj?.type == 'mint' ? i18nT('tokenDetailsWithInfo.mint') : txnStatusObj?.type}
           </NextStepButton>
         </div>
       </section>}

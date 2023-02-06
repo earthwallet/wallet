@@ -20,6 +20,7 @@ import { getShortAddress } from '~utils/common';
 import { decryptString } from '~utils/vault';
 import useToast from '~hooks/useToast';
 import StringCrypto from 'string-crypto';
+import { i18nT } from '~i18n/index';
 
 const {
   decryptString: decryptString_PBKDF2
@@ -77,14 +78,14 @@ function Export({
           pass
         );
     } catch (error) {
-      setError('Wrong password! Please try again');
+      setError(i18nT('common.wrongPass'));
       setIsBusy(false);
     }
 
     if (validateMnemonic(mnemonicSecret)) {
       setMnemonic(mnemonicSecret);
     } else {
-      setError('Wrong password! Please try again');
+      setError(i18nT('common.wrongPass'));
       setIsBusy(false);
     }
   }, [address, pass]);
@@ -92,7 +93,7 @@ function Export({
   return (
     <>
       <div className={styles.page}>
-        <Header showBackArrow text={'Export account'} type={'wallet'}>
+        <Header showBackArrow text={i18nT('export.header')} type={'wallet'}>
           <div style={{ width: 39 }}></div>
         </Header>
         {selectedAccount?.id && (
@@ -115,9 +116,9 @@ function Export({
                 data-export-password
                 disabled={isBusy}
                 isError={pass.length < MIN_LENGTH || !!error}
-                label={'password for this account'}
+                label={i18nT('common.passwordForAc')}
                 onChange={onPassChange}
-                placeholder="REQUIRED"
+                placeholder={i18nT('common.requiredPlaceholder')}
                 type="password"
               />
               {error && (
@@ -141,14 +142,13 @@ function Export({
                 )}
 
                 <div className={styles.checkboxTitle}>
-                  I understand that I may lose access to digital assets if I
-                  disclose my private keys.
+                  {i18nT('export.checkTitle')}
                 </div>
               </div>
             </div>
           ) : (
             <div>
-              <div className={styles.labelText}>Secret Mnemonic</div>
+              <div className={styles.labelText}>{i18nT('export.secretMnemonicLabel')}</div>
               <div className={styles.mnemonicContWrap}>
                 <div className={styles.mnemonicCont}>
                   {mnemonic.split(' ').map((word, index) => (
@@ -160,7 +160,7 @@ function Export({
                     <CopyToClipboard text={mnemonic || ''}>
                       <div className={styles.mnemonicAction} onClick={_onCopy}>
                         <img className="mnemonicActionIcon" src={ICON_COPY} />
-                        <div>COPY</div>
+                        <div>{i18nT('export.copy')}</div>
                       </div>
                     </CopyToClipboard>
 
@@ -172,14 +172,13 @@ function Export({
                         className={styles.mnemonicActionIcon}
                         src={ICON_COPY}
                       />
-                      <div>DOWNLOAD</div>
+                      <div>{i18nT('export.download')}</div>
                     </div>
                   </div>
                 </div>
                 <div className={styles.mnemonicHelp}>
                   <div className={styles.mnemonicHelpTitle}>
-                    Never disclose this secret. Anyone with this phrase can
-                    steal any assets in your account.
+                    {i18nT('export.never')}
                   </div>
                 </div>
               </div>
@@ -194,7 +193,7 @@ function Export({
                 loading={isBusy}
                 onClick={_onExportButtonClick}
               >
-                Confirm
+                {i18nT('export.confirm')}
               </NextStepButton>
             ) : (
               <NextStepButton
@@ -203,7 +202,7 @@ function Export({
                 disabled={false}
                 onClick={() => history.goBack()}
               >
-                Done
+                {i18nT('export.done')}
               </NextStepButton>
             )}
           </div>

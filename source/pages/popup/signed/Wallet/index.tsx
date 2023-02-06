@@ -24,6 +24,7 @@ import { selectAssetsICPCountByAddress } from '~state/wallet';
 import { ClipLoader } from 'react-spinners';
 import { getTransactions_ETH_MATIC } from '~utils/services';
 import { getTransactions_BTC_DOGE } from '~utils/btc';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ accountId: string }> {
 }
@@ -139,7 +140,7 @@ const Wallet = ({
           <Link className={styles.transactionsCont} to={"/account/receive/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_rec} />
-              <div className={styles.tokenActionLabel}>Receive</div>
+              <div className={styles.tokenActionLabel}>{i18nT('wallet.receive')}</div>
             </div>
           </Link>
         </div>
@@ -148,7 +149,7 @@ const Wallet = ({
           <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_send} />
-              <div className={styles.tokenActionLabel}>Send</div>
+              <div className={styles.tokenActionLabel}>{i18nT('wallet.send')}</div>
             </div>
           </Link>
         </div>
@@ -157,15 +158,14 @@ const Wallet = ({
       {selectedAccount?.symbol === 'ICP_Ed25519' && <div className={styles.walletNoSupportActionsView}>
         <div className={styles.noSupportText}>
           <img src={ICON_NOTICE} className={styles.noticeIcon}></img>
-
-          Ed25519 address is no longer supported. Please import seed from Export</div>
+          {i18nT('wallet.noEd')}</div>
         <div
           className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
         >
           <Link className={styles.transactionsCont} to={"/account/export/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={clsx(styles.iconActions, styles.exportIcon)} src={icon_send} />
-              <div className={styles.tokenActionLabel}>Export</div>
+              <div className={styles.tokenActionLabel}>{i18nT('wallet.export')}</div>
             </div>
           </Link>
         </div>
@@ -185,7 +185,7 @@ const Wallet = ({
                 styles.selectedTabView
               )}
             >
-              Transactions{" "}{walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
+              {i18nT('wallet.txns')}{" "}{walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
             </div>
           </div>
         </div>

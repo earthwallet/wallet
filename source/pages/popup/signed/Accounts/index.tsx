@@ -50,7 +50,7 @@ const Accounts = () => {
               </Link>
             </div>
             <div className={styles.footerCont}>
-              <div className={styles.orSep}>or</div>
+              <div className={styles.orSep}>{i18nT('accounts.or')}</div>
               <Link className={styles.link} to={'/account/import'}>
                 <div className={styles.earthLink}>{i18nT('accounts.importSeed')}</div>
               </Link>

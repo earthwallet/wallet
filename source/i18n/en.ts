@@ -64,6 +64,7 @@ const en = {
     skip: 'Skip',
     next: 'Next',
     label: 'Enter your Mnemonic Seed phrase',
+    migrateTitle: 'Migrate your ICP account',
   },
   wallet: {
     receive: 'Receive',
@@ -93,6 +94,7 @@ const en = {
     networkFee: 'Network Fee',
     dexFee: 'DEX Fee',
     free: 'Free',
+    total: 'Total',
   },
   walletAddressBook: {
     addRecp: 'Add recipient',
@@ -100,6 +102,7 @@ const en = {
     recents: 'Recents',
     noRecent: 'No recent sent addresses',
     lastSent: 'Last sent on',
+    noPers: 'No other personal accounts to send',
   },
   walletSendTokens: {
     noZeroAmount: 'Amount cannot be 0',
@@ -113,7 +116,16 @@ const en = {
     txnFee: 'Transaction Fee',
     next: 'Next',
     send: 'Send',
+    max: 'Max',
+    amount: 'Amount',
+    amountPlace: 'amount up to 8 decimal places',
+    inSuf: 'Insufficient balance.',
+    noZero: 'Amount cannot be zero.',
+    noEmpty: 'Amount cannot be empty.',
+    total: 'Total',
+    noZeroWith: 'Amount cannot be zero. Transaction fees is',
   },
+  //
   walletReceiveTokens: {
     tooltip: 'Share this unique id to receive ',
     pubAddr: 'Public Address',

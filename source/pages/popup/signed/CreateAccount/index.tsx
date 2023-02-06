@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ACTIVE_SYMBOLS, PREGENERATE_SYMBOLS } from '~global/constant';
 import useToast from '~hooks/useToast';
+import { i18nT } from '~i18n/index';
 
 const Page = () => {
   const controller = useController();
@@ -73,14 +74,14 @@ const Page = () => {
       <HeaderWithSteps
         backOverride={step === 1 ? undefined : _onPreviousStep}
         step={step}
-        text={'Create an account'}
+        text={i18nT('createAccount.header')}
       />
       {newMnemonic !== '' &&
         (step === 1 ? (
           <div>
             <div className={styles.earthInputCont}>
               <div className={styles.labelText}>
-                Account name
+                {i18nT('createAccount.accountName')}
               </div>
               <input
                 autoCapitalize="off"
@@ -88,14 +89,14 @@ const Page = () => {
                 autoFocus={true}
                 className={clsx(styles.earthName, styles.earthInput)}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="REQUIRED"
+                placeholder={i18nT('common.requiredPlaceholder')}
                 required
               />
             </div>
             <div
               className={clsx(styles.earthInputCont, styles.mnemonicInputCont)}
             >
-              <div className={styles.labelText}>Mnemonic Seed</div>
+              <div className={styles.labelText}>{i18nT('createAccount.mnemonicLabel')}</div>
               <div className={styles.mnemonicContWrap}>
                 <div className={styles.mnemonicCont}>
                   {newMnemonic.split(' ').map((word, index) => (
@@ -110,7 +111,7 @@ const Page = () => {
                           className={styles.mnemonicActionIcon}
                           src={ICON_COPY}
                         />
-                        <div>COPY</div>
+                        <div>{i18nT('createAccount.copy')}</div>
                       </div>
                     </CopyToClipboard>
                     <div
@@ -121,14 +122,13 @@ const Page = () => {
                         className={styles.mnemonicActionIcon}
                         src={ICON_DOWNLOAD}
                       />
-                      <div>DOWNLOAD</div>
+                      <div>{i18nT('createAccount.download')}</div>
                     </div>
                   </div>
                 </div>
                 <div className={styles.mnemonicHelp}>
                   <div className={styles.mnemonicHelpTitle}>
-                    This is a generated 12-word
-                    mnemonic seed.
+                    {i18nT('createAccount.generated')}
                   </div>
                 </div>
               </div>
@@ -148,7 +148,7 @@ const Page = () => {
                 )}
 
                 <div className={styles.checkboxTitle}>
-                  I have saved my mnemonic seed safely.
+                  {i18nT('createAccount.saved')}
                 </div>
               </div>
               <div className={styles.nextCont}>
@@ -156,7 +156,7 @@ const Page = () => {
                   disabled={!checked || name === ''}
                   onClick={!checked ? console.log : _onNextStep}
                 >
-                  {'Next step'}
+                  {i18nT('createAccount.nextStep')}
                 </NextStepButton>
               </div>
             </div>
@@ -187,8 +187,7 @@ const Page = () => {
                   )}
 
                   <div className={styles.checkboxTitle}>
-                    I understand that I will lose access to the account if I
-                    lose this mnemonic phrase.
+                    {i18nT('createAccount.checkBox')}
                   </div>
                 </div>
                 <NextStepButton
@@ -196,7 +195,7 @@ const Page = () => {
                   disabled={!secondChecked || !password}
                   onClick={!secondChecked ? console.log : _onCreate}
                 >
-                  {'Create an Account'}
+                  {i18nT('createAccount.cta')}
                 </NextStepButton>
               </div>
             </div>

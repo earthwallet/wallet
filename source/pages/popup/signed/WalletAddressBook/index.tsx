@@ -17,6 +17,7 @@ import { getTokenInfo } from '~global/tokens';
 import { getInfoBySymbol } from '~global/constant';
 import { shortenAddress } from '~global/helpers';
 import moment from 'moment-mini';
+import { i18nT } from '~i18n/index';
 
 interface keyable {
   [key: string]: any
@@ -109,7 +110,7 @@ const WalletAddressBook = ({
 
       {step1
         ? <div style={{ width: '100vw' }}>
-          <div className={styles.earthInputLabel}>Add recipient</div>
+          <div className={styles.earthInputLabel}>{i18nT('walletAddressBook.addRecp')}</div>
           <AddressInput
             initialValue={selectedRecp}
             recpCallback={setSelectedRecp}
@@ -148,18 +149,18 @@ const WalletAddressBook = ({
           <div
             onClick={() => setTab(0)}
             className={clsx(styles.tab, tab === 0 && styles.tab_active)}>
-            My Accounts
+            {i18nT('walletAddressBook.myAccounts')}
           </div>
           <div
             onClick={() => setTab(1)}
             className={clsx(styles.tab, tab === 1 && styles.tab_active)}>
-            Recents
+            {i18nT('walletAddressBook.recents')}
           </div>
         </div>
         {tab == 0 &&
           <div className={styles.listscrollcont}>
             {myAccounts?.length == 0 ?
-              <div className={styles.centerDiv}>No other personal accounts to send</div>
+              <div className={styles.centerDiv}>{i18nT('walletAddressBook.noPers')}</div>
               : <div className={styles.listitemscont}>
                 {filterAccount().map((account: keyable, index: number) => <div
                   key={index}
@@ -187,7 +188,7 @@ const WalletAddressBook = ({
         {tab == 1 &&
           <div className={styles.listscrollcont}>
             {recents?.length == 0 ?
-              <div className={styles.centerDiv}>No recent sent addresses</div>
+              <div className={styles.centerDiv}>{i18nT('walletAddressBook.noRecent')}</div>
               : <div className={styles.listitemscont}>
                 {recents?.map((recent: keyable, index: number) => <div
                   key={index}
@@ -201,7 +202,7 @@ const WalletAddressBook = ({
                     src={getSelectedAsset(selectedAsset)?.icon || getTokenInfo(selectedAsset)?.icon || getInfoBySymbol(selectedAccount.symbol).icon} />
                   <div className={styles.listinfo}>
                     <div className={styles.listtitle}>{shortenAddress(recent?.address)}</div>
-                    <div className={styles.listsubtitle}>Last sent on {recent.lastSentAt && moment(recent?.lastSentAt).format('Do MMMM YYYY')}</div>
+                    <div className={styles.listsubtitle}>{i18nT('walletAddressBook.lastSent')}{' '}{recent.lastSentAt && moment(recent?.lastSentAt).format('Do MMMM YYYY')}</div>
                   </div>
                   <img
                     className={styles.listforward}

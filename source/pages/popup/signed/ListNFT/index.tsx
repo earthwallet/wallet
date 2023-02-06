@@ -20,6 +20,7 @@ import { useController } from '~hooks/useController';
 import { validateMnemonic } from '@earthwallet/keyring';
 import { useHistory } from 'react-router-dom';
 import { Principal } from '@dfinity/principal';
+import { i18nT } from '~i18n/index';
 
 const MIN_LENGTH = 6;
 
@@ -90,10 +91,10 @@ const ListNFT = ({
                     : decryptString(selectedAccount?.vault.encryptedJson, password);
             }
             catch (error) {
-                setError('Wrong password! Please try again');
+                setError(i18nT('common.wrongPass'));
             }
             if (selectedAccount?.symbol === 'ICP' ? !isJsonString(secret) : !validateMnemonic(secret)) {
-                setError('Wrong password! Please try again');
+                setError(i18nT('common.wrongPass'));
             }
         }
         , [selectedAccount]);
@@ -113,7 +114,7 @@ const ListNFT = ({
         try {
             secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
         } catch (error) {
-            setError('Wrong password! Please try again');
+            setError(i18nT('common.wrongPass'));
             setIsBusy(false);
         }
 
@@ -210,7 +211,7 @@ const ListNFT = ({
             }
 
         } else {
-            setError('Wrong password! Please try again');
+            setError(i18nT('common.wrongPass'));
             setIsBusy(false);
         }
 
@@ -260,9 +261,9 @@ const ListNFT = ({
                 data-export-password
                 disabled={isBusy}
                 isError={pass.length < MIN_LENGTH || !!error}
-                label={'password for this account'}
+                label={i18nT('common.passwordForAc')}
                 onChange={onPassChange}
-                placeholder='REQUIRED'
+                placeholder={i18nT('common.requiredPlaceholder')}
                 type='password'
             />
             {error && (<div

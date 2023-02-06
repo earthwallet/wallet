@@ -396,14 +396,14 @@ const Transactions = ({
         >
           <img src={ICON_CARET} />
 
-          <div className={styles.transTitle}>Transactions ({walletTransactions?.txs.length})</div>
+          <div className={styles.transTitle}>{i18nT('transactions.header')}{' '}({walletTransactions?.txs.length})</div>
         </div>
 
         {walletTransactions &&
           walletTransactions?.txs &&
           walletTransactions?.txs.length === 0
           ? <div className={styles.pageloading}>
-            <div className={styles.noTrans}>No Transactions</div>
+            <div className={styles.noTrans}>{i18nT('transactions.noTxns')}</div>
           </div>
           : <div className={styles.transItems}>
             {walletTransactions &&
