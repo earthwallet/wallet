@@ -1,93 +1,110 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./index.scss";
-//import img from "~assets/images/marketplaceImg.svg";
 import Header from '~components/Header';
-import { getTokenCollectionInfo } from '~global/nfts';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
 import {
     canisterAgentApi,
-    //decodeTokenId,
     getTokenIdentifier,
 } from "@earthwallet/assets";
-//import { ClipLoader } from 'react-spinners';
 import NFTCard from '~components/NFTCard';
 import { useSelector } from 'react-redux';
-import { selectAssetBySymbol, selectStatsOfCollection } from '~state/assets';
+import { selectAssetBySymbol, selectCollectionInfo, selectStatsOfCollection } from '~state/assets';
 import { getSymbol } from '~utils/common';
 import useQuery from '~hooks/useQuery';
 import millify from 'millify';
-interface Props extends RouteComponentProps<{ nftId: string }> {
+import { Principal } from '@dfinity/principal';
+import { i18nT } from '~i18n/index';
+
+interface Props extends RouteComponentProps<{ collectionId: string }> {
 }
 
 const NFTCollection = ({
     match: {
-        params: { nftId },
+        params: { collectionId },
     },
 }: Props) => {
     const queryParams = useQuery();
 
     const history = useHistory();
-    const nftCollObj = getTokenCollectionInfo(nftId);
+    const nftCollObj = useSelector(selectCollectionInfo(collectionId));
     const [loading, setLoading] = useState<boolean>(false);
     const [listings, setListings] = useState<keyable>([]);
     const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
-    const address: string = queryParams.get('address') || '';
-    const nftObj = useSelector(selectStatsOfCollection(nftId));
+    const accountId: string = queryParams.get('accountId') || '';
+    const nftObj = useSelector(selectStatsOfCollection(collectionId));
 
     useEffect(() => {
         const fetchNfts = async () => {
             setLoading(true);
-            const response = await canisterAgentApi(nftId, 'listings');
-            const listings = response.map((list: keyable) => ({
-                id: list[0],
-                price: list[1].price?.toString(),
-                tokenId: getTokenIdentifier(
-                    nftId,
-                    list[0]
-                ),
-                locked: list[1] && list[1]?.locked && list[1]?.locked[0] && Date.now() >= Number(list[1]?.locked[0] / 1000000n),
-                icon: `https://${nftId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${getTokenIdentifier(
-                    nftId,
-                    list[0]
-                )}`
-            })).filter((a: keyable) => !(a.locked)).sort((a: keyable, b: keyable) => (a.price - b.price));
-            //[0][1].price
-            console.log(listings, 'listings');
-            setListings(listings);
+            if (nftCollObj.type != 'EarthArt') {
+                const response = await canisterAgentApi(collectionId, 'listings');
+                const listings = response.map((list: keyable) => ({
+                    id: list[0],
+                    price: list[1].price?.toString(),
+                    tokenId: getTokenIdentifier(
+                        collectionId,
+                        list[0]
+                    ),
+                    locked: list[1] && list[1]?.locked && list[1]?.locked[0] && Date.now() >= Number(list[1]?.locked[0] / 1000000n),
+                    icon: `https://${collectionId}.raw.ic0.app/?cc=0&type=thumbnail&tokenid=${getTokenIdentifier(
+                        collectionId,
+                        list[0]
+                    )}`
+                })).filter((a: keyable) => !(a.locked)).sort((a: keyable, b: keyable) => (a.price - b.price));
+                setListings(listings);
+            }
+            else {
+                const response = await canisterAgentApi('vvimt-yaaaa-aaaak-qajga-cai', 'getListingsByCanister', Principal.fromText(collectionId));
+                const listings = response.map((list: keyable) => {
+                    const collectionId = list[0].nft?.nftCanister.toText();
+                    const tokenIndex = list[0].nft.nftIdentifier.nat32.toString();
+                    const price = list[0].price?.toString();
+                    return {
+                        tokenId: getTokenIdentifier(
+                            collectionId,
+                            tokenIndex
+                        ),
+                        id: tokenIndex,
+                        icon: `https://${collectionId}.raw.ic0.app/id/${tokenIndex}`,
+                        price,
+                    }
+                });
+                setListings(listings);
+            }
             setLoading(false);
 
         }
         fetchNfts();
-    }, [nftId !== null]);
+    }, [collectionId !== null]);
     return (
         <div className={styles.page}>
             <Header
                 className={styles.header}
                 showMenu
                 type={'wallet'}
-                text={nftCollObj.name}
+                text={nftCollObj?.name}
             ><div className={styles.empty} /></Header>
             <div className={styles.mainContainer}>
                 <div className={styles.stats}>
                     <div className={styles.statrow}>
                         <div className={styles.statcol}>
-                            <div className={styles.key}>Listings</div>
-                            <div className={styles.val}>{nftObj.listings ? millify(nftObj?.listings, {
+                            <div className={styles.key}>{i18nT("nftCollection.listings")}</div>
+                            <div className={styles.val}>{nftObj?.listings ? millify(nftObj?.listings, {
+                                precision: 2,
+                                lowercase: true
+                            }) : (listings.length || '-')}</div>
+                        </div>
+                        <div className={styles.statcol}>
+                            <div className={styles.key}>{i18nT("nftCollection.collectionSize")}</div>
+                            <div className={styles.val}>{nftObj?.tokens ? millify(nftObj?.tokens, {
                                 precision: 2,
                                 lowercase: true
                             }) : '-'}</div>
                         </div>
                         <div className={styles.statcol}>
-                            <div className={styles.key}>Collection Size</div>
-                            <div className={styles.val}>{nftObj.tokens ? millify(nftObj?.tokens, {
-                                precision: 2,
-                                lowercase: true
-                            }) : '-'}</div>
-                        </div>
-                        <div className={styles.statcol}>
-                            <div className={styles.key}>Sales</div>
-                            <div className={styles.val}>{nftObj.sales ? millify(nftObj?.sales, {
+                            <div className={styles.key}>{i18nT("nftCollection.sales")}</div>
+                            <div className={styles.val}>{nftObj?.sales ? millify(nftObj?.sales, {
                                 precision: 2,
                                 lowercase: true
                             }) : '-'}</div>
@@ -95,14 +112,14 @@ const NFTCollection = ({
                     </div>
                     <div className={styles.statrow}>
                         <div className={styles.statcol}>
-                            <div className={styles.key}>Volume</div>
-                            <div className={styles.val}>${nftObj.total ? millify(nftObj?.total * currentUSDValue?.usd, {
+                            <div className={styles.key}>{i18nT("nftCollection.volume")}</div>
+                            <div className={styles.val}>${nftObj?.total ? millify(nftObj?.total * currentUSDValue?.usd, {
                                 precision: 2,
                                 lowercase: true
                             }) : '-'}</div>
                         </div>
                         <div className={styles.statcol}>
-                            <div className={styles.key}>Floor</div>
+                            <div className={styles.key}>{i18nT("nftCollection.floor")}</div>
                             <div className={styles.val}>${nftObj?.floor ? millify(nftObj?.floor * currentUSDValue?.usd, {
                                 precision: 2,
                                 lowercase: true
@@ -114,15 +131,14 @@ const NFTCollection = ({
                     key={index}
                     loading
                 />) : listings.map((nftObj: keyable) => <div
-                    key={nftObj.tokenId}
+                    key={nftObj?.tokenId}
                     className={styles.nftcardcont}
-                    onClick={() => history.push(`/nft/buy/${nftObj.tokenId}?price=${nftObj.price}&address=${address}`)}
-                >
-                    <NFTCard
-                        id={nftObj.id}
-                        img={nftObj.icon}
-                        text={nftObj.price / Math.pow(10, 8)}
-                        price={nftObj.price / Math.pow(10, 8) * currentUSDValue?.usd}
+                    onClick={() => history.push(`/nft/buy/${nftObj?.tokenId}?price=${nftObj?.price}&accountId=${accountId}&type=${nftCollObj.type}`)}
+                ><NFTCard
+                        id={nftObj?.id}
+                        img={nftObj?.icon}
+                        text={nftObj?.price / Math.pow(10, 8)}
+                        price={nftObj?.price / Math.pow(10, 8) * currentUSDValue?.usd}
                     /></div>)}
             </div>
         </div>

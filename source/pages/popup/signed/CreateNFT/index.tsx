@@ -12,8 +12,11 @@ import { getBalance, getTransactions } from '@earthwallet/keyring';
 import moment from 'moment-mini';
 import { getShortAddress } from '~utils/common';
 import { ClipLoader } from 'react-spinners';
+import { useSelector } from 'react-redux';
+import { selectAccountById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
   className?: string;
 }
 interface keyable {
@@ -22,10 +25,14 @@ interface keyable {
 const Transactions = ({
   match: {
     params: {
-      address,
+      accountId,
     },
   },
 }: Props) => {
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+
+
   const history = useHistory();
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -83,7 +90,6 @@ const Transactions = ({
     const loadBalance = async (address: string) => {
       setLoading(true);
       const balance: keyable = await getBalance(address, 'ICP');
-      // const balance: keyable = {};
       setLoading(false);
 
       if (balance && balance?.balances != null) {
@@ -143,7 +149,7 @@ const Transactions = ({
         >
           <img src={ICON_CARET} />
 
-          <div className={styles.transTitle}>Transactions</div>
+          <div className={styles.transTitle}>{i18nT('nftAirdropDetails.txns')}</div>
         </div>
 
         <div className={styles.transItems}>
@@ -185,7 +191,7 @@ const Transactions = ({
                         : 'Send'}
                     </div>
                     <div className={styles.transSubColTime}>
-                      <div>{getTransactionTime(transaction) || 'Jun 7'}</div>
+                      <div>{getTransactionTime(transaction)}</div>
                       <div className={styles.transSubColDot}></div>
                       <div>
                         to{' '}

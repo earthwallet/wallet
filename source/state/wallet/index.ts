@@ -1,9 +1,8 @@
 import { EarthKeyringPair } from '@earthwallet/keyring';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NetworkType } from '~global/types';
+import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
 
-import type { IWalletState } from './types';
-//import type { StoreInterface } from '~state/IStore';
+import type { IWalletState, NetworkInfo } from './types';
 import { AppState } from '~state/store';
 import groupBy from 'lodash/groupBy';
 import { getTokenInfo } from '~global/tokens';
@@ -15,8 +14,14 @@ const initialState: IWalletState = {
   newMnemonic: '',
   loading: false,
   error: '',
-  activeNetwork: NetworkType.ICP,
+  activeNetwork: {
+    title: NETWORK_TITLE[NetworkSymbol.ICP],
+    symbol: NetworkSymbol.ICP,
+  },
   extensionId: '',
+  overrideEthereum: false,
+  restoreInActiveAccounts_ETH: false,
+  lang: null,
 };
 
 const WalletState = createSlice({
@@ -35,6 +40,12 @@ const WalletState = createSlice({
     updateExtensionId(state: IWalletState, action: PayloadAction<string>) {
       state.extensionId = action.payload;
     },
+    updateRestoreInActiveAccounts_ETH(
+      state: IWalletState,
+      action: PayloadAction<boolean>
+    ) {
+      state.restoreInActiveAccounts_ETH = action.payload;
+    },
     updateError(state: IWalletState, action: PayloadAction<string>) {
       state.error = action.payload;
     },
@@ -47,6 +58,21 @@ const WalletState = createSlice({
     ) {
       state.activeAccount = action.payload;
     },
+    updateActiveNetwork(
+      state: IWalletState,
+      action: PayloadAction<NetworkInfo>
+    ) {
+      state.activeNetwork = action.payload;
+    },
+    updateOverrideEthereum(
+      state: IWalletState,
+      action: PayloadAction<boolean>
+    ) {
+      state.overrideEthereum = action.payload;
+    },
+    updateLanguage(state: IWalletState, action: PayloadAction<string>) {
+      state.lang = action.payload;
+    },
     hydrateWallet(state: IWalletState, action: PayloadAction<IWalletState>) {
       Object.assign(state, action.payload);
     },
@@ -56,11 +82,15 @@ const WalletState = createSlice({
 export const {
   updateAccounts,
   updateActiveAccount,
+  updateActiveNetwork,
   updateNewMnemonic,
   updateExtensionId,
   updateError,
   updateLoading,
   hydrateWallet,
+  updateOverrideEthereum,
+  updateRestoreInActiveAccounts_ETH,
+  updateLanguage
 } = WalletState.actions;
 
 export const selectAccounts = (state: AppState) =>
@@ -72,6 +102,11 @@ export const selectAccounts_ICP = (state: AppState) =>
   Object.keys(state.entities.accounts.byId)
     .map((id) => state.entities.accounts.byId[id])
     .filter((account) => account.symbol === 'ICP');
+
+export const selectAccountsByNetwork = (network: string) => (state: AppState) =>
+  Object.keys(state.entities.accounts.byId)
+    .map((id) => state.entities.accounts.byId[id])
+    .filter((account) => account.symbol === network);
 
 export const selectAccountsByGroupId = (groupId: string) => (state: AppState) =>
   Object.keys(state.entities.accounts.byId)
@@ -114,8 +149,8 @@ export const selectGroupBalanceByGroupIdAndSymbol =
       .filter((account) => account.symbol === symbol);
   };
 
-export const selectBalanceByAddress = (address: string) => (state: AppState) =>
-  state.entities.balances.byId[address];
+export const selectBalanceById = (accountId: string) => (state: AppState) =>
+  state.entities.balances.byId[accountId];
 
 export const selectBalanceInUSDByAddress =
   (address: string) => (state: AppState) =>
@@ -129,13 +164,15 @@ export const selectAssetsICPCountByAddress =
   (address: string) => (state: AppState) =>
     state.entities.assetsCount?.byId[address];
 
-export const selectAssetsICPByAddress =
-  (address: string) => (state: AppState) => {
+export const selectAssetsByAddressAndSymbol =
+  (address: string, symbol: string) => (state: AppState) => {
     return (
       state.entities.assets?.byId &&
       Object.keys(state.entities.assets?.byId)
         ?.map((id) => state.entities.assets.byId[id])
-        .filter((assets) => assets.address === address)
+        .filter(
+          (assets) => assets.address == address && assets.symbol == symbol
+        )
     );
   };
 
@@ -146,8 +183,8 @@ export const selectAssetsICPCountLoadingByAddress =
 export const selectAssetById = (id: string) => (state: AppState) =>
   state.entities.assets?.byId[id];
 
-export const selectAccountById = (address: string) => (state: AppState) =>
-  state.entities.accounts.byId[address];
+export const selectAccountById = (accountId: string) => (state: AppState) =>
+  state.entities.accounts.byId[accountId];
 
 export const selectOtherAccountsOf = (address: string) => (state: AppState) => {
   const selectedAccount = state.entities.accounts.byId[address];
@@ -189,22 +226,47 @@ export const selectRecentsOf =
 export const selectDappActiveAccountAddress = (state: AppState) =>
   state.wallet?.activeAccount?.address;
 
-export const selectActiveTokensAndAssetsICPByAddress =
-  (address: string) => (state: AppState) => {
+export const selectGroupCountByGroupId =
+  (groupId: string) => (state: AppState) => {
+    const sameGroup = Object.keys(state.entities.accounts.byId)
+      .map((id) => state.entities.accounts.byId[id])
+      .filter((account) => account.groupId === groupId && account.active);
+
+    var count = 0;
+    sameGroup.forEach((account) => {
+      const assetsByAddress =
+        state.entities.assets?.byId &&
+        Object.keys(state.entities.assets?.byId)
+          ?.map((id) => state.entities.assets.byId[id])
+          .filter(
+            (assets) =>
+              assets.address === account.address &&
+              assets.symbol == account.symbol
+          );
+      count = count + assetsByAddress.length;
+    });
+    return count;
+  };
+export const selectActiveTokensAndAssetsByAccountId =
+  (accountId: string) => (state: AppState) => {
+    const { address, symbol } = state.entities.accounts.byId[accountId];
+
     const assets =
       (state.entities.assets?.byId &&
         Object.keys(state.entities.assets?.byId)
           ?.map((id) => ({
             ...state.entities.assets.byId[id],
             ...{
-              type: 'nft',
-              id: state.entities.assets.byId[id]?.tokenIdentifier,
+              format: 'nft',
+              id: state.entities.assets.byId[id]?.tokenIdentifier || id,
               balanceTxt: '1 NFT',
               label: state.entities.assets.byId[id]?.tokenIndex,
               icon: getTokenImageURL(state.entities.assets.byId[id]),
             },
           }))
-          .filter((assets) => assets.address === address)) ||
+          .filter(
+            (assets) => assets.address == address && assets.symbol == symbol
+          )) ||
       [];
     const activeTokens =
       (state.entities.tokens?.byId &&
@@ -213,22 +275,67 @@ export const selectActiveTokensAndAssetsICPByAddress =
             const tokenInfo = getTokenInfo(
               state.entities.tokens.byId[id]?.tokenId
             );
-            return {
-              ...state.entities.tokens.byId[id],
-              ...{
-                type: tokenInfo.type,
-                label: tokenInfo.symbol,
-                id: state.entities.tokens.byId[id]?.tokenId,
-                balanceTxt:
-                  state.entities.tokens.byId[id]?.balanceTxt +
-                  ' ' +
-                  tokenInfo.symbol,
-              },
-            };
+            const getTokenInfoFromStore = (contractAddress: string) =>
+              state.entities.tokensInfo?.byId[contractAddress];
+            const tokenObj = state.entities.tokens.byId[id];
+            if (tokenObj?.network == 'ETH' || tokenObj?.network == 'MATIC') {
+              return {
+                ...state.entities.tokens.byId[id],
+                ...{
+                  format: 'token',
+                  label: tokenInfo.symbol,
+                  id: state.entities.tokens.byId[id]?.tokenId,
+                },
+                ...{
+                  balance:
+                    tokenObj?.tokenBalance /
+                    Math.pow(
+                      10,
+                      getTokenInfoFromStore(tokenObj?.contractAddress)
+                        ?.decimals || 0
+                    ),
+                  balanceTxt:
+                    (
+                      tokenObj?.tokenBalance /
+                      Math.pow(
+                        10,
+                        getTokenInfoFromStore(tokenObj?.contractAddress)
+                          ?.decimals || 0
+                      )
+                    ).toFixed(3) +
+                    ' ' +
+                    getTokenInfoFromStore(tokenObj?.contractAddress).symbol,
+                },
+                ...getTokenInfoFromStore(tokenObj?.contractAddress),
+              };
+            } else {
+              return {
+                ...state.entities.tokens.byId[id],
+                ...{
+                  format: 'token',
+                  type: tokenInfo.type,
+                  label: tokenInfo.symbol,
+                  id: state.entities.tokens.byId[id]?.tokenId,
+                  balanceTxt:
+                    state.entities.tokens.byId[id]?.balanceTxt +
+                    ' ' +
+                    tokenInfo.symbol,
+                },
+              };
+            }
           })
-          .filter((token) => token.address === address && token.active)) ||
+          .filter(
+            (token) =>
+              token.address == address &&
+              token.network == symbol &&
+              token.active &&
+              token.balance != 0
+          )) ||
       [];
     return [...activeTokens, ...assets];
   };
+export const selectBalanceByAccountId =
+  (accountId: string) => (state: AppState) =>
+    state.entities.balances.byId[accountId];
 
 export default WalletState.reducer;

@@ -6,18 +6,16 @@ import Header from '~components/Header';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 import clsx from 'clsx';
-//import ICON_EARTH from '~assets/images/icon-512.png';
 import { useSelector } from 'react-redux';
-import { selectTokenByTokenPair, selectTokensInfo, selectTokensInfoById } from '~state/token';
+import { selectTokenByTokenPair, selectTokensInfo, selectTokensInfoById } from '~state/tokens';
 import NextStepButton from '~components/NextStepButton';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { useController } from '~hooks/useController';
-//import { mint } from '@earthwallet/assets';
 import useToast from '~hooks/useToast';
-//import ICON_EARTH from '~assets/images/icon-512.png';
 import ICON_STAKE from '~assets/images/th/stake.svg';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import TokenSelectorDropdown from '~components/TokenSelectorDropdown';
+import { i18nT } from '~i18n/index';
 interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
 }
 
@@ -28,7 +26,6 @@ const Stake = ({
   },
 }: Props) => {
 
-  console.log(address);
   const [selectedAmount, setSelectedAmount] = useState<number>(0);
   const [selectedToken, setSelectedToken] = useState<keyable>({ symbol: "", id: "" });
   const [selectedSecondAmount, setSelectedSecondAmount] = useState<number>(0);
@@ -36,7 +33,6 @@ const Stake = ({
 
   const [tab, setTab] = useState<number>(0);
   const tokenInfo = useSelector(selectTokensInfoById(tokenId));
-  const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
   const tokenInfos = useSelector(selectTokensInfo);
   const controller = useController();
   const [pairRatio, setPairRatio] = useState<number>(0);
@@ -44,8 +40,7 @@ const Stake = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [priceFetch, setPriceFetch] = useState<boolean>(false);
   const { show } = useToast();
-  console.log(tokenPair, 'tokenPair');
-  //const selectedTokenInfo = useSelector(selectedToken.id => selectTokensInfoById(selectedToken.id));
+
   useEffect((): void => {
     if ((selectedToken.id != "") && selectedSecondToken.id != "" && selectedSecondToken.id != null) {
 
@@ -57,33 +52,20 @@ const Stake = ({
     }
   }, [selectedToken.id, selectedSecondToken.id]);
 
-  /*  const mint = async () => {
-     setLoading(true);
-     const response = await controller.tokens.mint(selectedToken.id, selectedSecondToken.id);
-     console.log(response);
-     setPairRatio(response.ratio);
-     show("Mint Complete! Updating Balances");
-     await controller.tokens.getTokenBalances(address);
-     show("Done!");
-     setLoading(false);
- 
-   } */
-
   const stake = async () => {
     setLoading(true);
     const response = await controller.tokens.stake(selectedToken.id, selectedSecondToken.id, selectedAmount);
-    console.log(response);
     setPairRatio(response.ratio);
-    show("Stake Complete! Updating Balances");
+    show(i18nT('stake.complete'));
     await controller.tokens.getTokenBalances(address);
-    show("Done!");
+    show(i18nT('stake.done'));
     setLoading(false);
 
   }
 
   const updateAmount = (amount: number) => {
     if (selectedSecondToken?.id == null) {
-      show("Select second token!");
+      show(i18nT('stake.selectSecond'));
       return;
     }
     setSelectedAmount(amount);
@@ -100,7 +82,6 @@ const Stake = ({
     }
 
   }
-  console.log(tokenInfos);
   return (
     <div className={styles.page}>
       <Header
@@ -112,12 +93,12 @@ const Stake = ({
         <div
           onClick={() => setTab(0)}
           className={clsx(styles.tab, tab === 0 && styles.tab_active)}>
-          Add
+          {i18nT('stake.add')}
         </div>
         <div
           onClick={() => setTab(1)}
           className={clsx(styles.tab, tab === 1 && styles.tab_active)}>
-          Stakes
+          {i18nT('stake.stake')}
         </div>
       </div>
       <div className={styles.tabcont}>
@@ -151,7 +132,7 @@ const Stake = ({
       <div className={styles.statsCont}>
         <div className={styles.statsCol}>
           <div className={styles.statKey}>
-            LP Fees
+            {i18nT('stake.fees')}
           </div>
           <div className={styles.statVal}>
             1%
@@ -159,7 +140,7 @@ const Stake = ({
         </div>
         <div className={styles.statsCol}>
           <div className={styles.statKey}>
-            Price
+            {i18nT('stake.price')}
           </div>
           <div className={styles.statVal}>
             {priceFetch
@@ -191,7 +172,7 @@ const Stake = ({
           loading={loading}
           onClick={() => stake()}
         >
-          {'Add Stake To Liquidity Pool'}
+          {i18nT('stake.cta')}
         </NextStepButton>
       </div>
     </div>
@@ -200,7 +181,6 @@ const Stake = ({
 
 
 export const SecondTokenInfo = ({ selectedToken, address }: { selectedToken: keyable, address: string }) => {
-  console.log(selectedToken, 'SecondTokenInfo');
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + selectedToken.id));
 
   return <div className={styles.inforow}>

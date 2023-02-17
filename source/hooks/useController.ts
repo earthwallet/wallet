@@ -46,6 +46,28 @@ export function useSignApprove() {
   };
 }
 
+export function useEthSignApprove() {
+  return async () => {
+    const background = await browser.runtime.getBackgroundPage();
+    background.dispatchEvent(
+      new CustomEvent('signTypedData', {
+        detail: window.location.hash,
+      })
+    );
+  };
+}
+
+export function useUnsignedApprove() {
+  return async () => {
+    const background = await browser.runtime.getBackgroundPage();
+    background.dispatchEvent(
+      new CustomEvent('unsignedApproval', {
+        detail: window.location.hash,
+      })
+    );
+  };
+}
+
 export function useUpdateActiveAccount(address: string, origin: string) {
   const controller = useController();
   return async () => {

@@ -18,8 +18,6 @@
 .buttonCont {
   display: flex;
   flex-direction: row;
-  /* background: #212226; */
-  /* border-top: 1px solid #43444b; */
   padding: 12px 24px;
   margin-left: 50px;
   margin-right: 50px;
@@ -42,15 +40,25 @@
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
-  /* identical to box height */
 
   color: #ffffff;
   text-align: left;
   width: calc(100% - 48px);
-  padding: 27px 24px 13px;
+  padding: 18px 24px 9px;
   display: flex;
   align-items: center;
 }
+.pagecont {
+  width: 375px;
+  height: 560px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.innercontainer {
+  height: fit-content;
+  margin-bottom: 126px;
+}
+
 .paymentDone {
   text-align: center;
   border: 1px dashed #1b8d1b;
@@ -176,6 +184,7 @@
   width: 50px;
   margin: 0px 12px;
   border-radius: 4px;
+  background-color: #ffffff09;
 }
 
 .tokenSelectionLabelDiv {
@@ -259,7 +268,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-line-clamp: 2; /* number of lines to show */
   -webkit-box-orient: vertical;
 }
 
@@ -267,18 +276,17 @@
   font-family: DM Mono;
   font-style: normal;
   font-weight: 500;
-  font-size: 34px;
+  font-size: 27px;
   line-height: 44px;
   text-align: right;
   color: #fafbfb;
-  text-shadow: 0px 0px 11.4544px rgba(177, 204, 255, 0.89);
+  text-shadow: 0px 0px 11.4544px rgb(177 204 255 / 89%);
   margin-bottom: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 1; /* number of lines to show */
-  -webkit-box-orient: vertical;
+  max-width: 205px;
 }
+
 .confirmPage {
   padding: 0 24px;
   width: 100vw;
@@ -304,11 +312,8 @@
   font-weight: normal;
   font-size: 16px;
   line-height: 150%;
-  /* identical to box height, or 24px */
 
   text-align: right;
-
-  /* Brand / Moonlight Grey / 20% */
 
   color: #fafbfb;
 
@@ -320,7 +325,6 @@
   font-weight: normal;
   font-size: 12px;
   line-height: 12px;
-  /* identical to box height, or 100% */
 
   color: #fafbfb;
 
@@ -363,7 +367,6 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  /* justify-content: center; */
   justify-content: space-between;
   padding: 8px 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.119);
@@ -378,7 +381,6 @@
   font-weight: bold;
   font-size: 14px;
   line-height: 15px;
-  /* identical to box height, or 107% */
 
   color: #fafbfb;
 }
@@ -391,7 +393,6 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 150%;
-  /* identical to box height, or 18px */
 
   color: #ffffff;
 
@@ -405,7 +406,7 @@
 }
 
 .maxBtn {
-  width: 43px;
+  padding: 0 5px;
   height: 24px;
   background: rgba(255, 255, 255, 0.17);
   border-radius: 4px;
@@ -414,7 +415,6 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 150%;
-  /* identical to box height, or 18px */
 
   color: #ffffff;
   display: flex;
@@ -491,4 +491,79 @@
   margin: 0px 24px;
   padding: 5px 12px;
   opacity: 0.9;
+}
+
+.feeLabel {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 27px;
+
+  color: #ffffff;
+}
+
+.feePrice {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 18px;
+  color: #ffffff;
+}
+.feePriceUSD {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.025em;
+
+  color: #55d171;
+}
+
+.feeSelectCont {
+  display: flex;
+  height: 94px;
+  flex: 1;
+  justify-content: center;
+  flex-direction: column;
+  padding: 12px;
+}
+.feeSelectCont_selected {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 14px;
+}
+.feeSelector {
+  width: calc(100vw - 48px);
+  margin: 0 24px;
+  display: flex;
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.customizeLink {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #2496ff;
+
+  width: calc(100vw - 48px);
+  text-align: end;
+  margin: 12px 24px;
+  user-select: none;
+  cursor: pointer;
+  &:active {
+    opacity: 0.7;
+  }
 }

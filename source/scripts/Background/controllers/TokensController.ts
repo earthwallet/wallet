@@ -1,40 +1,36 @@
-//import { createWallet, newMnemonic } from '@earthwallet/keyring';
 import store from '~state/store';
 
 import type { ITokensController } from '../types/ITokensController';
 import {
   storeEntities,
   updateEntities,
-  //updateEntities
 } from '~state/entities';
 import {
   canisterAgent,
   canisterAgentApi,
-  getAllTokens,
-  getMetadata,
   principal_to_address,
-  //tokenAPI,
-  //pairFactoryAPI,
-  //approve,
-  //transfer_from,
-  //pairAPI,
 } from '@earthwallet/assets';
 import { createEntity } from '~state/entities';
 import { getTokenInfo } from '~global/tokens';
 import { Principal } from '@dfinity/principal';
-//import { keyable } from '../types/IAssetsController';
-//import { createWallet } from '@earthwallet/keyring';
-//import { parseBigIntToString } from '~utils/common';
 import { v4 as uuid } from 'uuid';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { send } from '@earthwallet/keyring';
 import { keyable } from '../types/IAssetsController';
+import {
+  getBalanceERC20,
+  getERC20Info_ETH,
+  getERC20Meta,
+  getERC20TokensListFromTxs,
+  rocketPoolInfo,
+} from '~utils/services';
 
 export default class TokensController implements ITokensController {
-  getTokenBalances = async (address: string) => {
+  getTokenBalances = async (accountId: string) => {
     const state = store.getState();
 
-    const accountInfo = state.entities.accounts.byId[address];
+    const accountInfo = state.entities.accounts.byId[accountId];
+    const address = accountInfo.address;
 
     const activeTokens =
       state.entities.tokens?.byId &&
@@ -42,100 +38,162 @@ export default class TokensController implements ITokensController {
         ?.map((id) => state.entities.tokens.byId[id])
         .filter((token) => token.address === address && token.active);
 
-    for (const activeToken of activeTokens) {
-      const tokenInfo = getTokenInfo(activeToken.tokenId);
-      let response;
-      let usd;
-      let price;
-      let balanceTxt;
-      let ratio_per_icp;
-      if (tokenInfo.wrappedSymbol != null && tokenInfo.wrappedSymbol == 'XDR') {
-        response = await canisterAgent({
-          canisterId: activeToken.tokenId,
-          method: 'balanceOf',
-          args: Principal.fromText(accountInfo?.meta?.principalId),
-        });
-        const conv_res = await canisterAgent({
-          canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
-          method: 'get_icp_xdr_conversion_rate',
-        });
-        const TRILLION_SDR_PER_ICP =
-          conv_res?.data?.xdr_permyriad_per_icp.toString() / 10000;
-        ratio_per_icp = TRILLION_SDR_PER_ICP;
-        balanceTxt =
-          (response?.toString() &&
-            Number(
-              response?.toString() / Math.pow(10, tokenInfo.decimals)
-            ).toFixed(4)) ||
-          0;
-        const currentUSDValue = state.entities.prices.byId['internet-computer'];
-        const ICP_PRICE_IN_USD = currentUSDValue?.usd;
-        const SDR_PRICE_IN_USD = ICP_PRICE_IN_USD / TRILLION_SDR_PER_ICP;
-        price = (balanceTxt * SDR_PRICE_IN_USD)?.toFixed(2);
-        usd = SDR_PRICE_IN_USD;
-      } else if (
-        tokenInfo.wrappedSymbol != null &&
-        tokenInfo.wrappedSymbol == 'ICP'
-      ) {
-        response = await canisterAgent({
-          canisterId: activeToken.tokenId,
-          method: 'balanceOf',
-          args: Principal.fromText(accountInfo?.meta?.principalId),
-        });
-        balanceTxt =
-          (response?.toString() &&
-            Number(
-              response?.toString() / Math.pow(10, tokenInfo.decimals)
-            ).toFixed(4)) ||
-          0;
-        const currentUSDValue = state.entities.prices.byId['internet-computer'];
-        const ICP_PRICE_IN_USD = currentUSDValue?.usd;
-        price = (balanceTxt * ICP_PRICE_IN_USD)?.toFixed(2);
-      }
+    if (accountInfo.symbol == 'ICP') {
+      for (const activeToken of activeTokens) {
+        const tokenInfo = getTokenInfo(activeToken.tokenId);
+        let response;
+        let usd;
+        let price;
+        let balanceTxt;
+        let ratio_per_icp;
+        if (
+          tokenInfo.wrappedSymbol != null &&
+          tokenInfo.wrappedSymbol == 'XDR'
+        ) {
+          response = await canisterAgent({
+            canisterId: activeToken.tokenId,
+            method: 'balanceOf',
+            args: Principal.fromText(accountInfo?.meta?.principalId),
+          });
+          const conv_res = await canisterAgent({
+            canisterId: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
+            method: 'get_icp_xdr_conversion_rate',
+          });
+          const TRILLION_SDR_PER_ICP =
+            conv_res?.data?.xdr_permyriad_per_icp.toString() / 10000;
+          ratio_per_icp = TRILLION_SDR_PER_ICP;
+          balanceTxt =
+            (response?.toString() &&
+              Number(
+                response?.toString() / Math.pow(10, tokenInfo.decimals)
+              ).toFixed(4)) ||
+            0;
+          const currentUSDValue =
+            state.entities.prices.byId['internet-computer'];
+          const ICP_PRICE_IN_USD = currentUSDValue?.usd;
+          const SDR_PRICE_IN_USD = ICP_PRICE_IN_USD / TRILLION_SDR_PER_ICP;
+          price = (balanceTxt * SDR_PRICE_IN_USD)?.toFixed(2);
+          usd = SDR_PRICE_IN_USD;
+        } else if (
+          tokenInfo.wrappedSymbol != null &&
+          tokenInfo.wrappedSymbol == 'ICP'
+        ) {
+          response = await canisterAgent({
+            canisterId: activeToken.tokenId,
+            method: 'balanceOf',
+            args: Principal.fromText(accountInfo?.meta?.principalId),
+          });
+          balanceTxt =
+            (response?.toString() &&
+              Number(
+                response?.toString() / Math.pow(10, tokenInfo.decimals)
+              ).toFixed(4)) ||
+            0;
+          const currentUSDValue =
+            state.entities.prices.byId['internet-computer'];
+          const ICP_PRICE_IN_USD = currentUSDValue?.usd;
+          price = (balanceTxt * ICP_PRICE_IN_USD)?.toFixed(2);
+        }
 
-      const balance = {
-        id: address + '_WITH_' + activeToken.tokenId,
-        balance: response?.toString(),
-        price,
-        balanceTxt,
-        ratio_per_icp,
-        usd,
-      };
-      store.dispatch(
-        storeEntities({
-          entity: 'tokens',
-          data: [balance],
-        })
+        const balance = {
+          id: address + '_WITH_' + activeToken.tokenId,
+          balance: response?.toString(),
+          price,
+          balanceTxt,
+          ratio_per_icp,
+          usd,
+          network: accountInfo.symbol,
+        };
+
+        store.dispatch(
+          storeEntities({
+            entity: 'tokens',
+            data: [balance],
+          })
+        );
+      }
+    } else if (accountInfo.symbol == 'ETH' || accountInfo.symbol == 'MATIC') {
+      let tokens = await getERC20TokensListFromTxs(
+        accountInfo.address,
+        accountInfo.symbol
       );
+
+      const balances: keyable[] = await getBalanceERC20(
+        address,
+        accountInfo.symbol,
+        tokens
+      );
+      for (const balance of balances) {
+        if (balance.tokenBalance > 0) {
+          const balanceObj = {
+            id: accountId + '_WITH_' + balance.contractAddress,
+            address: address,
+            ...balance,
+            contractAddress: balance.contractAddress?.toLowerCase(),
+            active: true,
+            network: accountInfo.symbol,
+          };
+          store.dispatch(
+            storeEntities({
+              entity: 'tokens',
+              data: [balanceObj],
+            })
+          );
+          this.updateERC20PriceAndMeta(
+            balance.contractAddress,
+            accountInfo.symbol
+          );
+        } else {
+          const tokenId = address + '_WITH_' + balance.contractAddress;
+          const existingTokenInfo = state.entities.tokens.byId[tokenId];
+          if (existingTokenInfo != undefined) {
+            const balanceObj = {
+              id: tokenId,
+              address: address,
+              ...balance,
+            };
+            store.dispatch(
+              updateEntities({
+                entity: 'tokens',
+                key: balanceObj.id,
+                data: balanceObj,
+              })
+            );
+          }
+        }
+      }
     }
     return;
   };
 
-  getTokens = async (callback?: ((address: string) => void) | undefined) => {
+  updateERC20PriceAndMeta = async (contractAddress: string, symbol: string) => {
     const state = store.getState();
-
-    if (state.entities.tokens == null) {
-      store.dispatch(createEntity({ entity: 'tokens' }));
-    }
-    if (state.entities.tokensInfo == null) {
-      store.dispatch(createEntity({ entity: 'tokensInfo' }));
-    }
-    const tokens = await getAllTokens();
-    for (const tokenCanisterId of tokens) {
-      const response = await getMetadata(tokenCanisterId);
-      const { decimals, fee, feeTo, name, owner, symbol, totalSupply } =
-        response;
-
+    // updates if price is last updated 15mins back
+    if (
+      !(
+        Math.abs(
+          new Date().getTime() -
+            new Date(
+              state.entities.prices.byId[contractAddress]?.last_updated || 0
+            ).getTime()
+        ) < 900000
+      ) ||
+      state.entities.prices.byId[contractAddress] == null
+    ) {
+      const tokenObj = await getERC20Meta(contractAddress, symbol);
+      let additionalMeta = {};
+      if (contractAddress == '0xae78736cd615f374d3085123a210448e74fc6393') {
+        additionalMeta = await rocketPoolInfo();
+      }
+      const { icon } = getTokenInfo(contractAddress);
       const tokenInfo = {
-        id: tokenCanisterId,
-        decimals,
-        fee: fee?.toString(),
-        feeTo: feeTo?.toText(),
-        name,
-        owner: owner?.toText(),
-        symbol,
-        totalSupply: totalSupply.toString(),
-        tokenCanisterId,
+        id: contractAddress,
+        icon: icon != undefined ? icon : tokenObj.logo,
+        ...tokenObj,
+        network: symbol,
+        last_updated: new Date().getTime(),
+        loading: false,
+        ...additionalMeta,
       };
       store.dispatch(
         storeEntities({
@@ -143,9 +201,37 @@ export default class TokensController implements ITokensController {
           data: [tokenInfo],
         })
       );
+      const resp = await getERC20Info_ETH(contractAddress);
+      if (resp == null || resp?.market_data == null) {
+        return;
+      }
+      const { last_updated } = resp;
+      const usd = resp?.market_data?.current_price.usd;
+
+      const usd_market_cap = resp?.market_data?.market_cap.usd;
+
+      const usd_24h_change = resp?.market_data?.price_change_24h;
+      const usd_24h_vol =
+        resp?.market_data?.market_cap_change_24h_in_currency?.usd;
+
+      const priceInfo = {
+        id: contractAddress,
+        loading: false,
+        error: false,
+        usd,
+        usd_market_cap,
+        usd_24h_change,
+        usd_24h_vol,
+        last_updated,
+      };
+
+      store.dispatch(
+        storeEntities({
+          entity: 'prices',
+          data: [priceInfo],
+        })
+      );
     }
-    callback && callback('address');
-    return;
   };
 
   delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -166,7 +252,6 @@ export default class TokensController implements ITokensController {
         });
         TRILLION_SDR_PER_ICP =
           usd?.data?.xdr_permyriad_per_icp.toString() / 10000;
-        console.log('TRILLION_SDR_PER_ICP', TRILLION_SDR_PER_ICP);
 
         ratio = TRILLION_SDR_PER_ICP == undefined ? 0 : TRILLION_SDR_PER_ICP;
       } else if (
@@ -186,54 +271,8 @@ export default class TokensController implements ITokensController {
   };
 
   swap = async (token1: string, token2: string, amount: number) => {
-    console.log(token1, token2, amount, 'swap');
-    /* let response = await pairFactoryAPI('get_pair', [
-      Principal.fromText(token1),
-      Principal.fromText(token2),
-    ]);
-    if (response == undefined || response.length == 0) {
-      response = await pairFactoryAPI('create_pair', [
-        Principal.fromText(token1),
-        Principal.fromText(token2),
-      ]);
-    }
-    const pairCanisterId = response[0].toText();
-    const stats: keyable = await pairAPI(pairCanisterId, 'stats');
-
-    const price1 = stats.token0_price;
-    const price2 = stats.token1_price;
-    const ratio = isNaN(price2) ? 1 : price2;
-    const seedPhrase =
-      'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano';
-
-    const walletObj = await createWallet(seedPhrase, 'ICP');
-    const identity = walletObj.identity;
-    const get_transit = await pairAPI(
-      pairCanisterId,
-      'get_transit',
-      undefined,
-      identity
-    );
-    if (get_transit[1] > 0n && get_transit[0] > 0n) {
-      const refund_transfer = await pairAPI(
-        pairCanisterId,
-        'refund_transfer',
-        undefined,
-        identity
-      );
-      console.log(refund_transfer, 'refund_transfer');
-    }
-    const _approve1 = await approve(identity, token1, pairCanisterId, amount);
-    const _transfer_from1 = await transfer_from(
-      token1,
-      amount,
-      identity,
-      pairCanisterId
-    );
-
-    console.log(_approve1, _transfer_from1, get_transit);
-    const swap = await pairAPI(pairCanisterId, 'swap', undefined, identity); */
-    await this.delay(5000);
+    // mock
+    console.log(amount);
     return {
       token1,
       token2,
@@ -254,7 +293,6 @@ export default class TokensController implements ITokensController {
     address: string;
     pairRatio: string;
   }) => {
-    console.log(from, to, fromAmount);
     const state = store.getState();
 
     const txnId = uuid();
@@ -292,7 +330,7 @@ export default class TokensController implements ITokensController {
     tokenId: string,
     recipient: string,
     amount: number,
-    address: string,
+    accountId: string,
     callback?: (path: string) => void
   ) => {
     const state = store.getState();
@@ -300,6 +338,8 @@ export default class TokensController implements ITokensController {
     if (state.entities.recents == null) {
       store.dispatch(createEntity({ entity: 'recents' }));
     }
+    const selectedAccount = state.entities.accounts.byId[accountId];
+    const { address } = selectedAccount;
 
     store.dispatch(
       updateEntities({
@@ -321,12 +361,12 @@ export default class TokensController implements ITokensController {
       method: 'transfer',
       args: [
         Principal.fromText(recipient),
-        amount * Math.pow(10, getTokenInfo(tokenId).decimals),
+        amount * Math.pow(10, getTokenInfo(tokenId).decimals || 0),
       ],
       fromIdentity: currentIdentity,
     });
     callback && callback('s');
-    await this.getTokenBalances(address);
+    await this.getTokenBalances(accountId);
     return response;
   };
 
@@ -367,7 +407,6 @@ export default class TokensController implements ITokensController {
         selectedAmount,
         'ICP'
       );
-      console.log(index, 'amount');
     } catch (error: any) {
       store.dispatch(
         storeEntities({
@@ -406,7 +445,7 @@ export default class TokensController implements ITokensController {
       );
       const response: any = await canisterAgentApi(
         txnObj.params.to,
-        getTokenInfo(txnObj.params.to).mintMethod,
+        getTokenInfo(txnObj.params.to)?.mintMethod || '',
         [[], index],
         currentIdentity
       );
@@ -501,68 +540,8 @@ export default class TokensController implements ITokensController {
   };
 
   stake = async (token1: string, token2: string, amount: number) => {
-    console.log(token1, token2, amount, 'stake');
+    console.log(amount, 'mock');
     await this.delay(5000);
-
-    /*  let response = await pairFactoryAPI('get_pair', [
-      Principal.fromText(token1),
-      Principal.fromText(token2),
-    ]);
-    if (response == undefined || response.length == 0) {
-      response = await pairFactoryAPI('create_pair', [
-        Principal.fromText(token1),
-        Principal.fromText(token2),
-      ]);
-    }
-    const pairCanisterId = response[0].toText();
-    const stats: keyable = await pairAPI(pairCanisterId, 'stats');
-
-    const price1 = stats.token0_price;
-    const price2 = stats.token1_price;
-    const ratio = isNaN(price2) ? 1 : price2;
-    const seedPhrase =
-      'open jelly jeans corn ketchup supreme brief element armed lens vault weather original scissors rug priority vicious lesson raven spot gossip powder person volcano';
-
-    const walletObj = await createWallet(seedPhrase, 'ICP');
-    const identity = walletObj.identity;
-    const _approve1 = await approve(identity, token1, pairCanisterId, amount);
-    const _transfer_from1 = await transfer_from(
-      token1,
-      amount,
-      identity,
-      pairCanisterId
-    );
-    const _approve2 = await approve(
-      identity,
-      token2,
-      pairCanisterId,
-      Math.floor(amount * ratio)
-    );
-    const _transfer_from2 = await transfer_from(
-      token2,
-      Math.floor(amount * ratio),
-      identity,
-      pairCanisterId
-    );
-
-    const get_transit = await pairAPI(
-      pairCanisterId,
-      'get_transit',
-      undefined,
-      identity
-    );
-
-    const stake = await pairAPI(pairCanisterId, 'mint', undefined, identity);
-
-    console.log(
-      get_transit,
-      stake,
-      _approve1,
-      _transfer_from1,
-      _approve2,
-      _transfer_from2,
-      'stake'
-    ); */
     return {
       token1,
       token2,
@@ -576,13 +555,7 @@ export default class TokensController implements ITokensController {
     status: boolean,
     callback?: (address?: string) => void
   ) => {
-    //const state = store.getState();
-
-    /*     const existingAllTokens = Object.keys(state.entities.tokens.byId)
-      .map((id) => state.entities.tokens.byId[id])
-      .filter((token) => token.address === address)
-      .sort((a, b) => a.order - b.order);
- */
+   
     let forwardAddress = '';
     for (const tokenPair of tokens) {
       const tokenId = tokenPair.split('_WITH_', 2)[1];

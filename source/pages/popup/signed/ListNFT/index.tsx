@@ -3,13 +3,13 @@ import Header from '~components/Header';
 import styles from './index.scss';
 import clsx from 'clsx';
 import NextStepButton from '~components/NextStepButton';
-import { canisterAgentApi, listNFTsExt } from '@earthwallet/assets';
+import { canisterAgent, canisterAgentApi, listNFTsExt } from '@earthwallet/assets';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { decryptString } from '~utils/vault';
-import { selectAccountById, selectAssetsICPByAddress } from '~state/wallet';
+import { selectAccountById, selectAssetsByAddressAndSymbol } from '~state/wallet';
 import useQuery from '~hooks/useQuery';
 import { isJsonString } from '~utils/common';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
@@ -19,30 +19,34 @@ import Warning from '~components/Warning';
 import { useController } from '~hooks/useController';
 import { validateMnemonic } from '@earthwallet/keyring';
 import { useHistory } from 'react-router-dom';
+import { Principal } from '@dfinity/principal';
+import { i18nT } from '~i18n/index';
 
 const MIN_LENGTH = 6;
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 
 
 const ListNFT = ({
     match: {
-        params: { address },
+        params: { accountId },
     },
 }: Props) => {
 
     const history = useHistory();
 
     const [selectedAmount, setSelectedAmount] = useState<number>(0);
-    const selectedAccount = useSelector(selectAccountById(address));
+    const selectedAccount = useSelector(selectAccountById(accountId));
+    const { address, symbol } = selectedAccount;
+
     const [selectedAsset, setSelectedAsset] = useState<string>('');
     const [selectedAssetObj, setSelectedAssetObj] = useState<keyable>({});
     const [cancelListing, setCancelListing] = useState<boolean>(false);
 
     const [txCompleteTxt, setTxCompleteTxt] = useState<string>('');
 
-    const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+    const assets: keyable = useSelector(selectAssetsByAddressAndSymbol(address, symbol));
 
     const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.tokenIdentifier === assetId)[0]
 
@@ -87,10 +91,10 @@ const ListNFT = ({
                     : decryptString(selectedAccount?.vault.encryptedJson, password);
             }
             catch (error) {
-                setError('Wrong password! Please try again');
+                setError(i18nT('common.wrongPass'));
             }
             if (selectedAccount?.symbol === 'ICP' ? !isJsonString(secret) : !validateMnemonic(secret)) {
-                setError('Wrong password! Please try again');
+                setError(i18nT('common.wrongPass'));
             }
         }
         , [selectedAccount]);
@@ -110,7 +114,7 @@ const ListNFT = ({
         try {
             secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
         } catch (error) {
-            setError('Wrong password! Please try again');
+            setError(i18nT('common.wrongPass'));
             setIsBusy(false);
         }
 
@@ -130,12 +134,54 @@ const ListNFT = ({
                             "price": selectedAmount === 0 ? [] : [BigInt(selectedAmount * Math.pow(10, 8))]
                         },
                         currentIdentity);
-                    console.log(resp)
                     if (resp.ok === 1) {
                         history.replace(`/nftdetails/${selectedAsset}`);
                         setTxCompleteTxt('Listed');
                         setLoadingSend(false);
                         setIsBusy(false);
+                    }
+                } catch (error) {
+                    console.log(error);
+                    setTxError("Please try again later! Error: " + JSON.stringify(error));
+                    setLoadingSend(false);
+                    setIsBusy(false);
+                }
+            }
+            else if (selectedAssetObj?.type == 'EarthArt') {
+                try {
+                    await canisterAgent({
+                        canisterId: selectedAssetObj?.canisterId,
+                        method: 'setApprovalForAll',
+                        fromIdentity: currentIdentity,
+                        args: {
+                            id: { principal: Principal.fromText('vvimt-yaaaa-aaaak-qajga-cai') },
+                            approved: true,
+                        },
+                    });
+                    const status = await canisterAgent({
+                        canisterId: 'vvimt-yaaaa-aaaak-qajga-cai',
+                        method: 'createListing',
+                        fromIdentity: currentIdentity,
+                        args: {
+                            groupIdentifier: [],
+                            expiry: [],
+                            nft: {
+                                nftCanister: Principal.fromText(selectedAssetObj?.canisterId),
+                                nftIdentifier: { nat32: selectedAssetObj.tokenIndex },
+                            },
+                            price: selectedAmount === 0 ? 0 : BigInt(selectedAmount * Math.pow(10, 8)),
+                            symbol: { icp: null },
+                        },
+                    });
+                    await controller.assets.fetchListingsByUser(address)
+                    if (status.ok != null) {
+                        history.replace(`/nftdetails/${selectedAsset}`);
+                        setTxCompleteTxt('Listed');
+                        setLoadingSend(false);
+                        setIsBusy(false);
+                    }
+                    else {
+                        throw (status.err)
                     }
                 } catch (error) {
                     console.log(error);
@@ -165,7 +211,7 @@ const ListNFT = ({
             }
 
         } else {
-            setError('Wrong password! Please try again');
+            setError(i18nT('common.wrongPass'));
             setIsBusy(false);
         }
 
@@ -176,16 +222,16 @@ const ListNFT = ({
         <Header
             showBackArrow
             text={selectedAssetObj?.forSale
-                ? cancelListing ? 'Cancel Public Sale'
-                    : 'Update Price for Public Sale'
-                : 'List NFT for Public sale'}
+                ? cancelListing ? i18nT('listNFT.cancel')
+                    : i18nT('listNFT.updatePrice')
+                : i18nT('listNFT.listNFT')}
             type={'wallet'}
         ><div style={{ width: 39 }} />
         </Header>
         {cancelListing ?
 
             <div>
-                <div className={clsx(styles.info, styles.cancelinfo)}>Cancel listing is free and will unlist your NFT from public sale.</div>
+                <div className={clsx(styles.info, styles.cancelinfo)}>{i18nT('listNFT.cancelInfo')}</div>
             </div> :
             <div>
                 <div className={styles.earthInputLabel}>Price in ICP</div>
@@ -198,14 +244,13 @@ const ListNFT = ({
                     max="1.00"
                     min="0.00"
                     onChange={(e) => setSelectedAmount(parseFloat(e.target.value))}
-                    placeholder="price up to 8 decimal places"
+                    placeholder={i18nT('listNFT.placeholder')}
                     required
                     step="0.001"
                     type="number"
                     value={selectedAmount}
                 />
-                <div className={styles.info}>Enter a price upto 8 decimal places for public sale. Listing is free and on sale of NFT, 2.0% of the amount will be deducted towards 1.0% Creators Royalty fee,
-                    and a 1% Network Marketplace fee</div>
+                <div className={styles.info}>{i18nT('listNFT.info')}</div>
             </div>}
 
         <div
@@ -215,9 +260,9 @@ const ListNFT = ({
                 data-export-password
                 disabled={isBusy}
                 isError={pass.length < MIN_LENGTH || !!error}
-                label={'password for this account'}
+                label={i18nT('common.passwordForAc')}
                 onChange={onPassChange}
-                placeholder='REQUIRED'
+                placeholder={i18nT('common.requiredPlaceholder')}
                 type='password'
             />
             {error && (<div
@@ -249,9 +294,9 @@ const ListNFT = ({
                 {
                     selectedAssetObj?.forSale
                         ? cancelListing
-                            ? 'Cancel Public Sale'
-                            : 'Update Price'
-                        : 'List for Public Sale'
+                            ? i18nT('listNFT.cancel')
+                            : i18nT('listNFT.updateBtn')
+                        : i18nT('listNFT.listBtn')
                 }
             </NextStepButton>
         </div>

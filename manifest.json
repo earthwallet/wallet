@@ -1,8 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Earth Wallet",
-  "version": "0.6.1",
-
+  "version": "1.0.1",
   "icons": {
     "16": "assets/images/icon-16.png",
     "32": "assets/images/icon-32.png",
@@ -14,7 +13,13 @@
   "homepage_url": "https://github.com/earthdao/wallet",
   "short_name": "Earth Wallet",
 
-  "permissions": ["activeTab", "storage", "http://*/*", "https://*/*", "chrome://favicon/"],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "http://*/*",
+    "https://*/*",
+    "chrome://favicon/"
+  ],
 
   "content_security_policy": "script-src 'self' blob: 'unsafe-eval' 'wasm-eval'; object-src 'self'; script-src-elem 'self' data:;",
 
@@ -54,7 +59,9 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["js/contentScript.bundle.js"]
+      "js": ["js/contentScript.bundle.js"],
+      "run_at": "document_start",
+      "all_frames": false
     }
   ]
 }

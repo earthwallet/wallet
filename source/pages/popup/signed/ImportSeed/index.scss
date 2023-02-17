@@ -183,7 +183,7 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
-  /* identical to box height */
+
   letter-spacing: 0.025em;
   &:focus-visible {
     outline: none;
@@ -202,7 +202,6 @@
 }
 
 .seedInputCont {
-  //padding: 0 24px;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
     rgba(36, 150, 255, 0.47);
   backdrop-filter: blur(5px);
@@ -280,7 +279,6 @@
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
-  /* identical to box height */
 
   color: #ffffff;
 }
@@ -323,11 +321,9 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
-  /* identical to box height */
 
   text-align: center;
 
-  /* Brand / Moonlight Grey / 20% */
 
   color: #fafbfb;
   cursor: pointer;
@@ -355,12 +351,10 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
-  /* identical to box height */
   background: #2496ff;
 
   text-align: center;
 
-  /* Brand / Moonlight Grey / 20% */
 
   color: #fafbfb;
   cursor: pointer;

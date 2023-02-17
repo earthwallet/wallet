@@ -11,12 +11,22 @@ export enum ChainId {
   Harmony = 1666600000,
 }
 
-export enum NetworkType {
-  ICP = 'Internet Computer',
-  Bitcoin = 'Bitcoin',
-  BitcoinTestnet = 'Bitcoin Testnet',
-  Ethereum = 'Ethereum',
-  Rinkeby = 'Rinkeby',
+export const NETWORK_TITLE: { [key: string]: string } = {
+  ICP: 'Internet Computer',
+  BTC: 'Bitcoin',
+  'BTC-T': 'Bitcoin Testnet',
+  ETH: 'Ethereum',
+  'RNK-T': 'Rinkeby',
+  MATIC: 'Polygon',
+};
+
+export enum NetworkSymbol {
+  ICP = 'ICP',
+  Bitcoin = 'BTC',
+  BitcoinTestnet = 'BTC-T',
+  Ethereum = 'ETH',
+  Rinkeby = 'RNK-T',
+  Polygon = 'MATIC',
 }
 
 export enum WalletType {
@@ -35,7 +45,6 @@ export interface WalletAccounts {
 }
 
 export interface AccountTransactionState {
-  // TODO: Need to declare more properties
   amount: string;
   timestamp: number;
 }
@@ -45,13 +54,13 @@ export interface ActiveAcccountState {
   address: string;
   label: string;
   balance: string;
-  network: NetworkType;
+  network: string;
   transactions: AccountTransactionState[];
 }
 
 export interface WalletAssetDetail {
   id: string;
-  network: NetworkType;
+  network: string;
   label: string;
   symbol: string;
   decimals: number;

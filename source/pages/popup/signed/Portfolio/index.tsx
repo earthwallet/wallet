@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import { getShortAddress, getShortText, getSymbol } from '~utils/common';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
+import { selectAccountGroups, selectBalanceById, selectGroupBalanceByAddress } from '~state/wallet';
 import { useHistory } from 'react-router-dom';
 import { useController } from '~hooks/useController';
 import { LIVE_SYMBOLS_GECKOIDs } from '~global/constant';
@@ -134,7 +134,7 @@ const Portfolio = () => {
 };
 
 const Balance = ({ account }: { account: keyable }) => {
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(account.address));
+  const currentBalance: keyable = useSelector(selectBalanceById(account.address));
   return <div>{(currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)} {account.symbol}</div>
 }
 const GroupBalance = ({ account, loading }: { account: keyable, loading: boolean }) => {
@@ -144,7 +144,7 @@ const GroupBalance = ({ account, loading }: { account: keyable, loading: boolean
 }
 
 const BalanceWithUSD = ({ account }: { account: keyable }) => {
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(account?.address));
+  const currentBalance: keyable = useSelector(selectBalanceById(account?.address));
   return <div className={styles.netlast}>
     <div className={styles.netvalue}><Balance account={account} /></div>
     <div className={styles.netstats}>${currentBalance?.balanceInUSD?.toFixed(3)}

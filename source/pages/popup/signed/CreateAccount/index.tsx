@@ -1,24 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react/jsx-key */
-/* eslint-disable camelcase */
-
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from './index.scss';
-//import { saveAs } from 'file-saver';
-//import { useHistory } from 'react-router-dom';
-//import BG_MNEMONIC from '~assets/images/bg_mnemonic.png';
 import ICON_CHECKED from '~assets/images/icon_checkbox_checked.svg';
 import ICON_UNCHECKED from '~assets/images/icon_checkbox_unchecked.svg';
 import ICON_COPY from '~assets/images/icon_copy.svg';
 import ICON_DOWNLOAD from '~assets/images/icon_download.svg';
 import CopyToClipboard from 'react-copy-to-clipboard';
-//import Loading from '~components/Loading';
 import NextStepButton from '~components/NextStepButton';
 import HeaderWithSteps from '~components/HeaderWithSteps';
 import Password from '~components/Password';
@@ -29,8 +15,9 @@ import { IWalletState } from '~state/wallet/types';
 import { AppState } from '~state/store';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { PREGENERATE_SYMBOLS } from '~global/constant';
+import { ACTIVE_SYMBOLS, PREGENERATE_SYMBOLS } from '~global/constant';
 import useToast from '~hooks/useToast';
+import { i18nT } from '~i18n/index';
 
 const Page = () => {
   const controller = useController();
@@ -58,7 +45,7 @@ const Page = () => {
       setIsBusy(true);
       const callback = (address: string) => history.replace('/accounts?hightlight=' + address);
       controller.accounts
-        .createOrUpdateAccounts(newMnemonic, PREGENERATE_SYMBOLS, name, password, [], callback)
+        .createOrUpdateAccounts(newMnemonic, PREGENERATE_SYMBOLS, name, password, ACTIVE_SYMBOLS, callback)
         .then(() => {
         });
     }
@@ -87,14 +74,14 @@ const Page = () => {
       <HeaderWithSteps
         backOverride={step === 1 ? undefined : _onPreviousStep}
         step={step}
-        text={'Create an account'}
+        text={i18nT('createAccount.header')}
       />
       {newMnemonic !== '' &&
         (step === 1 ? (
           <div>
             <div className={styles.earthInputCont}>
               <div className={styles.labelText}>
-                Account name
+                {i18nT('createAccount.accountName')}
               </div>
               <input
                 autoCapitalize="off"
@@ -102,14 +89,14 @@ const Page = () => {
                 autoFocus={true}
                 className={clsx(styles.earthName, styles.earthInput)}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="REQUIRED"
+                placeholder={i18nT('common.requiredPlaceholder')}
                 required
               />
             </div>
             <div
               className={clsx(styles.earthInputCont, styles.mnemonicInputCont)}
             >
-              <div className={styles.labelText}>Mnemonic Seed</div>
+              <div className={styles.labelText}>{i18nT('createAccount.mnemonicLabel')}</div>
               <div className={styles.mnemonicContWrap}>
                 <div className={styles.mnemonicCont}>
                   {newMnemonic.split(' ').map((word, index) => (
@@ -124,10 +111,9 @@ const Page = () => {
                           className={styles.mnemonicActionIcon}
                           src={ICON_COPY}
                         />
-                        <div>COPY</div>
+                        <div>{i18nT('createAccount.copy')}</div>
                       </div>
                     </CopyToClipboard>
-
                     <div
                       className={styles.mnemonicAction}
                       onClick={() => backupKeystore()}
@@ -136,19 +122,13 @@ const Page = () => {
                         className={styles.mnemonicActionIcon}
                         src={ICON_DOWNLOAD}
                       />
-                      <div>DOWNLOAD</div>
+                      <div>{i18nT('createAccount.download')}</div>
                     </div>
                   </div>
                 </div>
                 <div className={styles.mnemonicHelp}>
                   <div className={styles.mnemonicHelpTitle}>
-                    This is a generated 12-word
-                    mnemonic seed.
-                    {/* <small>
-                      Please write down your wallet’s mnemonic seed and keep it
-                      in a safe place. The mnemonic can be used to restore your
-                      wallet.
-                    </small> */}
+                    {i18nT('createAccount.generated')}
                   </div>
                 </div>
               </div>
@@ -168,7 +148,7 @@ const Page = () => {
                 )}
 
                 <div className={styles.checkboxTitle}>
-                  I have saved my mnemonic seed safely.
+                  {i18nT('createAccount.saved')}
                 </div>
               </div>
               <div className={styles.nextCont}>
@@ -176,7 +156,7 @@ const Page = () => {
                   disabled={!checked || name === ''}
                   onClick={!checked ? console.log : _onNextStep}
                 >
-                  {'Next step'}
+                  {i18nT('createAccount.nextStep')}
                 </NextStepButton>
               </div>
             </div>
@@ -207,8 +187,7 @@ const Page = () => {
                   )}
 
                   <div className={styles.checkboxTitle}>
-                    I understand that I will lose access to the account if I
-                    lose this mnemonic phrase.
+                    {i18nT('createAccount.checkBox')}
                   </div>
                 </div>
                 <NextStepButton
@@ -216,7 +195,7 @@ const Page = () => {
                   disabled={!secondChecked || !password}
                   onClick={!secondChecked ? console.log : _onCreate}
                 >
-                  {'Create an Account'}
+                  {i18nT('createAccount.cta')}
                 </NextStepButton>
               </div>
             </div>

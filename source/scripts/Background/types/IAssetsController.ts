@@ -1,5 +1,9 @@
 export interface IAssetsController {
   fetchFiatPrices: (symbols: keyable, currency?: string) => Promise<void>;
+  fetchListingsByUser: (
+    address: string,
+    collectionId?: string
+  ) => Promise<void>;
   getAssetsOfAccountsGroup: (accounts: keyable[][]) => Promise<void>;
   updateTokenCollectionDetails: (asset: keyable) => Promise<void>;
   registerExtensionForAirdrop: () => Promise<void>;
@@ -23,11 +27,20 @@ export interface IAssetsController {
   buyNft: (
     txnId: string,
     identityJSON: string,
-    nftId: string,
+    asset: keyable,
     price: number,
     address: string,
     callback?: (path: string) => void
   ) => Promise<void>;
+  transferEarthArt: (
+    identityJSON: string,
+    collectionId: string,
+    recipient: string,
+    amount: number,
+    address: string,
+    callback?: (path: string) => void
+  ) => Promise<void>;
+  updateETHAssetInfo: (asset: keyable) => Promise<void>;
 }
 
 export interface keyable {

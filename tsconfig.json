@@ -18,6 +18,8 @@
       "~components": ["components"],
       "~pages/*": ["pages/*"],
       "~pages": ["pages"],
+      "~i18n/*": ["i18n/*"],
+      "~i18n": ["i18n"],
       "~state/*": ["state/*"],
       "~state": ["state"],
       "~scripts/*": ["scripts/*"],

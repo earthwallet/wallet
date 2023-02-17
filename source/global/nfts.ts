@@ -3,12 +3,13 @@ import NFT_PLACEHOLDER from '~assets/images/nft_placeholder.png';
 import ICON_EARTH from '~assets/images/icon-512.png';
 import { decodeTokenId } from '@earthwallet/assets';
 import NFT_EARTH_DAY from '~assets/images/earthday_nft.png';
+import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 
 export const ICP_NFT_LIST = [
   {
     name: 'Cronic Critters',
     id: 'e3izy-jiaaa-aaaah-qacbq-cai',
-    standard: 'EXT',
+    type: 'EXT',
     isLive: true,
     order: 5,
     description:
@@ -18,7 +19,7 @@ export const ICP_NFT_LIST = [
   {
     name: 'Starverse',
     id: 'nbg4r-saaaa-aaaah-qap7a-cai',
-    standard: 'EXT',
+    type: 'EXT',
     isLive: true,
     order: 15,
     description:
@@ -29,11 +30,11 @@ export const ICP_NFT_LIST = [
     name: 'Wrapped ICPunks',
     wrapped: true,
     id: 'bxdf4-baaaa-aaaah-qaruq-cai',
-    standard: 'EXT',
+    type: 'EXT',
     order: 4,
     isLive: true,
     description:
-      'ICPunks wrapped under the EXT standard. 10,000 randomly generated, unique collectible clowns with proof of ownership stored on the Internet Computer blockchain. Created as a reference to a meme comparing the Internet Computer token (ICP) with the Insane Clown Posse.',
+      'ICPunks wrapped under the EXT type. 10,000 randomly generated, unique collectible clowns with proof of ownership stored on the Internet Computer blockchain. Created as a reference to a meme comparing the Internet Computer token (ICP) with the Insane Clown Posse.',
     icon: 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/1',
     tokenImage: (tokenIndex: string) =>
       `https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/${tokenIndex}`,
@@ -41,7 +42,7 @@ export const ICP_NFT_LIST = [
   {
     name: 'ICP News',
     id: 'uzhxd-ziaaa-aaaah-qanaq-cai',
-    standard: 'EXT',
+    type: 'EXT',
     isLive: true,
     order: 16,
     description:
@@ -52,7 +53,7 @@ export const ICP_NFT_LIST = [
     name: 'Cronic Wearables',
     id: 'tde7l-3qaaa-aaaah-qansa-cai',
     isLive: true,
-    standard: 'EXT',
+    type: 'EXT',
     order: 22,
     description:
       'Wearable NFTs, usable with the Cronics NFT collection. A Play-to-earn NFT game being developed by ToniqLabs for the Internet Computer. Cronics  incorporates breeding mechanics, wearable NFTs, a p2e minigame ecosystem, and more.',
@@ -62,7 +63,7 @@ export const ICP_NFT_LIST = [
     name: 'ICMojis',
     id: 'gevsk-tqaaa-aaaah-qaoca-cai',
     isLive: true,
-    standard: 'EXT',
+    type: 'EXT',
     order: 6,
     description:
       'A collection inspired in old school forum emotes, also part of the interactive strategy game ICMoji Origins.',
@@ -71,7 +72,7 @@ export const ICP_NFT_LIST = [
   {
     name: 'ICPuzzle',
     id: 'owuqd-dyaaa-aaaah-qapxq-cai',
-    standard: 'EXT',
+    type: 'EXT',
     order: 6,
     isLive: true,
     description:
@@ -81,7 +82,7 @@ export const ICP_NFT_LIST = [
   {
     name: 'IC Drip',
     id: '3db6u-aiaaa-aaaah-qbjbq-cai',
-    standard: 'EXT',
+    type: 'EXT',
     order: 6,
     wrapped: true,
     isLive: true,
@@ -94,7 +95,7 @@ export const ICP_NFT_LIST = [
   {
     name: 'Wing',
     id: '73xld-saaaa-aaaah-qbjya-cai',
-    standard: 'EXT',
+    type: 'EXT',
     isLive: true,
     order: 12,
     description:
@@ -105,7 +106,7 @@ export const ICP_NFT_LIST = [
     name: 'ICPunks',
     isLive: false,
     id: 'qcg3w-tyaaa-aaaah-qakea-cai',
-    standard: 'ICPunks',
+    type: 'ICPunks',
     description:
       '10,000 randomly generated, unique collectible clowns with proof of ownership stored on the Internet Computer blockchain. Created as a reference to a meme comparing the Internet Computer token (ICP) with the Insane Clown Posse - an American hip hop duo founded in 1989.',
     icon: 'https://qcg3w-tyaaa-aaaah-qakea-cai.raw.ic0.app/Token/1',
@@ -114,7 +115,7 @@ export const ICP_NFT_LIST = [
     name: 'Faceted Meninas',
     id: 'k4qsa-4aaaa-aaaah-qbvnq-cai',
     isLive: true,
-    standard: 'EXT',
+    type: 'EXT',
     order: 11,
     description:
       'Faceted Meninas is a creature species that holds the power of the universe to act as a magic pillar giving their allies the essence of outer worlds to maximize their powers.',
@@ -124,7 +125,7 @@ export const ICP_NFT_LIST = [
     name: 'ICTuTs',
     id: 'ahl3d-xqaaa-aaaaj-qacca-cai',
     isLive: true,
-    standard: 'EXT',
+    type: 'EXT',
     order: 6,
     description:
       'ICTuts - 1st pharaohs NFTs in the world. 10,000 randomly generated TuTs',
@@ -133,8 +134,8 @@ export const ICP_NFT_LIST = [
   {
     name: 'ICPuppies',
     id: 'njgly-uaaaa-aaaah-qb6pa-cai',
-    isLive: true,
-    standard: 'EXT',
+    isLive: false,
+    type: 'EXT',
     order: 6,
     description: '10,000 randomly generated 8-bit puppy NFTs',
     icon: 'https://njgly-uaaaa-aaaah-qb6pa-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=e6dxx-4akor-uwiaa-aaaaa-b4apt-yaqca-aaavm-q',
@@ -143,7 +144,7 @@ export const ICP_NFT_LIST = [
     name: 'Internet Astronauts',
     id: 'sr4qi-vaaaa-aaaah-qcaaq-cai',
     isLive: true,
-    standard: 'EXT',
+    type: 'EXT',
     order: 6,
     description: `Internet Astronauts is a collection of 10,000 unique digital NFT collectibles only found on the Internet Computer! Internet Astronauts can have
     advantages for various dapps on the Internet Computer Protocol(ICP) since all dapps on-chain.
@@ -154,7 +155,7 @@ export const ICP_NFT_LIST = [
     name: 'ICelebrity',
     id: 'kss7i-hqaaa-aaaah-qbvmq-cai',
     isLive: true,
-    standard: 'EXT',
+    type: 'EXT',
     order: 17,
     description: `100 Uniquely Minted handmade artistic representation of the people we know and love.`,
     icon: 'https://kss7i-hqaaa-aaaah-qbvmq-cai.raw.ic0.app/?tokenid=pvu3y-iakor-uwiaa-aaaaa-b4anl-eaqca-aaaag-q',
@@ -163,7 +164,7 @@ export const ICP_NFT_LIST = [
     name: 'ICPBunny',
     id: 'fu2zl-ayaaa-aaaaf-qaegq-cai',
     isLive: false,
-    standard: 'ICPBunny',
+    type: 'ICPBunny',
     order: 9,
     description: `ICPBunny - Yieldable and Breedable NFT`,
     icon: 'https://ecrba-viaaa-aaaaf-qaedq-cai.raw.ic0.app/Token/1',
@@ -172,8 +173,8 @@ export const ICP_NFT_LIST = [
     name: 'Motoko Day',
     id: 'oeee4-qaaaa-aaaak-qaaeq-cai',
     isLive: true,
-    order: 1,
-    standard: 'EXT',
+    order: 2,
+    type: 'EXT',
     description: `On the Motoko programming language's 2nd birthday, the DFINITY Foundation distributed 10,000 Motoko ghosts designed by Jon Ball of Pokedstudios to the community.`,
     icon: 'https://oeee4-qaaaa-aaaak-qaaeq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=w44h6-eakor-uwiaa-aaaaa-cuaab-eaqca-aaedg-a',
   },
@@ -181,7 +182,7 @@ export const ICP_NFT_LIST = [
     name: 'Infernal Vampire Colony',
     id: 'gyuaf-kqaaa-aaaah-qceka-cai',
     isLive: true,
-    standard: 'EXT',
+    type: 'EXT',
     order: 8,
     description: `Infernal Vampires had been in the lair for a long time. They finally managed to get out. Time for them to suck some blood!`,
     icon: 'https://gyuaf-kqaaa-aaaah-qceka-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=frfav-fakor-uwiaa-aaaaa-b4arc-qaqca-aaaim-a',
@@ -190,7 +191,7 @@ export const ICP_NFT_LIST = [
     name: 'Haunted Hamsters',
     id: 'bid2t-gyaaa-aaaah-qcdea-cai',
     isLive: true,
-    standard: 'EXT',
+    type: 'EXT',
     order: 7,
     description: `Infernal Vampires had been in the lair for a long time. They finally managed to get out. Time for them to suck some blood!`,
     icon: 'https://bid2t-gyaaa-aaaah-qcdea-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=kzu34-iqkor-uwiaa-aaaaa-b4aqz-aaqca-aadgp-q',
@@ -199,7 +200,7 @@ export const ICP_NFT_LIST = [
     name: 'Poked bots',
     id: 'bzsui-sqaaa-aaaah-qce2a-cai',
     isLive: true,
-    standard: 'EXT',
+    type: 'EXT',
     order: 2,
     description: `500 years from now humans have long left earth and only the Robots remain. Robots have managed to create new identities often based on relics they have found from earths past.`,
     icon: 'https://bzsui-sqaaa-aaaah-qce2a-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=rdlwm-kakor-uwiaa-aaaaa-b4arg-qaqca-aae4h-q',
@@ -207,7 +208,7 @@ export const ICP_NFT_LIST = [
   {
     name: 'Saga Legends #1: The Fool',
     id: 'nges7-giaaa-aaaaj-qaiya-cai',
-    standard: 'EXT',
+    type: 'EXT',
     isLive: true,
     order: 6,
     description: '',
@@ -216,21 +217,23 @@ export const ICP_NFT_LIST = [
   {
     name: 'ICP Squad',
     id: 'jmuqr-yqaaa-aaaaj-qaicq-cai',
-    standard: 'EXT',
+    type: 'EXT',
     isLive: true,
     order: 6,
     description: '',
     icon: 'https://jmuqr-yqaaa-aaaaj-qaicq-cai.raw.ic0.app/?cc=0&type=thumbnail&tokenid=ewpzr-jqkor-uwiaa-aaaaa-cmaca-uaqca-aabwo-a',
   },
   {
-    name: 'Earth Art Beta',
-    id: 'ntwio-byaaa-aaaak-qaama-cai',
-    standard: 'EarthArt',
-    isLive: false,
+    name: 'Earth orchestrator',
+    id: 'vsjkh-vyaaa-aaaak-qajgq-cai',
+    marketplaceId: 'vvimt-yaaaa-aaaak-qajga-cai',
+    type: 'EarthArt',
+    isLive: true,
     isAirdrop: false,
     description:
       'Earth Art - Earth NFTs. Create, earn, and collect digital assets and NFTs that let you monetize the value you contribute. ',
     icon: ICON_EARTH,
+    order: 1,
   },
 ];
 
@@ -246,11 +249,19 @@ export const getTokenCollectionInfo = (canisterId: string) =>
   ICP_NFT_LIST.filter((asset) => asset.id === canisterId)[0];
 
 export const getTokenImageURL = (asset: keyable) => {
-  if (asset?.canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
+  let imageURL = '';
+
+  if (asset?.symbol == 'ETH' || asset?.symbol == 'MATIC') {
+    return asset.tokenImage || ICON_PLACEHOLDER;
+  }
+  if (asset?.type == 'EarthArt') {
+    imageURL = `https://${asset?.canisterId}.raw.ic0.app/id/${asset?.tokenIndex}`;
+    return imageURL;
+  }
+  if (asset?.canisterId === 'vsjkh-vyaaa-aaaak-qajgq-cai') {
     return NFT_PLACEHOLDER;
   }
   const isWrapped = getTokenCollectionInfo(asset?.canisterId)?.wrapped;
-  let imageURL = '';
   if (isWrapped) {
     if (getTokenCollectionInfo(asset?.canisterId)?.tokenImage !== undefined) {
       let _tokenImage = getTokenCollectionInfo(asset?.canisterId).tokenImage;
@@ -267,6 +278,9 @@ export const getTokenImageURL = (asset: keyable) => {
   return imageURL;
 };
 
+export const getEarthArtCollectionIcon = (collectionId: string) =>
+  `https://${collectionId}.raw.ic0.app/collection`;
+
 export const getTokenImageUrlFromnftId = (nftId: string) => {
   const canisterId = decodeTokenId(nftId).canister;
 
@@ -278,17 +292,21 @@ export default LIVE_ICP_NFT_LIST_CANISTER_IDS;
 
 export const getAirDropNFTInfo = () => ({
   id: 'earth-day', //slug
+  type: 'EarthArt',
   standard: 'EarthArt',
-  isLive: true,
-  isAirdrop: true,
+  isLive: false,
+  isAirdrop: false,
   name: 'Earth Day 2022', //can be changed
   //can be changed
   description:
     'Happy Earth Day! Something new is coming to Earth and this NFT gets you early access...',
   icon: NFT_EARTH_DAY, //can be changed
-  claimedTxt: 'Congratulations! Your Earth Day NFT is registered and will be sent to account ',
+  claimedTxt:
+    'Congratulations! Your Earth Day NFT is registered and will be sent to account ',
   //can be changed
   twitterButtonCTA: 'Tweet to claim NFT',
   disclaimer:
     'disclaimer: Only one NFT can be claimed per extension. Please wait 5 minutes for tweet verification.',
 });
+
+export const MARKETPLACE_ENABLED = true;

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import Header from '~components/Header';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import CopyToClipboard from 'react-copy-to-clipboard';
-//import bg_wallet_details from '~assets/images/bg_wallet_details.png';
 import icon_copy from '~assets/images/icon_copy.svg';
 import icon_rec from '~assets/images/icon_rec.svg';
 import icon_send from '~assets/images/icon_send.svg';
@@ -15,7 +14,7 @@ import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
 import { getTransactions } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
-import { selectBalanceByAddress } from '~state/wallet';
+import { selectBalanceById } from '~state/wallet';
 import { selectAssetBySymbol } from '~state/assets';
 import useToast from '~hooks/useToast';
 
@@ -23,8 +22,11 @@ import { useHistory } from 'react-router-dom';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
 import { selectAssetsICPCountByAddress } from '~state/wallet';
 import { ClipLoader } from 'react-spinners';
+import { getTransactions_ETH_MATIC } from '~utils/services';
+import { getTransactions_BTC_DOGE } from '~utils/btc';
+import { i18nT } from '~i18n/index';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 interface keyable {
   [key: string]: any
@@ -32,7 +34,7 @@ interface keyable {
 
 const Wallet = ({
   match: {
-    params: { address },
+    params: { accountId },
   },
 }: Props) => {
 
@@ -40,12 +42,13 @@ const Wallet = ({
   const { show } = useToast();
 
   const _onCopy = useCallback((): void => show('Copied'), [show]);
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
 
-  const selectedAccount = useSelector(selectAccountById(address));
   const history = useHistory();
 
 
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentBalance: keyable = useSelector(selectBalanceById(address));
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
 
   const [walletTransactions, setWalletTransactions] = useState<any>();
@@ -55,10 +58,20 @@ const Wallet = ({
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
-      const transactions = await getTransactions(address, selectedAccount?.symbol);
-      setWalletTransactions(transactions);
-    };
 
+      if (selectedAccount?.symbol == "ICP") {
+        const transactions = await getTransactions(address, selectedAccount?.symbol);
+        setWalletTransactions(transactions);
+      } else if (selectedAccount?.symbol == "BTC" || (selectedAccount?.symbol == "DOGE")) {
+        const response = await getTransactions_BTC_DOGE(address, selectedAccount?.symbol);
+        const wallet = { txs: response, total: response?.length };
+        setWalletTransactions(wallet);
+      } else {
+        const response = await getTransactions_ETH_MATIC(address, selectedAccount?.symbol);
+        const wallet = { txs: response, total: response?.length };
+        setWalletTransactions(wallet);
+      }
+    };
 
     if (selectedAccount && selectedAccount?.id) {
       controller.accounts
@@ -67,7 +80,7 @@ const Wallet = ({
         });
       loadTransactions(selectedAccount?.id);
     }
-  }, [selectedAccount?.id === address]);
+  }, [selectedAccount?.id === address, selectedAccount?.symbol]);
 
   return (
     <div className={styles.page}>
@@ -91,7 +104,7 @@ const Wallet = ({
           </SkeletonTheme>
         ) : (
           <div className={styles.primaryBalanceLabel}>{currentBalance &&
-            `${currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)} ${currentBalance?.currency?.symbol}`
+            `${(currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)).toFixed(6)} ${currentBalance?.currency?.symbol}`
           }</div>
 
         )}
@@ -127,7 +140,7 @@ const Wallet = ({
           <Link className={styles.transactionsCont} to={"/account/receive/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_rec} />
-              <div className={styles.tokenActionLabel}>Receive</div>
+              <div className={styles.tokenActionLabel}>{i18nT('wallet.receive')}</div>
             </div>
           </Link>
         </div>
@@ -136,7 +149,7 @@ const Wallet = ({
           <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={styles.iconActions} src={icon_send} />
-              <div className={styles.tokenActionLabel}>Send</div>
+              <div className={styles.tokenActionLabel}>{i18nT('wallet.send')}</div>
             </div>
           </Link>
         </div>
@@ -145,15 +158,14 @@ const Wallet = ({
       {selectedAccount?.symbol === 'ICP_Ed25519' && <div className={styles.walletNoSupportActionsView}>
         <div className={styles.noSupportText}>
           <img src={ICON_NOTICE} className={styles.noticeIcon}></img>
-
-          Ed25519 address is no longer supported. Please import seed from Export</div>
+          {i18nT('wallet.noEd')}</div>
         <div
           className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
         >
           <Link className={styles.transactionsCont} to={"/account/export/" + selectedAccount?.id}>
             <div className={styles.tokenActionButton}>
               <img className={clsx(styles.iconActions, styles.exportIcon)} src={icon_send} />
-              <div className={styles.tokenActionLabel}>Export</div>
+              <div className={styles.tokenActionLabel}>{i18nT('wallet.export')}</div>
             </div>
           </Link>
         </div>
@@ -173,7 +185,7 @@ const Wallet = ({
                 styles.selectedTabView
               )}
             >
-              Transactions {walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
+              {i18nT('wallet.txns')}{" "}{walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
             </div>
           </div>
         </div>

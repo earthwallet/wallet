@@ -1,10 +1,12 @@
-//import { EarthKeyringPair } from '@earthwallet/keyring';
 
 import { keyable } from './IAssetsController';
 
 export interface ITokensController {
   getTokenBalances: (address: string) => Promise<void>;
-  getTokens: (callback?: (address: string) => void) => Promise<void>;
+  updateERC20PriceAndMeta: (
+    contractAddress: string,
+    symbol: string
+  ) => Promise<void>;
   updateTokensOfNetwork: (
     groupId: string,
     symbols: string[],

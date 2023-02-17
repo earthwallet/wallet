@@ -5,13 +5,10 @@ import styles from './index.scss';
 import Header from '~components/Header';
 
 import { RouteComponentProps, useHistory, withRouter } from 'react-router';
-//import ICON_EARTH from '~assets/images/icon-512.png';
-//import ICON_CARET from '~assets/images/icon_caret.svg';
 import ICON_SWAP from '~assets/images/icon_swap.svg';
-//import clsx from 'clsx';
 import NextStepButton from '~components/NextStepButton';
 import { useSelector } from 'react-redux';
-import { selectTokensInfo, selectTokensInfoById } from '~state/token';
+import { selectTokensInfo, selectTokensInfoById } from '~state/tokens';
 import { keyable } from '~scripts/Background/types/IAssetsController';
 import TokenSelectorDropdown from '~components/TokenSelectorDropdown';
 import useToast from '~hooks/useToast';
@@ -22,17 +19,21 @@ import ICON_MINT from '~assets/images/icon_mint.svg';
 import clsx from 'clsx';
 import { getTokenInfo } from '~global/tokens';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
-import { selectBalanceByAddress } from '~state/wallet';
+import { selectAccountById, selectBalanceById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
 
-interface Props extends RouteComponentProps<{ address: string, tokenId: string }> {
+interface Props extends RouteComponentProps<{ accountId: string, tokenId: string }> {
 }
 
 
 const Swap = ({
   match: {
-    params: { address, tokenId },
+    params: { accountId, tokenId },
   },
 }: Props) => {
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+
   const queryParams = useQuery();
   const type: string = queryParams.get('type') || '';
 
@@ -51,7 +52,7 @@ const Swap = ({
   const [priceFetch, setPriceFetch] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const history = useHistory();
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+  const currentBalance: keyable = useSelector(selectBalanceById(address));
   const maxAmount = currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals) - getTokenInfo(tokenId).fees;
 
 
@@ -70,7 +71,7 @@ const Swap = ({
 
   const updateAmount = (amount: number) => {
     if (selectedSecondToken?.id == null) {
-      show("Select second token!");
+      show(i18nT('swap.selectSec'));
       return;
     }
     setSelectedAmount(amount);
@@ -90,7 +91,7 @@ const Swap = ({
       setSelectedSecondAmount(Number(amount - getTokenInfo(tokenId).fees));
     }
     if (selectedAmount > maxAmount) {
-      show('Insufficient Balance');
+      show(i18nT('swap.inSuf'));
     }
   }
   const updateSecondAmount = (amount: number) => {
@@ -99,7 +100,7 @@ const Swap = ({
       setSelectedAmount(Number(selectedAmount?.toFixed(5)));
       setSelectedSecondAmount(amount);
       if (selectedAmount > maxAmount) {
-        show('Insufficient Balance');
+        show(i18nT('swap.inSuf'));
       }
     }
     else if (pairRatio == 1) {
@@ -107,7 +108,7 @@ const Swap = ({
       setSelectedAmount(selectedAmount);
       setSelectedSecondAmount(amount);
       if (selectedAmount > maxAmount) {
-        show('Insufficient Balance');
+        show(i18nT('swap.inSuf'));
       }
     }
     else {
@@ -118,12 +119,11 @@ const Swap = ({
   const swap = async () => {
     setLoading(true);
     const response = await controller.tokens.swap(selectedToken.id, selectedSecondToken.id, selectedAmount);
-    console.log(response);
     setPairRatio(response.ratio);
     setTotalSupply(response?.stats?.total_supply);
-    show("Stake Complete! Updating Balances");
+    show(i18nT('swap.stakeCompl'));
     await controller.tokens.getTokenBalances(address);
-    show("Done!");
+    show(i18nT('swap.done'));
     setLoading(false);
 
   }
@@ -137,7 +137,6 @@ const Swap = ({
       pairRatio: pairRatio.toString()
     })
     history.push('/transaction/confirm/' + txnId);
-    console.log(txnId);
   }
   const swapSelectedTokens = () => {
     const _selectedToken = { ...selectedToken };
@@ -153,7 +152,7 @@ const Swap = ({
         text={type == 'mint' ? 'Mint' : 'Swap'}
       ><div className={styles.empty} /></Header>
       <div>
-        <div className={styles.etxt}>Earth DEX lets you swap your tokens with no central middleman. Fees are used to offset emissions.</div>
+        <div className={styles.etxt}>{i18nT('swap.info')}</div>
 
         <div className={styles.swapCont}>
           <div className={styles.firstInputCont}>
@@ -167,6 +166,7 @@ const Swap = ({
               setSelectedToken={setSelectedToken}
               selectedToken={selectedToken}
               address={address}
+              noDropdown
             />
             <div
               onClick={() => type == 'mint' ? console.log() : swapSelectedTokens()}
@@ -182,13 +182,14 @@ const Swap = ({
             selectedToken={selectedSecondToken}
             address={address}
             hideMax
+            noDropdown
           />
         </div>
       </div>
       <div className={styles.statsCont}>
         <div className={styles.statsCol}>
           <div className={styles.statKey}>
-            {type == "mint" ? "Mint Fees" : "Swap Fees"}
+            {type == "mint" ? i18nT('swap.mintFees') : i18nT('swap.swapFees')}
           </div>
           <div className={clsx(styles.statVal, styles.statVal_small)}>
             {type == "mint" ? tokenInfo.fees : "0.3%"}
@@ -196,7 +197,7 @@ const Swap = ({
         </div>
         <div className={styles.statsCol}>
           <div className={styles.statKey}>
-            Price
+            {i18nT('swap.price')}
           </div>
           <div className={styles.statVal}>
             {priceFetch
@@ -214,7 +215,7 @@ const Swap = ({
         </div>
         <div className={styles.statsCol}>
           <div className={styles.statKey}>
-            Total Supply
+            {i18nT('swap.totalSupply')}
           </div>
           <div className={styles.statVal}>
             {priceFetch
@@ -228,15 +229,13 @@ const Swap = ({
           </div>
         </div>
       </div>
-      {false && <div className={styles.txnBtnCont}><div className={styles.txnBtn}>Transaction Settings</div></div>
-      }
       <div className={styles.nextCont}>
         <NextStepButton
           disabled={selectedAmount == 0 || selectedAmount < getTokenInfo(tokenId).fees || selectedAmount > maxAmount}
           loading={loading}
           onClick={() => type == 'mint' ? mint() : swap()}
         >
-          {type == 'mint' ? selectedAmount > maxAmount ? 'Insufficient Balance' : 'Next' : 'Swap'}
+          {type == 'mint' ? selectedAmount > maxAmount ? i18nT('swap.inSuf') : i18nT('swap.next') : i18nT('swap.swap')}
         </NextStepButton>
       </div>
     </div >

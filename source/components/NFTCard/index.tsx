@@ -14,7 +14,7 @@ const NFTCard = (props: any) => {
                     : <LazyLoadImage
                         alt={props.id}
                         height={156}
-                        src={props.img} // use normal <img> attributes as props
+                        src={props.img}
                         width={156} />}
             </div>
             {props.loading ? <span className={styles.text}>

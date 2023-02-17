@@ -1,11 +1,9 @@
-// @ts-nocheck
 
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.scss';
 import { Link } from 'react-router-dom';
 import Header from '~components/Header';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-//import bg_wallet_details from '~assets/images/bg_wallet_details.png';
 import icon_rec from '~assets/images/icon_rec.svg';
 import icon_send from '~assets/images/icon_send.svg';
 import { getSymbol } from '~utils/common';
@@ -15,28 +13,26 @@ import { useSelector } from 'react-redux';
 import { selectAccountById } from '~state/wallet';
 import { getTransactions } from '@earthwallet/keyring';
 import { useController } from '~hooks/useController';
-import { selectBalanceByAddress } from '~state/wallet';
-import { selectAssetBySymbol } from '~state/assets';
+import { selectBalanceById } from '~state/wallet';
+import { selectAssetBySymbol, selectPriceByContractAddress } from '~state/assets';
 
 import { useHistory } from 'react-router-dom';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
-import { selectAssetsICPCountByAddress } from '~state/wallet';
-import { ClipLoader } from 'react-spinners';
 import ICON_GRID from '~assets/images/icon_grid.svg';
 import ICON_LIST from '~assets/images/icon_list.svg';
-import { selectAssetsICPByAddress } from '~state/wallet';
 import Swiper from 'react-id-swiper';
-import { getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
 import { getInfoBySymbol } from '~global/constant';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
 import { AssetsList, AssetsCoverflow } from '../NFTList';
-//import { selectAccountGroups, selectBalanceByAddress, selectGroupBalanceByAddress } from '~state/wallet';
-import { selectGroupBalanceByAddress, selectGroupBalanceByGroupIdAndSymbol, selectBalanceInUSDByAddress } from '~state/wallet';
-import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalance, selectTokenByTokenPair } from '~state/token';
+import { selectGroupBalanceByGroupIdAndSymbol } from '~state/wallet';
+import { selectActiveTokensByAddressWithInfo, selectActiveTokenAndAddressBalanceByAccountId, selectTokenByTokenPair } from '~state/tokens';
 import AppsList from '~components/AppsList';
 import useQuery from '~hooks/useQuery';
+import { getTransactions_ETH_MATIC } from '~utils/services';
+import { getTransactions_BTC_DOGE } from '~utils/btc';
+import { i18nT } from '~i18n/index';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 interface keyable {
   [key: string]: any
@@ -44,7 +40,7 @@ interface keyable {
 
 const Wallet = ({
   match: {
-    params: { address },
+    params: { accountId },
   },
 }: Props) => {
 
@@ -55,27 +51,27 @@ const Wallet = ({
   const controller = useController();
 
 
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+
   const history = useHistory();
-
-
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
-
   const [walletTransactions, setWalletTransactions] = useState<any>();
   const [nav, setNav] = useState('list');
   const [mainNav, setMainNav] = useState('tokens');
-  const [tokenBalanceLoading, setTokenBalanceLoading] = useState(false);
-  const [selectedGridToken, setSelectedGridToken] = useState<string>('ICP');
+  const [selectedGridToken, setSelectedGridToken] = useState<string>('');
 
   useEffect(() => {
-    if (!(selectedAccount?.symbol === 'ICP' || selectedAccount?.symbol === 'ETH')) {
+    if (!(selectedAccount?.symbol === 'ICP' || selectedAccount?.symbol === 'ETH' || selectedAccount?.symbol === 'MATIC')) {
       history.replace('/account/minidetails/' + address)
+    }
+    else {
+      setSelectedGridToken(selectedAccount?.symbol)
     }
   }, [selectedAccount]);
 
   useEffect(() => {
-    if (address != null) {
-      controller.tokens.getTokenBalances(address);
+    if (accountId != null) {
+      controller.tokens.getTokenBalances(accountId);
     }
   }, []);
 
@@ -88,8 +84,17 @@ const Wallet = ({
 
   useEffect(() => {
     const loadTransactions = async (address: string) => {
-      const transactions = await getTransactions(address, selectedAccount?.symbol);
-      setWalletTransactions(transactions);
+      if (selectedAccount?.symbol == 'ICP') {
+        const transactions = await getTransactions(address, selectedAccount?.symbol);
+        setWalletTransactions(transactions);
+      } else if (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'DOGE') {
+        const transactions = await getTransactions_BTC_DOGE(address, selectedAccount?.symbol);
+        setWalletTransactions(transactions);
+      } else {
+        const response = await getTransactions_ETH_MATIC(address, selectedAccount?.symbol);
+        const wallet = { txs: response, total: response?.length };
+        setWalletTransactions(wallet);
+      }
     };
 
 
@@ -98,9 +103,9 @@ const Wallet = ({
         .getBalancesOfAccount(selectedAccount)
         .then(() => {
         });
-      loadTransactions(selectedAccount?.id);
+      loadTransactions(selectedAccount?.address);
     }
-  }, [selectedAccount?.id === address]);
+  }, [address != null]);
 
   return (
     <div className={styles.page}>
@@ -118,19 +123,19 @@ const Wallet = ({
             onClick={() => setMainNav('tokens')}
             className={clsx(styles.tabnav,
               mainNav === 'tokens' && styles.tabnav_active)}>
-            Wallet
+            {i18nT('tokenDetails.tokens')}
           </div>
           <div
             onClick={() => setMainNav('nfts')}
             className={clsx(styles.tabnav,
               mainNav === 'nfts' && styles.tabnav_active)}
           >
-            Art
+            {i18nT('tokenDetails.nfts')}
           </div>
           <div onClick={() => setMainNav('apps')}
             className={clsx(styles.tabnav,
               mainNav === 'apps' && styles.tabnav_active)}>
-            Apps
+            {i18nT('tokenDetails.apps')}
           </div>
           <div className={styles.layoutnav}>
             <img
@@ -160,21 +165,22 @@ const Wallet = ({
         </>
       }
       {mainNav === 'nfts' && <>
-        {nav === 'grid' && <AssetsCoverflow address={address} />}
+        {nav === 'grid' && <AssetsCoverflow accountId={accountId} />}
         {nav === 'list' && <div className={styles.nftslistcont}>
-          <AssetsList address={address} />
+          <AssetsList accountId={accountId} />
         </div>}
       </>}
 
       {mainNav === 'tokens' && <>
         <div>
           {nav === 'grid' && <TokensGridflow
+            accountId={accountId}
             setSelectedGridToken={setSelectedGridToken}
-            address={address} />}
-          {nav === 'list' && <TokensList address={address} />}
+          />}
+          {nav === 'list' && <TokensList accountId={accountId} />}
         </div>
         <div className={clsx(styles.tokenGrid, nav === 'list' && styles.tokenGridList)}>
-          {(nav === 'grid') && <TokenOrICPBalance address={address} tokenId={selectedGridToken} />}
+          {(nav === 'grid') && <TokenOrSymbolBalance address={address} tokenId={selectedGridToken} />}
           {selectedAccount?.symbol !== 'ICP_Ed25519' && <div className={styles.walletActionsView}>
             <div
               className={clsx(styles.tokenActionView, styles.receiveTokenAction)}
@@ -182,7 +188,7 @@ const Wallet = ({
               <Link className={styles.transactionsCont} to={"/account/receive/" + selectedAccount?.id}>
                 <div className={styles.tokenActionButton}>
                   <img className={styles.iconActions} src={icon_rec} />
-                  <div className={styles.tokenActionLabel}>Receive</div>
+                  <div className={styles.tokenActionLabel}>{i18nT('tokenDetails.rec')}</div>
                 </div>
               </Link>
             </div>
@@ -190,7 +196,7 @@ const Wallet = ({
               <Link className={styles.transactionsCont} to={"/account/send/" + selectedAccount?.id}>
                 <div className={styles.tokenActionButton}>
                   <img className={styles.iconActions} src={icon_send} />
-                  <div className={styles.tokenActionLabel}>Send</div>
+                  <div className={styles.tokenActionLabel}>{i18nT('tokenDetails.send')}</div>
                 </div>
               </Link>
             </div>
@@ -205,7 +211,7 @@ const Wallet = ({
               <Link className={styles.transactionsCont} to={"/account/export/" + selectedAccount?.id}>
                 <div className={styles.tokenActionButton}>
                   <img className={clsx(styles.iconActions, styles.exportIcon)} src={icon_send} />
-                  <div className={styles.tokenActionLabel}>Export</div>
+                  <div className={styles.tokenActionLabel}>{i18nT('tokenDetails.export')}</div>
                 </div>
               </Link>
             </div>
@@ -226,7 +232,7 @@ const Wallet = ({
                 styles.selectedTabView
               )}
             >
-              Transactions {walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
+              {i18nT('wallet.txns')}{' '}{walletTransactions?.total ? `(${walletTransactions?.total})` : ''}
             </div>
           </div>
         </div>
@@ -234,58 +240,45 @@ const Wallet = ({
     </div>
   );
 };
-export const AssetsICPCount = ({ icpAddress }: { icpAddress: string }) => {
-  const assetsObj: keyable = useSelector(selectAssetsICPCountByAddress(icpAddress));
-  const history = useHistory();
 
 
-  if (assetsObj?.count === 0 || assetsObj?.count === undefined) return <></>;
-
-  return <div
-    onClick={() => history.push('/account/assets/nftlist/' + icpAddress)}
-    className={styles.assetsCont}><div className={styles.assetCount}>{assetsObj?.count === 0 ? '' : assetsObj?.count === 1 ? 'See Your 1 NFT' : `See Your ${assetsObj?.count} NFTs`}
-      {assetsObj.loading && <span className={styles.assetCountLoading}><ClipLoader color={'#fffff'}
-        size={12} />
-      </span>}
-    </div></div>
-}
-
-
-const TokensList = ({ address }: { address: string }) => {
+const TokensList = ({ accountId }: { accountId: string }) => {
 
   const history = useHistory();
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
 
-  const currentBalance: keyable = useSelector(selectGroupBalanceByAddress(selectedAccount?.groupId));
-  const tokens = useSelector(selectActiveTokensByAddressWithInfo(address));
-  const activeTokenAndAddressBalance = useSelector(selectActiveTokenAndAddressBalance(address));
+  const { address, symbol } = selectedAccount;
+  const tokens = useSelector(selectActiveTokensByAddressWithInfo(address, symbol));
 
+  const activeTokenAndAddressBalance = useSelector(
+    selectActiveTokenAndAddressBalanceByAccountId(accountId)
+  );
   return (
     <div className={styles.tokensList}>
       <div className={styles.listHeader}>
-        <div className={styles.listHeaderTitle}>Total Balance</div>
-        <div className={styles.listHeaderSubtitle}>${activeTokenAndAddressBalance?.toFixed(2) || 0}</div>
+        <div className={styles.listHeaderTitle}>{i18nT('tokenDetails.totalBalance')}</div>
+        <div className={styles.listHeaderSubtitle}>${isNaN(activeTokenAndAddressBalance) ? 0 : activeTokenAndAddressBalance?.toFixed(2) || 0}</div>
       </div>
       <div className={styles.listitemscont}>
         <div
-          onClick={() => history.push('/th/' + address + '/' + selectedAccount.symbol)}
+          onClick={() => history.push('/th/' + accountId + '/' + selectedAccount?.symbol)}
           className={styles.listitem}>
           <img
             className={styles.listicon}
-            src={getInfoBySymbol(selectedAccount.symbol)?.icon} >
+            src={getInfoBySymbol(selectedAccount?.symbol)?.icon} >
           </img>
           <div className={styles.listinfo}>
-            <div className={styles.listtitle}>{getInfoBySymbol(selectedAccount.symbol)?.name}</div>
+            <div className={styles.listtitle}>{getInfoBySymbol(selectedAccount?.symbol)?.name}</div>
           </div>
           <GroupSymbolBalance groupId={selectedAccount?.groupId}
-            symbol={getInfoBySymbol(selectedAccount.symbol)?.symbol} />
+            symbol={getInfoBySymbol(selectedAccount?.symbol)?.symbol} />
           <img
             className={styles.listforward}
             src={ICON_FORWARD}
           />
         </div>
-        {tokens?.length > 0 && tokens?.map((token, i: number) => <div
-          onClick={() => history.push('/th/' + address + '/' + token.id)}
+        {tokens?.length > 0 && tokens?.filter((token: keyable) => token?.symbol != null).map((token: keyable, i: number) => <div
+          onClick={() => history.push('/th/' + accountId + '/' + token.id)}
           key={i}
           className={styles.listitem}>
           {token?.icon ? <img
@@ -300,14 +293,17 @@ const TokensList = ({ address }: { address: string }) => {
           </div>
           <div className={styles.liststats} >
             <div className={styles.listprice}>{token?.balanceTxt || 0} {token?.symbol}</div>
-            <div className={styles.listsubtitle}>${token?.price || 0}</div>
+            {(selectedAccount.symbol == 'ETH' || selectedAccount.symbol == 'MATIC') ? <TokenPrice_ETH contractAddress={token?.contractAddress} balance={token?.balance} /> : <div className={styles.listsubtitle}>${token?.price || 0}   {
+              token?.usd_24h_change && token?.price !== 0
+              && <span className={token?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{token?.usd_24h_change?.toFixed(2)}%</span>
+            }</div>}
           </div>
           <img
             className={styles.listforward}
             src={ICON_FORWARD}
           />
         </div>)}
-        {<div
+        {selectedAccount.symbol == "ICP" && <div
           onClick={() => history.push('/account/selecttoken/' + selectedAccount?.id)}
           className={styles.listitem}>
           <div
@@ -315,7 +311,7 @@ const TokensList = ({ address }: { address: string }) => {
             <div>💎</div>
           </div>
           <div className={styles.listinfo}>
-            <div className={styles.listtitle}>Select Tokens</div>
+            <div className={styles.listtitle}>{i18nT('tokenDetails.select')}</div>
           </div>
           <div className={styles.liststats}></div>
           <img
@@ -335,18 +331,27 @@ const GroupSymbolBalance = ({ groupId, symbol }: { groupId: string, symbol: stri
   >
     <div><Balance account={currentAccount[0]} /></div>
     <div className={styles.listsubtitle}>
-      <BalanceWithUSD address={currentAccount[0]?.address} />
+      <BalanceWithUSD id={currentAccount[0]?.id} />
     </div>
   </div>
 }
 
+const TokenPrice_ETH = ({ contractAddress, balance }: { contractAddress: string, balance: any }) => {
+  const currentUSDValue: keyable = useSelector(selectPriceByContractAddress(contractAddress));
+  if (currentUSDValue == undefined || currentUSDValue?.usd == undefined)
+    return <></>;
+  return <div className={styles.listsubtitle}>${(currentUSDValue?.usd * balance)?.toFixed(2) || 0}   {
+    currentUSDValue?.usd_24h_change && (currentUSDValue?.usd * balance) !== 0
+    && <span className={currentUSDValue?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentUSDValue?.usd_24h_change?.toFixed(2)}%</span>
+  }</div>
+}
 
-const TokenOrICPBalance = ({ address, tokenId }) => {
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
-  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol('ICP')?.coinGeckoId || ''));
+const TokenOrSymbolBalance = ({ address, tokenId }: { address: string, tokenId: string }) => {
+  const currentBalance: keyable = useSelector(selectBalanceById(address));
+  const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(tokenId)?.coinGeckoId || ''));
   const tokenPair = useSelector(selectTokenByTokenPair(address + "_WITH_" + tokenId));
 
-  if (tokenId == 'ICP') {
+  if (getInfoBySymbol(tokenId) != null) {
     return <div className={clsx(styles.balanceInfo)}>
       <div className={styles.primaryBalanceLabel}>
         {currentBalance?.loading ? (
@@ -365,7 +370,12 @@ const TokenOrICPBalance = ({ address, tokenId }) => {
             <Skeleton width={100} />
           </SkeletonTheme>
         ) : (
-          <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))?.toFixed(2)}</span>
+          <span className={styles.secondaryBalanceLabel}>${((currentBalance?.value / Math.pow(10, currentBalance?.currency?.decimals)) * parseFloat(currentUSDValue?.usd))?.toFixed(2)}
+            {
+              currentBalance?.usd_24h_change && currentBalance?.value !== 0
+              && <span className={currentBalance?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{currentBalance?.usd_24h_change?.toFixed(2)}%</span>
+            }
+          </span>
         )}
       </div>
     </div>
@@ -377,22 +387,28 @@ const TokenOrICPBalance = ({ address, tokenId }) => {
     </div>
     <div className={styles.secondaryBalanceLabel}>
       <span className={styles.secondaryBalanceLabel}>${tokenPair?.price || 0}</span>
+      {
+        tokenPair?.usd_24h_change && tokenPair?.price !== 0
+        && <span className={tokenPair?.usd_24h_change > 0 ? styles.netstatspositive : styles.netstatsnegative}>{tokenPair?.usd_24h_change?.toFixed(2)}%</span>
+      }
     </div>
   </div>
 }
 
 
 
-const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, setSelectedGridToken: () => void }) => {
-  const assets: keyable = useSelector(selectAssetsICPByAddress(address));
-  const tokens = useSelector(selectActiveTokensByAddressWithInfo(address));
+const TokensGridflow = ({ accountId, setSelectedGridToken }: { accountId: string, setSelectedGridToken: (token: string) => void }) => {
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+  const selectedSymbol = selectedAccount.symbol;
+  const tokens = useSelector(selectActiveTokensByAddressWithInfo(address, selectedSymbol));
   const history = useHistory();
-  const [swiper, setSwiper] = useState(null);
+  const [swiper, setSwiper] = useState<any | null>(null);
 
 
-  const updateCurrentIndex = (_index) => {
+  const updateCurrentIndex = (_index: number) => {
     if (_index == 0) {
-      setSelectedGridToken('ICP')
+      setSelectedGridToken(selectedSymbol)
     }
     else {
       setSelectedGridToken(tokens[_index - 1].id)
@@ -414,6 +430,7 @@ const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, se
 
 
   const params = {
+    effect: 'coverflow',
     grabCursor: true,
     centeredSlides: true,
     containerClass: "tokensswipercontainer",
@@ -432,19 +449,17 @@ const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, se
   if (tokens?.length > 0) {
     return <Swiper
       getSwiper={setSwiper}
-      effect={'coverflow'}
-      slidesPerView={'auto'}
       {...params}>
       <div
-        onClick={() => history.push(`/th/${address}`)}
+        onClick={() => history.push(`/th/${accountId}`)}
         className={styles.imagecont}>
         <img
           className={styles.imageIcon}
-          src={getInfoBySymbol('ICP')?.icon} >
+          src={getInfoBySymbol(selectedSymbol)?.icon} >
         </img>
       </div>
-      {tokens?.length > 0 && tokens?.map((token, i: number) => <div
-        onClick={() => history.push('/th/' + address + '/' + token.id)}
+      {tokens?.length > 0 && tokens?.map((token: keyable, i: number) => <div
+        onClick={() => history.push('/th/' + accountId + '/' + token.id)}
         key={i}
         className={styles.imagecont}>
         {token?.icon ? <img
@@ -460,16 +475,13 @@ const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, se
   return (
     <Swiper
       getSwiper={setSwiper}
-      effect={'coverflow'}
-      slidesPerView={'auto'}
       {...params}>
       <div
         onClick={() => history.push(`/account/send/${address}`)}
         className={styles.imagecont}>
         <img
-          key={i}
           className={styles.imageIcon}
-          src={getInfoBySymbol('ICP')?.icon} >
+          src={getInfoBySymbol(selectedSymbol)?.icon} >
         </img>
       </div>
     </Swiper>
@@ -478,12 +490,12 @@ const TokensGridflow = ({ address, setSelectedGridToken }: { address: string, se
 
 
 const Balance = ({ account }: { account: keyable }) => {
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(account?.address));
+  const currentBalance: keyable = useSelector(selectBalanceById(account?.id));
   return <div className={styles.listprice}>{((currentBalance?.value || 0) / Math.pow(10, currentBalance?.currency?.decimals || 0)).toFixed(4)} {account?.symbol}</div>
 }
 
-const BalanceWithUSD = ({ address }: { address: string }) => {
-  const currentBalance: keyable = useSelector(selectBalanceByAddress(address));
+const BalanceWithUSD = ({ id }: { id: string }) => {
+  const currentBalance: keyable = useSelector(selectBalanceById(id));
   return <div className={styles.netlast}>
     <div className={styles.netstats}>${currentBalance?.balanceInUSD?.toFixed(2)}
       {

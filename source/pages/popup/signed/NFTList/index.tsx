@@ -6,24 +6,29 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import Swiper from 'react-id-swiper';
-import { selectAssetsICPByAddress, selectAssetsICPCountLoadingByAddress } from '~state/wallet';
+import { selectAccountById, selectAssetsByAddressAndSymbol, selectAssetsICPCountLoadingByAddress } from '~state/wallet';
 import { useSelector } from 'react-redux';
 import ICON_GRID from '~assets/images/icon_grid.svg';
 import ICON_LIST from '~assets/images/icon_list.svg';
 import ICON_FORWARD from '~assets/images/icon_forward.svg';
-import { getAirDropNFTInfo, getTokenCollectionInfo, getTokenImageURL } from '~global/nfts';
+import { getAirDropNFTInfo, getTokenImageURL, MARKETPLACE_ENABLED } from '~global/nfts';
 import ICON_PLACEHOLDER from '~assets/images/icon_placeholder.png';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { keyable } from '~scripts/Background/types/IMainController';
-import { selectAirdropStatus } from '~state/assets';
+import { selectAirdropStatus, selectCollectionInfo } from '~state/assets';
+import { i18nT } from '~i18n/index';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 
+const AssetName = ({ canisterId }: { canisterId: string }) => {
+    const assetInfo: keyable = useSelector(selectCollectionInfo(canisterId));
+    return <>{assetInfo?.name}</>
+}
 
 const NFTList = ({
     match: {
-        params: { address },
+        params: { accountId },
     },
 }: Props) => {
     const [nav, setNav] = useState('list');
@@ -62,79 +67,74 @@ const NFTList = ({
 
                 <div className={styles.tabsep}></div>
                 {nav === 'grid' ? <div className={styles.coverflowcont}>
-                    <AssetsCoverflow address={address} />
+                    <AssetsCoverflow accountId={accountId} />
                 </div>
                     : <div className={styles.listcont}>
-                        <AssetsList address={address} />
+                        <AssetsList accountId={accountId} />
                     </div>
                 }
             </div>
-
-            {/*  <Link
-                className={clsx(styles.resetLink, styles.bottomFixed)}
-                to={`/account/details/${address}`}
-            >
-                <div className={styles.assetsAndActivityDiv}>
-                    <div className={styles.tabsPill}></div>
-                    <div className={styles.tabsView}>
-                        <div
-                            className={clsx(
-                                styles.tabView,
-                                styles.selectedTabView
-                            )}
-                        >
-                            Previous Owners
-                        </div>
-                    </div>
-                </div>
-            </Link> */}
         </div>
     );
 };
 
-export const AssetsList = ({ address }: { address: string }) => {
-    const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+export const AssetsList = ({ accountId }: { accountId: string }) => {
+    const selectedAccount = useSelector(selectAccountById(accountId));
+    const { address, symbol } = selectedAccount;
     const loading: boolean = useSelector(selectAssetsICPCountLoadingByAddress(address));
     const airdropAsset = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
+    const assets: keyable = useSelector(selectAssetsByAddressAndSymbol(address, symbol));
+    const SHOW_MARKETPLACE = selectedAccount.symbol == "ICP" && MARKETPLACE_ENABLED;
 
     const AirDropCampaign = () => {
-        return <div
-            onClick={() => history.push(`/nftairdropdetails/${airdropAsset.id}/${address}`)}
-            className={styles.listitem}>
-            <img className={styles.listicon}
-                onError={({ currentTarget }) => {
-                    currentTarget.onerror = null;
-                    currentTarget.src = ICON_PLACEHOLDER;
-                }}
-                src={airdropAsset.icon} />
-            <div className={styles.listinfo}>
-                <div className={styles.listtitle}>{airdropAsset?.name}</div>
-                <div className={styles.listsubtitle}>{airdropAsset?.description}</div>
+        if (selectedAccount.symbol == 'ETH') {
+            return <div
+                onClick={() => history.push(`/nftairdropdetails/${airdropAsset.id}/${address}`)}
+                className={styles.listitem}>
+                <img className={styles.listicon}
+                    onError={({ currentTarget }) => {
+                        currentTarget.onerror = null;
+                        currentTarget.src = ICON_PLACEHOLDER;
+                    }}
+                    src={airdropAsset.icon} />
+                <div className={styles.listinfo}>
+                    <div className={styles.listtitle}>{airdropAsset?.name}</div>
+                    <div className={styles.listsubtitle}>{airdropAsset?.description}</div>
+                </div>
+                <div
+                    className={styles.liststats}
+                ><div className={styles.listprice}>{airdropAsset?.isAirdrop
+                    ? 'Airdrop'
+                    : 'Unlisted'}</div>
+                    {airdropAssetStatus.accountIdVerified == undefined
+                        ? <div className={clsx(styles.listsubtitle, styles.freetxt)}>Free</div>
+                        : <div className={clsx(styles.listsubtitle)}>Claimed</div>
+                    }
+                </div>
+                <img
+                    className={styles.listforward}
+                    src={ICON_FORWARD}
+                />
             </div>
-            <div
-                className={styles.liststats}
-            ><div className={styles.listprice}>{airdropAsset?.isAirdrop
-                ? 'Airdrop'
-                : 'Unlisted'}</div>
-                {airdropAssetStatus.accountIdVerified == undefined
-                    ? <div className={clsx(styles.listsubtitle, styles.freetxt)}>Free</div>
-                    : <div className={clsx(styles.listsubtitle)}>Claimed</div>
-                }
-            </div>
-            <img
-                className={styles.listforward}
-                src={ICON_FORWARD}
-            />
-        </div>
+        } else {
+            return <div></div>
+        }
     }
 
     const history = useHistory();
     if (!loading && assets?.length == 0) {
+        if (SHOW_MARKETPLACE && airdropAssetStatus?.airdropEnabled)
+            return <div className={styles.listitemscont}><AirDropCampaign />
+                <ExploreCollections address={address} />
+            </div>
+        if (SHOW_MARKETPLACE) {
+            return <ExploreCollections address={address} />
+        }
         if (airdropAssetStatus?.airdropEnabled) {
             return <div className={styles.listitemscont}><AirDropCampaign /></div>
         }
-        return <div className={styles.centerDiv}>No NFTs Found</div>
+        return <div className={styles.centerDiv}>{i18nT('nftList.noNFTs')}</div>
     } else {
         return <div className={styles.listitemscont}>
             {airdropAssetStatus?.airdropEnabled && <AirDropCampaign />}
@@ -159,54 +159,65 @@ export const AssetsList = ({ address }: { address: string }) => {
                 </SkeletonTheme>
 
             </div>}
-            {assets?.map((asset: keyable, i: number) => (<div
-                key={i}
-                onClick={() => history.push(`/nftdetails/${asset.id}`)}
-                className={styles.listitem}>
-                <img className={styles.listicon}
-                    onError={({ currentTarget }) => {
-                        currentTarget.onerror = null;
-                        currentTarget.src = ICON_PLACEHOLDER;
-                    }}
-                    src={getTokenImageURL(asset)} />
-                <div className={styles.listinfo}>
-                    <div className={styles.listtitle}>{asset?.title || asset?.tokenIndex}</div>
-                    <div className={styles.listsubtitle}>{getTokenCollectionInfo(asset?.canisterId)?.name}</div>
-                </div>
-                <div
-                    className={styles.liststats}
-                ><div className={styles.listprice}>{asset?.forSale
-                    ? 'For sale'
-                    : 'Unlisted'}</div>
-                    {asset?.forSale && <div className={styles.listsubtitle}>{(asset?.info?.price / 100000000)?.toFixed(2)} ICP</div>}
-                </div>
-                <img
-                    className={styles.listforward}
-                    src={ICON_FORWARD}
-                />
-            </div>))}
-            {false && <div
-                onClick={() => history.push('/account/marketplace/' + address)}
-                className={styles.listitem}>
-                <div
-                    className={styles.listicon} >
-                    <div>💎</div>
-                </div>
-                <div className={styles.listinfo}>
-                    <div className={styles.listtitle}>Explore Collections</div>
-                </div>
-                <div className={styles.liststats}></div>
-                <img
-                    className={styles.listforward}
-                    src={ICON_FORWARD}
-                />
-            </div>}
+            {SHOW_MARKETPLACE && <ExploreCollections address={address} />}
+            {assets?.map((asset: keyable, i: number) => {
+                return (<div
+                    key={i}
+                    onClick={() => history.push(`/nftdetails/${asset.id}`)}
+                    className={styles.listitem}>
+                    <img className={styles.listicon}
+                        onError={({ currentTarget }) => {
+                            currentTarget.onerror = null;
+                            currentTarget.src = ICON_PLACEHOLDER;
+                        }}
+                        src={getTokenImageURL(asset)} />
+                    <div className={styles.listinfo}>
+                        <div className={styles.listtitle}>{asset?.title || asset?.tokenIndex}</div>
+                        <div className={styles.listsubtitle}>
+                            {asset?.symbol == 'ETH' ? asset.tokenName : <AssetName canisterId={asset.canisterId} />}
+                        </div>
+                    </div>
+                    <div
+                        className={styles.liststats}
+                    ><div className={styles.listprice}>{asset?.forSale
+                        ? i18nT('nftList.forSale')
+                        : i18nT('nftList.unlisted')}</div>
+                        {asset?.forSale && <div className={styles.listsubtitle}>{(asset?.info?.price / 100000000)?.toFixed(2)} ICP</div>}
+                    </div>
+                    <img
+                        className={styles.listforward}
+                        src={ICON_FORWARD} />
+                </div>);
+            })}
         </div>
     }
 }
 
-export const AssetsCoverflow = ({ address }: { address: string }) => {
-    const assets: keyable = useSelector(selectAssetsICPByAddress(address));
+const ExploreCollections = ({ address }: { address: string }) => {
+    const history = useHistory();
+    return <div
+        onClick={() => history.push('/account/marketplace/' + address)}
+        className={styles.listitem}>
+        <div
+            className={styles.listicon} >
+            <div>💎</div>
+        </div>
+        <div className={styles.listinfo}>
+            <div className={styles.listtitle}>{i18nT('nftList.explore')}</div>
+        </div>
+        <div className={styles.liststats}></div>
+        <img
+            className={styles.listforward}
+            src={ICON_FORWARD}
+        />
+    </div>
+};
+
+export const AssetsCoverflow = ({ accountId }: { accountId: string }) => {
+    const selectedAccount = useSelector(selectAccountById(accountId));
+    const { address, symbol } = selectedAccount;
+
+    const assets: keyable = useSelector(selectAssetsByAddressAndSymbol(address, symbol));
     const airdropAsset = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(airdropAsset.id));
 
@@ -228,7 +239,7 @@ export const AssetsCoverflow = ({ address }: { address: string }) => {
         }
     }
     if (assets?.length == 0 && !(airdropAssetStatus?.airdropEnabled)) {
-        return <div className={styles.centerDivGrid}>No NFTs Found</div>
+        return <div className={styles.centerDivGrid}>{i18nT('nftList.noNFTs')}</div>
     } else {
         return (
             <Swiper
@@ -244,12 +255,12 @@ export const AssetsCoverflow = ({ address }: { address: string }) => {
                         <div
                             onClick={() => history.push(`/nftdetails/${airdropAsset.id}`)}
                             className={styles.imagetitle}>{airdropAsset?.name}</div>
-                        {airdropAssetStatus.accountIdVerified == undefined
+                        {airdropAssetStatus?.accountIdVerified == undefined
                             ? <div className={styles.imagepagin}>
-                                <span className={styles.freetxt}>Free</span>
+                                <span className={styles.freetxt}>{i18nT('nftList.free')}</span>
                             </div>
                             : <div className={styles.imagepagin}>
-                                Claimed
+                                {i18nT('nftList.claimed')}
                             </div>
                         }
                     </div>

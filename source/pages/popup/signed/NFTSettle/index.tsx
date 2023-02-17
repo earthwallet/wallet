@@ -15,15 +15,13 @@ import { decryptString } from '~utils/vault';
 import { selectAccountById } from '~state/wallet';
 import { validateMnemonic } from '@earthwallet/keyring';
 import Warning from '~components/Warning';
-//import useToast from '~hooks/useToast';
 import { useController } from '~hooks/useController';
 import { v4 as uuid } from 'uuid';
 import swapCircle from '~assets/images/swapLoadingCircle.svg';
+import { i18nT } from '~i18n/index';
 
 const txnId = uuid();
 
-//import logo from '~assets/images/ew.svg';
-//import downArrow from '~assets/images/downArrow.svg';
 interface Props extends RouteComponentProps<{ nftId: string }> {
 }
 const NFTSettle = ({
@@ -33,20 +31,20 @@ const NFTSettle = ({
 }: Props) => {
   const queryParams = useQuery();
   const price: number = parseInt(queryParams.get('price') || '');
-  const address: string = queryParams.get('address') || '';
+  const accountId: string = queryParams.get('accountId') || '';
+  const type: string = queryParams.get('type') || '';
 
   const canisterId = decodeTokenId(nftId).canister;
-  const index = decodeTokenId(nftId).index;
+  const tokenIndex = decodeTokenId(nftId).index;
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
-  // const [loading, setLoading] = useState(false);
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
 
-  const asset: keyable = { canisterId, id: nftId, tokenIdentifier: nftId };
+  const asset: keyable = { canisterId, id: nftId, tokenIndex, type, tokenIdentifier: nftId };
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol("ICP")?.coinGeckoId || ''));
   const usdValue = currentUSDValue?.usd;
-  //const { show } = useToast();
   const controller = useController();
   const history = useHistory();
 
@@ -64,10 +62,10 @@ const NFTSettle = ({
           : decryptString(selectedAccount?.vault.encryptedJson, password);
       }
       catch (error) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       }
       if (selectedAccount?.symbol === 'ICP' ? !isJsonString(secret) : !validateMnemonic(secret)) {
-        setError('Wrong password! Please try again');
+        setError(i18nT('common.wrongPass'));
       }
       else {
         setError('NO_ERROR');
@@ -78,19 +76,19 @@ const NFTSettle = ({
 
   const handleSign = async () => {
     setIsBusy(true);
-    //    setLoading(true);
     let secret = '';
 
     try {
       secret = decryptString(selectedAccount?.vault.encryptedJson, pass);
     } catch (error) {
-      setError('Wrong password! Please try again');
+      setError(i18nT('common.wrongPass'));
       setIsBusy(false);
     }
 
     if (isJsonString(secret)) {
       const callback = (path: string) => history.replace(path);
-      controller.assets.buyNft(txnId, secret, nftId, price, address, callback).then(() => {
+
+      controller.assets.buyNft(txnId, secret, asset, price, address, callback).then(() => {
         setIsBusy(false);
       });
     }
@@ -102,7 +100,7 @@ const NFTSettle = ({
         className={styles.header}
         showMenu
         type={'wallet'}
-        text={txnStatusObj?.loading ? 'Buying..' : 'Confirm Buy'}
+        text={txnStatusObj?.loading ? i18nT("nftSettle.headerLoading") : i18nT("nftSettle.header")}
       ><div className={styles.empty} /></Header>
       {txnStatusObj?.loading ? <Settling asset={asset} {...txnStatusObj} /> : <div className={styles.scrollCont}>
         {txnStatusObj?.error && <div className={styles.errorResponse}>{txnStatusObj?.error}</div>}
@@ -111,12 +109,12 @@ const NFTSettle = ({
             <img src={getTokenImageURL(asset)} className={styles.ethIconContainer}></img>
           </div>
           <div className={styles.ethTextContainer}>
-            <span className={styles.ethereumText}>{index}</span>
+            <span className={styles.ethereumText}>{tokenIndex}</span>
             <span className={styles.ethVal}>{price / Math.pow(10, 8)} ICP</span>
             <span className={styles.usdText}>${(price * usdValue / Math.pow(10, 8)).toFixed(3)}</span>
           </div>
           <div className={styles.earthFeeContainer}>
-            <span className={styles.earthFeeText}>Network Fee</span>
+            <span className={styles.earthFeeText}>{i18nT("nftSettle.netFee")}</span>
             <div className={styles.earthFeeRightSideContainer}>
               <span className={styles.earthVal}>0.0001 ICP</span>
               <span className={styles.convertedVal}>${(0.0001 * usdValue).toFixed(3)}</span>
@@ -124,16 +122,16 @@ const NFTSettle = ({
           </div>
           <div className={styles.gasFeeContainer}>
             <div className={styles.leftSideContainer}>
-              <span className={styles.gasFeeText}>Marketplace Fee</span>
+              <span className={styles.gasFeeText}>{i18nT("nftSettle.marketFee")}</span>
             </div>
             <div className={styles.rightSideContainer}>
-              <span className={styles.earthText}>Free</span>
+              <span className={styles.earthText}>{i18nT("nftSettle.free")}</span>
               <span className={styles.convertedVal}>$0.00</span>
             </div>
           </div>
 
           <div className={styles.totalContainer}>
-            <span className={styles.totalText}>Total</span>
+            <span className={styles.totalText}>{i18nT("nftSettle.total")}</span>
             <div className={styles.rightSideTotalContainer}>
               <span className={styles.totalEarthVal}>{price / Math.pow(10, 8)} ICP</span>
               <span className={styles.totalUSDVal}>${(price * usdValue / Math.pow(10, 8)).toFixed(3)}</span>
@@ -148,9 +146,9 @@ const NFTSettle = ({
           disabled={isBusy}
           isError={pass.length < PASSWORD_MIN_LENGTH
             || !!error}
-          label={'password for this account'}
+          label={i18nT("common.passwordForAc")}
           onChange={onPassChange}
-          placeholder='REQUIRED'
+          placeholder={i18nT("common.requiredPlaceholder")}
           type='password'
         />
         {false && error && error != 'NO_ERROR' && (
@@ -166,7 +164,7 @@ const NFTSettle = ({
             loading={isBusy}
             disabled={error != 'NO_ERROR'}
             onClick={handleSign}>
-            {'Buy NFT'}
+            {i18nT("nftSettle.cta")}
           </NextStepButton>
         </div>
       </section>}

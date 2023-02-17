@@ -2,10 +2,15 @@ import { CGECKO_PRICE_API } from '~global/constant';
 import store from '~state/store';
 import type { IAssetsController, keyable } from '../types/IAssetsController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
-import { decodeTokenId, getNFTsFromCanisterExt } from '@earthwallet/assets';
+import {
+  canisterAgent,
+  decodeTokenId,
+  getNFTsFromCanisterExt,
+} from '@earthwallet/assets';
 import { parseBigIntToString } from '~utils/common';
 import LIVE_ICP_NFT_LIST_CANISTER_IDS, {
   getAirDropNFTInfo,
+  getTokenCollectionInfo,
 } from '~global/nfts';
 import { canisterAgentApi, getTokenIdentifier } from '@earthwallet/assets';
 import { isArray } from 'lodash';
@@ -13,8 +18,16 @@ import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk
 import { send } from '@earthwallet/keyring';
 import { parseObjWithOutBigInt } from '~global/helpers';
 import getBrowserFingerprint from 'get-browser-fingerprint';
-import { registerExtensionAndAccounts, statusExtension } from '~utils/services';
+import {
+  getERC721,
+  getETHAssetInfo,
+  getETHAssetInfo_MATIC,
+  registerExtensionAndAccounts,
+  statusExtension,
+} from '~utils/services';
 import { updateExtensionId } from '~state/wallet';
+import { Principal } from '@dfinity/principal';
+
 export default class AssetsController implements IAssetsController {
   fetchFiatPrices = async (symbols: keyable, currency = 'USD') => {
     try {
@@ -58,19 +71,22 @@ export default class AssetsController implements IAssetsController {
       canisterId,
       account.address
     );
-    const parsedTokens = tokens.map((token: keyable) => ({
+    if (tokens == undefined) {
+      console.log('error getNFTsFromCanisterExt', canisterId, account.address);
+      return {};
+    }
+    const parsedTokens = tokens?.map((token: keyable) => ({
       id: token.tokenIdentifier,
       address: account.address,
       canisterId,
+      symbol: account.symbol,
       ...parseBigIntToString(token),
     }));
 
     return parsedTokens;
   };
 
-  fetchEarthEXTCollection = async (collectionId: string) => {
-    console.log('fetchEarthEXTCollection');
-    //const state = store.getState();
+  fetchEarthArtCollection = async (collectionId: string) => {
 
     let response;
     let responseListing;
@@ -82,6 +98,7 @@ export default class AssetsController implements IAssetsController {
           entity: 'assets',
           data: [
             {
+              symbol: 'ICP',
               id: getTokenIdentifier(collectionId, item[0]),
               index: item[0],
               tokenIndex: item[0],
@@ -98,12 +115,7 @@ export default class AssetsController implements IAssetsController {
       )
     );
 
-    /*   store.dispatch(
-      storeEntities({
-        entity: 'collections',
-        data: [{ id: collectionId, loading: true }],
-      })
-    ); */
+
     responseListing = await canisterAgentApi(collectionId, 'listings');
 
     responseListing.map((item: keyable) =>
@@ -118,14 +130,69 @@ export default class AssetsController implements IAssetsController {
         })
       )
     );
-    /*     store.dispatch(
-      storeEntities({
-        entity: 'collections',
-        data: [{ id: collectionId, loading: false }],
-      })
-    ); */
+   
   };
 
+  fetchListingsByUser = async (
+    address: string,
+    collectionId = 'vsjkh-vyaaa-aaaak-qajgq-cai'
+  ) => {
+    const response = await canisterAgent({
+      canisterId: getTokenCollectionInfo(collectionId).marketplaceId || '',
+      method: 'getNFTsListingsByUser',
+      args: { address: address },
+    });
+
+    if (response != null) {
+      response.map((token: keyable) => {
+        return (
+          token[0] &&
+          store.dispatch(
+            updateEntities({
+              entity: 'assets',
+              key: getTokenIdentifier(
+                token[0].nft?.nftCanister.toText(),
+                token[0].nft.nftIdentifier.nat32.toString()
+              ),
+              data: {
+                loading: false,
+                forSale: true,
+                info: {
+                  price: token[0].price.toString(),
+                  symbol: Object.keys(token[0].symbol)[0].toUpperCase(),
+                },
+              },
+            })
+          )
+        );
+      });
+    }
+  };
+  fetchCollectionInfo = async (collectionId: string) => {
+    const response = await canisterAgentApi(
+      collectionId,
+      'getCollectionWithNFTS'
+    );
+    const state = store.getState();
+
+    if (state.entities.collectionInfo == null) {
+      store.dispatch(createEntity({ entity: 'collectionInfo' }));
+    }
+    response &&
+      store.dispatch(
+        updateEntities({
+          entity: 'collectionInfo',
+          key: collectionId,
+          data: {
+            type: 'EarthArt',
+            name: response.name,
+            description: response.description,
+            fee: response.fee?.toString(),
+            nftCount: response.nftCount?.toString(),
+          },
+        })
+      );
+  };
   fetchEarthNFT = async (collectionId: string, tokenId: number) => {
     store.dispatch(
       updateEntities({
@@ -162,7 +229,18 @@ export default class AssetsController implements IAssetsController {
       })
     );
   };
+
+  getEarthArtCollectionInfo = async () => {
+    const response = await canisterAgent({
+      canisterId: 'vsjkh-vyaaa-aaaak-qajgq-cai',
+      method: 'getCollections',
+    });
+    response.map((canister: Principal) =>
+      this.fetchCollectionInfo(canister.toText())
+    );
+  };
   getCollectionStats = async () => {
+    this.getEarthArtCollectionInfo();
     let allStats: keyable = [];
     const state = store.getState();
 
@@ -235,6 +313,8 @@ export default class AssetsController implements IAssetsController {
   };
 
   getICPAssetsOfAccount = async (account: keyable) => {
+    const state = store.getState();
+
     let allTokens: keyable = [];
     store.dispatch(
       storeEntities({
@@ -255,24 +335,33 @@ export default class AssetsController implements IAssetsController {
         index,
         canisterId,
       ] of LIVE_ICP_NFT_LIST_CANISTER_IDS.entries()) {
-        if (canisterId === 'ntwio-byaaa-aaaak-qaama-cai') {
-          const response = await canisterAgentApi(
+        if (canisterId === 'vsjkh-vyaaa-aaaak-qajgq-cai') {
+          const response = await canisterAgent({
             canisterId,
-            'tokens_ext',
-            account.address
-          );
+            method: 'getNFTsByUser',
+            args: [{ address: account.address }, []],
+          });
 
           allTokens[index] = response.map((_token: any[]) => {
-            const id = getTokenIdentifier(canisterId, _token[0]);
-            this.fetchEarthNFT(canisterId, _token[0]);
+            const canisterId = _token[1]?.toText();
+            const id = getTokenIdentifier(_token[1]?.toText(), _token[0]);
+            const collectionInfo =
+              state.entities?.collectionInfo?.byId[canisterId];
+            if (collectionInfo == null) {
+              this.fetchCollectionInfo(canisterId);
+            }
             return {
               id,
+              type: 'EarthArt',
               tokenIdentifier: id,
-              address: _token[1],
+              address: account.address,
+              symbol: account.symbol,
               tokenIndex: _token[0],
-              canisterId,
+              canisterId: canisterId,
             };
           });
+
+          this.fetchListingsByUser(account.address, canisterId);
         } else {
           allTokens[index] = await this.fetchICPAssets(account, canisterId);
         }
@@ -355,12 +444,146 @@ export default class AssetsController implements IAssetsController {
     }
   };
 
+  getETHAssetsOfAccount = async (account: keyable) => {
+    const state = store.getState();
+    let allTokens: keyable = [];
+    store.dispatch(
+      storeEntities({
+        entity: 'assetsCount',
+        data: [
+          {
+            id: account.id,
+            symbol: account.symbol,
+            loading: true,
+            error: false,
+          },
+        ],
+      })
+    );
+
+    try {
+      allTokens[0] = await getERC721(account.address, account.symbol);
+
+      let tokens = allTokens.flat();
+      const tokensWithId = tokens.map((asset: keyable) => ({
+        ...asset,
+        ...{
+          id: asset.contractAddress + '_WITH_' + asset.tokenID,
+          symbol: account.symbol,
+        },
+      }));
+      const tokensRepeatCount = tokensWithId.reduce(
+        (acc: { [x: string]: number }, curr: { id: any }) => {
+          const { id } = curr;
+          if (acc[id]) ++acc[id];
+          else acc[id] = 1;
+          return acc;
+        },
+        {}
+      );
+      const tokensAfterRemovingOutTokens = tokensWithId.filter(
+        (obj: { id: string | number }) => tokensRepeatCount[obj.id] == 1
+      );
+      if (tokensAfterRemovingOutTokens.length === 0) {
+        store.dispatch(
+          storeEntities({
+            entity: 'assetsCount',
+            data: [
+              {
+                id: account.id,
+                symbol: account.symbol,
+                count: 0,
+                loading: false,
+              },
+            ],
+          })
+        );
+      } else {
+        store.dispatch(
+          storeEntities({
+            entity: 'assetsCount',
+            data: [
+              {
+                id: account.id,
+                symbol: account.symbol,
+                count: tokensAfterRemovingOutTokens.length,
+                loading: false,
+              },
+            ],
+          })
+        );
+
+        const existingAssets =
+          state.entities.assets?.byId &&
+          Object.keys(state.entities.assets?.byId)
+            ?.map((id) => state.entities.assets.byId[id])
+            .filter((assets) => assets.address == account.address && assets.symbol == account.symbol);
+        const existingCount = existingAssets?.length;
+
+        if (existingCount != tokensAfterRemovingOutTokens?.length) {
+          existingAssets?.map((token: keyable) =>
+            store.dispatch(
+              storeEntities({
+                entity: 'assets',
+                data: [{ ...token, ...{ address: '' } }],
+              })
+            )
+          );
+        }
+        //cache the assets
+        tokensAfterRemovingOutTokens.map((token: keyable) => {
+          const id = token.contractAddress + '_WITH_' + token.tokenID;
+          let asset = {
+            ...token,
+            id,
+            tokenIndex: token.tokenID,
+            symbol: account.symbol,
+            address: account.address,
+          };
+          if (
+            state.entities.assets.byId[id] == undefined ||
+            state.entities.assets.byId[id].tokenImage == undefined
+          ) {
+            this.updateETHAssetInfo(asset);
+          }
+
+          return store.dispatch(
+            storeEntities({
+              entity: 'assets',
+              data: [asset],
+            })
+          );
+        });
+      }
+    } catch (error) {
+      console.log('Unable to load assets', error);
+      store.dispatch(
+        storeEntities({
+          entity: 'assetsCount',
+          data: [
+            {
+              id: account.id,
+              symbol: account.symbol,
+              count: 0,
+              loading: false,
+              errorMessage: 'Unable to load assets',
+              error: true,
+            },
+          ],
+        })
+      );
+    }
+  };
+
   getAssetsOfAccountsGroup = async (accountsGroup: keyable[][]) => {
     for (const accounts of accountsGroup) {
-      for (const account of accounts.filter(
-        (account) => account.symbol === 'ICP'
-      )) {
-        await this.getICPAssetsOfAccount(account);
+      for (const account of accounts) {
+
+        if (account.symbol === 'ICP') {
+          this.getICPAssetsOfAccount(account);
+        } else if (account.symbol == 'ETH' || account.symbol == 'MATIC') {
+          this.getETHAssetsOfAccount(account);
+        }
       }
     }
   };
@@ -385,6 +608,61 @@ export default class AssetsController implements IAssetsController {
         })
       )
     );
+  };
+
+  transferEarthArt = async (
+    identityJSON: string,
+    nftId: string,
+    recipient: string,
+    amount: number,
+    address: string,
+    callback?: (path: string) => void
+  ) => {
+    const state = store.getState();
+
+    if (state.entities.recents == null) {
+      store.dispatch(createEntity({ entity: 'recents' }));
+    }
+
+    store.dispatch(
+      updateEntities({
+        entity: 'recents',
+        key: recipient,
+        data: {
+          symbol: 'ICP',
+          addressType: 'accountId',
+          lastSentAt: new Date().getTime(),
+          sentBy: address,
+        },
+      })
+    );
+
+    const currentIdentity = Secp256k1KeyIdentity.fromJSON(identityJSON);
+
+    const response: keyable = await canisterAgent({
+      canisterId: decodeTokenId(nftId).canister,
+      method: 'safeTransferFrom',
+      args: {
+        to: {
+          address: recipient,
+        },
+        notify: false,
+        tokenIndex: decodeTokenId(nftId).index,
+        from: {
+          address: address,
+        },
+        memo: [],
+      },
+
+      fromIdentity: currentIdentity,
+    });
+    console.log(response, amount, 'res');
+    callback && callback('s');
+    this.getICPAssetsOfAccount({ address, symbol: 'ICP' });
+    if (state.entities.accounts.byId[recipient] != undefined) {
+      this.getICPAssetsOfAccount({ recipient, symbol: 'ICP' });
+    }
+    return;
   };
 
   updateTokenDetails = async ({
@@ -433,15 +711,21 @@ export default class AssetsController implements IAssetsController {
   buyNft = async (
     txnId: string,
     identityJSON: string,
-    nftId: string,
+    asset: keyable,
     price: number,
-    address: string,
+    accountId: string,
     callback?: (path: string) => void
   ) => {
+    const nftId = asset.id;
     const state = store.getState();
+    const { address } = state.entities.accounts.byId[accountId];
 
     if (state.entities.txnRequests == null) {
       store.dispatch(createEntity({ entity: 'txnRequests' }));
+    }
+
+    if (asset.type == 'EarthArt') {
+      alert('EarthArt buy');
     }
 
     store.dispatch(
@@ -539,7 +823,6 @@ export default class AssetsController implements IAssetsController {
         ],
       })
     );
-    //show('Sending..');
     const selectedAmount = parseFloat((price / Math.pow(10, 8)).toFixed(8));
     let index: BigInt = 0n;
     try {
@@ -573,7 +856,6 @@ export default class AssetsController implements IAssetsController {
       return;
     }
 
-    //show('Settling..');
     store.dispatch(
       storeEntities({
         entity: 'txnRequests',
@@ -597,10 +879,8 @@ export default class AssetsController implements IAssetsController {
       currentIdentity
     );
 
-    //show('Purchase complete');
     this.getICPAssetsOfAccount({ address, symbol: 'ICP' });
     if (settle?.err?.Other == 'Insufficient funds sent') {
-      // setIsBusy(false);
       store.dispatch(
         storeEntities({
           entity: 'txnRequests',
@@ -635,14 +915,40 @@ export default class AssetsController implements IAssetsController {
           ],
         })
       );
-      callback && callback(`/nft/bought/${nftId}?address=${address}`);
-      //setIsBusy(false);
+      callback && callback(`/nft/bought/${nftId}?accountId=${accountId}`);
     }
+  };
+
+  updateETHAssetInfo = async (asset: keyable) => {
+    let response;
+    try {
+      if (asset?.symbol == 'ETH') {
+        response = await getETHAssetInfo(asset);
+      } else if (asset?.symbol == 'MATIC') {
+        response = await getETHAssetInfo_MATIC(asset);
+      }
+    } catch (error) {}
+    store.dispatch(
+      updateEntities({
+        entity: 'assets',
+        key: asset.id,
+        data: {
+          video: response?.metadata?.animation_url,
+          tokenImage:
+            response?.image_url ||
+            (response?.media[0] && response?.media[0]?.gateway) ||
+            response?.image,
+          description:
+            response?.asset_contract?.description || response?.description,
+          collectionImage: response?.asset_contract?.image_url,
+        },
+      })
+    );
+    return;
   };
 
   registerExtensionForAirdrop = async () => {
     const fingerprint = getBrowserFingerprint();
-    console.log(fingerprint, 'registerExtensionForAirdrop');
 
     const state = store.getState();
     let extensionId;
@@ -652,20 +958,22 @@ export default class AssetsController implements IAssetsController {
     } else {
       extensionId = state.wallet.extensionId;
     }
-    const ICPAccounts =
+    const ETHAccounts =
       state.entities.accounts?.byId &&
       Object.keys(state.entities.accounts?.byId)
         ?.map((id) => state.entities.accounts.byId[id])
-        .filter((account) => account.symbol == 'ICP' && account.active)
+        .filter((account) => account.symbol == 'ETH' && account.active)
         .map((account) => account.address);
 
-    if (ICPAccounts.length == 0) {
+    if (ETHAccounts.length == 0) {
       return;
     }
     const earthdayAirdrop = getAirDropNFTInfo();
+
     if (state.entities.airdrops == null) {
       store.dispatch(createEntity({ entity: 'airdrops' }));
     }
+
 
     store.dispatch(
       updateEntities({
@@ -676,6 +984,19 @@ export default class AssetsController implements IAssetsController {
         },
       })
     );
+    if (!earthdayAirdrop.isLive) {
+      store.dispatch(
+        updateEntities({
+          entity: 'airdrops',
+          key: earthdayAirdrop.id,
+          data: {
+            airdropEnabled: false,
+            loading: false,
+          },
+        })
+      );
+      return;
+    }
     const status = await statusExtension(extensionId);
     if (!status?.airdropEnabled) {
       store.dispatch(
@@ -704,10 +1025,10 @@ export default class AssetsController implements IAssetsController {
         })
       );
     }
-    if (status?.accountIds?.length != ICPAccounts.length) {
+    if (status?.accountIds?.length != ETHAccounts.length) {
       const response = await registerExtensionAndAccounts(
-        fingerprint.toString(),
-        ICPAccounts
+        extensionId,
+        ETHAccounts
       );
       if (response.status == 'success') {
         store.dispatch(

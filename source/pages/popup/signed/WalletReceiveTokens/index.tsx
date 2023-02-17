@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './index.scss';
 import { getShortAddress } from '~utils/common';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -13,25 +13,40 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import useToast from '~hooks/useToast';
 import { getInfoBySymbol } from '~global/constant';
 import ToolTipInfo from '~components/ToolTipInfo';
-import { selectInfoBySymbolOrToken } from '~state/token';
+import { selectInfoBySymbolOrToken } from '~state/tokens';
+import { i18nT } from '~i18n/index';
+import { keyable } from '~scripts/Background/types/IMainController';
+import { unsResolveAddress } from '~utils/unstoppable';
 
-interface Props extends RouteComponentProps<{ address: string, symbolOrTokenId?: string }> { }
+interface Props extends RouteComponentProps<{ accountId: string, symbolOrTokenId?: string }> { }
 const WalletReceiveTokens = ({
   match: {
-    params: { address, symbolOrTokenId },
+    params: { accountId, symbolOrTokenId },
   },
 }: Props) => {
   const history = useHistory();
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address, symbol } = selectedAccount;
   const symbolOrTokenInfo = symbolOrTokenId == undefined ? {} : useSelector(selectInfoBySymbolOrToken(symbolOrTokenId, address));
 
   const { show } = useToast();
   const _onCopy = useCallback((): void => show('Copied'), [show]);
+  const [domainAliases, setDomainAliases] = useState<keyable>([]);
+
+  const getDomainsOfAddress = async (address: string, symbol: string) => {
+    const resp = await unsResolveAddress(address, symbol);
+    setDomainAliases(resp);
+  }
+  useEffect(() => {
+    if (address == undefined) return;
+    getDomainsOfAddress(address, symbol)
+  }, [address, symbol]);
+
 
   return (
     <div className={styles.page}>
       <Header
-        text={`Receive`}
+        text={i18nT('walletReceiveTokens.header')}
         showAccountsDropdown showMenu type="wallet" > <div className={styles.empty} /></Header>
       <div className={styles.container}>
         {symbolOrTokenInfo?.addressType == 'principal'
@@ -43,10 +58,10 @@ const WalletReceiveTokens = ({
             _onCopy={_onCopy} />}
         {symbolOrTokenInfo?.addressType != 'principal' && selectedAccount?.meta?.principalId && <div className={styles.principalCont}>
           <div className={styles.accountShareCont}>
-            <div className={styles.accountShare}>Your Principal Id</div>
-            <ToolTipInfo 
-            placement='left'
-            title={`With Principal IDs you can create canisters, and authenticate yourself on Internet Computer apps & services.`} />
+            <div className={styles.accountShare}>{i18nT('walletReceiveTokens.princLabel')}</div>
+            <ToolTipInfo
+              placement='left'
+              title={i18nT('walletReceiveTokens.princTooltip')} />
           </div>
           <div className={styles.accountDetail}>
             <div className={styles.addressDisplay}>
@@ -57,6 +72,23 @@ const WalletReceiveTokens = ({
             </div>
           </div>
         </div>}
+        {domainAliases?.length > 0 && domainAliases.map((alias: string, index: number) =>
+          <div
+            key={index}
+            className={styles.principalCont}>
+            <div className={styles.accountShareCont}>
+              <div className={styles.accountShare}>Address Alias</div>
+            </div>
+            <div className={styles.accountDetail}>
+              <div className={styles.addressDisplay}>
+                {alias}
+                <CopyToClipboard text={alias}>
+                  <img src={ICON_COPY} className={styles.copyIcon} onClick={_onCopy} />
+                </CopyToClipboard>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div
         style={{
@@ -72,7 +104,7 @@ const WalletReceiveTokens = ({
             history.push(`/account/export/${selectedAccount?.id || ''}`)
           }
         >
-          {'Export Account'}
+          {i18nT('walletReceiveTokens.cta')}
         </NextStepButton>
       </div>
     </div >
@@ -84,10 +116,10 @@ const IdCard = ({ id, symbol, _onCopy }: { id: string, symbol: string, _onCopy: 
     <div className={styles.accountShare}>Your {
       getInfoBySymbol(symbol)?.addressTitle != undefined
         ? getInfoBySymbol(symbol)?.addressTitle
-        : "Public Address"}</div>
-    <ToolTipInfo 
-    placement='left'
-    title={`Share this unique id to receive ${symbol}`} />
+        : i18nT('walletReceiveTokens.pubAddr')}</div>
+    <ToolTipInfo
+      placement='left'
+      title={i18nT('walletReceiveTokens.tooltip') + ` ${symbol}`} />
   </div>
 
     <div className={styles.accountDetail}>

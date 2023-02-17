@@ -10,7 +10,12 @@ import ICON_VALID_ADDRESS from '~assets/images/icon_valid_address.svg';
 
 import { useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import { validate } from 'bitcoin-address-validation';
+import WAValidator from "trezor-address-validator";
+import { keyable } from "~scripts/Background/types/IAssetsController";
+import { debounce } from "lodash";
+import { getAddressFromENSName } from "~utils/services";
+import { ClipLoader } from "react-spinners";
+var web3 = require('web3');
 
 const PRINCIPAL_NOT_ACCEPTED = 'Principal id is not accepted!';
 
@@ -21,10 +26,12 @@ interface Props {
     key?: string,
     placeholder?: string,
     recpCallback: (recipient: string) => void,
-    recpErrorCallback: (recipientError: string) => void,
+    recpErrorCallback?: (recipientError: string) => void,
     initialValue?: string,
     tokenId?: string | null,
-    search?: boolean
+    search?: boolean,
+    searchingCallback?: (searching: boolean) => void,
+    ensObjCallback?: (ensObj: keyable | null) => void
 }
 
 
@@ -36,7 +43,9 @@ export default function AddressInput({
     recpErrorCallback,
     initialValue,
     tokenId,
-    search = false
+    search = false,
+    searchingCallback,
+    ensObjCallback
 }: Props) {
 
 
@@ -47,7 +56,10 @@ export default function AddressInput({
     const tokenInfo = getTokenInfo(tokenId || '');
     const history = useHistory();
     const location = useLocation();
+    const [ensAddressObj, setEnsAddressObj] = useState<keyable | null>(null);
+    const [isSearching, setIsSearching] = useState(false);
 
+    const [isSearched, setIsSearched] = useState(false);
 
     useEffect(() => {
         if (initialValue != '' && initialValue != undefined) {
@@ -72,8 +84,25 @@ export default function AddressInput({
     }, [recpCallback, selectedRecp]);
 
     useEffect(() => {
-        recpErrorCallback(recpError);
+        recpErrorCallback && recpErrorCallback(recpError);
     }, [recpErrorCallback, recpError]);
+
+    useEffect(() => {
+        ensObjCallback && ensObjCallback(ensAddressObj);
+    }, [ensObjCallback, ensAddressObj]);
+
+    useEffect(() => {
+        searchingCallback && searchingCallback(isSearching);
+    }, [searchingCallback, isSearching]);
+
+    const fetchData = async (text: string, symbol: string, tokenType: string, cb: (arg0: { address: string | null; ens: string; }) => void) => {
+        const res = await getAddressFromENSName(text, symbol, tokenType);
+        cb(res);
+    };
+
+    const debouncedFetchData = debounce((text, symbol, tokenType, cb) => {
+        fetchData(text, symbol, tokenType, cb);
+    }, 500);
 
     const parseRecipientAndSetAddress = (recipient: string) => {
         if (inputType === 'ICP') {
@@ -103,7 +132,19 @@ export default function AddressInput({
                         setRecpError(PRINCIPAL_NOT_ACCEPTED)
                     }
                     else {
-                        setRecpError('Not a valid address');
+                        setIsSearching(true);
+                        setIsSearched(true);
+                        debouncedFetchData(recipient, inputType, tokenInfo?.type, (resolvedAddressObj: keyable) => {
+                            setEnsAddressObj(resolvedAddressObj);
+                            setIsSearching(false);
+                            if (resolvedAddressObj?.address == null) {
+                                setValid(false);
+                                setRecpError('Not a valid ICP address');
+                            } else if (resolvedAddressObj?.address != null) {
+                                setValid(true);
+                                setRecpError('');
+                            }
+                        });
                     }
                     setValid(false);
 
@@ -113,14 +154,72 @@ export default function AddressInput({
         }
         else if (inputType === 'BTC') {
             setSelectedRecp(recipient);
-            if (validate(recipient)) {
+            if (WAValidator.validate(recipient, inputType)) {
                 setRecpError('');
                 setValid(true);
                 search && replaceQuery('recipient', recipient);
             }
             else {
-                setValid(false);
-                setRecpError('Not a valid btc address');
+
+                setIsSearching(true);
+                setIsSearched(true);
+                debouncedFetchData(recipient, inputType, tokenInfo?.type, (resolvedAddressObj: keyable) => {
+                    setEnsAddressObj(resolvedAddressObj);
+                    setIsSearching(false);
+                    if (resolvedAddressObj?.address == null) {
+                        setValid(false);
+                        setRecpError('Not a valid btc address');
+                    } else if (resolvedAddressObj?.address != null) {
+                        setValid(true);
+                        setRecpError('');
+                    }
+                });
+            }
+        }
+        else if (inputType === 'DOGE') {
+            setSelectedRecp(recipient);
+            if (WAValidator.validate(recipient, inputType)) {
+                setRecpError('');
+                setValid(true);
+                search && replaceQuery('recipient', recipient);
+            }
+            else {
+                setIsSearching(true);
+                setIsSearched(true);
+                debouncedFetchData(recipient, inputType, tokenInfo?.type, (resolvedAddressObj: keyable) => {
+                    setEnsAddressObj(resolvedAddressObj);
+                    setIsSearching(false);
+                    if (resolvedAddressObj?.address == null) {
+                        setValid(false);
+                        setRecpError('Not a valid doge coin address');
+                    } else if (resolvedAddressObj?.address != null) {
+                        setValid(true);
+                        setRecpError('');
+                    }
+                });
+            }
+        }
+        else if (inputType === 'ETH' || inputType === 'MATIC') {
+            setSelectedRecp(recipient);
+            if (web3.utils.isAddress(recipient)) {
+                setRecpError('');
+                setValid(true);
+                search && replaceQuery('recipient', recipient);
+            }
+            else {
+                setIsSearching(true);
+                setIsSearched(true);
+                debouncedFetchData(recipient, inputType, tokenInfo?.type, (resolvedAddressObj: keyable) => {
+                    setEnsAddressObj(resolvedAddressObj);
+                    setIsSearching(false);
+                    if (resolvedAddressObj?.address == null) {
+                        setValid(false);
+                        setRecpError('Not a valid ethereum address');
+                    } else if (resolvedAddressObj?.address != null) {
+                        setValid(true);
+                        setRecpError('');
+                    }
+                });
             }
         }
     };
@@ -131,7 +230,7 @@ export default function AddressInput({
 
     return <>
         <div className={styles.cont}>
-            {search ? <img className={styles.info_search} src={ICON_SEARCH} /> : valid ? <img src={ICON_VALID_ADDRESS} className={styles.info_search} /> : <div className={styles.info}><ToolTipInfo title={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Principal Id is required' : "Account ID is required" : "Address is required"} /></div>}
+            {(isSearching || (isSearched == false ? false : selectedRecp == '' ? false : ensAddressObj?.ens != selectedRecp)) ? <div className={styles.info}><ClipLoader color={'#fffff'} size={15} /></div> : search ? <img className={styles.info_search} src={ICON_SEARCH} /> : valid ? <img src={ICON_VALID_ADDRESS} className={styles.info_search} /> : <div className={styles.info}><ToolTipInfo title={inputType == 'ICP' ? tokenInfo?.addressType == 'principal' ? 'Principal Id is required' : "Account ID is required" : "Address is required"} /></div>}
             {search ?
                 <input
                     autoCapitalize='off'
@@ -155,7 +254,7 @@ export default function AddressInput({
                     required
                     value={selectedRecp}
                 />}
-            {inputType == 'BTC' ? <div className={styles.type}>BTC</div> : inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : <div className={styles.type}>AID</div>}
+            {(inputType == 'ETH' || inputType == 'MATIC') ? <></> : inputType == 'BTC' ? <div className={styles.type}>BTC</div> : inputType == 'ICP' && tokenInfo?.addressType == 'principal' ? <div className={styles.type}>PRINC</div> : inputType == 'DOGE' ? <></> : <div className={styles.type}>AID</div>}
         </div>
         {recpError !== '' && <Warning
             isBelowInput

@@ -5,7 +5,6 @@ import styles from './index.scss';
 import ICON_CHECKED from '~assets/images/icon_checkbox_checked.svg';
 import ICON_UNCHECKED from '~assets/images/icon_checkbox_unchecked.svg';
 
-//import Loading from '~components/Loading';
 import NextStepButton from '~components/NextStepButton';
 import Header from '~components/Header';
 import clsx from 'clsx';
@@ -15,6 +14,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
 import { selectActiveAccountsByGroupId } from '~state/wallet';
 import { LIVE_SYMBOLS_OBJS } from '~global/constant';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ groupId: string }> {
 }
@@ -30,18 +30,22 @@ const AddNetwork = ({
   const accounts = useSelector(selectActiveAccountsByGroupId(groupId));
   const [existingActive, setExistingActive] = useState<string[]>([]);
 
+
   const _UpdateNetworks = useCallback(() => {
 
     if (existingActive.length > checkedArr.length) {
       //remove accounts
       const removeArr = existingActive.filter(x => !checkedArr.includes(x));
-      const callback = () => history.replace(`/account/details/${accounts[0].id}`);
+      const callback = () => history.replace(`/account/details/${accounts[0].address}`);
       controller.accounts.updateActiveAccountsOfGroup(groupId, removeArr, false, callback);
     }
     else {
       //add accounts
-      const callback = (address: string | undefined) => history.replace(`/account/details/${address}`);
+      const callback = (address: string | undefined) => {
+        return history.replace(`/account/details/${address}`)
+      };
       controller.accounts.updateActiveAccountsOfGroup(groupId, checkedArr, true, callback);
+
     }
 
   }, [history, checkedArr, checkedArr.length]);
@@ -67,12 +71,12 @@ const AddNetwork = ({
     <div className={styles.page}>
       <Header
         type={'wallet'}
-        text={'Add a Network'}
+        text={i18nT('addNetwork.header')}
       ><div className={styles.empty} /></Header>
       <div className={styles.container}>
         <div className={styles.earthInputCont}>
           <div className={styles.labelText}>
-            Select Networks
+            {i18nT('addNetwork.selectNet')}
           </div>
         </div>
         <div
@@ -108,7 +112,7 @@ const AddNetwork = ({
           disabled={existingActive.length === checkedArr.length}
           onClick={_UpdateNetworks}
         >
-          {'Update'}
+          {i18nT('addNetwork.cta')}
         </NextStepButton>
       </div>
     </div>

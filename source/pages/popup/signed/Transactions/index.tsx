@@ -18,8 +18,11 @@ import { selectAssetBySymbol, selectTxnRequestsByAddress } from '~state/assets';
 import clsx from 'clsx';
 import { getTokenImageUrlFromnftId } from '~global/nfts';
 import { getTokenInfo } from '~global/tokens';
+import { getTransactions_ETH_MATIC } from '~utils/services';
+import { getTransactions_BTC_DOGE } from '~utils/btc';
+import { i18nT } from '~i18n/index';
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
   className?: string;
 }
 interface keyable {
@@ -28,15 +31,16 @@ interface keyable {
 const Transactions = ({
   match: {
     params: {
-      address,
+      accountId,
     },
   },
 }: Props) => {
 
-  const selectedAccount = useSelector(selectAccountById(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
 
   const history = useHistory();
-  const [walletTransactions, setWalletTransactions] = useState<any>();
+  const [walletTransactions, setWalletTransactions] = useState<any>({ txs: [], total: 0 });
   const [loading, setLoading] = useState<boolean>(false);
   const currentUSDValue: keyable = useSelector(selectAssetBySymbol(getSymbol(selectedAccount?.symbol)?.coinGeckoId || ''));
   const usdValue = currentUSDValue?.usd;
@@ -46,23 +50,36 @@ const Transactions = ({
   const getTransactionTime = (transaction: any): any => {
     const timestamp: number = transaction.transaction?.metadata?.timestamp;
 
-    return moment(timestamp / 1000000).format('MMM DD');
+    return moment(timestamp / 1000000).format('MMM DD YYYY');
   };
   const getTransactionTimestamp = (transaction: any): any => {
-    const timestamp: number = transaction.transaction?.metadata?.timestamp;
+    const timestamp: number = (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'DOGE') ? transaction.time : transaction.transaction?.metadata?.timestamp;
 
     return timestamp;
   };
 
-
-  useEffect(() => {
-    const loadTransactions = async (address: string) => {
+  const loadTransactions = async (address: string) => {
+    if (selectedAccount?.symbol == 'ICP') {
       setLoading(true);
       const transactions = await getTransactions(address, selectedAccount?.symbol);
       setLoading(false);
-
       setWalletTransactions(transactions);
-    };
+    } else if (selectedAccount?.symbol == 'BTC' || selectedAccount?.symbol == 'DOGE') {
+      setLoading(true);
+      const response = await getTransactions_BTC_DOGE(address, selectedAccount?.symbol);
+      const wallet = { txs: response, total: response?.length };
+      setWalletTransactions(wallet);
+      setLoading(false);
+    } else {
+      setLoading(true);
+      const response = await getTransactions_ETH_MATIC(address, selectedAccount?.symbol);
+      setLoading(false);
+      const wallet = { txs: response, total: response?.length };
+      setWalletTransactions(wallet);
+
+    }
+  };
+  useEffect(() => {
 
     if (address) {
       loadTransactions(address);
@@ -91,14 +108,11 @@ const Transactions = ({
       return operations[0];
     };
 
-    if (symbol === 'BTC' || symbol === 'LTC' || symbol === 'BCH') {
-      const BTC_DECIMAL = 8;
-      const getAmount = (transaction: any): any => {
-        let amount = 0;
-        amount = address === transaction.from[0].from ? -1 * (transaction.to[0].amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber()) : (transaction.to[0].amount.amount().shiftedBy(-1 * BTC_DECIMAL).toNumber());
-        return amount;
-      };
+    if (symbol === 'BTC' || symbol === 'LTC' || symbol === 'BCH' || symbol == "DOGE") {
 
+      const getAmount = (transaction: any): any => {
+        return transaction.balance_change;
+      };
 
       return <div
         className={styles.transItem}
@@ -119,21 +133,58 @@ const Transactions = ({
               : 'Send'}
           </div>
           <div className={styles.transSubColTime}>
-            <div className={styles.transDate}>{moment(transaction?.date).format('MMM DD')}</div>
+            <div className={styles.transDate}>{`${moment.unix(transaction.time).format("MMM DD YY, h:mm:ss a")}`}</div>
+          </div>
+        </div>
+
+        <div className={styles.transColValue}>
+          <div>
+            {getAmount(transaction)}
+            {symbol}
+          </div>
+          <div className={styles.transSubColPrice}>
+            ${(getAmount(transaction) * usdValue).toFixed(3)}
+          </div>
+        </div>
+        <div className={styles.transColAction}>
+          <img src={ICON_FORWARD} />
+        </div>
+      </div>
+    }
+    if (symbol === 'ETH' || symbol == 'MATIC') {
+      return <div
+        className={styles.transItem}
+        key={index}
+        onClick={() => window.open(symbol == 'MATIC' ? `https://polygonscan.com/tx/${transaction?.hash}` : `https://etherscan.io/tx/${transaction?.hash}`, "_blank")}
+      >
+        <div className={styles.transColIcon}>
+          {statusToIcon(
+            transaction.to == address
+              ? 'Receive'
+              : 'Send'
+          )}
+        </div>
+        <div className={styles.transColStatus}>
+          <div>
+            {transaction.to == address
+              ? 'Receive'
+              : 'Send'}
+          </div>
+          <div className={styles.transSubColTime}>
+            <div className={styles.transDate}>Block: {transaction.block}</div>
             <div className={styles.transSubColDot}></div>
             <div className={styles.transAddress}>
-              {getAmount(transaction) > 0 ? 'from ' + getShortAddress(transaction.from[0].from, 3) : 'to ' + getShortAddress(transaction.to[0].to, 3)}
+              {transaction.to == address ? 'from ' + getShortAddress(transaction.from, 3) : 'to ' + getShortAddress(transaction.to, 3)}
             </div>
           </div>
         </div>
 
         <div className={styles.transColValue}>
           <div>
-            {getAmount(transaction).toFixed(BTC_DECIMAL)}
-            {symbol}
+            {transaction.value} {symbol}
           </div>
           <div className={styles.transSubColPrice}>
-            ${(getAmount(transaction) * usdValue).toFixed(3)}
+            ${(transaction.value * usdValue).toFixed(3)}
           </div>
         </div>
         <div className={styles.transColAction}>
@@ -326,8 +377,7 @@ const Transactions = ({
           onClick={() => history.goBack()}
         >
           <img src={ICON_CARET} />
-
-          <div className={styles.transTitle}>Transactions</div>
+          <div className={styles.transTitle}>{i18nT('wallet.txns')}</div>
         </div>
         <div className={styles.pageloading}>
           <ClipLoader color={'#fffff'}
@@ -346,14 +396,14 @@ const Transactions = ({
         >
           <img src={ICON_CARET} />
 
-          <div className={styles.transTitle}>Transactions</div>
+          <div className={styles.transTitle}>{i18nT('transactions.header')}{' '}({walletTransactions?.txs.length})</div>
         </div>
 
         {walletTransactions &&
           walletTransactions?.txs &&
           walletTransactions?.txs.length === 0
           ? <div className={styles.pageloading}>
-            <div className={styles.noTrans}>No Transactions</div>
+            <div className={styles.noTrans}>{i18nT('transactions.noTxns')}</div>
           </div>
           : <div className={styles.transItems}>
             {walletTransactions &&

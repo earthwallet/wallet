@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import styles from './index.scss';
-//import { useHistory } from 'react-router-dom';
 import { RouteComponentProps, withRouter } from 'react-router';
 import Header from '~components/Header';
 import { useSelector } from 'react-redux';
 import { keyable } from '~scripts/Background/types/IMainController';
 import { getAirDropNFTInfo, } from '~global/nfts';
-//import clsx from 'clsx';
 import { useController } from '~hooks/useController';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { shareTweetURL, shortenAddress } from '~global/helpers';
 import ICON_TWITTER from '~assets/images/icon_twitter.svg';
 import { selectAirdropStatus } from '~state/assets';
 import Confetti from 'react-confetti'
+import { selectAccountById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
 
-interface Props extends RouteComponentProps<{ assetId: string, address: string }> {
+interface Props extends RouteComponentProps<{ assetId: string, accountId: string }> {
+
     className?: string;
 }
 
@@ -22,11 +23,14 @@ const NFTAirdropDetails = ({
     match: {
         params: {
             assetId,
-            address
+            accountId
+
         },
     },
 }: Props) => {
-    // const history = useHistory();
+    const selectedAccount = useSelector(selectAccountById(accountId));
+    const { address } = selectedAccount;
+
 
     const asset: keyable = getAirDropNFTInfo();
     const airdropAssetStatus = useSelector(selectAirdropStatus(asset.id));
@@ -79,10 +83,10 @@ const NFTAirdropDetails = ({
                                 <Skeleton width={72} />
                             </SkeletonTheme>
                             : asset?.forSale
-                                ? 'Listed for sale'
-                                : 'Airdrop'}
+                                ? i18nT('nftAirdropDetails.listed')
+                                : i18nT('nftAirdropDetails.airdrop')}
                         </div>
-                        {airdropAssetStatus?.accountIdVerified == undefined ? <div className={styles.price}>Free</div> : <div className={styles.price}>Claimed</div>}
+                        {airdropAssetStatus?.accountIdVerified == undefined ? <div className={styles.price}>{i18nT('nftAirdropDetails.free')}</div> : <div className={styles.price}>{i18nT('nftAirdropDetails.claimed')}</div>}
                     </div>
                     <div className={styles.sep}></div>
                     <div className={styles.creatorCont}>

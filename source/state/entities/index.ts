@@ -21,6 +21,7 @@ const initialState: IEntityState = {
   pairs: { byId: {} },
   recents: { byId: {} },
   airdrops: { byId: {} },
+  collectionInfo: { byId: {} },
 };
 
 export const entitiesState = createSlice({

@@ -1,16 +1,21 @@
 import React, { useCallback, useState } from 'react';
 import ActionButton from '~components/composed/ActionButton';
 import NavButton from '~components/composed/NavButton';
-import { useConnectWalletToDApp, useCurrentDapp, useUpdateActiveAccount } from '~hooks/useController';
+import {
+  useConnectWalletToDApp,
+  useCurrentDapp,
+  useUpdateActiveAccount,
+} from '~hooks/useController';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import styles from './index.module.scss';
 import { useSelector } from 'react-redux';
-import { selectAccounts_ICP } from '~state/wallet';
+import { selectAccountsByNetwork } from '~state/wallet';
 import { isUndefined } from 'lodash';
 import { getSymbol } from '~utils/common';
 import useToast from '~hooks/useToast';
 import clsx from 'clsx';
+import { AppState } from '~state/store';
 
 enum ConnectStep {
   Accounts,
@@ -20,15 +25,14 @@ enum ConnectStep {
 export default function ConnectDappPage() {
   const dapp = useCurrentDapp();
   const connectWalletToDapp = useConnectWalletToDApp();
-  const accounts = useSelector(selectAccounts_ICP);
+  const { activeNetwork } = useSelector((state: AppState) => state.wallet);
+  const accounts = useSelector(selectAccountsByNetwork(activeNetwork.symbol));
   const setDappConnectedAddress = async (address: string, origin: string) => {
     const useUpdateActiveAccounted = useUpdateActiveAccount(address, origin);
     useUpdateActiveAccounted().then(() => {
-      console.log(address);
     });
-  }
+  };
   const { show } = useToast();
-
 
   const [step, setStep] = useState(ConnectStep.Accounts);
   const [accountIndex, setAccountIndex] = useState<number>();
@@ -41,7 +45,7 @@ export default function ConnectDappPage() {
       return;
     }
     connectWalletToDapp().then(() => {
-      if (accountIndex === undefined || (accountIndex < 0)) return;
+      if (accountIndex === undefined || accountIndex < 0) return;
       setDappConnectedAddress(accounts[accountIndex].address, dapp.origin);
     });
     window.close();
@@ -73,33 +77,39 @@ export default function ConnectDappPage() {
                   {dapp.origin}
                 </i>
               </div>
-              {accounts?.length > 0 ? <div className={styles.connectWith}>
-                <label>Connect With:</label>
-                {accounts?.sort((a, b) => a.symbol.localeCompare(b.symbol)).map((account, index) => (
-                  <div
-                    className={styles.row}
-                    key={account.id}
-                    onClick={() => {
-                      setAccountIndex(index);
-                      setStep(ConnectStep.Confirm);
-                    }}
-                  >
-                    <span>
-                      <img src={getSymbol(account.symbol)?.icon} />
-                      <label>
-                        {account.meta.name}
-                        <small>{account.id}</small>
-                      </label>
-                    </span>
-                    <ChevronRightIcon />
-                  </div>
-                ))}
-              </div>
-                :
+              {accounts?.length > 0 ? (
+                <div className={styles.connectWith}>
+                  <label>Connect With:</label>
+                  {accounts
+                    ?.sort((a, b) => a.symbol.localeCompare(b.symbol))
+                    .map((account, index) => (
+                      <div
+                        className={styles.row}
+                        key={account.id}
+                        onClick={() => {
+                          setAccountIndex(index);
+                          setStep(ConnectStep.Confirm);
+                        }}
+                      >
+                        <span>
+                          <img src={getSymbol(account.symbol)?.icon} />
+                          <label>
+                            {account.meta.name}
+                            <small>{account.id}</small>
+                          </label>
+                        </span>
+                        <ChevronRightIcon />
+                      </div>
+                    ))}
+                </div>
+              ) : (
                 <div className={clsx(styles.connectWith, styles.centerCont)}>
                   Looks like no account exist!
-                  <span>Please `Create an Account` or `import seed phrase`</span>
-                </div>}
+                  <span>
+                    Please `Create an Account` or `import seed phrase`
+                  </span>
+                </div>
+              )}
             </>
           ) : (
             <>
@@ -136,12 +146,16 @@ export default function ConnectDappPage() {
             <ActionButton actionType="secondary" onClick={() => window.close()}>
               Cancel
             </ActionButton>
-            <ActionButton onClick={() => step === ConnectStep.Accounts ? onNext() : handleSubmit()}>
+            <ActionButton
+              onClick={() =>
+                step === ConnectStep.Accounts ? onNext() : handleSubmit()
+              }
+            >
               {step === ConnectStep.Accounts ? 'Next' : 'Connect'}
             </ActionButton>
           </div>
         </section>
       </div>
-    </div >
+    </div>
   );
 }

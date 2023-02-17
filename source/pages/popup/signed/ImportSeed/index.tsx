@@ -1,13 +1,11 @@
 import React, { useCallback, useState } from 'react';
-
-//import { useHistory } from 'react-router-dom';
 import styles from './index.scss';
 import HeaderWithSteps from '~components/HeaderWithSteps';
 import SeedAndPath from './SeedAndPath';
 import AccountNamePasswordCreation from './AccountNamePasswordCreation';
 import { useController } from '~hooks/useController';
 import { useHistory } from 'react-router-dom';
-import { DEFAULT_ICP_FEES, PREGENERATE_SYMBOLS } from '~global/constant';
+import { ACTIVE_SYMBOLS, DEFAULT_ICP_FEES, PREGENERATE_SYMBOLS } from '~global/constant';
 import { ClipLoader } from 'react-spinners';
 import { getSymbol } from '~utils/common';
 import ICON_NOTICE from '~assets/images/icon_notice.svg';
@@ -17,10 +15,10 @@ import { createWallet } from '@earthwallet/keyring';
 import { send } from '@earthwallet/keyring';
 import Warning from '~components/Warning';
 import ICON_GREEN_TICK from '~assets/images/icon_green_tick.svg';
+import { i18nT } from '~i18n/index';
 
 
 const Page = () => {
-  //  const history = useHistory();
   const [seed, setSeed] = useState<string | null>(null);
   const [step, setStep] = useState<string>('1');
   const [balance, setBalance] = useState<number>(0);
@@ -99,13 +97,12 @@ const Page = () => {
 
   const _onCreate = useCallback((name: string, password: string): void => {
 
-    // this should always be the case
     if (name && password && seed) {
       setIsBusy(true);
       const callback = (address: string) => history.replace('/accounts?hightlight=' + address);
 
       controller.accounts
-        .createOrUpdateAccounts(seed, PREGENERATE_SYMBOLS, name, password, [], callback)
+        .createOrUpdateAccounts(seed, PREGENERATE_SYMBOLS, name, password, ACTIVE_SYMBOLS, callback)
         .then(() => {
         });
     }
@@ -118,7 +115,7 @@ const Page = () => {
         return <div>
           <div className={styles.earthInputCont}>
             <div className={styles.labelText}>
-              Enter your Mnemonic Seed phrase
+              {i18nT('importSeed.label')}
             </div>
             <SeedAndPath
               onSeedChange={setSeed}
@@ -130,7 +127,7 @@ const Page = () => {
         return < >
           <div className={styles.noticeCont}>
             <div className={styles.noticeTitle}>
-              Migrate your ICP account
+              {i18nT('importSeed.migrateTitle')}
               <img src={ICON_NOTICE} className={styles.noticeIcon}></img>
               <div className={styles.noticeSubTitle}>Internet Computer - ICP recommends you use new Secp256k1 address instead of old Ed25519 address. Your balance of {balance} ICP shall be transferred to new address.</div>
             </div>
@@ -145,7 +142,6 @@ const Page = () => {
                 <img src={getSymbol('ICP')?.icon} className={styles.notAddrIcon}></img>
                 <div className={styles.notAddrText}>{addresses?.new}</div>
               </div>
-
             </div>
           </div>
           {txError && (
@@ -185,19 +181,19 @@ const Page = () => {
             >
               <div
                 onClick={() => setStep('2')}
-                className={styles.secButton}>Skip</div>
+                className={styles.secButton}>{i18nT('importSeed.skip')}</div>
               <div
                 onClick={() => sendICPFromOldToNew()}
-                className={styles.primButton}>Next</div>
+                className={styles.primButton}>{i18nT('importSeed.next')}</div>
             </div>}
         </ >;
       case '2':
         return <div>
           {migrateComplete && <div className={styles.migrateAnnon}>
             <img className={styles.migrateAnnonIcon} src={ICON_GREEN_TICK} />
-            Migration is complete. Continue with import account{'>'} </div>}
+            {i18nT('importSeed.migrationComplete')}{'>'} </div>}
           <AccountNamePasswordCreation
-            buttonLabel={'Add account'}
+            buttonLabel={i18nT('importSeed.addAccount')}
             isBusy={isBusy}
             onBackClick={_onBackClick}
             onCreate={_onCreate}
@@ -215,7 +211,7 @@ const Page = () => {
         <HeaderWithSteps
           backOverride={step === '1' ? undefined : _onBackClick}
           step={step}
-          text={'Import account'}
+          text={i18nT('importSeed.header')}
         />
         {getStepComponent(step)}
       </div>

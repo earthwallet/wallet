@@ -11,6 +11,8 @@ import TokensController from './TokensController';
 import store from '~state/store';
 import { preloadStateAsync } from '~state/app';
 import { storeEntities } from '~state/entities';
+import { NetworkSymbol } from '~global/types';
+import { updateOverrideEthereum, updateLanguage } from '~state/wallet';
 
 export default class MainController {
   accounts: Readonly<IAccountsController>;
@@ -32,6 +34,7 @@ export default class MainController {
 
   async preloadState() {
     await store.dispatch(preloadStateAsync() as any);
+    return store.getState().wallet.lang;
   }
 
   async migrateLocalStorage() {
@@ -72,9 +75,13 @@ export default class MainController {
     return items as keyable;
   }
 
-  async createPopup(windowId: string, route?: string) {
+  async createPopup(windowId: string, route?: string, asset?: NetworkSymbol) {
     const _window = await browser.windows.getCurrent();
     if (!_window || !_window.width) return null;
+
+    if (asset) {
+      this.accounts.updateActiveNetwork(asset);
+    }
 
     let url = `/dapp.html?`;
     if (route) {
@@ -91,5 +98,11 @@ export default class MainController {
       top: 0,
       left: _window.width - 375,
     });
+  }
+  updateOverrideEthereum(state: boolean) {
+    store.dispatch(updateOverrideEthereum(state));
+  }
+  updateLanguage(lang: string) {
+    store.dispatch(updateLanguage(lang));
   }
 }

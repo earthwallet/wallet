@@ -2,14 +2,14 @@ import {
   createWallet,
   newMnemonic,
   send,
-  transfer,
 } from '@earthwallet/keyring';
 import store from '~state/store';
 import {
-  updateActiveAccount,
   updateNewMnemonic,
   updateError,
   updateLoading,
+  updateActiveNetwork,
+  updateRestoreInActiveAccounts_ETH,
 } from '~state/wallet';
 import type { IAccountsController } from '../types/IAccountsController';
 import { createEntity, storeEntities, updateEntities } from '~state/entities';
@@ -23,6 +23,22 @@ import { getSymbol } from '~utils/common';
 import { getInfoBySymbol, GROUP_ID_SYMBOL } from '~global/constant';
 import Secp256k1KeyIdentity from '@earthwallet/keyring/build/main/util/icp/secpk256k1/identity';
 import { principal_to_address } from '@earthwallet/assets';
+import {
+  getBalance_ETH,
+  getBalanceMatic,
+  transferERC721,
+  transferERC20,
+} from '~utils/services';
+import { NetworkSymbol, NETWORK_TITLE } from '~global/types';
+import { createAlchemyWeb3 } from '@alch/alchemy-web3';
+import { ethers } from 'ethers';
+import { ETH_MAINNET_ALCHEMY_URL, POLY_ALCHEMY_URL } from '~global/config';
+import {
+  broadcastTxn_BTC_DOGE,
+  createTransaction_BTC_DOGE,
+  getAllUnspentTransactions,
+  getBalance_BTC_DOGE,
+} from '~utils/btc';
 
 interface keyable {
   [key: string]: any;
@@ -46,54 +62,6 @@ export default class AccountsController implements IAccountsController {
       store.dispatch(updateError('Unable to generate mnemonic'));
       console.log(error);
     }
-  }
-
-  async createOrUpdateAccount(
-    mnemonic: string,
-    symbol: string,
-    name: string,
-    password: string,
-    callback?: (address: string) => void
-  ) {
-    const existingActiveAccount = store.getState().activeAccount;
-
-    const keypair = await createWallet(mnemonic, symbol);
-
-    if (
-      existingActiveAccount !== null &&
-      existingActiveAccount?.address !== keypair.address
-    ) {
-      store.dispatch(updateActiveAccount({ id: keypair.address, ...keypair }));
-    }
-
-    store.dispatch(
-      storeEntities({
-        entity: 'accounts',
-        data: [
-          {
-            meta: {
-              name,
-              createdAt: Math.round(new Date().getTime() / 1000),
-              publicKey: keypair.publicKey,
-              type: keypair.type,
-            },
-            vault: {
-              encryptedMnemonic: encryptString(mnemonic, password),
-              encryptedJson: encryptString(
-                JSON.stringify(keypair.identity.toJSON()),
-                password
-              ),
-              encryptionType: 'AES',
-            },
-            symbol,
-            id: keypair.address,
-          },
-        ],
-      })
-    );
-    //clear new mnemonic
-    store.dispatch(updateNewMnemonic(''));
-    callback && callback(keypair.address);
   }
 
   getBalance = async (address: string, symbol = 'ICP') => {
@@ -146,12 +114,131 @@ export default class AccountsController implements IAccountsController {
     return index;
   };
 
-  sendBTC = async (
+  sendETH = async (
     selectedRecp: string,
     selectedAmount: number,
     mnemonic: string,
-    address: string
+    feesArr: keyable,
+    feesOptionSelected: number,
+    symbol: string
   ) => {
+    const wallet_tx = await createWallet(mnemonic, 'ETH');
+
+    const web3 = createAlchemyWeb3(
+      symbol == 'ETH' ? ETH_MAINNET_ALCHEMY_URL : POLY_ALCHEMY_URL
+    );
+    const privateKey = ethers.Wallet.fromMnemonic(mnemonic).privateKey;
+    const nonce = await web3.eth.getTransactionCount(
+      wallet_tx.address,
+      'latest'
+    );
+
+    const transaction = {
+      nonce: nonce,
+      from: wallet_tx.address,
+      to: selectedRecp,
+      value: web3.utils.toWei(selectedAmount.toString(), 'ether'),
+    };
+    const estimateGas = '21000';
+
+    const signedTx: keyable = await web3.eth.accounts.signTransaction(
+      {
+        gas: estimateGas,
+        maxPriorityFeePerGas: web3.utils.toWei(
+          feesArr[feesOptionSelected]?.suggestedMaxPriorityFeePerGas,
+          'gwei'
+        ),
+        maxFeePerGas: web3.utils.toWei(
+          feesArr[feesOptionSelected]?.suggestedMaxFeePerGas,
+          'gwei'
+        ),
+        ...transaction,
+      },
+      privateKey
+    );
+    const hash: string = await new Promise(async (resolve) => {
+      await web3.eth
+        .sendSignedTransaction(signedTx?.rawTransaction)
+        .once('transactionHash', (hash) => {
+          resolve(hash);
+        });
+      console.log("We've finished");
+    });
+    return hash;
+  };
+
+  sendERC721_ETH = async (
+    selectedRecp: string,
+    fromAddress: string,
+    mnemonic: string,
+    selectedAssetObj: keyable,
+    feesArr: keyable,
+    feesOptionSelected: number,
+    symbol: string
+  ) => {
+    const resp = await transferERC721(
+      selectedAssetObj?.contractAddress,
+      selectedRecp,
+      fromAddress,
+      selectedAssetObj?.tokenID,
+      mnemonic,
+      symbol,
+      feesArr[feesOptionSelected]?.suggestedMaxPriorityFeePerGas,
+      feesArr[feesOptionSelected]?.suggestedMaxFeePerGas
+    );
+
+    return resp.hash;
+  };
+
+  sendERC20_ETH = async (
+    selectedRecp: string,
+    selectedAmount: number,
+    mnemonic: string,
+    selectedAssetObj: keyable,
+    feesArr: keyable,
+    feesOptionSelected: number,
+    symbol: string
+  ) => {
+    const resp = await transferERC20(
+      selectedAssetObj?.contractAddress,
+      selectedRecp,
+      selectedAmount.toString(),
+      mnemonic,
+      symbol,
+      feesArr[feesOptionSelected]?.suggestedMaxPriorityFeePerGas,
+      feesArr[feesOptionSelected]?.suggestedMaxFeePerGas,
+      selectedAssetObj?.decimals
+    );
+
+    return resp.hash;
+  };
+
+  send_BTC_DOGE = async (
+    selectedRecp: string,
+    selectedAmount: number,
+    mnemonic: string,
+    address: string,
+    symbol: string,
+    feeRate: number
+  ) => {
+    
+    const utxos = await getAllUnspentTransactions(address, symbol);
+    const resp = await createTransaction_BTC_DOGE(
+      mnemonic,
+      selectedRecp,
+      address,
+      typeof selectedAmount == 'number'
+        ? selectedAmount?.toString()
+        : selectedAmount,
+      feeRate,
+      utxos,
+      symbol
+    );
+    if (resp?.error) {
+      throw resp?.errorMessage;
+    } else if (resp?.txHex == undefined) {
+      throw { error: true };
+    }
     const state = store.getState();
 
     if (state.entities.recents == null) {
@@ -170,14 +257,12 @@ export default class AccountsController implements IAccountsController {
       })
     );
 
-    const hash: any = await transfer(
-      selectedRecp,
-      selectedAmount.toString(),
-      mnemonic,
-      'BTC',
-      { network: 'mainnet' }
-    );
-    return hash;
+    const respBroad: any = await broadcastTxn_BTC_DOGE(resp?.txHex, symbol);
+
+    if (respBroad?.error) {
+      throw respBroad?.errorMessage;
+    }
+    return respBroad?.hash;
   };
   getBalancesOfAccount = async (account: keyable) => {
     const fetchBalance = async (account: keyable) => {
@@ -186,23 +271,35 @@ export default class AccountsController implements IAccountsController {
           entity: 'balances',
           data: [
             {
-              id: account.address,
+              id: account.id,
               symbol: account.symbol,
               loading: true,
             },
           ],
         })
       );
+      let balance: keyable = {};
+      if (account.symbol == 'ETH') {
+        const value = await getBalance_ETH(account.address);
+        balance = { currency: { decimals: 18, symbol: 'ETH' }, value: value };
+      } else if (account.symbol == 'MATIC') {
+        const value = await getBalanceMatic(account.address);
+        balance = { currency: { decimals: 18, symbol: 'MATIC' }, value: value };
+      } else if (account.symbol == 'BTC' || account.symbol == 'DOGE') {
+        const resp = await getBalance_BTC_DOGE(account.address, account.symbol);
+        balance = { ...resp };
+      } else {
+        balance = await _getBalance(
+          account.address,
+          account.symbol === 'ICP_Ed25519' ? 'ICP' : account.symbol
+        );
+      }
 
-      let balance: keyable = await _getBalance(
-        account.address,
-        account.symbol === 'ICP_Ed25519' ? 'ICP' : account.symbol
-      );
       if (account.symbol === 'ICP' || account.symbol === 'ICP_Ed25519') {
         balance.value = balance?.balances[0]?.value;
-        balance.currency = balance?.balances[0].currency;
+        balance.currency = balance?.balances[0]?.currency;
       }
-      return { ...balance, ...{ id: account.address, symbol: account.symbol } };
+      return { ...balance, ...{ id: account.id, symbol: account.symbol } };
     };
     try {
       let balance: keyable = await fetchBalance(account);
@@ -250,8 +347,7 @@ export default class AccountsController implements IAccountsController {
       for (const account of accounts) {
         let currentBalance = state.entities.balances.byId[account.id];
         const decimals = currentBalance?.currency?.decimals;
-        if (decimals === undefined) {
-          total = 0;
+        if (decimals == undefined) {
           store.dispatch(
             updateEntities({
               entity: 'balances',
@@ -289,14 +385,9 @@ export default class AccountsController implements IAccountsController {
               data: [{ balanceInUSD: total, id: account.groupId }],
             })
           );
-          // do your thing
         }
       }
     }
-  };
-
-  getTransactions = async (address: string, symbol = 'ICP') => {
-    await _getTransactions(address, symbol);
   };
 
   createOrUpdateAccounts = async (
@@ -311,9 +402,12 @@ export default class AccountsController implements IAccountsController {
     let index = 0;
     const groupId = (await createWallet(mnemonic, GROUP_ID_SYMBOL)).address;
     for (const symbol of symbols) {
+      const symbolInfo = getInfoBySymbol(symbol);
       const keypair = await createWallet(mnemonic, symbol);
       let data = {
-        id: keypair.address,
+        id: symbolInfo?.evmChain
+          ? symbol + ':' + keypair.address
+          : keypair.address,
         groupId,
         ...keypair,
         meta: {
@@ -352,9 +446,46 @@ export default class AccountsController implements IAccountsController {
         data: newAccounts,
       })
     );
-    //clear new mnemonic
     store.dispatch(updateNewMnemonic(''));
     callback && callback(groupId);
+  };
+
+  updateActiveNetwork = (symbol: NetworkSymbol) => {
+    store.dispatch(
+      updateActiveNetwork({ symbol, title: NETWORK_TITLE[symbol] })
+    );
+  };
+
+  restoreOnceInactiveAccountsActive_ETH = async () => {
+    //once restores previously inactive eth pregenerated addresses as active
+    const state = store.getState();
+    const currentWalletRestoreETHStatus =
+      state.wallet.restoreInActiveAccounts_ETH;
+    if (!currentWalletRestoreETHStatus) {
+      const existingInactiveETHAccounts = Object.keys(
+        state.entities.accounts.byId
+      )
+        .map((id) => state.entities.accounts.byId[id])
+        .filter(
+          (account) => account.active == false && account.symbol == 'ETH'
+        );
+      if (existingInactiveETHAccounts?.length != 0) {
+        existingInactiveETHAccounts.map((account) => {
+          store.dispatch(
+            updateEntities({
+              entity: 'accounts',
+              key: account.id,
+              data: {
+                active: true,
+              },
+            })
+          );
+        });
+
+        store.dispatch(updateRestoreInActiveAccounts_ETH(true));
+        return;
+      }
+    }
   };
 
   updateActiveAccountsOfGroup = async (
@@ -376,6 +507,8 @@ export default class AccountsController implements IAccountsController {
         const selectedETHAccount = existingAllAccounts.filter(
           (a) => a.symbol === 'ETH'
         )[0];
+
+        //https://en.bitcoin.it/wiki/BIP_0021
         // BIP_0021 uri format example MATIC:xyzzyxxxxxx
         const address_uri = symbol + ':' + selectedETHAccount.id;
         store.dispatch(
@@ -413,6 +546,8 @@ export default class AccountsController implements IAccountsController {
         }
       }
     }
+    const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+    await delay(500);
 
     callback && callback(forwardAddress);
   };

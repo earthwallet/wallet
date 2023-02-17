@@ -11,6 +11,7 @@ const WextManifestWebpackPlugin = require('wext-manifest-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const Dotenv = require('dotenv-webpack');
 
 const viewsPath = path.join(__dirname, 'views');
 const sourcePath = path.join(__dirname, 'source');
@@ -83,6 +84,7 @@ module.exports = {
       stream: require.resolve('stream-browserify'),
       assert: require.resolve('assert/'),
       os: require.resolve('os-browserify/browser'),
+      fs: require.resolve('browserify-fs'),
     },
     alias: {
       'webextension-polyfill-ts': path.resolve(
@@ -92,6 +94,7 @@ module.exports = {
       '~components': path.resolve(__dirname, 'source/components'),
       '~scripts': path.resolve(__dirname, 'source/scripts'),
       '~pages': path.resolve(__dirname, 'source/pages'),
+      '~i18n': path.resolve(__dirname, 'source/i18n'),
       '~state': path.resolve(__dirname, 'source/state'),
       '~utils': path.resolve(__dirname, 'source/utils'),
       '~hooks': path.resolve(__dirname, 'source/hooks'),
@@ -224,6 +227,7 @@ module.exports = {
     }),
     // plugin to enable browser reloading in development mode
     extensionReloaderPlugin,
+    new Dotenv(),
     new NodePolyfillPlugin()
   ],
 

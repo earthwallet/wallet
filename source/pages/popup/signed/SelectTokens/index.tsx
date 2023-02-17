@@ -8,7 +8,6 @@ import styles from './index.scss';
 import ICON_CHECKED from '~assets/images/icon_checkbox_checked.svg';
 import ICON_UNCHECKED from '~assets/images/icon_checkbox_unchecked.svg';
 
-//import Loading from '~components/Loading';
 import NextStepButton from '~components/NextStepButton';
 import Header from '~components/Header';
 import clsx from 'clsx';
@@ -16,34 +15,30 @@ import { useController } from '~hooks/useController';
 import { useHistory } from 'react-router-dom';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useSelector } from 'react-redux';
-import { selectActiveTokensByAddress, selectTokensInfo } from '~state/token';
+import { selectActiveTokensByAddress, selectTokensInfo } from '~state/tokens';
 import { keyable } from '~scripts/Background/types/IAssetsController';
-//import { useSelector } from 'react-redux';
-//import { selectActiveAccountsByGroupId } from '~state/wallet';
-//import { LIVE_SYMBOLS_OBJS } from '~global/constant';
-interface Props extends RouteComponentProps<{ address: string }> {
+import { selectAccountById } from '~state/wallet';
+import { i18nT } from '~i18n/index';
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 
 const SelectTokens = ({
   match: {
-    params: { address },
+    params: { accountId },
   },
 }: Props) => {
   const controller = useController();
   const history = useHistory();
-  const tokenInfos = useSelector(selectTokensInfo);
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount;
+
+  const tokenInfos = useSelector(selectTokensInfo(address));
   const tokens = useSelector(selectActiveTokensByAddress(address));
   const [checkedArr, setCheckedArr] = useState<string[]>([]);
   const [existingActive, setExistingActive] = useState<string[]>([]);
 
-  const getTokens = useCallback(() => {
-    //)
-    //controller.tokens.getTokens()
-
-  }, [history]);
 
   useEffect(() => {
-    getTokens();
 
     let existingActiveAccountTokens = tokens.map((token: { id: string; }) => token.id);
     tokens.length !== 0 && setCheckedArr(existingActiveAccountTokens);
@@ -65,14 +60,12 @@ const SelectTokens = ({
 
     if (existingActive.length > checkedArr.length) {
       //remove tokens
-      console.log('remove tokens')
       const removeArr = existingActive.filter(x => !checkedArr.includes(x));
       const callback = () => history.replace(`/account/details/${address}`);
       controller.tokens.updateTokensOfNetwork(address, removeArr, false, callback);
     }
     else {
       //add tokens
-      console.log('add tokens')
 
       const callback = (address: string | undefined) => history.replace(`/account/details/${address}`);
       controller.tokens.updateTokensOfNetwork(address, checkedArr, true, callback);
@@ -83,12 +76,12 @@ const SelectTokens = ({
     <div className={styles.page}>
       <Header
         type={'wallet'}
-        text={'Select Tokens'}
+        text={i18nT('tokensListed.header')}
       ><div className={styles.empty} /></Header>
       <div className={styles.container}>
         <div className={styles.earthInputCont}>
           <div className={styles.labelText}>
-            Tokens Listed
+            {i18nT('tokensListed.cta')}
           </div>
         </div>
         <div
@@ -99,7 +92,9 @@ const SelectTokens = ({
             key={tokenObj.symbol}
             className={clsx(styles.checkboxCont, tokenObj.symbol === "ICP" && styles.checkboxCont_disabled)}>
             <div className={styles.checkboxContent}>
-              <div className={styles.networkIcon}>{tokenObj?.name?.charAt(0)}</div>
+              {tokenObj?.icon != undefined
+                ? <img src={tokenObj?.icon} className={styles.networkIcon} />
+                : <div className={styles.networkIcon}>{tokenObj?.name?.charAt(0)}</div>}
               <div className={styles.checkboxTitle}>
                 <div>{tokenObj.name}</div>
                 <div>{tokenObj.symbol}</div>
@@ -125,7 +120,7 @@ const SelectTokens = ({
           disabled={existingActive.length === checkedArr.length}
           onClick={() => updateTokens()}
         >
-          {'Update'}
+          {i18nT('addNetwork.cta')}
         </NextStepButton>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { getSymbol } from '~utils/common';
 import { IAssetState } from './types';
 import { AppState } from '~state/store';
 import { keyable } from '~scripts/Background/types/IAssetsController';
+import { getTokenCollectionInfo } from '~global/nfts';
 
 const initialState: IAssetState = {
   assetList: {},
@@ -36,6 +37,10 @@ export const { updateAssets, updateFiatPrice } = AssetState.actions;
 
 export const selectAssetBySymbol = (symbol: string) => (state: AppState) =>
   state.entities.prices.byId[symbol];
+
+export const selectPriceByContractAddress =
+  (contractAddress: string) => (state: AppState) =>
+    state.entities.prices.byId[contractAddress];
 
 export const selectAirdropStatus = (id: string) => (state: AppState) =>
   state.entities.airdrops?.byId[id];
@@ -77,4 +82,15 @@ export const selectTxnRequestsByAddress =
     );
   };
 
+export const selectAllCollectionInfo = () => (state: AppState) =>
+  Object.keys(state.entities.collectionInfo?.byId)?.map((id) => ({
+    ...state.entities.collectionInfo.byId[id],
+    ...{ id: id },
+  }));
+
+export const selectCollectionInfo =
+  (collectionId: string) => (state: AppState) =>
+    getTokenCollectionInfo(collectionId)
+      ? getTokenCollectionInfo(collectionId)
+      : state.entities?.collectionInfo.byId[collectionId] || {};
 export default AssetState.reducer;

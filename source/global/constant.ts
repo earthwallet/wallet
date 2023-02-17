@@ -1,5 +1,5 @@
-import { NetworkType } from './types';
-import ICON_ETH from '~assets/images/icon_eth_mini.png';
+import { NetworkSymbol, NETWORK_TITLE } from './types';
+import ICON_ETH from '~assets/images/icon_eth.png';
 import ICON_ICP from '~assets/images/icon_icp_details.png';
 import ICON_ICP_ED25519 from '~assets/images/icon_icp_ed25519.png';
 import ICON_DOT from '~assets/images/icon_mini_dot.png';
@@ -9,14 +9,18 @@ import ICON_LTC from '~assets/images/icon_mini_ltc.png';
 import ICON_BCH from '~assets/images/icon_mini_bch.png';
 import ICON_BNB from '~assets/images/icon_mini_bnb.png';
 import ICON_BTG from '~assets/images/icon_btg.png';
-import ICON_MATIC from '~assets/images/icon_matic.png';
 import ICON_AVAX from '~assets/images/icon_avalanche.svg';
 import ICON_DOGE from '~assets/images/icon_doge.png';
-import ICON_EARTH from '~assets/images/icon-512.png';
+import ICON_MATIC from '~assets/images/icon_matic.png';
 
 export const STATE_PORT = 'EARTH_WALLET';
 
-export const TEST_NETWORKS = [NetworkType.BitcoinTestnet, NetworkType.Rinkeby];
+export const TEST_NETWORKS = [
+  NETWORK_TITLE[NetworkSymbol.BitcoinTestnet],
+  NETWORK_TITLE[NetworkSymbol.Rinkeby],
+];
+
+/* Attribution: API provided by https://www.coingecko.com/en/api/documentation */
 
 /* Attribution: API provided by https://www.coingecko.com/en/api/documentation */
 
@@ -25,6 +29,8 @@ export const CGECKO_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
 export const DEFAULT_GROUP_SYMBOL = 'BTC';
 
 // once a symbol is marked isLive true, it shouldnt be marked as isLive false
+// isActive networks will be marked active for user on create or import
+
 export const DEFAULT_SYMBOLS = [
   {
     name: 'Bitcoin',
@@ -35,6 +41,7 @@ export const DEFAULT_SYMBOLS = [
     preGenerate: true,
     primary: true,
     order: 1,
+    isActive: true,
   },
   {
     name: 'Internet Computer',
@@ -46,6 +53,7 @@ export const DEFAULT_SYMBOLS = [
     order: 0,
     addressTitle: 'Account Id',
     addressType: 'accountId',
+    isActive: true,
   },
   {
     name: 'ICP Ed25519',
@@ -61,9 +69,10 @@ export const DEFAULT_SYMBOLS = [
     icon: ICON_ETH,
     symbol: 'ETH',
     coinGeckoId: 'ethereum',
-    isLive: false,
+    isLive: true,
     preGenerate: true,
     order: 2,
+    isActive: true,
   },
   {
     name: 'Polkadot',
@@ -111,26 +120,6 @@ export const DEFAULT_SYMBOLS = [
     order: 7,
   },
   {
-    name: 'Binance Smart',
-    icon: ICON_BNB,
-    symbol: 'BSC',
-    coinGeckoId: 'binancecoin',
-    isLive: false,
-    preGenerate: false,
-    order: 8,
-    evmChain: true,
-  },
-  {
-    name: 'Polygon',
-    icon: ICON_MATIC,
-    symbol: 'MATIC',
-    coinGeckoId: 'polygon',
-    isLive: false,
-    preGenerate: false,
-    order: 9,
-    evmChain: true,
-  },
-  {
     name: 'Bitcoin Gold',
     icon: ICON_BTG,
     symbol: 'BTG',
@@ -167,24 +156,16 @@ export const DEFAULT_SYMBOLS = [
     order: 13,
   },
   {
-    name: 'Avalanche C Chain',
-    icon: ICON_AVAX,
-    symbol: 'AVAC',
-    coinGeckoId: 'avalanche',
-    isLive: false,
-    preGenerate: false,
-    order: 14,
+    name: "Polygon",
+    icon: ICON_MATIC,
+    symbol: "MATIC",
+    coinGeckoId: "matic-network",
+    isLive: true,
+    isActive: true,
+    preGenerate: true,
+    order: 9,
     evmChain: true,
-  },
-  {
-    name: 'Earth',
-    icon: ICON_EARTH,
-    symbol: 'EARTH',
-    coinGeckoId: 'internet-computer',
-    isLive: false,
-    preGenerate: false,
-    order: 15,
-    icpChain: true,
+    chainId: 137,
   },
 ];
 
@@ -192,6 +173,12 @@ export const GROUP_ID_SYMBOL = 'BTC';
 
 export const PREGENERATE_SYMBOLS = DEFAULT_SYMBOLS.filter(
   (symbolObj) => symbolObj.preGenerate
+)
+  .sort((a, b) => a.order - b.order)
+  .map((symbolObj) => symbolObj.symbol);
+
+export const ACTIVE_SYMBOLS = DEFAULT_SYMBOLS.filter(
+  (symbolObj) => symbolObj.isActive
 )
   .sort((a, b) => a.order - b.order)
   .map((symbolObj) => symbolObj.symbol);

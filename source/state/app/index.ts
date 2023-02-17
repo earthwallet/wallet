@@ -5,6 +5,7 @@ import { hydrateWallet } from '~state/wallet';
 import { hydrateEntities } from '~state/entities';
 import { hydrateDapp } from '~state/dapp';
 import { browser } from 'webextension-polyfill-ts';
+import { hydrateTokens } from '~state/tokens';
 
 const initialState: IAppState = {
   version: '2.0',
@@ -24,6 +25,7 @@ export const preloadStateAsync = createAsyncThunk(
     state?.entities && thunkAPI.dispatch(hydrateEntities(state?.entities));
     state?.app && thunkAPI.dispatch(hydrateApp(state?.app));
     state?.dapp && thunkAPI.dispatch(hydrateDapp(state?.dapp));
+    state?.tokens && thunkAPI.dispatch(hydrateTokens(state?.tokens));
 
     thunkAPI.dispatch(updateHydrating(false));
 

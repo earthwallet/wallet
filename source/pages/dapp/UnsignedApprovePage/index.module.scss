@@ -1,0 +1,203 @@
+.page {
+  width: $appWidth;
+  height: $appHeight;
+  background: url(../../../assets/images/bg_dapp.png);
+  background-size: cover;
+  display: flex;
+  overflow-y: scroll;
+  color: white;
+  flex-direction: column;
+  padding-bottom: 90px;
+}
+.page_extra {
+  padding-bottom: 200px;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 15px;
+}
+
+.footer {
+  height: 180px;
+  position: fixed;
+  bottom: 0;
+  width: $appWidth;
+  padding: 0 24px;
+  background: #34343447;
+  backdrop-filter: blur(7px);
+}
+
+.title {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  line-height: 16px;
+  /* identical to box height, or 72% */
+
+  text-align: center;
+
+  /* white/1 */
+  text-transform: capitalize;
+  color: #ffffff;
+  margin: 36px 0 18px;
+}
+
+.label {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #ffffff;
+  margin: 6px 0;
+}
+
+.value {
+  background: rgba(90, 89, 126, 0.39);
+  backdrop-filter: blur(7px);
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 14px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 16px;
+  /* identical to box height, or 122% */
+  word-break: break-all;
+  /* white/1 */
+
+  color: #ffffff;
+
+  opacity: 0.9;
+  padding: 16px 18px;
+}
+
+.requestBody {
+  margin: 3px 24px;
+  padding: 12px 16px;
+  background: rgba(90, 89, 126, 0.39);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  border-radius: 14px;
+}
+
+.footerSuccess {
+  position: fixed;
+  bottom: 0;
+  width: $appWidth;
+  padding: 0 24px;
+  background: #34343447;
+  backdrop-filter: blur(7px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+}
+
+.footerSmall {
+  position: fixed;
+  bottom: 0;
+  width: $appWidth;
+  padding: 0 24px;
+  background: #34343447;
+  backdrop-filter: blur(7px);
+  min-height: 60px;
+}
+
+.paymentDone {
+  text-align: center;
+  border: 1px dashed #1b8d1b;
+  padding: 8px;
+  border-radius: 5px;
+  margin: 24px;
+}
+
+.accountInfo {
+  background: rgba(90, 89, 126, 0.39);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  border-radius: 14px;
+  margin: 3px 24px;
+  padding: 12px 16px;
+}
+
+.accountInfoKey {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 120%;
+  /* or 19px */
+
+  display: flex;
+  align-items: flex-end;
+
+  color: #ffffff;
+}
+
+.accountInfoVal {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 15px;
+  color: #fafbfb;
+  margin: 6px 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  padding-left: 4px;
+}
+
+.accountInfoIcon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  flex-shrink: 0;
+  flex-basis: 32px;
+  align-items: center;
+}
+.accountInfoValCont {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.accountInfoIcon24 {
+  width: 24px;
+  height: 24px;
+}
+
+.valueMono {
+  font-family: DM Mono;
+  font-style: normal;
+  font-weight: normal;
+}
+
+.response {
+  background: #006e006b;
+  border: 1px #025a0296 solid;
+}
+
+.errorResponse {
+  background: hsla(11, 100%, 22%, 0.42);
+  border: 1px hsla(11, 96%, 18%, 0.588) solid;
+}
+
+.canisterid {
+  font-weight: 500;
+}
+
+.labelinline {
+  display: flex;
+  font-size: 14px;
+}

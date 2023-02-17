@@ -17,7 +17,6 @@
 
   color: #ffffff;
 
-  /* Inside Auto Layout */
 
   flex: none;
   order: 1;
@@ -27,9 +26,6 @@
 
 .backButtonCont {
   background: rgba(5, 12, 18, 0.4);
-  //backdrop-filter: blur(20px);
-  /* Note: backdrop-filter has minimal browser support */
-
   border-radius: 30px;
   width: 39px;
   height: 39px;

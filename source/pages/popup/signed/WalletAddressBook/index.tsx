@@ -1,12 +1,11 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import styles from './index.scss';
-import NextStepButton from '~components/NextStepButton';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 import { selectAccountById, selectOtherAccountsOf, selectRecentsOf } from '~state/wallet';
 import { useSelector } from 'react-redux';
 
-import { selectActiveTokensAndAssetsICPByAddress } from '~state/wallet';
+import { selectActiveTokensAndAssetsByAccountId } from '~state/wallet';
 import useQuery from '~hooks/useQuery';
 import AddressInput from '~components/AddressInput';
 import Header from '~components/Header';
@@ -18,17 +17,18 @@ import { getTokenInfo } from '~global/tokens';
 import { getInfoBySymbol } from '~global/constant';
 import { shortenAddress } from '~global/helpers';
 import moment from 'moment-mini';
+import { i18nT } from '~i18n/index';
 
 interface keyable {
   [key: string]: any
 }
 
-interface Props extends RouteComponentProps<{ address: string }> {
+interface Props extends RouteComponentProps<{ accountId: string }> {
 }
 
 const WalletAddressBook = ({
   match: {
-    params: { address },
+    params: { accountId },
   },
 }: Props) => {
   const queryParams = useQuery();
@@ -38,17 +38,17 @@ const WalletAddressBook = ({
 
 
   const [step1, setStep1] = useState(true);
-  const selectedAccount = useSelector(selectAccountById(address));
-
-  const assets: keyable = useSelector(selectActiveTokensAndAssetsICPByAddress(address));
+  const selectedAccount = useSelector(selectAccountById(accountId));
+  const { address } = selectedAccount || {};
+  const assets: keyable = useSelector(selectActiveTokensAndAssetsByAccountId(accountId));
 
   const dropDownRef = useRef(null);
   const [selectedRecp, setSelectedRecp] = useState<string>('');
-  const [recpError, setRecpError] = useState('');
   const [selectedAsset, setSelectedAsset] = useState<string>('');
 
   const myAccounts: keyable = useSelector(selectOtherAccountsOf(address));
   const recents: keyable = useSelector(selectRecentsOf(address, tokenId));
+  const [ensAddressObj, setEnsAddressObj] = useState<keyable | null>(null);
 
 
 
@@ -65,20 +65,26 @@ const WalletAddressBook = ({
     }
   }, [assetId !== null, tokenId !== null]);
 
-  const onConfirm = useCallback(() => {
-    if (selectedAsset !== selectedAccount?.symbol) {
-      setStep1(false);
-    }
-    else {
-      setStep1(false);
-    }
-
-  }, [selectedAccount, selectedAsset]);
-
   const onBackClick = useCallback(() => { setStep1(true); }, []);
   const getSelectedAsset = (assetId: string) => assets.filter((asset: keyable) => asset.id === assetId)[0]
   const [tab, setTab] = useState(0);
   const history = useHistory();
+
+  const filterAccount = () => {
+    if (selectedRecp == "") {
+      return myAccounts;
+    } else {
+      return myAccounts.filter(
+        (item: keyable) =>
+          item?.meta?.name.includes(selectedRecp) ||
+          item?.address.includes(selectedRecp)
+      );
+    }
+  };
+
+  useEffect(() => {
+    filterAccount();
+  }, [selectedRecp]);
 
   const replaceQuery = (
     key: string,
@@ -104,102 +110,110 @@ const WalletAddressBook = ({
 
       {step1
         ? <div style={{ width: '100vw' }}>
-          <div className={styles.earthInputLabel}>Add recipient</div>
+          <div className={styles.earthInputLabel}>{i18nT('walletAddressBook.addRecp')}</div>
           <AddressInput
             initialValue={selectedRecp}
-            recpErrorCallback={setRecpError}
             recpCallback={setSelectedRecp}
             inputType={selectedAccount?.symbol}
             autoFocus={true}
             tokenId={getSelectedAsset(selectedAsset)?.tokenId}
             search={true}
+            ensObjCallback={setEnsAddressObj}
           />
         </div>
         : <div />}
-      <div className={styles.tabs}>
-        <div
-          onClick={() => setTab(0)}
-          className={clsx(styles.tab, tab === 0 && styles.tab_active)}>
-          My Accounts
-        </div>
-        <div
-          onClick={() => setTab(1)}
-          className={clsx(styles.tab, tab === 1 && styles.tab_active)}>
-          Recents
-        </div>
-      </div>
-      {tab == 0 &&
-        <div className={styles.listscrollcont}>
-          {myAccounts?.length == 0 ?
-            <div className={styles.centerDiv}>No other personal accounts to send</div>
-            : <div className={styles.listitemscont}>
-              {myAccounts.map((account: keyable, index: number) => <div
-                key={index}
-                onClick={() => replaceQuery('recipient', getTokenInfo(selectedAsset).type == 'DIP20' ? account?.meta?.principalId : account?.address)}
-                className={styles.listitem}>
-                <img className={styles.listicon}
-                  onError={({ currentTarget }) => {
-                    currentTarget.onerror = null;
-                    currentTarget.src = ICON_PLACEHOLDER;
-                  }}
-                  src={getSelectedAsset(selectedAsset)?.icon || getTokenInfo(selectedAsset)?.icon || getInfoBySymbol(selectedAccount.symbol).icon} />
-                <div className={styles.listinfo}>
-                  <div className={styles.listtitle}>{account?.meta?.name}</div>
-                  <div className={styles.listsubtitle}>{getTokenInfo(selectedAsset).type == 'DIP20' ? account?.meta?.principalId : account?.address}</div>
-                </div>
+      {ensAddressObj?.address != null ? <div className={styles.listscrollcont}>
+        <div className={styles.listitemscont}>
+          <div
+            onClick={() => replaceQuery('recipient', ensAddressObj?.address)}
+            className={styles.listitem}>
+            <img className={styles.listicon}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src = ICON_PLACEHOLDER;
+              }}
+              src={getSelectedAsset(selectedAsset)?.icon || getTokenInfo(selectedAsset)?.icon || getInfoBySymbol(selectedAccount.symbol).icon} />
+            <div className={styles.listinfo}>
+              <div className={styles.listtitle}>{ensAddressObj?.ens}</div>
+              <div className={styles.listsubtitle}>{ensAddressObj?.address}</div>
+            </div>
 
-                <img
-                  className={styles.listforward}
-                  src={ICON_FORWARD}
-                />
-              </div>)}
-            </div>}
+            <img
+              className={styles.listforward}
+              src={ICON_FORWARD}
+            />
+          </div>
         </div>
-      }
-      {tab == 1 &&
-        <div className={styles.listscrollcont}>
-          {recents?.length == 0 ?
-            <div className={styles.centerDiv}>No recent sent addresses</div>
-            : <div className={styles.listitemscont}>
-              {recents?.map((recent: keyable, index: number) => <div
-                key={index}
-                onClick={() => replaceQuery('recipient', recent?.address)}
-                className={styles.listitem}>
-                <img className={styles.listicon}
-                  onError={({ currentTarget }) => {
-                    currentTarget.onerror = null;
-                    currentTarget.src = ICON_PLACEHOLDER;
-                  }}
-                  src={getSelectedAsset(selectedAsset)?.icon || getTokenInfo(selectedAsset)?.icon || getInfoBySymbol(selectedAccount.symbol).icon} />
-                <div className={styles.listinfo}>
-                  <div className={styles.listtitle}>{shortenAddress(recent?.address)}</div>
-                  <div className={styles.listsubtitle}>Last sent on {recent.lastSentAt && moment(recent?.lastSentAt).format('Do MMMM YYYY')}</div>
-                </div>
-                <img
-                  className={styles.listforward}
-                  src={ICON_FORWARD}
-                />
-              </div>)}
-            </div>}
+      </div> : <div>
+        <div className={styles.tabs}>
+          <div
+            onClick={() => setTab(0)}
+            className={clsx(styles.tab, tab === 0 && styles.tab_active)}>
+            {i18nT('walletAddressBook.myAccounts')}
+          </div>
+          <div
+            onClick={() => setTab(1)}
+            className={clsx(styles.tab, tab === 1 && styles.tab_active)}>
+            {i18nT('walletAddressBook.recents')}
+          </div>
         </div>
-      }
+        {tab == 0 &&
+          <div className={styles.listscrollcont}>
+            {myAccounts?.length == 0 ?
+              <div className={styles.centerDiv}>{i18nT('walletAddressBook.noPers')}</div>
+              : <div className={styles.listitemscont}>
+                {filterAccount().map((account: keyable, index: number) => <div
+                  key={index}
+                  onClick={() => replaceQuery('recipient', getTokenInfo(selectedAsset).type == 'DIP20' ? account?.meta?.principalId : account?.address)}
+                  className={styles.listitem}>
+                  <img className={styles.listicon}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src = ICON_PLACEHOLDER;
+                    }}
+                    src={getSelectedAsset(selectedAsset)?.icon || getTokenInfo(selectedAsset)?.icon || getInfoBySymbol(selectedAccount.symbol).icon} />
+                  <div className={styles.listinfo}>
+                    <div className={styles.listtitle}>{account?.meta?.name}</div>
+                    <div className={styles.listsubtitle}>{getTokenInfo(selectedAsset).type == 'DIP20' ? account?.meta?.principalId : account?.address}</div>
+                  </div>
+
+                  <img
+                    className={styles.listforward}
+                    src={ICON_FORWARD}
+                  />
+                </div>)}
+              </div>}
+          </div>
+        }
+        {tab == 1 &&
+          <div className={styles.listscrollcont}>
+            {recents?.length == 0 ?
+              <div className={styles.centerDiv}>{i18nT('walletAddressBook.noRecent')}</div>
+              : <div className={styles.listitemscont}>
+                {recents?.map((recent: keyable, index: number) => <div
+                  key={index}
+                  onClick={() => replaceQuery('recipient', recent?.address)}
+                  className={styles.listitem}>
+                  <img className={styles.listicon}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src = ICON_PLACEHOLDER;
+                    }}
+                    src={getSelectedAsset(selectedAsset)?.icon || getTokenInfo(selectedAsset)?.icon || getInfoBySymbol(selectedAccount.symbol).icon} />
+                  <div className={styles.listinfo}>
+                    <div className={styles.listtitle}>{shortenAddress(recent?.address)}</div>
+                    <div className={styles.listsubtitle}>{i18nT('walletAddressBook.lastSent')}{' '}{recent.lastSentAt && moment(recent?.lastSentAt).format('Do MMMM YYYY')}</div>
+                  </div>
+                  <img
+                    className={styles.listforward}
+                    src={ICON_FORWARD}
+                  />
+                </div>)}
+              </div>}
+          </div>
+        }
+      </div>}
     </div>
-    {false && <div style={{
-      margin: '0 30px 30px 30px',
-      position: 'absolute',
-      bottom: 0,
-      left: 0
-    }}>
-      {step1
-        ? <NextStepButton
-          disabled={!selectedRecp || recpError !== ''}
-          loading={false}
-          onClick={onConfirm}>
-          {'Next'}
-        </NextStepButton>
-
-        : <div />}
-    </div>}
   </></div>;
 };
 

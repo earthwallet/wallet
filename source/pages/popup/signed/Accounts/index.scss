@@ -2,9 +2,6 @@
   height: $appHeight;
   overflow-y: scroll;
   scrollbar-width: none;
-
-  //import BG_WALLET_LIST from '../../assets/bg_wallet_list.png';
-
   background: url('../../../../assets/images/bg_wallet_list.png');
   display: flex;
   flex-direction: column;
@@ -275,7 +272,7 @@
 
 .backButtonCont {
   background: rgba(5, 12, 18, 0.4);
-  //backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   /* Note: backdrop-filter has minimal browser support */
 
   border-radius: 30px;

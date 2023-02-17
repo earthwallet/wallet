@@ -7,16 +7,12 @@ import clsx from 'clsx';
 
 import { RouteComponentProps, withRouter } from 'react-router';
 
-//import bg_wallet_details from '~assets/images/bg_wallet_details.png';
-// import { ActionContext } from '../../components';
 import ICON_COPY from '~assets/images/icon_copy_details.svg';
 import ICON_ICP_DETAILS from '~assets/images/icon_icp_details.png';
 import ICON_OPEN from '~assets/images/icon_open_new.svg';
 import Header from '~components/Header';
-// import ICON_FAILED from '~assets/images/icon_failed.svg';
-// import ICON_FORWARD from '~assets/images/icon_forward.svg';
-// import ICON_RECV from '~assets/images/icon_receive.svg';
 import { getShortAddress } from '~utils/common';
+import { i18nT } from '~i18n/index';
 
 interface Props extends RouteComponentProps<{ txnId: string }> {
   className?: string;
@@ -30,7 +26,6 @@ const Details = ({
     params: { txnId },
   },
 }: Props) => {
-  // const onAction = useContext(ActionContext);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [usdValue, setUsdValue] = useState<number>(0);
@@ -143,7 +138,7 @@ const Details = ({
     return (
       <div className={styles.page}>
         <div className={clsx(styles.transCont, styles.transErrorCont)}>
-          Please check transaction Id
+          {i18nT('transactionDetails.pleaseCheck')}
           <div className={styles.transError}>{txnId}</div>
         </div>
       </div>
@@ -157,7 +152,7 @@ const Details = ({
           showBackArrow
           className={styles.header}
           showAccountsDropdown={false}
-          text={'Details'}
+          text={i18nT('transactionDetails.header')}
           type={'details'}
         >
           <div className={styles.headerIcons}>
@@ -181,7 +176,7 @@ const Details = ({
         <div className={styles.transItems}>
           <div className={styles.transHeader}>
             <div>
-              <div className={styles.transAccount}>From</div>
+              <div className={styles.transAccount}>{i18nT('transactionDetails.from')}</div>
               <div className={styles.transAddressCont}>
                 <img className={styles.transIcon} src={ICON_ICP_DETAILS} />
                 <div className={styles.transAddress}>
@@ -190,7 +185,7 @@ const Details = ({
               </div>
             </div>
             <div>
-              <div className={styles.transAccount}>To</div>
+              <div className={styles.transAccount}>{i18nT('transactionDetails.to')}</div>
               <div className={styles.transAddressCont}>
                 <img className={styles.transIcon} src={ICON_ICP_DETAILS} />
                 <div className={styles.transAddress}>
@@ -199,27 +194,27 @@ const Details = ({
               </div>
             </div>
             <div>
-              <div className={styles.transAccount}>Transaction</div>
+              <div className={styles.transAccount}>{i18nT('transactionDetails.transaction')}</div>
               <div className={styles.transRow}>
-                <div className={styles.transCol1}>Amount</div>
+                <div className={styles.transCol1}>{i18nT('transactionDetails.amount')}</div>
                 <div className={styles.transCol2}>
                   {transDetail?.amount?.toFixed(4)} ICP
                 </div>
               </div>
               <div className={styles.transRow}>
-                <div className={styles.transCol1}>Value</div>
+                <div className={styles.transCol1}>{i18nT('transactionDetails.value')}</div>
                 <div className={styles.transCol2}>
                   {(transDetail?.amount * usdValue).toFixed(4)} USD
                 </div>
               </div>
               <div className={styles.transRow}>
-                <div className={styles.transCol1}>Transaction Fees</div>
+                <div className={styles.transCol1}>{i18nT('transactionDetails.txnFees')}</div>
                 <div className={styles.transCol2}>
                   {transDetail?.fees?.toFixed(4)} ICP
                 </div>
               </div>
               <div className={styles.transRow}>
-                <div className={styles.transCol1}>Total</div>
+                <div className={styles.transCol1}>{i18nT('transactionDetails.total')}</div>
                 <div className={styles.transCol2}>
                   {(
                     parseFloat(transDetail?.fees || 0) +
@@ -230,9 +225,9 @@ const Details = ({
               </div>
             </div>
             <div>
-              <div className={styles.transAccount}>Activity Log</div>
+              <div className={styles.transAccount}>{i18nT('transactionDetails.activityLog')}</div>
               <div className={styles.transActivity}>
-                {`Transaction created with a value of ${(
+                {i18nT('transactionDetails.activityLog') + ` ${(
                   parseFloat(transDetail?.fees || 0) +
                   parseFloat(transDetail?.amount || 0)
                 )?.toFixed(4)} ICP at ${transDetail?.time}.`}
