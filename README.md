@@ -25,8 +25,8 @@ If you have any feedback or require real time support, or just want to chat with
 :white_check_mark: Bitcoin and other multichain support <br/>
 :white_check_mark: Earth Connect (Developer SDK) <br/>
 :white_check_mark: NFT and Token support <br/>
-:black_square_button: Earth Ether (🙊)
-:black_square_button: Core Security Audits & Code Freeze (Q2) <br/>
+:black_square_button: Earth Ether (🙊)<br/>
+:black_square_button: Core Security Audits & Code Freeze
 
 ## 🌎 Earth Connect - Build Apps on Bitcoin with Earth Wallet
 
