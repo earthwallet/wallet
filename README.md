@@ -1,12 +1,13 @@
-[![Telegram](https://img.shields.io/badge/Live_Support-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/earthdao)
-[![Discord](https://img.shields.io/badge/Discord_Server-%237289DA.svg?style=flat&logo=discord&logoColor=white)](https://earthdao.co/discord)
+[![Telegram](https://img.shields.io/badge/Live_Support-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/eartheans)
 [![Twitter](https://img.shields.io/badge/Announcements-%231DA1F2.svg?style=flat&logo=Twitter&logoColor=white)](https://twitter.com/earthwallet)
 [![Docs](https://img.shields.io/badge/Documentation-2CA5E0?color=success)](https://docs.earthwallet.io)
 ![License](https://img.shields.io/badge/Licence-GNU-blueviolet)
 
 ![Earth Wallet](https://i.imgur.com/eIZaUbx.png)
 
-Earth wallet is a self custody browser wallet for regenerative digital assets. Designed and developed from the ground up to make the transition to new blockchain protocols that reduce the environmental impacts of Proof-of-Work blockchains.
+Earth Wallet is the ultimate self custody Bitcoin wallet designed for both novice and experienced cryptocurrency users. With Earth Wallet, you can securely store your Bitcoin, Ethereum and other cryptocurrencies on your own Browser with ease and convenience.
+
+Our app boasts a simple and intuitive interface that allows you to manage your Bitcoin & Ethereum portfolios, send and receive payments, and monitor the market in real-time. We prioritize user privacy and security, so you can trust that your funds are always safe and protected.
 
 # Download it Here:
 
@@ -16,7 +17,7 @@ Earth wallet is a self custody browser wallet for regenerative digital assets. D
 
 ## Now in Beta!
 
-If you have any feedback or require real time support, or just want to chat with our developers please [join the Earth DAO Discord Server](https://earthdao.co/discord)!
+If you have any feedback or require real time support, or just want to chat with our developers please [join the Eartheans Telegram chat](https://t.me/eartheans)!
 
 :white_check_mark: Self Custody, your keys, your crypto. <br/>
 :white_check_mark: 100% Open Source <br/>
@@ -24,19 +25,18 @@ If you have any feedback or require real time support, or just want to chat with
 :white_check_mark: Bitcoin and other multichain support <br/>
 :white_check_mark: Earth Connect (Developer SDK) <br/>
 :white_check_mark: NFT and Token support <br/>
-:white_check_mark: Earth Art Marketplace <br/>
-:black_square_button: Core Security Audits & Code Freeze (Q3) <br/>
-:black_square_button: Earth DAO (🙊)
+:black_square_button: Earth Ether (🙊)
+:black_square_button: Core Security Audits & Code Freeze (Q2) <br/>
 
-## 🌎 Earth Connect - Build Apps on the Internet Computer with Earth Wallet
+## 🌎 Earth Connect - Build Apps on Bitcoin with Earth Wallet
 
-Looking to build on the Internet Computer? Earth Wallet enables develoeprs to build applications that are easy and secure. This gives both you and your users the peace of mind that their private keys are not exposed to applications, and lets them decide which dapps to sign into. To learn more:
+Looking to build on the Bitcoin? Earth Wallet enables develoeprs to build applications that are easy and secure. This gives both you and your users the peace of mind that their private keys are not exposed to applications, and lets them decide which dapps to sign into. To learn more:
 
 [Check out the documentation](docs.earthwallet.io)
 
 ## 🚀 Bug Bounty Program Available!!
 
-We have an on going bug bounty campaign for $10,000 USD, token allocations, as well as full time positions available. If you find a bug, or simply have an idea of how to make the code better/faster/more secure, please [join our Developer Server](https://earthdao.co/discord). Help create the most secure open source digital asset wallet and own a piece the future!
+We have an on going bug bounty campaign for $10,000 USD, token allocations, as well as full time positions available. If you find a bug, or simply have an idea of how to make the code better/faster/more secure, please [join our Telegram Chat](https://t.me/eartheans). Help create the most secure open source digital asset wallet and own a piece the future!
 
 To get started, ensure you have:
 
@@ -94,6 +94,6 @@ Note: By default the `manifest.json` is set with version `0.0.0`. The webpack lo
 # ♾️ Contributors
 
 The best way to submit feedback and report bugs is to [open a GitHub issue](https://github.com/earthdao/wallet/issues/new).
-If you want to contribute code please join our [Developer Server](https://earthdao.co/discord).
+If you want to contribute code please join our [Telegram Chat](https://t.me/eartheans).
 
 Thanks to all the people who contribute!
